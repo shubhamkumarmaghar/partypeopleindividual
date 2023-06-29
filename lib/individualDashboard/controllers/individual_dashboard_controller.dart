@@ -8,7 +8,6 @@ import 'package:partypeopleindividual/centralize_api.dart';
 
 import '../models/city.dart';
 
-
 class IndividualDashboardController extends GetxController {
   var buttonState = true;
   RxList<IndividualCity> allCityList = RxList();
@@ -42,8 +41,8 @@ class IndividualDashboardController extends GetxController {
             json.decode(response.body)['data'] as List;
         allCityList.value =
             cityListJson.map((city) => IndividualCity.fromJson(city)).toList();
+        print("Get all city:=> ${allCityList[0].imageUrl}");
         update();
-        print(allCityList.length);
       } else {
         throw Exception("Error with the request: ${response.statusCode}");
       }
