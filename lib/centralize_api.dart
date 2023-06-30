@@ -16,6 +16,7 @@ class API {
   static const String individualProfileData =
       '$baseUrl/party/organization_details';
 
-  static const String individualCities =
-      '$baseUrl/party/cities';
+  static const String individualCities = '$baseUrl/party/cities';
+
+  static const String individualPeoplesNearby = '$baseUrl/home/near_by_users';
 }

@@ -10,7 +10,7 @@ import 'centralize_api.dart';
 import 'login/model/user_model.dart';
 
 class APIService extends GetxController {
-  RxBool isLoading = false.obs; // Add an observable isLoading state
+  RxBool isLoading = false.obs; // Add
 
   ///This method is used to send otp
   Future<User> login(String username, String phone, String deviceToken) async {
@@ -162,6 +162,14 @@ class APIService extends GetxController {
   ///Get all data for individual profile
   Future individualProfileData(header) async {
     final response = await _post(API.individualProfileData, null,
+        headers: {'x-access-token': header});
+
+    return response;
+  }
+
+  ///Get All Nearby Peoples
+  Future individualNearbyPeoples(header, body) async {
+    final response = await _post(API.individualPeoplesNearby, body,
         headers: {'x-access-token': header});
 
     return response;

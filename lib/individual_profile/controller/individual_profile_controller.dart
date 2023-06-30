@@ -10,6 +10,7 @@ import '../../widgets/submit_application.dart';
 class IndividualProfileController extends GetxController {
   RxString coverPhotoURL = ''.obs;
   RxString profilePhotoURL = ''.obs;
+  RxString username = ''.obs;
   RxString firstname = ''.obs;
   RxString lastname = ''.obs;
   RxString bio = ''.obs;
@@ -300,6 +301,7 @@ class IndividualProfileController extends GetxController {
           qualification.value = user['qualification'] ?? '';
           country.value = user['country'] ?? '';
           state.value = user['state'] ?? '';
+          username.value = response['user_name'];
           gender.value = user['gender'] ?? '';
           getPrefiledData = user?['org_amenitie_id']?.split(',');
           print("indi amen :=> ${getPrefiledData}");

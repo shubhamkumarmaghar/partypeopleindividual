@@ -5,6 +5,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:like_button/like_button.dart';
 import 'package:partypeopleindividual/chatScreen/views/chat_screen_view.dart';
 import 'package:partypeopleindividual/individualDashboard/controllers/individual_dashboard_controller.dart';
+import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../individualDrawer/views/individual_drawer_view.dart';
@@ -19,9 +20,9 @@ class IndividualDashboardView extends StatefulWidget {
 }
 
 class _IndividualDashboardViewState extends State<IndividualDashboardView> {
-
-  IndividualDashboardController individualDashboardController = Get.put(
-      IndividualDashboardController());
+  IndividualDashboardController individualDashboardController =
+      Get.put(IndividualDashboardController());
+  IndividualProfileController individualProfileController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -32,22 +33,18 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
           automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
           elevation: 0,
-          toolbarHeight: MediaQuery
-              .of(context)
-              .size
-              .height * 0.07,
+          toolbarHeight: MediaQuery.of(context).size.height * 0.07,
           title: Container(
             alignment: Alignment.centerLeft,
             child: GestureDetector(
-              onTap: () =>
-                  Get.to(
-                    IndividualDrawerView(),
-                    duration: const Duration(milliseconds: 500),
-                    transition: Transition.leftToRight,
-                  ),
+              onTap: () => Get.to(
+                IndividualDrawerView(),
+                duration: const Duration(milliseconds: 500),
+                transition: Transition.leftToRight,
+              ),
               child: Padding(
                 padding:
-                EdgeInsets.symmetric(horizontal: 15.sp, vertical: 5.sp),
+                    EdgeInsets.symmetric(horizontal: 15.sp, vertical: 5.sp),
                 child: const Icon(
                   Icons.menu,
                   color: Colors.white,
@@ -56,32 +53,49 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
             ),
           ),
           actions: [
+            Expanded(
+              child: Obx(() {
+                return Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "${individualProfileController.username.value}",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }),
+            ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15.sp, vertical: 5.sp),
               child: Row(
                 children: [
                   GestureDetector(
-                      onTap: () =>
-                          Get.to(
-                            const IndividualNotificationScreen(),
-                            duration: const Duration(milliseconds: 500),
-                            transition: Transition.rightToLeft,
-                          ),
-                      child: const Icon(
-                        Icons.notifications,
-                        color: Colors.white,
-                      )),
+                    onTap: () => Get.to(
+                      const IndividualNotificationScreen(),
+                      duration: const Duration(milliseconds: 500),
+                      transition: Transition.rightToLeft,
+                    ),
+                    child: const Icon(
+                      Icons.notifications,
+                      color: Colors.white,
+                    ),
+                  ),
                   const SizedBox(
                     width: 10,
                   ),
                   GestureDetector(
-                      onTap: () =>
-                          Get.to(
-                            const IndividualNotificationScreen(),
-                            duration: const Duration(milliseconds: 500),
-                            transition: Transition.rightToLeft,
-                          ),
-                      child: const Icon(Icons.favorite)),
+                    onTap: () => Get.to(
+                      const IndividualNotificationScreen(),
+                      duration: const Duration(milliseconds: 500),
+                      transition: Transition.rightToLeft,
+                    ),
+                    child: const Icon(Icons.favorite, color: Colors.white),
+                  ),
                 ],
               ),
             )
@@ -130,262 +144,299 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
             ],
           ),
         ),
-        body: Stack(
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                gradient: RadialGradient(
-                  center: Alignment(1, -0.45),
-                  radius: 0.9,
-                  colors: [
-                    Color(0xffb80b0b),
-                    Color(0xff390202),
-                  ],
-                  stops: [0.0, 1],
-                  transform: GradientXDTransform(
-                    0.0,
-                    -1.0,
-                    1.23,
-                    0.0,
-                    -0.115,
-                    1.0,
-                    Alignment(0.0, 0.0),
+        body: Obx(() {
+          return Stack(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: RadialGradient(
+                    center: Alignment(1, -0.45),
+                    radius: 0.9,
+                    colors: [
+                      Color(0xffb80b0b),
+                      Color(0xff390202),
+                    ],
+                    stops: [0.0, 1],
+                    transform: GradientXDTransform(
+                      0.0,
+                      -1.0,
+                      1.23,
+                      0.0,
+                      -0.115,
+                      1.0,
+                      Alignment(0.0, 0.0),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                  top: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.065),
-              width: double.infinity,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(top: Get.height * 0.02),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Get.width * 0.1,
-                      ),
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.05,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10.sp)),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    icon: const Icon(
-                                      Icons.search,
-                                      color: Colors.white,
-                                    ),
-                                    hintText: 'Search user by username',
-                                    hintStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 11.sp,
-                                        fontFamily: 'Poppins')),
+              Container(
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * 0.065),
+                width: double.infinity,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: Get.height * 0.02),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Get.width * 0.1,
+                        ),
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10.sp)),
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      icon: const Icon(
+                                        Icons.search,
+                                        color: Colors.white,
+                                      ),
+                                      hintText: 'Search user by username',
+                                      hintStyle: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 11.sp,
+                                          fontFamily: 'Poppins')),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.27,
-                      margin: EdgeInsets.only(
-                          top: MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.02,
-                          left: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.05),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: 10,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: ((context, index) =>
-                            GestureDetector(
-                              onTap: () {},
-                              child: const CityCard(),
-                            )),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.05,
-                          bottom: MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.01),
-                      child: Text(
-                        'People Nearby',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Color.fromARGB(255, 135, 19, 19),
-                            Color(0xFF711b1b),
                           ],
                         ),
                       ),
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.27,
-                      padding: EdgeInsets.only(
-                        left: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.05,
+                      Container(
+                        height: MediaQuery.of(context).size.width * 0.27,
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.02,
+                            left: MediaQuery.of(context).size.width * 0.05),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount:
+                              individualDashboardController.allCityList.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: ((context, index) => GestureDetector(
+                                onTap: () {},
+                                child: CityCard(
+                                  cityName: individualDashboardController
+                                      .allCityList[index].name,
+                                  imageURL: individualDashboardController
+                                      .allCityList[index].imageUrl,
+                                ),
+                              )),
+                        ),
                       ),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: 10,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: ((context, index) =>
-                            GestureDetector(
-                              onTap: () {},
-                              child: const NearbyPeopleProfile(),
-                            )),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.05,
+                            bottom: MediaQuery.of(context).size.height * 0.01),
+                        child: Text(
+                          'People Nearby',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500),
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.05,
-                        top: Get.height * 0.005,
+                      Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color.fromARGB(255, 135, 19, 19),
+                              Color(0xFF711b1b),
+                            ],
+                          ),
+                        ),
+                        height: MediaQuery.of(context).size.width * 0.27,
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.05,
+                        ),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: 10,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: ((context, index) => GestureDetector(
+                                onTap: () {},
+                                child: const NearbyPeopleProfile(),
+                              )),
+                        ),
                       ),
-                      child: Text(
-                        'Popular Events in Delhi',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500),
+                      SizedBox(
+                        height: 20,
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: Get.width * 0.05,
-                        left: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.05,
-                        bottom: Get.width * 0.05,
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.05,
+                          top: Get.height * 0.005,
+                        ),
+                        child: Text(
+                          'Popular Events in Delhi',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500),
+                        ),
                       ),
-                      height: Get.width * 0.42,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 5,
-                        itemBuilder: (context, index) {
-                          return PartyCard(
-                              onTap: () {},
-                              assetPath: 'assets/images/default-cover-4.jpg',
-                              eventTime: '20:09',
-                              eventDescription: 'Very GOood Partyy',
-                              participantCount: '21312',
-                              onJoin: () {});
-                        },
+                      Container(
+                        margin: EdgeInsets.only(
+                          top: Get.width * 0.05,
+                          left: MediaQuery.of(context).size.width * 0.05,
+                          bottom: Get.width * 0.05,
+                        ),
+                        height: Get.width * 0.42,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            return PartyCard(
+                                onTap: () {},
+                                assetPath: 'assets/images/default-cover-4.jpg',
+                                eventTime: '20:09',
+                                eventDescription: 'Very GOood Partyy',
+                                participantCount: '21312',
+                                onJoin: () {});
+                          },
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.05,
-                        top: Get.height * 0.005,
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.05,
+                          top: Get.height * 0.003,
+                        ),
+                        child: Text(
+                          'TODAY (${individualDashboardController.lengthOfTodayParties})',
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              color: Colors.white,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500),
+                        ),
                       ),
-                      child: Text(
-                        'TOMORROW',
-                        style: TextStyle(
-                            fontFamily: 'Poppins',
-                            color: Colors.white,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500),
+                      Container(
+                        margin: EdgeInsets.only(
+                          top: Get.width * 0.05,
+                          left: MediaQuery.of(context).size.width * 0.05,
+                          bottom: Get.width * 0.05,
+                        ),
+                        height: Get.width * 0.42,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            return PartyCard(
+                                onTap: () {},
+                                assetPath: 'assets/images/default-cover-4.jpg',
+                                eventTime: '20:09',
+                                eventDescription: 'Very GOood Partyy',
+                                participantCount: '21312',
+                                onJoin: () {});
+                          },
+                        ),
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: Get.width * 0.05,
-                        left: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.05,
-                        bottom: Get.width * 0.05,
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.05,
+                          top: Get.height * 0.003,
+                        ),
+                        child: Text(
+                          'TOMORROW (${individualDashboardController.lengthOfTommParties})',
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              color: Colors.white,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500),
+                        ),
                       ),
-                      height: Get.width * 0.42,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 5,
-                        itemBuilder: (context, index) {
-                          return PartyCard(
-                              onTap: () {},
-                              assetPath: 'assets/images/default-cover-4.jpg',
-                              eventTime: '20:09',
-                              eventDescription: 'Very GOood Partyy',
-                              participantCount: '21312',
-                              onJoin: () {});
-                        },
+                      Container(
+                        margin: EdgeInsets.only(
+                          top: Get.width * 0.05,
+                          left: MediaQuery.of(context).size.width * 0.05,
+                          bottom: Get.width * 0.05,
+                        ),
+                        height: Get.width * 0.42,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            return PartyCard(
+                                onTap: () {},
+                                assetPath: 'assets/images/default-cover-4.jpg',
+                                eventTime: '20:09',
+                                eventDescription: 'Very Good Party',
+                                participantCount: '21312',
+                                onJoin: () {});
+                          },
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.1,
-                    ),
-                  ],
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.05,
+                          top: Get.height * 0.003,
+                        ),
+                        child: Text(
+                          'UPCOMING (${individualDashboardController.lengthOfUpcomingParties})',
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              color: Colors.white,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                          top: Get.width * 0.05,
+                          left: MediaQuery.of(context).size.width * 0.05,
+                          bottom: Get.width * 0.05,
+                        ),
+                        height: Get.width * 0.42,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: individualDashboardController
+                              .lengthOfUpcomingParties.value,
+                          itemBuilder: (context, index) {
+                            return PartyCard(
+                                onTap: () {},
+                                assetPath: 'assets/images/default-cover-4.jpg',
+                                eventTime: '20:09',
+                                eventDescription: 'Very GOood Partyy',
+                                participantCount: '21312',
+                                onJoin: () {});
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.1,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        }),
       ),
     );
   }
 }
 
 class CityCard extends StatelessWidget {
-  const CityCard({
+  String imageURL;
+  String cityName;
+
+  CityCard({
     super.key,
+    required this.imageURL,
+    required this.cityName,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(
-        MediaQuery
-            .of(context)
-            .size
-            .width * 0.015,
+        MediaQuery.of(context).size.width * 0.015,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -401,19 +452,16 @@ class CityCard extends StatelessWidget {
                 color: Colors.white),
             child: CircleAvatar(
               radius: Get.width * 0.067,
-              backgroundImage: const AssetImage(
-                'assets/images/a.jpeg',
+              backgroundImage: NetworkImage(
+                'http://app.partypeople.in/$imageURL',
               ),
             ),
           ),
           SizedBox(
-            height: MediaQuery
-                .of(context)
-                .size
-                .width * 0.02,
+            height: MediaQuery.of(context).size.width * 0.02,
           ),
           Text(
-            'City',
+            '$cityName',
             style: TextStyle(
                 color: Colors.white, fontFamily: 'Poppins', fontSize: 10.sp),
           ),
@@ -437,10 +485,7 @@ class NearbyPeopleProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(
-        MediaQuery
-            .of(context)
-            .size
-            .width * 0.015,
+        MediaQuery.of(context).size.width * 0.015,
       ),
       child: Stack(
         clipBehavior: Clip.none,
@@ -449,10 +494,7 @@ class NearbyPeopleProfile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 0.005,
+                height: MediaQuery.of(context).size.height * 0.005,
               ),
               Container(
                 width: Get.width * 0.151,
@@ -473,26 +515,17 @@ class NearbyPeopleProfile extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 0.01,
+                height: MediaQuery.of(context).size.height * 0.01,
               ),
               Row(
                 children: [
                   Icon(
                     Icons.message,
-                    size: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    size: MediaQuery.of(context).size.height * 0.02,
                     color: Colors.white,
                   ),
                   SizedBox(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.005,
+                    width: MediaQuery.of(context).size.height * 0.005,
                   ),
                   Text(
                     'Name',
@@ -554,19 +587,10 @@ class ChoiceSelectionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width * 0.35,
+      width: MediaQuery.of(context).size.width * 0.35,
       margin: EdgeInsets.symmetric(
-          vertical: MediaQuery
-              .of(context)
-              .size
-              .height * 0.01,
-          horizontal: MediaQuery
-              .of(context)
-              .size
-              .width * 0.02),
+          vertical: MediaQuery.of(context).size.height * 0.01,
+          horizontal: MediaQuery.of(context).size.width * 0.02),
       decoration: BoxDecoration(
         color: buttonState == true ? Colors.white : const Color(0xFFa22d2d),
         borderRadius: BorderRadius.circular(100),
@@ -619,10 +643,7 @@ class PartyCard extends StatelessWidget {
             horizontal: Get.width * 0.03,
             vertical: Get.width * 0.02,
           ),
-          width: MediaQuery
-              .of(context)
-              .size
-              .width * 0.38,
+          width: MediaQuery.of(context).size.width * 0.38,
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(assetPath),
@@ -636,7 +657,7 @@ class PartyCard extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   padding:
-                  EdgeInsets.symmetric(horizontal: 10.sp, vertical: 5.sp),
+                      EdgeInsets.symmetric(horizontal: 10.sp, vertical: 5.sp),
                   height: Get.width * 0.19,
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -649,8 +670,10 @@ class PartyCard extends StatelessWidget {
                       children: [
                         Text(
                           'TODAY - ',
-                          style:
-                          TextStyle(fontFamily: 'Poppins', fontSize: 7.sp),
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 7.sp,
+                              color: Colors.black),
                         ),
                         Text(
                           eventTime,
@@ -684,7 +707,7 @@ class PartyCard extends StatelessWidget {
                         Text(
                           participantCount,
                           style:
-                          TextStyle(fontFamily: 'Poppins', fontSize: 7.sp),
+                              TextStyle(fontFamily: 'Poppins', fontSize: 7.sp),
                         ),
                         SizedBox(
                           width: Get.width * 0.01,
@@ -702,14 +725,8 @@ class PartyCard extends StatelessWidget {
                   },
                   child: Container(
                     margin: EdgeInsets.only(right: Get.width * 0.028),
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.052,
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.135,
+                    height: MediaQuery.of(context).size.width * 0.052,
+                    width: MediaQuery.of(context).size.width * 0.135,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30.sp),
                       color: const Color(0xFFffa914),
