@@ -168,8 +168,8 @@ class APIService extends GetxController {
   }
 
   ///Get All Nearby Peoples
-  Future individualNearbyPeoples(header, body) async {
-    final response = await _post(API.individualPeoplesNearby, body,
+  Future individualNearbyPeoples(header) async {
+    final response = await _post(API.individualPeoplesNearby, null,
         headers: {'x-access-token': header});
 
     return response;

@@ -9,6 +9,8 @@ import 'package:partypeopleindividual/centralize_api.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
 
 import '../models/city.dart';
+import '../models/party_model.dart';
+import '../models/usermodel.dart';
 
 class IndividualDashboardController extends GetxController {
   var buttonState = true;
@@ -17,18 +19,21 @@ class IndividualDashboardController extends GetxController {
       Get.put(IndividualProfileController());
 
   APIService apiService = Get.find();
-  dynamic jsonPartyOgranisationDataToday = {}.obs;
+  RxList<Party> jsonPartyOrganisationDataToday = <Party>[].obs;
+  RxList<Party> jsonPartyOrganisationDataTomm = <Party>[].obs;
+  RxList<Party> jsonPartyOgranisationDataUpcomming = <Party>[].obs;
 
-  dynamic jsonPartyOgranisationDataTomm = {}.obs;
+  RxList<Party> jsonPartyPopularData = <Party>[].obs;
 
-  dynamic jsonPartyPopularData = {}.obs;
+// an observable isLoading state
 
-  dynamic jsonPartyOgranisationDataUpcomming =
-      {}.obs; // an observable isLoading state
+  RxList<Party> wishlistedParties = RxList<Party>([]);
 
   RxInt lengthOfTodayParties = 0.obs;
   RxInt lengthOfTommParties = 0.obs;
   RxInt lengthOfUpcomingParties = 0.obs;
+
+  RxList<UserModel> usersList = RxList<UserModel>();
 
   void switchButtonState() {
     if (buttonState == true) {
@@ -83,18 +88,17 @@ class IndividualDashboardController extends GetxController {
     try {
       apiService.isLoading.value = true;
       var response = await apiService.individualNearbyPeoples(
-          '${GetStorage().read('token')}', {'city_id': 'Ghazni'});
-      print(response);
+        '${GetStorage().read('token')}',
+      );
 
-      if (response['status'] == 1 &&
-          response['message'].contains('Data Found')) {
+      if (response['status'] == 1 && response['message'].contains('Success')) {
         try {
-          print("Got the nearby Data => ${response}");
+          var usersData = response['data'] as List;
+          usersList.addAll(usersData.map((user) => UserModel.fromJson(user)));
           apiService.isLoading.value = false;
           update();
         } catch (e) {
           // Log the error or handle it appropriately
-          print('Failed to parse user data: $e');
 
           apiService.isLoading.value = false;
         }
@@ -114,7 +118,6 @@ class IndividualDashboardController extends GetxController {
       // If the exact error type isn't matched in the preceding catch clauses
       Get.snackbar('Unexpected Error',
           'Something unexpected happened. Try again later!');
-      print('Unexpected error: $e');
     }
   }
 
@@ -128,12 +131,11 @@ class IndividualDashboardController extends GetxController {
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
       dynamic decodedData = jsonDecode(response.body);
-      print(decodedData);
 
       // Initialize lists to store parties
-      List<dynamic> todayParties = [];
-      List<dynamic> tomorrowParties = [];
-      List<dynamic> upcomingParties = [];
+      List<Party> todayParties = [];
+      List<Party> tomorrowParties = [];
+      List<Party> upcomingParties = [];
 
       // Get current date
       DateTime now = DateTime.now();
@@ -149,43 +151,30 @@ class IndividualDashboardController extends GetxController {
           return startDateA.compareTo(startDateB);
         });
         for (var party in allParties) {
-          DateTime startDate = DateTime.parse(party['start_date']);
-          print(party['papular_status']);
+          Party parsedParty = Party.fromJson(party);
+          DateTime startDate = DateTime.parse(parsedParty.startDate);
           if (startDate.isAtSameMomentAs(today)) {
-            todayParties.add(party);
+            todayParties.add(parsedParty);
           } else if (startDate.isAtSameMomentAs(tomorrow)) {
-            tomorrowParties.add(party);
+            tomorrowParties.add(parsedParty);
           } else if (startDate.isAfter(tomorrow)) {
-            upcomingParties.add(party);
+            upcomingParties.add(parsedParty);
           }
         }
       }
 
       // Print the parties in each list
-      print('Today parties:');
-      print(todayParties.length);
 
-      print('Tomorrow parties:');
-      print(tomorrowParties.length);
-
-      print('Upcoming parties:');
-      print(upcomingParties.length);
-
-      jsonPartyOgranisationDataToday = todayParties;
+      ///setting length
       lengthOfTodayParties.value = todayParties.length;
-      jsonPartyOgranisationDataTomm = tomorrowParties;
       lengthOfTommParties.value = tomorrowParties.length;
-      jsonPartyOgranisationDataUpcomming = upcomingParties;
       lengthOfUpcomingParties.value = upcomingParties.length;
 
-      await http.post(
-        Uri.parse(
-            'http://app.partypeople.in/v1/order/update_ragular_papular_status'),
-      );
-
+      ///setting number of party
+      jsonPartyOrganisationDataToday.value = todayParties;
+      jsonPartyOrganisationDataTomm.value = tomorrowParties;
+      jsonPartyOgranisationDataUpcomming.value = upcomingParties;
       update();
-    } catch (e) {
-      print("Exception at getPartyByDate => $e");
-    }
+    } catch (e) {}
   }
 }

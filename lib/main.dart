@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/individualDashboard/bindings/individual_dashboard_binding.dart';
 import 'package:partypeopleindividual/individualDashboard/views/individual_dashboard_view.dart';
-import 'package:partypeopleindividual/splash_screen/view/splash_screen.dart';
 import 'package:sizer/sizer.dart';
 
 void main() async {
@@ -28,7 +27,6 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.red.shade900,
           primaryColor: Colors.red.shade900,
           appBarTheme: AppBarTheme(
-
             backgroundColor: Colors.red.shade900,
             titleTextStyle: const TextStyle(
               fontFamily: 'Poppins',
