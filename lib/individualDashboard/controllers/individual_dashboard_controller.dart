@@ -22,7 +22,6 @@ class IndividualDashboardController extends GetxController {
   RxList<Party> jsonPartyOrganisationDataToday = <Party>[].obs;
   RxList<Party> jsonPartyOrganisationDataTomm = <Party>[].obs;
   RxList<Party> jsonPartyOgranisationDataUpcomming = <Party>[].obs;
-
   RxList<Party> jsonPartyPopularData = <Party>[].obs;
 
 // an observable isLoading state
@@ -32,6 +31,7 @@ class IndividualDashboardController extends GetxController {
   RxInt lengthOfTodayParties = 0.obs;
   RxInt lengthOfTommParties = 0.obs;
   RxInt lengthOfUpcomingParties = 0.obs;
+  RxInt lengthOfPopularParties = 0.obs;
 
   RxList<UserModel> usersList = RxList<UserModel>();
 
@@ -47,13 +47,14 @@ class IndividualDashboardController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+
     getAllCities();
     individualProfileController.individualProfileData();
     getAllNearbyPeoples();
     getPartyByDate();
   }
 
-  var noUserFoundController = null;
+  RxString noUserFoundController = "null".obs;
 
   Future<void> getAllCities() async {
     try {
@@ -105,35 +106,44 @@ class IndividualDashboardController extends GetxController {
         } catch (e) {
           print("test Complete");
 
-          noUserFoundController.text = 'No User';
+          noUserFoundController.value = 'No User';
           apiService.isLoading.value = false;
         }
       } else if (response['message'].contains('Not')) {
         print("test Complete");
         // Store the response message in the controller if user not found
-        noUserFoundController.text = response['message'];
+        noUserFoundController.value = response['message'];
+        update();
+
         Get.snackbar('Error', 'Response or response body is null');
       }
     } on SocketException {
       print("test Complete");
 
-      noUserFoundController.text = 'No User';
+      noUserFoundController.value = 'No User';
+      update();
+
       Get.snackbar('Network Error',
           'Please check your internet connection and try again!');
     } on HttpException {
       print("test Complete");
 
-      noUserFoundController.text = 'No User';
+      noUserFoundController.value = 'No User';
+      update();
+
       Get.snackbar('Error', 'Could not find the service you were looking for!');
     } on FormatException {
       print("test Complete");
 
-      noUserFoundController.text = 'No User';
+      noUserFoundController.value = 'No User';
+      update();
+
       Get.snackbar('Error', 'Bad response format. Please contact support!');
     } catch (e) {
       print("test Complete");
 
-      noUserFoundController = 'No User';
+      noUserFoundController.value = 'No User';
+      update();
       // If the exact error type isn't matched in the preceding catch clauses
       Get.snackbar('Unexpected Error',
           'Something unexpected happened. Try again later!');
@@ -141,20 +151,33 @@ class IndividualDashboardController extends GetxController {
   }
 
   ///GET ALL PARTEIS - DELHI
+  ///GET ALL PARTIES - DELHI
   Future<void> getPartyByDate() async {
     try {
+      // Fetch all parties
       http.Response response = await http.post(
         Uri.parse(
             'http://app.partypeople.in/v1/party/get_all_individual_party'),
         body: {'status': '0', 'city': 'delhi', 'filter_type': '2'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
+
+      // Fetch popular parties
+      http.Response popularResponse = await http.post(
+        Uri.parse(
+            'http://app.partypeople.in/v1/party/get_all_individual_party'),
+        body: {'status': '0', 'city': 'delhi', 'filter_type': '1'},
+        headers: {'x-access-token': '${GetStorage().read('token')}'},
+      );
+
       dynamic decodedData = jsonDecode(response.body);
+      dynamic popularDecodedData = jsonDecode(popularResponse.body);
 
       // Initialize lists to store parties
       List<Party> todayParties = [];
       List<Party> tomorrowParties = [];
       List<Party> upcomingParties = [];
+      List<Party> popularParties = []; // List for popular parties
 
       // Get current date
       DateTime now = DateTime.now();
@@ -165,36 +188,54 @@ class IndividualDashboardController extends GetxController {
       if (decodedData['data'] != null) {
         List<dynamic> allParties = decodedData['data'];
         allParties.sort((a, b) {
-          DateTime startDateA = DateTime.parse(a['start_date']);
-          DateTime startDateB = DateTime.parse(b['start_date']);
+          DateTime startDateA = DateTime.fromMillisecondsSinceEpoch(
+              int.parse(a['start_date']) * 1000);
+          DateTime startDateB = DateTime.fromMillisecondsSinceEpoch(
+              int.parse(b['start_date']) * 1000);
           return startDateA.compareTo(startDateB);
         });
+
         for (var party in allParties) {
           Party parsedParty = Party.fromJson(party);
-          DateTime startDate = DateTime.parse(parsedParty.startDate);
-          if (startDate.isAtSameMomentAs(today)) {
-            print('Today Parties');
-            print(parsedParty);
+          DateTime startDate = DateTime.fromMillisecondsSinceEpoch(
+              int.parse(parsedParty.startDate) * 1000);
+          print(party);
+
+          // Extract the Date part only from startDate
+          DateTime startDateDateOnly =
+              DateTime(startDate.year, startDate.month, startDate.day);
+
+          if (startDateDateOnly.isAtSameMomentAs(today)) {
             todayParties.add(parsedParty);
-          } else if (startDate.isAtSameMomentAs(tomorrow)) {
+          } else if (startDateDateOnly.isAtSameMomentAs(tomorrow)) {
             tomorrowParties.add(parsedParty);
-          } else if (startDate.isAfter(tomorrow)) {
+          } else if (startDateDateOnly.isAfter(tomorrow)) {
             upcomingParties.add(parsedParty);
           }
         }
       }
 
-      // Print the parties in each list
+      // Loop through popular parties and add them to popularParties list
+      if (popularDecodedData['data'] != null) {
+        List<dynamic> allPopularParties = popularDecodedData['data'];
+        for (var party in allPopularParties) {
+          Party parsedParty = Party.fromJson(party);
+          popularParties.add(parsedParty);
+        }
+      }
 
       ///setting length
       lengthOfTodayParties.value = todayParties.length;
       lengthOfTommParties.value = tomorrowParties.length;
       lengthOfUpcomingParties.value = upcomingParties.length;
+      lengthOfPopularParties.value =
+          popularParties.length; // Set popular parties length
 
       ///setting number of party
       jsonPartyOrganisationDataToday.value = todayParties;
       jsonPartyOrganisationDataTomm.value = tomorrowParties;
       jsonPartyOgranisationDataUpcomming.value = upcomingParties;
+      jsonPartyPopularData.value = popularParties; // Set popular parties
       update();
     } catch (e) {}
   }

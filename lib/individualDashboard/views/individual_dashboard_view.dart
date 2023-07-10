@@ -6,6 +6,7 @@ import 'package:like_button/like_button.dart';
 import 'package:partypeopleindividual/chatScreen/views/chat_screen_view.dart';
 import 'package:partypeopleindividual/individualDashboard/controllers/individual_dashboard_controller.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
+import 'package:partypeopleindividual/wishlist_screen/wishlist_screen.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../individualDrawer/views/individual_drawer_view.dart';
@@ -95,8 +96,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
 
                     return GestureDetector(
                       onTap: () {
-                        // Navigate to the wishlisted parties screen
-                        // Here, you can pass wishlistedParties list to the screen to display it
+                        Get.to(WishlistScreen());
                       },
                       child: Icon(Icons.favorite,
                           color: wishlistController.wishlistedParties.isEmpty
@@ -109,17 +109,10 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
             )
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: const Color(0xFFffa914),
-          onPressed: () {},
-          child: const Icon(Icons.add),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         extendBody: true,
         bottomNavigationBar: BottomAppBar(
           height: 70,
           shape: const CircularNotchedRectangle(),
-          notchMargin: 8,
           color: const Color(0xFF5a0404),
           child: GNav(
             padding: EdgeInsets.symmetric(horizontal: 4.sp, vertical: 6.sp),
@@ -249,8 +242,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                               fontWeight: FontWeight.w500),
                         ),
                       ),
-                      individualDashboardController.noUserFoundController ==
-                              null
+                      individualDashboardController
+                                  .noUserFoundController.value ==
+                              'null'
                           ? Container(
                               decoration: const BoxDecoration(
                                 gradient: LinearGradient(
@@ -282,7 +276,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                               ),
                             )
                           : Center(
-                              child: Text("No Peoples Around you"),
+                              child: Text("No Peoples Around You"),
                             ),
                       Padding(
                         padding: EdgeInsets.only(
@@ -335,19 +329,16 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                                 left: MediaQuery.of(context).size.width * 0.05,
                                 bottom: Get.width * 0.05,
                               ),
-                              height: Get.width * 0.57,
+                              height: Get.width * 0.65,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: 5,
+                                itemCount: individualDashboardController
+                                    .lengthOfPopularParties.value,
                                 itemBuilder: (context, index) {
-                                  return PopularPartyCard(
-                                      onTap: () {},
-                                      assetPath:
-                                          'assets/images/default-cover-4.jpg',
-                                      eventTime: '20:09',
-                                      eventDescription: 'Very GOood Partyy',
-                                      participantCount: '21312',
-                                      onJoin: () {});
+                                  return PartyCard(
+                                      party: individualDashboardController
+                                          .jsonPartyPopularData[index],
+                                      partyType: 'popular');
                                 },
                               ),
                             ),
@@ -411,11 +402,10 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                                     .jsonPartyOrganisationDataToday.length,
                                 itemBuilder: (context, index) {
                                   return PartyCard(
-                                      onTap: () {},
-                                      party: individualDashboardController
-                                              .jsonPartyOrganisationDataToday[
-                                          index],
-                                      onJoin: () {});
+                                    party: individualDashboardController
+                                        .jsonPartyOrganisationDataToday[index],
+                                    partyType: 'today',
+                                  );
                                 },
                               ),
                             ),
@@ -479,10 +469,10 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                                     .jsonPartyOrganisationDataTomm.length,
                                 itemBuilder: (context, index) {
                                   return PartyCard(
-                                      onTap: () {},
-                                      party: individualDashboardController
-                                          .jsonPartyOrganisationDataTomm[index],
-                                      onJoin: () {});
+                                    party: individualDashboardController
+                                        .jsonPartyOrganisationDataTomm[index],
+                                    partyType: 'tommorow',
+                                  );
                                 },
                               ),
                             ),
@@ -546,11 +536,11 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                                     .jsonPartyOgranisationDataUpcomming.length,
                                 itemBuilder: (context, index) {
                                   return PartyCard(
-                                      onTap: () {},
-                                      party: individualDashboardController
-                                              .jsonPartyOgranisationDataUpcomming[
-                                          index],
-                                      onJoin: () {});
+                                    party: individualDashboardController
+                                            .jsonPartyOgranisationDataUpcomming[
+                                        index],
+                                    partyType: 'upcoming',
+                                  );
                                 },
                               ),
                             ),
