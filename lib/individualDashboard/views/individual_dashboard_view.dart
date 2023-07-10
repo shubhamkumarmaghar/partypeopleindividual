@@ -249,72 +249,108 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                               fontWeight: FontWeight.w500),
                         ),
                       ),
-                      Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Color.fromARGB(255, 135, 19, 19),
-                              Color(0xFF711b1b),
-                            ],
-                          ),
-                        ),
-                        height: MediaQuery.of(context).size.width * 0.27,
+                      individualDashboardController.noUserFoundController ==
+                              null
+                          ? Container(
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color.fromARGB(255, 135, 19, 19),
+                                    Color(0xFF711b1b),
+                                  ],
+                                ),
+                              ),
+                              height: MediaQuery.of(context).size.width * 0.27,
+                              padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * 0.05,
+                              ),
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: individualDashboardController
+                                    .usersList.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: ((context, index) =>
+                                    GestureDetector(
+                                      onTap: () {},
+                                      child: NearbyPeopleProfile(
+                                        imageURL: individualDashboardController
+                                            .usersList[index].profilePicture,
+                                        name: individualDashboardController
+                                            .usersList[index].username,
+                                      ),
+                                    )),
+                              ),
+                            )
+                          : Center(
+                              child: Text("No Peoples Around you"),
+                            ),
+                      Padding(
                         padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.05,
+                          top: Get.height * 0.005,
                         ),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount:
-                              individualDashboardController.usersList.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: ((context, index) => GestureDetector(
-                                onTap: () {},
-                                child: NearbyPeopleProfile(
-                                  imageURL: individualDashboardController
-                                      .usersList[index].profilePicture,
-                                  name: individualDashboardController
-                                      .usersList[index].username,
+                        child: Text(
+                          'Popular Events in Delhi',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      individualDashboardController.jsonPartyPopularData.isEmpty
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'No Party Available',
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                        // Deep purple color for the text
+                                        fontFamily: 'Poppins', // Custom font
+                                      ),
+                                    ),
+                                    Text(
+                                      'Check back later for updates.',
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                        // Lighter purple color for the text
+                                        fontFamily: 'Raleway', // Custom font
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              )),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      // Padding(
-                      //   padding: EdgeInsets.only(
-                      //     left: MediaQuery.of(context).size.width * 0.05,
-                      //     top: Get.height * 0.005,
-                      //   ),
-                      //   child: Text(
-                      //     'Popular Events in Delhi',
-                      //     style: TextStyle(
-                      //         color: Colors.white,
-                      //         fontSize: 14.sp,
-                      //         fontWeight: FontWeight.w500),
-                      //   ),
-                      // ),
-                      // Container(
-                      //   margin: EdgeInsets.only(
-                      //     top: Get.width * 0.05,
-                      //     left: MediaQuery.of(context).size.width * 0.05,
-                      //     bottom: Get.width * 0.05,
-                      //   ),
-                      //   height: Get.width * 0.57,
-                      //   child: ListView.builder(
-                      //     scrollDirection: Axis.horizontal,
-                      //     itemCount: 5,
-                      //     itemBuilder: (context, index) {
-                      //       return PopularPartyCard(
-                      //           onTap: () {},
-                      //           assetPath: 'assets/images/default-cover-4.jpg',
-                      //           eventTime: '20:09',
-                      //           eventDescription: 'Very GOood Partyy',
-                      //           participantCount: '21312',
-                      //           onJoin: () {});
-                      //     },
-                      //   ),
-                      // ),
+                              ),
+                            )
+                          : Container(
+                              margin: EdgeInsets.only(
+                                top: Get.width * 0.05,
+                                left: MediaQuery.of(context).size.width * 0.05,
+                                bottom: Get.width * 0.05,
+                              ),
+                              height: Get.width * 0.57,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: 5,
+                                itemBuilder: (context, index) {
+                                  return PopularPartyCard(
+                                      onTap: () {},
+                                      assetPath:
+                                          'assets/images/default-cover-4.jpg',
+                                      eventTime: '20:09',
+                                      eventDescription: 'Very GOood Partyy',
+                                      participantCount: '21312',
+                                      onJoin: () {});
+                                },
+                              ),
+                            ),
                       Padding(
                         padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.05,
@@ -329,68 +365,67 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                               fontWeight: FontWeight.w500),
                         ),
                       ),
-                      // Container(
-                      //   margin: EdgeInsets.only(
-                      //     top: Get.width * 0.05,
-                      //     left: MediaQuery.of(context).size.width * 0.05,
-                      //     bottom: Get.width * 0.05,
-                      //   ),
-                      //   height: Get.width * 0.55,
-                      //   child: ListView.builder(
-                      //     scrollDirection: Axis.horizontal,
-                      //     itemCount: individualDashboardController
-                      //         .jsonPartyOrganisationDataToday.length,
-                      //     itemBuilder: (context, index) {
-                      //       return PartyCard(
-                      //           onTap: () {},
-                      //           party: individualDashboardController
-                      //               .jsonPartyOrganisationDataToday[index],
-                      //           onJoin: () {});
-                      //     },
-                      //   ),
-                      // ),
-                      // Padding(
-                      //   padding: EdgeInsets.only(
-                      //     left: MediaQuery.of(context).size.width * 0.05,
-                      //     top: Get.height * 0.003,
-                      //   ),
-                      //   child: Text(
-                      //     'TOMORROW (${individualDashboardController.lengthOfTommParties})',
-                      //     style: TextStyle(
-                      //         fontFamily: 'Poppins',
-                      //         color: Colors.white,
-                      //         fontSize: 12.sp,
-                      //         fontWeight: FontWeight.w500),
-                      //   ),
-                      // ),
-                      // Container(
-                      //   margin: EdgeInsets.only(
-                      //     top: Get.width * 0.05,
-                      //     left: MediaQuery.of(context).size.width * 0.05,
-                      //     bottom: Get.width * 0.05,
-                      //   ),
-                      //   height: Get.width * 0.42,
-                      //   child: ListView.builder(
-                      //     scrollDirection: Axis.horizontal,
-                      //     itemCount: 5,
-                      //     itemBuilder: (context, index) {
-                      //       return PartyCard(
-                      //           onTap: () {},
-                      //           assetPath: 'assets/images/default-cover-4.jpg',
-                      //           eventTime: '20:09',
-                      //           eventDescription: 'Very Good Party',
-                      //           participantCount: '21312',
-                      //           onJoin: () {});
-                      //     },
-                      //   ),
-                      // ),
+                      individualDashboardController
+                              .jsonPartyOrganisationDataToday.isEmpty
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'No Party Available',
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                        // Deep purple color for the text
+                                        fontFamily: 'Poppins', // Custom font
+                                      ),
+                                    ),
+                                    Text(
+                                      'Check back later for updates.',
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                        // Lighter purple color for the text
+                                        fontFamily: 'Raleway', // Custom font
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Container(
+                              margin: EdgeInsets.only(
+                                top: Get.width * 0.05,
+                                left: MediaQuery.of(context).size.width * 0.05,
+                                bottom: Get.width * 0.05,
+                              ),
+                              height: Get.width * 0.65,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: individualDashboardController
+                                    .jsonPartyOrganisationDataToday.length,
+                                itemBuilder: (context, index) {
+                                  return PartyCard(
+                                      onTap: () {},
+                                      party: individualDashboardController
+                                              .jsonPartyOrganisationDataToday[
+                                          index],
+                                      onJoin: () {});
+                                },
+                              ),
+                            ),
                       Padding(
                         padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.05,
                           top: Get.height * 0.003,
                         ),
                         child: Text(
-                          'UPCOMING (${individualDashboardController.lengthOfUpcomingParties})',
+                          'TOMORROW (${individualDashboardController.jsonPartyOrganisationDataTomm.length})',
                           style: TextStyle(
                               fontFamily: 'Poppins',
                               color: Colors.white,
@@ -398,26 +433,127 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                               fontWeight: FontWeight.w500),
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: Get.width * 0.05,
+                      individualDashboardController
+                              .jsonPartyOrganisationDataTomm.isEmpty
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'No Party Available',
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                        // Deep purple color for the text
+                                        fontFamily: 'Poppins', // Custom font
+                                      ),
+                                    ),
+                                    Text(
+                                      'Check back later for updates.',
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                        // Lighter purple color for the text
+                                        fontFamily: 'Raleway', // Custom font
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Container(
+                              margin: EdgeInsets.only(
+                                top: Get.width * 0.05,
+                                left: MediaQuery.of(context).size.width * 0.05,
+                                bottom: Get.width * 0.05,
+                              ),
+                              height: Get.width * 0.42,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: individualDashboardController
+                                    .jsonPartyOrganisationDataTomm.length,
+                                itemBuilder: (context, index) {
+                                  return PartyCard(
+                                      onTap: () {},
+                                      party: individualDashboardController
+                                          .jsonPartyOrganisationDataTomm[index],
+                                      onJoin: () {});
+                                },
+                              ),
+                            ),
+                      Padding(
+                        padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.05,
-                          bottom: Get.width * 0.05,
+                          top: Get.height * 0.003,
                         ),
-                        height: Get.width * 0.57,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: individualDashboardController
-                              .jsonPartyOgranisationDataUpcomming.length,
-                          itemBuilder: (context, index) {
-                            return PartyCard(
-                                onTap: () {},
-                                party: individualDashboardController
-                                    .jsonPartyOgranisationDataUpcomming[index],
-                                onJoin: () {});
-                          },
+                        child: Text(
+                          'UPCOMING (${individualDashboardController.jsonPartyOgranisationDataUpcomming.length})',
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              color: Colors.white,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500),
                         ),
                       ),
+                      individualDashboardController
+                              .jsonPartyOgranisationDataUpcomming.isEmpty
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'No Party Available',
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                        // Deep purple color for the text
+                                        fontFamily: 'Poppins', // Custom font
+                                      ),
+                                    ),
+                                    Text(
+                                      'Check back later for updates.',
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                        // Lighter purple color for the text
+                                        fontFamily: 'Raleway', // Custom font
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Container(
+                              margin: EdgeInsets.only(
+                                top: Get.width * 0.05,
+                                left: MediaQuery.of(context).size.width * 0.05,
+                                bottom: Get.width * 0.05,
+                              ),
+                              height: Get.width * 0.65,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: individualDashboardController
+                                    .jsonPartyOgranisationDataUpcomming.length,
+                                itemBuilder: (context, index) {
+                                  return PartyCard(
+                                      onTap: () {},
+                                      party: individualDashboardController
+                                              .jsonPartyOgranisationDataUpcomming[
+                                          index],
+                                      onJoin: () {});
+                                },
+                              ),
+                            ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.1,
                       ),

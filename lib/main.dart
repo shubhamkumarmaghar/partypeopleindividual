@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
             // Add more text styles as needed
           ),
         ),
-        home: const IndividualDashboardView(),
+        home: IndividualDashboardView(),
       );
     });
   }

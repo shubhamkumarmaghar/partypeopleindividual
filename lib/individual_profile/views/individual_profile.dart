@@ -44,10 +44,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
       http.Response response = await http.get(
         Uri.parse(
             'http://app.partypeople.in/v1/party/individual_organization_amenities'),
-        headers: {
-          'x-access-token':
-              'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJpYXQiOjE2ODYzMjYwMTN9.ko5Bu0xMq29A9UQR4G9ZQiqE0OYqF7Kd5sIEzbWVu5A'
-        },
+        headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
       if (response.statusCode == 200) {

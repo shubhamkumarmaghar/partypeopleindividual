@@ -42,7 +42,7 @@ dependencies:
   sizer: ^2.0.15
 
   google_nav_bar: ^5.0.6
-
+  liquid_swipe: any
   image_cropper: ^1.4.1
   image_picker: ^0.8.8
   get_storage: ^2.1.1
@@ -54,6 +54,7 @@ dependencies:
   firebase_core: ^2.13.1
   flutter_neumorphic: ^3.2.0
   cached_network_image: any
+  lottie: ^1.2.1
 
 dev_dependencies:
   flutter_test:

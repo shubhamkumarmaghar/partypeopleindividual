@@ -53,6 +53,8 @@ class IndividualDashboardController extends GetxController {
     getPartyByDate();
   }
 
+  var noUserFoundController = null;
+
   Future<void> getAllCities() async {
     try {
       final response = await http.get(
@@ -90,31 +92,48 @@ class IndividualDashboardController extends GetxController {
       var response = await apiService.individualNearbyPeoples(
         '${GetStorage().read('token')}',
       );
-
+      print("Nearby People");
+      print(response.body);
       if (response['status'] == 1 && response['message'].contains('Success')) {
         try {
+          print("Nearby People");
+          print(response.body);
           var usersData = response['data'] as List;
           usersList.addAll(usersData.map((user) => UserModel.fromJson(user)));
           apiService.isLoading.value = false;
           update();
         } catch (e) {
-          // Log the error or handle it appropriately
+          print("test Complete");
 
+          noUserFoundController.text = 'No User';
           apiService.isLoading.value = false;
         }
-
-        update();
-      } else {
+      } else if (response['message'].contains('Not')) {
+        print("test Complete");
+        // Store the response message in the controller if user not found
+        noUserFoundController.text = response['message'];
         Get.snackbar('Error', 'Response or response body is null');
       }
     } on SocketException {
+      print("test Complete");
+
+      noUserFoundController.text = 'No User';
       Get.snackbar('Network Error',
           'Please check your internet connection and try again!');
     } on HttpException {
+      print("test Complete");
+
+      noUserFoundController.text = 'No User';
       Get.snackbar('Error', 'Could not find the service you were looking for!');
     } on FormatException {
+      print("test Complete");
+
+      noUserFoundController.text = 'No User';
       Get.snackbar('Error', 'Bad response format. Please contact support!');
     } catch (e) {
+      print("test Complete");
+
+      noUserFoundController = 'No User';
       // If the exact error type isn't matched in the preceding catch clauses
       Get.snackbar('Unexpected Error',
           'Something unexpected happened. Try again later!');
@@ -154,6 +173,8 @@ class IndividualDashboardController extends GetxController {
           Party parsedParty = Party.fromJson(party);
           DateTime startDate = DateTime.parse(parsedParty.startDate);
           if (startDate.isAtSameMomentAs(today)) {
+            print('Today Parties');
+            print(parsedParty);
             todayParties.add(parsedParty);
           } else if (startDate.isAtSameMomentAs(tomorrow)) {
             tomorrowParties.add(parsedParty);
