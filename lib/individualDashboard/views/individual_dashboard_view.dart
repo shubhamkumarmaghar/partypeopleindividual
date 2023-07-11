@@ -6,11 +6,11 @@ import 'package:like_button/like_button.dart';
 import 'package:partypeopleindividual/chatScreen/views/chat_screen_view.dart';
 import 'package:partypeopleindividual/individualDashboard/controllers/individual_dashboard_controller.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
+import 'package:partypeopleindividual/notification/notification_screen.dart';
 import 'package:partypeopleindividual/wishlist_screen/wishlist_screen.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../individualDrawer/views/individual_drawer_view.dart';
-import '../../individualNotificationScreen.dart';
 import '../../widgets/party_card.dart';
 
 class IndividualDashboardView extends StatefulWidget {
@@ -78,7 +78,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                 children: [
                   GestureDetector(
                     onTap: () => Get.to(
-                      const IndividualNotificationScreen(),
+                      const NotificationScreen(),
                       duration: const Duration(milliseconds: 500),
                       transition: Transition.rightToLeft,
                     ),
