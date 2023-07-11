@@ -57,6 +57,7 @@ dependencies:
   flutter_neumorphic: ^3.2.0
   cached_network_image: any
   lottie: ^1.2.1
+  flutter_slidable: ^3.0.0
 
 dev_dependencies:
   flutter_test:

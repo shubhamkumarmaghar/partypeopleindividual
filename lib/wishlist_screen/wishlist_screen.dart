@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:adobe_xd/gradient_xd_transform.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:sizer/sizer.dart';
@@ -51,6 +51,44 @@ class _WishlistScreenState extends State<WishlistScreen> {
     super.initState();
   }
 
+  Future<void> deleteWishListParty(partyID) async {
+    // API endpoint URL
+    String url = 'http://app.partypeople.in/v1/party/delete_to_wish_list_party';
+
+    // Request headers
+    Map<String, String> headers = {
+      'x-access-token': '${GetStorage().read('token')}',
+    };
+
+    // Request body
+    Map<String, dynamic> body = {
+      'party_id': partyID,
+    };
+
+    try {
+      // Send POST request
+      http.Response response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
+      print(response.body);
+      // Check response status code
+      if (response.statusCode == 200) {
+        // Request successful
+        print('Party successfully removed from wish list');
+      } else {
+        // Request failed
+        print(
+            'Failed to remove party from wish list. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Error occurred
+      print('Error occurred while deleting wish list party: $e');
+    }
+    getWishlistParty();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,29 +131,75 @@ class _WishlistScreenState extends State<WishlistScreen> {
                   ListView.builder(
                     itemCount: allParties.length,
                     itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          // Get.to(PartyPreview(
-                          // data: allParties[index],
-                          // isPopularParty: false,
-                          // isHistory: true,
-                          // ));
-                        },
-                        child: CustomListTile(
-                          endTime: '${allParties[index]['end_time']}',
-                          startTime: '${allParties[index]['start_time']}',
-                          endDate: '${allParties[index]['end_date']}',
-                          startDate: '${allParties[index]['start_date']}',
-                          title: '${allParties[index]['title']}',
-                          subtitle: '${allParties[index]['description']}',
-                          trailingText: "Trailing Text",
-                          leadingImage: '${allParties[index]['cover_photo']}',
-                          leadingIcon: const Icon(Icons.history),
-                          trailingIcon: const Icon(Icons.add),
-                          city: '${allParties[index]['city_id']}',
+                      return Slidable(
+                        key: const ValueKey(0),
+
+                        // The end action pane is the one at the right or the bottom side.
+                        endActionPane: ActionPane(
+                          motion: ScrollMotion(),
+                          children: [
+                            Center(
+                              child: Container(
+                                height: 66,
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                child: Center(
+                                  child: SlidableAction(
+                                    onPressed: (value) {
+                                      print(
+                                          "Deleted party : ${allParties[index]['party_id']}");
+                                      deleteWishListParty(
+                                          allParties[index]['party_id']);
+                                    },
+                                    backgroundColor: Color(0xFFFE4A49),
+                                    foregroundColor: Colors.white,
+                                    icon: Icons.delete,
+                                    label: 'Delete',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            // Get.to(PartyPreview(
+                            // data: allParties[index],
+                            // isPopularParty: false,
+                            // isHistory: true,
+                            // ));
+                          },
+                          child: CustomListTile(
+                            endTime: '${allParties[index]['end_time']}',
+                            startTime: '${allParties[index]['start_time']}',
+                            endDate: '${allParties[index]['end_date']}',
+                            startDate: '${allParties[index]['start_date']}',
+                            title: allParties[index]['title'] == null
+                                ? 'Title'
+                                : '${allParties[index]['title']}',
+                            subtitle: '${allParties[index]['description']}',
+                            trailingText: "Trailing Text",
+                            leadingImage: '${allParties[index]['cover_photo']}',
+                            leadingIcon: const Icon(Icons.history),
+                            trailingIcon: const Icon(Icons.add),
+                            city: '${allParties[index]['city_id']}',
+                          ),
                         ),
                       );
                     },
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(bottom: 50),
+                    alignment: Alignment.bottomCenter,
+                    child: Text(
+                      "Total Wishlist Parties ( ${allParties.length} )",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 10.sp,
+                        color: Colors.white,
+                        letterSpacing: 1.2,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
                   ),
                 ],
               ));
@@ -123,7 +207,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
 }
 
 class CustomListTile extends StatelessWidget {
-  final String title;
+  late final String title;
   final String subtitle;
   final String leadingImage;
   final String trailingText;
@@ -152,6 +236,14 @@ class CustomListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ImageProvider imageProvider;
+
+    if (leadingImage == '') {
+      imageProvider = AssetImage('assets/images/default-cover-4.jpg');
+    } else {
+      imageProvider = NetworkImage(leadingImage);
+    }
+
     return Padding(
       padding: EdgeInsets.only(
           left: MediaQuery.of(context).size.width * 0.08,
@@ -229,7 +321,7 @@ class CustomListTile extends StatelessWidget {
                   bottomRight: Radius.circular(10),
                 ),
                 child: Image(
-                  image: CachedNetworkImageProvider(leadingImage),
+                  image: imageProvider,
                   fit: BoxFit.fill,
                 ),
               ),
