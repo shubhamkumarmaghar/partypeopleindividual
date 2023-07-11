@@ -153,7 +153,9 @@ class _PartyCardState extends State<PartyCard>
                       child: Container(
                         width: double.maxFinite,
                         padding: EdgeInsets.symmetric(
-                            horizontal: 10.sp, vertical: 5.sp),
+                          horizontal: 10.sp,
+                          vertical: 5.sp,
+                        ),
                         height: Get.width * 0.35,
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.8),
@@ -177,13 +179,17 @@ class _PartyCardState extends State<PartyCard>
                               children: [
                                 Icon(Icons.visibility,
                                     size: 16, color: Colors.red),
-                                Text("200 Views",
-                                    style: TextStyle(color: Colors.black)),
+                                Text(
+                                  "200 Views",
+                                  style: TextStyle(color: Colors.black),
+                                ),
                                 SizedBox(width: 10),
                                 Icon(Icons.thumb_up,
                                     size: 16, color: Colors.red),
-                                Text("4k Likes",
-                                    style: TextStyle(color: Colors.black)),
+                                Text(
+                                  "4k Likes",
+                                  style: TextStyle(color: Colors.black),
+                                ),
                                 SizedBox(width: 10),
                                 Icon(Icons.people, color: Colors.red),
                                 SizedBox(width: 5.sp),
@@ -207,20 +213,6 @@ class _PartyCardState extends State<PartyCard>
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Text(
-                                        DateFormat('EEEE, MMMM d, yyyy, h:mm a')
-                                            .format(
-                                          DateTime.fromMillisecondsSinceEpoch(
-                                              int.parse(
-                                                      widget.party.startDate!) *
-                                                  1000),
-                                        ),
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 9.sp,
-                                          color: Colors.grey[700],
-                                        ),
-                                      ),
                                       SizedBox(height: 8.sp),
                                     ],
                                   )
@@ -233,29 +225,49 @@ class _PartyCardState extends State<PartyCard>
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                            Column(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Rating (4/5)",
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 10.sp,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SmoothStarRating(
+                                      allowHalfRating: false,
+                                      starCount: 5,
+                                      rating: 4.00,
+                                      size: 18.0,
+                                      color: Colors.orange,
+                                      borderColor: Colors.orange,
+                                      filledIconData: Icons.star,
+                                      halfFilledIconData: Icons.star_half,
+                                      defaultIconData: Icons.star_border,
+                                      spacing: .5,
+                                    ),
+                                  ],
+                                ),
                                 Text(
-                                  "Rating (4/5)",
+                                  DateFormat('EEEE, MMMM d, yyyy, h:mm a')
+                                      .format(
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                      int.parse(widget.party.startDate!) * 1000,
+                                    ),
+                                  ),
                                   style: TextStyle(
                                     fontFamily: 'Poppins',
                                     fontSize: 10.sp,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                ),
-                                SmoothStarRating(
-                                  allowHalfRating: false,
-                                  starCount: 5,
-                                  rating: 4.00,
-                                  size: 18.0,
-                                  color: Colors.orange,
-                                  borderColor: Colors.orange,
-                                  filledIconData: Icons.star,
-                                  halfFilledIconData: Icons.star_half,
-                                  defaultIconData: Icons.star_border,
-                                  spacing: .5,
                                 ),
                               ],
                             ),
