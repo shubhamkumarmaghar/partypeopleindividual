@@ -510,6 +510,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
 
   Future<String?> _uploadFile(File file, String filename) async {
     try {
+      print('individual/token/${GetStorage().read('token')}/$filename');
       UploadTask task = FirebaseStorage.instance
           .ref('individual/token/${GetStorage().read('token')}/$filename')
           .putFile(file);

@@ -462,7 +462,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                                 left: MediaQuery.of(context).size.width * 0.05,
                                 bottom: Get.width * 0.05,
                               ),
-                              height: Get.width * 0.42,
+                              height: Get.width * 0.65,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: individualDashboardController
