@@ -188,13 +188,27 @@ class _WishlistScreenState extends State<WishlistScreen> {
                     },
                   ),
                   Container(
+                    padding: EdgeInsets.only(bottom: 85),
+                    alignment: Alignment.bottomCenter,
+                    child: Text(
+                      "Swipe left to remove the party from the wishlist.",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 9.sp,
+                        color: Colors.white,
+                        letterSpacing: 1.2,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                  Container(
                     padding: EdgeInsets.only(bottom: 50),
                     alignment: Alignment.bottomCenter,
                     child: Text(
                       "Total Wishlist Parties ( ${allParties.length} )",
                       style: TextStyle(
                         fontFamily: 'Poppins',
-                        fontSize: 10.sp,
+                        fontSize: 12.sp,
                         color: Colors.white,
                         letterSpacing: 1.2,
                         fontWeight: FontWeight.normal,
