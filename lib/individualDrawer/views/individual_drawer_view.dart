@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/edit_individual_profile/edit_individual_profile.dart';
+import 'package:partypeopleindividual/login/views/login_screen.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -57,6 +59,21 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     onTap: () => Get.to(EditIndividualProfile()),
                   ),
                   CustomOptionWidget(
+                    title: 'Likes and Views',
+                    icon: Icons.view_agenda,
+                    onTap: () {},
+                  ),
+                  CustomOptionWidget(
+                    title: 'Blocked/Reported',
+                    icon: Icons.block,
+                    onTap: () {},
+                  ),
+                  CustomOptionWidget(
+                    title: 'Settings',
+                    icon: Icons.settings,
+                    onTap: () {},
+                  ),
+                  CustomOptionWidget(
                     title: 'Frequently Asked Questions',
                     icon: Icons.question_answer,
                     onTap: () {
@@ -71,57 +88,11 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     },
                   ),
                   CustomOptionWidget(
-                    title: 'Settings',
-                    icon: Icons.settings,
-                    onTap: () {},
-                  ),
-                  CustomOptionWidget(
-                    title: 'Party History',
-                    icon: Icons.history,
-                    onTap: () {},
-                  ),
-                  CustomOptionWidget(
-                    title: 'Blocked/Reported',
-                    icon: Icons.block,
-                    onTap: () {},
-                  ),
-                  CustomOptionWidget(
-                    title: 'Likes and Views',
-                    icon: Icons.view_agenda,
-                    onTap: () {},
-                  ),
-                  CustomOptionWidget(
-                    title: 'Reminder',
-                    icon: Icons.alarm,
-                    onTap: () {},
-                  ),
-                  CustomOptionWidget(
-                    title: 'Party Planner Toolkit',
-                    icon: Icons.stay_primary_portrait,
-                    onTap: () {},
-                  ),
-                  CustomOptionWidget(
-                    title: 'Notifications',
-                    icon: Icons.notifications,
-                    onTap: () {},
-                  ),
-                  CustomOptionWidget(
-                    title: 'Feedback and ratings',
-                    icon: Icons.feedback,
+                    title: 'Logout',
+                    icon: Icons.exit_to_app,
                     onTap: () {
-                      _launchURL('https://partypeople.in/');
-                    },
-                  ),
-                  CustomOptionWidget(
-                    title: 'Previous guests List',
-                    icon: Icons.list,
-                    onTap: () {},
-                  ),
-                  CustomOptionWidget(
-                    title: 'Contact information',
-                    icon: Icons.contact_page,
-                    onTap: () {
-                      _launchURL('https://partypeople.in/');
+                      GetStorage().remove('token');
+                      Get.offAll(LoginScreen());
                     },
                   ),
                 ]),
