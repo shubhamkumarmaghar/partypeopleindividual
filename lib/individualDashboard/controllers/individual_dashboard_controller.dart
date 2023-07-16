@@ -47,10 +47,10 @@ class IndividualDashboardController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-
+    getAllNearbyPeoples();
     getAllCities();
     individualProfileController.individualProfileData();
-    getAllNearbyPeoples();
+
     getPartyByDate();
   }
 
@@ -88,6 +88,7 @@ class IndividualDashboardController extends GetxController {
   }
 
   Future<void> getAllNearbyPeoples() async {
+    print('nearby user');
     try {
       apiService.isLoading.value = true;
       var response = await apiService.individualNearbyPeoples(
@@ -172,6 +173,7 @@ class IndividualDashboardController extends GetxController {
 
       dynamic decodedData = jsonDecode(response.body);
       dynamic popularDecodedData = jsonDecode(popularResponse.body);
+      print(decodedData);
 
       // Initialize lists to store parties
       List<Party> todayParties = [];
@@ -182,7 +184,7 @@ class IndividualDashboardController extends GetxController {
       // Get current date
       DateTime now = DateTime.now();
       DateTime today = DateTime(now.year, now.month, now.day);
-      DateTime tomorrow = today.add(Duration(days: 1));
+      DateTime tomorrow = today.add(const Duration(days: 1));
 
       // Loop through parties and sort them into appropriate lists
       if (decodedData['data'] != null) {
@@ -196,21 +198,25 @@ class IndividualDashboardController extends GetxController {
         });
 
         for (var party in allParties) {
-          Party parsedParty = Party.fromJson(party);
-          DateTime startDate = DateTime.fromMillisecondsSinceEpoch(
-              int.parse(parsedParty.startDate) * 1000);
-          print(party);
+          try {
+            Party parsedParty = Party.fromJson(party);
+            DateTime startDate = DateTime.fromMillisecondsSinceEpoch(
+                int.parse(parsedParty.startDate) * 1000);
+            print(party);
 
-          // Extract the Date part only from startDate
-          DateTime startDateDateOnly =
-              DateTime(startDate.year, startDate.month, startDate.day);
+            // Extract the Date part only from startDate
+            DateTime startDateDateOnly =
+                DateTime(startDate.year, startDate.month, startDate.day);
 
-          if (startDateDateOnly.isAtSameMomentAs(today)) {
-            todayParties.add(parsedParty);
-          } else if (startDateDateOnly.isAtSameMomentAs(tomorrow)) {
-            tomorrowParties.add(parsedParty);
-          } else if (startDateDateOnly.isAfter(tomorrow)) {
-            upcomingParties.add(parsedParty);
+            if (startDateDateOnly.isAtSameMomentAs(today)) {
+              todayParties.add(parsedParty);
+            } else if (startDateDateOnly.isAtSameMomentAs(tomorrow)) {
+              tomorrowParties.add(parsedParty);
+            } else if (startDateDateOnly.isAfter(tomorrow)) {
+              upcomingParties.add(parsedParty);
+            }
+          } catch (e) {
+            print('Error parsing party: $e');
           }
         }
       }
@@ -219,8 +225,12 @@ class IndividualDashboardController extends GetxController {
       if (popularDecodedData['data'] != null) {
         List<dynamic> allPopularParties = popularDecodedData['data'];
         for (var party in allPopularParties) {
-          Party parsedParty = Party.fromJson(party);
-          popularParties.add(parsedParty);
+          try {
+            Party parsedParty = Party.fromJson(party);
+            popularParties.add(parsedParty);
+          } catch (e) {
+            print('Error parsing popular party: $e');
+          }
         }
       }
 
@@ -236,7 +246,10 @@ class IndividualDashboardController extends GetxController {
       jsonPartyOrganisationDataTomm.value = tomorrowParties;
       jsonPartyOgranisationDataUpcomming.value = upcomingParties;
       jsonPartyPopularData.value = popularParties; // Set popular parties
+
       update();
-    } catch (e) {}
+    } catch (e) {
+      print('Error fetching parties: $e');
+    }
   }
 }
