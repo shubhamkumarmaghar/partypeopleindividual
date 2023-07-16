@@ -10,6 +10,7 @@ import 'package:partypeopleindividual/wishlist_screen/wishlist_screen.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../individualDrawer/views/individual_drawer_view.dart';
+import '../../individual_profile_screen/individual_profile_screen.dart';
 import '../../widgets/party_card.dart';
 
 class IndividualDashboardView extends StatefulWidget {
@@ -22,29 +23,43 @@ class IndividualDashboardView extends StatefulWidget {
 
 class _IndividualDashboardViewState extends State<IndividualDashboardView> {
   IndividualDashboardController individualDashboardController =
-      Get.put(IndividualDashboardController());
+  Get.put(IndividualDashboardController());
   IndividualProfileController individualProfileController = Get.find();
+  int _selectedIndex = 1; // Initial
+
+  @override
+  void initState() {
+    _selectedIndex = 1;
+    super.initState();
+  } // selected index
 
   @override
   Widget build(BuildContext context) {
+    _selectedIndex = 1;
+
     return SafeArea(
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
+
           automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
           elevation: 0,
-          toolbarHeight: MediaQuery.of(context).size.height * 0.07,
+          toolbarHeight: MediaQuery
+              .of(context)
+              .size
+              .height * 0.07,
           actions: [
             Container(
               padding: const EdgeInsets.only(left: 14),
               alignment: Alignment.centerLeft,
               child: GestureDetector(
-                onTap: () => Get.to(
-                  IndividualDrawerView(),
-                  duration: const Duration(milliseconds: 500),
-                  transition: Transition.leftToRight,
-                ),
+                onTap: () =>
+                    Get.to(
+                      IndividualDrawerView(),
+                      duration: const Duration(milliseconds: 500),
+                      transition: Transition.leftToRight,
+                    ),
                 child: const Icon(
                   Icons.menu,
                   color: Colors.white,
@@ -73,11 +88,12 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
               child: Row(
                 children: [
                   GestureDetector(
-                    onTap: () => Get.to(
-                      const NotificationScreen(),
-                      duration: const Duration(milliseconds: 500),
-                      transition: Transition.rightToLeft,
-                    ),
+                    onTap: () =>
+                        Get.to(
+                          const NotificationScreen(),
+                          duration: const Duration(milliseconds: 500),
+                          transition: Transition.rightToLeft,
+                        ),
                     child: const Icon(
                       Icons.notifications,
                       color: Colors.white,
@@ -88,7 +104,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                   ),
                   Obx(() {
                     IndividualDashboardController wishlistController =
-                        Get.find();
+                    Get.find();
 
                     return GestureDetector(
                       onTap: () {
@@ -111,26 +127,37 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
           shape: const CircularNotchedRectangle(),
           color: const Color(0xFF5a0404),
           child: GNav(
+            selectedIndex: _selectedIndex,
+            // Pass the selected index variable
+            onTabChange: (index) {
+              // Handle tab change event
+              setState(() {
+                _selectedIndex = index;
+                if (_selectedIndex == 2) {
+                  Get.to(IndividualProfileScreen());
+                }
+              });
+            },
             padding: EdgeInsets.symmetric(horizontal: 4.sp, vertical: 6.sp),
             gap: 10,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             color: Colors.white,
             activeColor: Colors.white,
             tabBackgroundColor: const Color(0xFF802a2a),
-            tabs: [
-              const GButton(
+            tabs: const [
+              GButton(
                 icon: Icons.search,
                 text: 'Search',
                 textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 iconSize: 24,
               ),
-              const GButton(
+              GButton(
                 icon: Icons.home,
                 text: 'Home',
                 textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 iconSize: 24,
               ),
-              const GButton(
+              GButton(
                 icon: Icons.person,
                 text: 'Profile',
                 textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -166,7 +193,10 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
               ),
               Container(
                 margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.065),
+                    top: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.065),
                 width: double.infinity,
                 child: SingleChildScrollView(
                   child: Column(
@@ -177,7 +207,10 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                         padding: EdgeInsets.symmetric(
                           horizontal: Get.width * 0.1,
                         ),
-                        height: MediaQuery.of(context).size.height * 0.05,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.05,
                         child: Row(
                           children: [
                             Expanded(
@@ -204,16 +237,26 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                         ),
                       ),
                       Container(
-                        height: MediaQuery.of(context).size.width * 0.27,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.27,
                         margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.02,
-                            left: MediaQuery.of(context).size.width * 0.05),
+                            top: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.02,
+                            left: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.05),
                         child: ListView.builder(
                           shrinkWrap: true,
                           itemCount:
-                              individualDashboardController.allCityList.length,
+                          individualDashboardController.allCityList.length,
                           scrollDirection: Axis.horizontal,
-                          itemBuilder: ((context, index) => GestureDetector(
+                          itemBuilder: ((context, index) =>
+                              GestureDetector(
                                 onTap: () {},
                                 child: CityCard(
                                   cityName: individualDashboardController
@@ -226,10 +269,17 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                       ),
                       Padding(
                         padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.05,
-                            bottom: MediaQuery.of(context).size.height * 0.01),
+                            left: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.05,
+                            bottom: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.01),
                         child: Text(
-                          'People Nearby (${individualDashboardController.usersList.length})',
+                          'People Nearby (${individualDashboardController
+                              .usersList.length})',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 14.sp,
@@ -237,44 +287,53 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                         ),
                       ),
                       individualDashboardController
-                                  .noUserFoundController.value ==
-                              'null'
+                          .noUserFoundController.value ==
+                          'null'
                           ? Container(
-                              decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color.fromARGB(255, 135, 19, 19),
-                                    Color(0xFF711b1b),
-                                  ],
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color.fromARGB(255, 135, 19, 19),
+                              Color(0xFF711b1b),
+                            ],
+                          ),
+                        ),
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.27,
+                        padding: EdgeInsets.only(
+                          left: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.05,
+                        ),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: individualDashboardController
+                              .usersList.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: ((context, index) =>
+                              GestureDetector(
+                                onTap: () {},
+                                child: NearbyPeopleProfile(
+                                  imageURL: individualDashboardController
+                                      .usersList[index].profilePicture,
+                                  name: individualDashboardController
+                                      .usersList[index].username,
                                 ),
-                              ),
-                              height: MediaQuery.of(context).size.width * 0.27,
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.05,
-                              ),
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: individualDashboardController
-                                    .usersList.length,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: ((context, index) =>
-                                    GestureDetector(
-                                      onTap: () {},
-                                      child: NearbyPeopleProfile(
-                                        imageURL: individualDashboardController
-                                            .usersList[index].profilePicture,
-                                        name: individualDashboardController
-                                            .usersList[index].username,
-                                      ),
-                                    )),
-                              ),
-                            )
+                              )),
+                        ),
+                      )
                           : const Center(
-                              child: Text("No Peoples Around You"),
-                            ),
+                        child: Text("No Peoples Around You"),
+                      ),
                       Padding(
                         padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.05,
+                          left: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.05,
                           top: Get.height * 0.005,
                         ),
                         child: Text(
@@ -287,62 +346,69 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                       ),
                       individualDashboardController.jsonPartyPopularData.isEmpty
                           ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      'No Party Available',
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                        // Deep purple color for the text
-                                        fontFamily: 'Poppins', // Custom font
-                                      ),
-                                    ),
-                                    Text(
-                                      'Check back later for updates.',
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                        // Lighter purple color for the text
-                                        fontFamily: 'Raleway', // Custom font
-                                      ),
-                                    ),
-                                  ],
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'No Party Available',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                  // Deep purple color for the text
+                                  fontFamily: 'Poppins', // Custom font
                                 ),
                               ),
-                            )
+                              Text(
+                                'Check back later for updates.',
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey,
+                                  // Lighter purple color for the text
+                                  fontFamily: 'Raleway', // Custom font
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
                           : Container(
-                              margin: EdgeInsets.only(
-                                top: Get.width * 0.05,
-                                left: MediaQuery.of(context).size.width * 0.05,
-                                bottom: Get.width * 0.05,
-                              ),
-                              height: Get.width * 0.65,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: individualDashboardController
-                                    .lengthOfPopularParties.value,
-                                itemBuilder: (context, index) {
-                                  return PartyCard(
-                                      party: individualDashboardController
-                                          .jsonPartyPopularData[index],
-                                      partyType: 'popular');
-                                },
-                              ),
-                            ),
+                        margin: EdgeInsets.only(
+                          top: Get.width * 0.05,
+                          left: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.05,
+                          bottom: Get.width * 0.05,
+                        ),
+                        height: Get.width * 0.65,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: individualDashboardController
+                              .lengthOfPopularParties.value,
+                          itemBuilder: (context, index) {
+                            return PartyCard(
+                                party: individualDashboardController
+                                    .jsonPartyPopularData[index],
+                                partyType: 'popular');
+                          },
+                        ),
+                      ),
                       Padding(
                         padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.05,
+                          left: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.05,
                           top: Get.height * 0.003,
                         ),
                         child: Text(
-                          'TODAY (${individualDashboardController.lengthOfTodayParties})',
+                          'TODAY (${individualDashboardController
+                              .lengthOfTodayParties})',
                           style: TextStyle(
                               fontFamily: 'Poppins',
                               color: Colors.white,
@@ -351,65 +417,72 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                         ),
                       ),
                       individualDashboardController
-                              .jsonPartyOrganisationDataToday.isEmpty
+                          .jsonPartyOrganisationDataToday.isEmpty
                           ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      'No Party Available',
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                        // Deep purple color for the text
-                                        fontFamily: 'Poppins', // Custom font
-                                      ),
-                                    ),
-                                    Text(
-                                      'Check back later for updates.',
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                        // Lighter purple color for the text
-                                        fontFamily: 'Raleway', // Custom font
-                                      ),
-                                    ),
-                                  ],
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'No Party Available',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                  // Deep purple color for the text
+                                  fontFamily: 'Poppins', // Custom font
                                 ),
                               ),
-                            )
+                              Text(
+                                'Check back later for updates.',
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey,
+                                  // Lighter purple color for the text
+                                  fontFamily: 'Raleway', // Custom font
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
                           : Container(
-                              margin: EdgeInsets.only(
-                                top: Get.width * 0.05,
-                                left: MediaQuery.of(context).size.width * 0.05,
-                                bottom: Get.width * 0.05,
-                              ),
-                              height: Get.width * 0.65,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: individualDashboardController
-                                    .jsonPartyOrganisationDataToday.length,
-                                itemBuilder: (context, index) {
-                                  return PartyCard(
-                                    party: individualDashboardController
-                                        .jsonPartyOrganisationDataToday[index],
-                                    partyType: 'today',
-                                  );
-                                },
-                              ),
-                            ),
+                        margin: EdgeInsets.only(
+                          top: Get.width * 0.05,
+                          left: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.05,
+                          bottom: Get.width * 0.05,
+                        ),
+                        height: Get.width * 0.65,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: individualDashboardController
+                              .jsonPartyOrganisationDataToday.length,
+                          itemBuilder: (context, index) {
+                            return PartyCard(
+                              party: individualDashboardController
+                                  .jsonPartyOrganisationDataToday[index],
+                              partyType: 'today',
+                            );
+                          },
+                        ),
+                      ),
                       Padding(
                         padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.05,
+                          left: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.05,
                           top: Get.height * 0.003,
                         ),
                         child: Text(
-                          'TOMORROW (${individualDashboardController.jsonPartyOrganisationDataTomm.length})',
+                          'TOMORROW (${individualDashboardController
+                              .jsonPartyOrganisationDataTomm.length})',
                           style: TextStyle(
                               fontFamily: 'Poppins',
                               color: Colors.white,
@@ -418,65 +491,72 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                         ),
                       ),
                       individualDashboardController
-                              .jsonPartyOrganisationDataTomm.isEmpty
+                          .jsonPartyOrganisationDataTomm.isEmpty
                           ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      'No Party Available',
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                        // Deep purple color for the text
-                                        fontFamily: 'Poppins', // Custom font
-                                      ),
-                                    ),
-                                    Text(
-                                      'Check back later for updates.',
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                        // Lighter purple color for the text
-                                        fontFamily: 'Raleway', // Custom font
-                                      ),
-                                    ),
-                                  ],
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'No Party Available',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                  // Deep purple color for the text
+                                  fontFamily: 'Poppins', // Custom font
                                 ),
                               ),
-                            )
+                              Text(
+                                'Check back later for updates.',
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey,
+                                  // Lighter purple color for the text
+                                  fontFamily: 'Raleway', // Custom font
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
                           : Container(
-                              margin: EdgeInsets.only(
-                                top: Get.width * 0.05,
-                                left: MediaQuery.of(context).size.width * 0.05,
-                                bottom: Get.width * 0.05,
-                              ),
-                              height: Get.width * 0.65,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: individualDashboardController
-                                    .jsonPartyOrganisationDataTomm.length,
-                                itemBuilder: (context, index) {
-                                  return PartyCard(
-                                    party: individualDashboardController
-                                        .jsonPartyOrganisationDataTomm[index],
-                                    partyType: 'tommorow',
-                                  );
-                                },
-                              ),
-                            ),
+                        margin: EdgeInsets.only(
+                          top: Get.width * 0.05,
+                          left: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.05,
+                          bottom: Get.width * 0.05,
+                        ),
+                        height: Get.width * 0.65,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: individualDashboardController
+                              .jsonPartyOrganisationDataTomm.length,
+                          itemBuilder: (context, index) {
+                            return PartyCard(
+                              party: individualDashboardController
+                                  .jsonPartyOrganisationDataTomm[index],
+                              partyType: 'tommorow',
+                            );
+                          },
+                        ),
+                      ),
                       Padding(
                         padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.05,
+                          left: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.05,
                           top: Get.height * 0.003,
                         ),
                         child: Text(
-                          'UPCOMING (${individualDashboardController.jsonPartyOgranisationDataUpcomming.length})',
+                          'UPCOMING (${individualDashboardController
+                              .jsonPartyOgranisationDataUpcomming.length})',
                           style: TextStyle(
                               fontFamily: 'Poppins',
                               color: Colors.white,
@@ -485,61 +565,67 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                         ),
                       ),
                       individualDashboardController
-                              .jsonPartyOgranisationDataUpcomming.isEmpty
+                          .jsonPartyOgranisationDataUpcomming.isEmpty
                           ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      'No Party Available',
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                        // Deep purple color for the text
-                                        fontFamily: 'Poppins', // Custom font
-                                      ),
-                                    ),
-                                    Text(
-                                      'Check back later for updates.',
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                        // Lighter purple color for the text
-                                        fontFamily: 'Raleway', // Custom font
-                                      ),
-                                    ),
-                                  ],
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'No Party Available',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                  // Deep purple color for the text
+                                  fontFamily: 'Poppins', // Custom font
                                 ),
                               ),
-                            )
+                              Text(
+                                'Check back later for updates.',
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey,
+                                  // Lighter purple color for the text
+                                  fontFamily: 'Raleway', // Custom font
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
                           : Container(
-                              margin: EdgeInsets.only(
-                                top: Get.width * 0.05,
-                                left: MediaQuery.of(context).size.width * 0.05,
-                                bottom: Get.width * 0.05,
-                              ),
-                              height: Get.width * 0.65,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: individualDashboardController
-                                    .jsonPartyOgranisationDataUpcomming.length,
-                                itemBuilder: (context, index) {
-                                  return PartyCard(
-                                    party: individualDashboardController
-                                            .jsonPartyOgranisationDataUpcomming[
-                                        index],
-                                    partyType: 'upcoming',
-                                  );
-                                },
-                              ),
-                            ),
+                        margin: EdgeInsets.only(
+                          top: Get.width * 0.05,
+                          left: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.05,
+                          bottom: Get.width * 0.05,
+                        ),
+                        height: Get.width * 0.65,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: individualDashboardController
+                              .jsonPartyOgranisationDataUpcomming.length,
+                          itemBuilder: (context, index) {
+                            return PartyCard(
+                              party: individualDashboardController
+                                  .jsonPartyOgranisationDataUpcomming[
+                              index],
+                              partyType: 'upcoming',
+                            );
+                          },
+                        ),
+                      ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.1,
                       ),
                     ],
                   ),
@@ -567,7 +653,10 @@ class CityCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(
-        MediaQuery.of(context).size.width * 0.015,
+        MediaQuery
+            .of(context)
+            .size
+            .width * 0.015,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -589,7 +678,10 @@ class CityCard extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.width * 0.02,
+            height: MediaQuery
+                .of(context)
+                .size
+                .width * 0.02,
           ),
           Text(
             cityName,
@@ -621,7 +713,10 @@ class NearbyPeopleProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(
-        MediaQuery.of(context).size.width * 0.015,
+        MediaQuery
+            .of(context)
+            .size
+            .width * 0.015,
       ),
       child: Stack(
         clipBehavior: Clip.none,
@@ -630,7 +725,10 @@ class NearbyPeopleProfile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.005,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.005,
               ),
               Container(
                 width: Get.width * 0.151,
@@ -651,17 +749,26 @@ class NearbyPeopleProfile extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.01,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.01,
               ),
               Row(
                 children: [
                   Icon(
                     Icons.message,
-                    size: MediaQuery.of(context).size.height * 0.02,
+                    size: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.02,
                     color: Colors.white,
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.height * 0.005,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.005,
                   ),
                   Text(
                     name,
@@ -723,10 +830,19 @@ class ChoiceSelectionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.35,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width * 0.35,
       margin: EdgeInsets.symmetric(
-          vertical: MediaQuery.of(context).size.height * 0.01,
-          horizontal: MediaQuery.of(context).size.width * 0.02),
+          vertical: MediaQuery
+              .of(context)
+              .size
+              .height * 0.01,
+          horizontal: MediaQuery
+              .of(context)
+              .size
+              .width * 0.02),
       decoration: BoxDecoration(
         color: buttonState == true ? Colors.white : const Color(0xFFa22d2d),
         borderRadius: BorderRadius.circular(100),
@@ -781,8 +897,14 @@ class PopularPartyCard extends StatelessWidget {
               horizontal: Get.width * 0.03,
               vertical: Get.width * 0.02,
             ),
-            width: MediaQuery.of(context).size.width * 0.57,
-            height: MediaQuery.of(context).size.width * 0.50,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width * 0.57,
+            height: MediaQuery
+                .of(context)
+                .size
+                .width * 0.50,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(assetPath),
@@ -796,7 +918,7 @@ class PopularPartyCard extends StatelessWidget {
                   alignment: Alignment.bottomCenter,
                   child: Container(
                     padding:
-                        EdgeInsets.symmetric(horizontal: 10.sp, vertical: 5.sp),
+                    EdgeInsets.symmetric(horizontal: 10.sp, vertical: 5.sp),
                     height: Get.width * 0.19,
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -864,8 +986,14 @@ class PopularPartyCard extends StatelessWidget {
                     },
                     child: Container(
                       margin: EdgeInsets.only(right: Get.width * 0.028),
-                      height: MediaQuery.of(context).size.width * 0.052,
-                      width: MediaQuery.of(context).size.width * 0.135,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.052,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.135,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30.sp),
                         color: const Color(0xFFffa914),

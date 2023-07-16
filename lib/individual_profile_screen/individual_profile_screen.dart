@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
@@ -23,14 +20,15 @@ import 'package:partypeopleindividual/widgets/qualification_dropdown_widget.dart
 import '../../widgets/dob_dropdown.dart';
 import '../../widgets/gender_dropdown_selecter.dart';
 
-class EditIndividualProfile extends StatefulWidget {
-  const EditIndividualProfile({super.key});
+class IndividualProfileScreen extends StatefulWidget {
+  const IndividualProfileScreen({super.key});
 
   @override
-  State<EditIndividualProfile> createState() => _EditIndividualProfileState();
+  State<IndividualProfileScreen> createState() =>
+      _IndividualProfileScreenState();
 }
 
-class _EditIndividualProfileState extends State<EditIndividualProfile> {
+class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
   File? _coverImage;
   File? _profileImage;
   final ImagePicker _picker = ImagePicker();
@@ -151,64 +149,58 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                               alignment: Alignment.center,
                               children: <Widget>[
                                 //Cover Photo
-                                GestureDetector(
-                                  onTap: () => _updatePhoto('cover'),
-                                  child: Container(
-                                    height: 300,
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: _coverImage != null
-                                              ? FileImage(_coverImage!)
-                                                  as ImageProvider<Object>
-                                              : individualProfileController
-                                                      .coverPhotoURL
-                                                      .value
-                                                      .isNotEmpty
-                                                  ? NetworkImage(
-                                                      individualProfileController
-                                                          .coverPhotoURL
-                                                          .value) as ImageProvider<
-                                                      Object>
-                                                  : const AssetImage(
-                                                          'assets/images/default-cover-4.jpg')
-                                                      as ImageProvider<Object>),
-                                    ),
+                                Container(
+                                  height: 300,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue,
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: _coverImage != null
+                                            ? FileImage(_coverImage!)
+                                                as ImageProvider<Object>
+                                            : individualProfileController
+                                                    .coverPhotoURL
+                                                    .value
+                                                    .isNotEmpty
+                                                ? NetworkImage(
+                                                    individualProfileController
+                                                        .coverPhotoURL
+                                                        .value) as ImageProvider<
+                                                    Object>
+                                                : const AssetImage(
+                                                        'assets/images/default-cover-4.jpg')
+                                                    as ImageProvider<Object>),
                                   ),
                                 ),
 
                                 // Profile Photo
                                 Positioned(
                                   bottom: 0,
-                                  child: GestureDetector(
-                                    onTap: () => _updatePhoto('profile'),
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                            blurRadius: 10,
-                                            color: Colors.black38,
-                                            spreadRadius: 5,
-                                          ),
-                                        ],
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: CircleAvatar(
-                                        radius: 55,
-                                        backgroundImage: _profileImage != null
-                                            ? FileImage(_profileImage!)
-                                            : (individualProfileController
-                                                        .profilePhotoURL
-                                                        .value
-                                                        .isNotEmpty
-                                                    ? NetworkImage(
-                                                        individualProfileController
-                                                            .profilePhotoURL.value)
-                                                    : const AssetImage(
-                                                        'assets/images/man.png'))
-                                                as ImageProvider<Object>?,
-                                      ),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          blurRadius: 10,
+                                          color: Colors.black38,
+                                          spreadRadius: 5,
+                                        ),
+                                      ],
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: CircleAvatar(
+                                      radius: 55,
+                                      backgroundImage: _profileImage != null
+                                          ? FileImage(_profileImage!)
+                                          : (individualProfileController
+                                                      .profilePhotoURL
+                                                      .value
+                                                      .isNotEmpty
+                                                  ? NetworkImage(
+                                                      individualProfileController
+                                                          .profilePhotoURL.value)
+                                                  : const AssetImage(
+                                                      'assets/images/man.png'))
+                                              as ImageProvider<Object>?,
                                     ),
                                   ),
                                 ),
@@ -216,29 +208,25 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                 Positioned(
                                   bottom: 20,
                                   right: 20,
-                                  child: GestureDetector(
-                                    onTap: () => _updatePhoto('profile'),
-                                    child: Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.2),
-                                            spreadRadius: 2,
-                                            blurRadius: 5,
-                                            offset: const Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      child: const Icon(
-                                        Icons.edit,
-                                        color: Colors.black,
-                                        size: 24,
-                                      ),
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2),
+                                          spreadRadius: 2,
+                                          blurRadius: 5,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Icon(
+                                      Icons.edit,
+                                      color: Colors.black,
+                                      size: 24,
                                     ),
                                   ),
                                 ),
@@ -460,149 +448,5 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                     ),
             ),
     );
-  }
-
-  Future<void> _updatePhoto(String type) async {
-    try {
-      ImageSource? source = await showModalBottomSheet<ImageSource>(
-        context: context,
-        builder: (BuildContext context) => Container(
-          color: const Color(0xFF737373),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).canvasColor,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              ),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                ListTile(
-                  leading: const Icon(
-                    Icons.camera,
-                    color: Colors.green,
-                  ),
-                  title: const Text(
-                    'Camera',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.green,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.pop(context, ImageSource.camera);
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(
-                    Icons.photo_album,
-                    color: Colors.blue,
-                  ),
-                  title: const Text(
-                    'Gallery',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.blue,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.pop(context, ImageSource.gallery);
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      if (source != null) {
-        final pickedFile = await _picker.pickImage(source: source);
-        if (pickedFile == null) {
-          throw Exception('No image file was picked.');
-        }
-
-        File? croppedFile = await ImageCropper().cropImage(
-          sourcePath: pickedFile.path,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.square,
-          ],
-          androidUiSettings: const AndroidUiSettings(
-            toolbarTitle: 'Crop Image',
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false,
-          ),
-        );
-
-        if (croppedFile == null) {
-          throw Exception('Image cropping failed or was cancelled.');
-        }
-
-        setState(() {
-          _isLoading = true;
-        });
-
-        try {
-          String? downloadUrl = await _uploadFile(croppedFile, type);
-
-          setState(() {
-            if (type == 'cover') {
-              _coverImage = croppedFile;
-              individualProfileController.coverPhotoURL.value = downloadUrl!;
-            } else {
-              _profileImage = croppedFile;
-              individualProfileController.profilePhotoURL.value = downloadUrl!;
-            }
-            _isLoading = false;
-          });
-        } on FirebaseException catch (e) {
-          // Handle Firebase specific exceptions
-          setState(() {
-            _isLoading = false;
-          });
-        } catch (e) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      }
-    } on PlatformException catch (e) {
-      // Handle exceptions related to camera, files and permissions
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<String?> _uploadFile(File file, String filename) async {
-    try {
-      UploadTask task = FirebaseStorage.instance
-          .ref('individual/token/${GetStorage().read('token')}/$filename')
-          .putFile(file);
-
-      task.snapshotEvents.listen((TaskSnapshot event) {
-        double progress = event.bytesTransferred / event.totalBytes;
-        setState(() {
-          _progress = progress;
-        });
-      });
-
-      TaskSnapshot snapshot = await task;
-
-      if (snapshot.state == TaskState.success) {
-        final String downloadURL = await snapshot.ref.getDownloadURL();
-        return downloadURL;
-      } else {
-        throw Exception('Upload failed with state: ${snapshot.state}');
-      }
-    } catch (e) {
-      rethrow;
-    }
   }
 }

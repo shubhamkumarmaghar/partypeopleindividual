@@ -26,6 +26,15 @@ class _IndividualNotificationScreenState
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.pink, Colors.red.shade900],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
           title: Text(
             "Notifications",
             style: TextStyle(fontSize: 13.sp),
