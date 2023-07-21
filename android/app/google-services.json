@@ -1,0 +1,135 @@
+{
+  "project_info": {
+    "project_number": "1037021880130",
+    "firebase_url": "https://party-people-52b16-default-rtdb.firebaseio.com",
+    "project_id": "party-people-52b16",
+    "storage_bucket": "party-people-52b16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037021880130:android:be1ea26906cd20d968b2db",
+        "android_client_info": {
+          "package_name": "com.party.partypeople"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1037021880130-823qmv36vkrbufg5qefl4fqj6olr6unj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.party.partypeople",
+            "certificate_hash": "e66c91bbe8667fd148f99c0dcb41b454078d786d"
+          }
+        },
+        {
+          "client_id": "1037021880130-f9iatgoa2r3h0btn7t106b0olu0ebns5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGvYXM0X5km1eShO6vQLT-dAsbz7fxRU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1037021880130-f9iatgoa2r3h0btn7t106b0olu0ebns5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1037021880130-1rbm7489870ps6kmedikhn0seh9q07if.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.partypeopleindividual"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037021880130:android:7156fe0731bad5ed68b2db",
+        "android_client_info": {
+          "package_name": "com.partypeopleindividual"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1037021880130-80r66fl177uc5j8jh72veomp0c7kjq9u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.partypeopleindividual",
+            "certificate_hash": "99f11b69d9046d29070d60958faa45baffa09754"
+          }
+        },
+        {
+          "client_id": "1037021880130-f9iatgoa2r3h0btn7t106b0olu0ebns5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGvYXM0X5km1eShO6vQLT-dAsbz7fxRU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1037021880130-f9iatgoa2r3h0btn7t106b0olu0ebns5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1037021880130-1rbm7489870ps6kmedikhn0seh9q07if.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.partypeopleindividual"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037021880130:android:2b047d526148b4ac68b2db",
+        "android_client_info": {
+          "package_name": "com.tezti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1037021880130-f9iatgoa2r3h0btn7t106b0olu0ebns5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGvYXM0X5km1eShO6vQLT-dAsbz7fxRU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1037021880130-f9iatgoa2r3h0btn7t106b0olu0ebns5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1037021880130-1rbm7489870ps6kmedikhn0seh9q07if.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.partypeopleindividual"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
