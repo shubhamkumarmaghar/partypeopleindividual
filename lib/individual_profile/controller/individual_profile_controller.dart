@@ -227,7 +227,13 @@ class IndividualProfileController extends GetxController {
       if (response['status'] == 1 &&
           response['message'].contains('Successfully')) {
         Get.offAll(const ShowSubmitMessage());
-      } else {
+      }
+      else if(
+      response['status'] == 2 &&
+          response['message'].contains('Organization Already Created.')
+      ){
+        Get.snackbar('Error', 'Organization Already Created.');
+      }else {
         Get.snackbar('Error', 'Response or response body is null');
       }
     } on SocketException {
@@ -255,7 +261,13 @@ class IndividualProfileController extends GetxController {
       if (response['status'] == 1 &&
           response['message'].contains('Successfully')) {
         Get.offAll(const ShowSubmitMessage());
-      } else {
+      } else if(
+      response['status'] == 2 &&
+          response['message'].contains('Organization Already Created.')
+      ){
+        Get.snackbar('Error', 'Organization Already Created.');
+      }
+      else{
         Get.snackbar('Error', 'Response or response body is null');
       }
     } on SocketException {
@@ -337,7 +349,13 @@ class IndividualProfileController extends GetxController {
         }
 
         update();
-      } else {
+      }
+      else if(
+      response['status'] == 2 &&
+          response['message'].contains('Organization Already Created.')
+      ){
+        Get.snackbar('Error', 'Organization Already Created.');
+      }else {
         Get.snackbar('Error', 'Response or response body is null');
       }
     } on SocketException {

@@ -4,7 +4,10 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/individualDashboard/bindings/individual_dashboard_binding.dart';
 import 'package:partypeopleindividual/individualDashboard/views/individual_dashboard_view.dart';
+import 'package:partypeopleindividual/splash_screen/view/splash_screen.dart';
 import 'package:sizer/sizer.dart';
+
+import 'individual_profile/views/individual_profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +43,8 @@ class MyApp extends StatelessWidget {
             // Add more text styles as needed
           ),
         ),
-        home: IndividualDashboardView(),
+        home:SplashScreen(),
+        //IndividualDashboardView(),
       );
     });
   }

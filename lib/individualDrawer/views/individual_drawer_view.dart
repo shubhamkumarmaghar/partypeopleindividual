@@ -106,7 +106,10 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     title: 'Logout',
                     icon: Icons.exit_to_app,
                     onTap: () {
+
                       GetStorage().remove('token');
+                      GetStorage().remove('loggedIn');
+
                       Get.offAll(LoginScreen());
                     },
                   ),

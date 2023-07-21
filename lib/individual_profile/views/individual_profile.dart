@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -449,11 +450,12 @@ class _IndividualProfileState extends State<IndividualProfile> {
       if (source != null) {
         final pickedFile = await _picker.pickImage(source: source);
         if (pickedFile == null) {
-          throw Exception('No image file was picked.');
+          log('gbhjnm ');
+         // throw Exception('No image file was picked.');
         }
 
         File? croppedFile = await ImageCropper().cropImage(
-          sourcePath: pickedFile.path,
+          sourcePath: pickedFile!.path,
           aspectRatioPresets: [
             CropAspectRatioPreset.square,
           ],
@@ -465,7 +467,8 @@ class _IndividualProfileState extends State<IndividualProfile> {
         );
 
         if (croppedFile == null) {
-          throw Exception('Image cropping failed or was cancelled.');
+          log('gbhjnm ');
+         // throw Exception('Image cropping failed or was cancelled.');
         }
 
         setState(() {
@@ -473,7 +476,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
         });
 
         try {
-          String? downloadUrl = await _uploadFile(croppedFile, type);
+          String? downloadUrl = await _uploadFile(croppedFile!, type);
 
           setState(() {
             if (type == 'cover') {

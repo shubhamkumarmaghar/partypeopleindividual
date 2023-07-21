@@ -1,14 +1,18 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/constants.dart';
 import 'package:partypeopleindividual/otp/model/otp_model.dart';
-
+import 'package:http/http.dart' as http;
 import '../../api_helper_service.dart';
+import '../../individualDashboard/views/individual_dashboard_view.dart';
 import '../../individual_profile/views/individual_profile.dart';
 
 class OTPController extends GetxController {
   RxString otp = ''.obs;
   RxString header = ''.obs;
+  RxBool isLoading = false.obs;
   APIService apiService = Get.put(APIService());
 
 // Error Message Helper Function
@@ -44,7 +48,8 @@ class OTPController extends GetxController {
         updateUserType();
 
         Get.snackbar(loginSuccessTitle, loginSuccessMessage);
-        Get.offAll(const IndividualProfile());
+        getAPIOverview();
+        //Get.offAll(const IndividualProfile());
       }
     } catch (e) {
       Get.snackbar(loginFailedTitle, checkCredentialsMessage);
@@ -60,4 +65,30 @@ class OTPController extends GetxController {
       Get.snackbar('Error', e.toString());
     } finally {}
   }
+
+  ///Check weather user has already filled the data or not
+  getAPIOverview() async {
+    isLoading.value = true;
+    try {
+      http.Response response = await http.post(
+          Uri.parse('http://app.partypeople.in/v1/party/organization_details'),
+          headers: {
+            'x-access-token': '${GetStorage().read('token')}',
+          });
+      print("response of Organization ${response.body}");
+
+      if (jsonDecode(response.body)['message'] == 'Organization Data Found.') {
+        GetStorage().write('loggedIn', '1');
+        isLoading.value = false;
+        Get.offAll(IndividualDashboardView());
+      } else {
+        isLoading.value = false;
+        Get.offAll(const IndividualProfile());
+      }
+    } on Exception catch (e) {
+      print('Exception in Login View ${e}');
+    }
+    isLoading.value = false;
+  }
+
 }
