@@ -54,6 +54,7 @@ class _PartyPreviewState extends State<PartyPreview> {
     });
   }
 
+
   Future<void> ongoingParty(String id) async {
     final response = await http.post(
       Uri.parse('http://app.partypeople.in/v1/party/party_ongoing'),
