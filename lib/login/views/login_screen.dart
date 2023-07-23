@@ -116,7 +116,8 @@ class _LoginScreenState extends State<LoginScreen>
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
-                        )),
+                        ),
+                    ),
                   )
                 ],
               ),

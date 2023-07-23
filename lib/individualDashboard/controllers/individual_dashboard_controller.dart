@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:get/get.dart';
@@ -50,7 +51,6 @@ class IndividualDashboardController extends GetxController {
     getAllNearbyPeoples();
     getAllCities();
     individualProfileController.individualProfileData();
-
     getPartyByDate();
   }
 
@@ -70,6 +70,7 @@ class IndividualDashboardController extends GetxController {
             json.decode(response.body)['data'] as List;
         allCityList.value =
             cityListJson.map((city) => IndividualCity.fromJson(city)).toList();
+        log("cities $cityListJson");
         update();
       } else {
         throw Exception("Error with the request: ${response.statusCode}");
@@ -173,8 +174,8 @@ class IndividualDashboardController extends GetxController {
 
       dynamic decodedData = jsonDecode(response.body);
       dynamic popularDecodedData = jsonDecode(popularResponse.body);
-      print(decodedData);
-
+      print("all parties $decodedData");
+      print("all Popular parties $decodedData");
       // Initialize lists to store parties
       List<Party> todayParties = [];
       List<Party> tomorrowParties = [];

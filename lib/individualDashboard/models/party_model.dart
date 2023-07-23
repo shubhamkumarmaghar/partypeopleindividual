@@ -90,6 +90,58 @@ class Party {
     required this.profilePicture,
     required this.partyAmenities,
   });
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['user_id'] = this.userId;
+    data['user_type'] = this.userType;
+    data['phone_number'] = this.phoneNumber;
+    data['organization_id'] = this.organizationId;
+    data['title'] = this.title;
+    data['others'] = this.others;
+    data['description'] = this.description;
+    data['cover_photo'] = this.coverPhoto;
+    data['start_date'] = this.startDate;
+    data['end_date'] = this.endDate;
+    data['start_time'] = this.startTime;
+    data['end_time'] = this.endTime;
+    data['pr_start_date'] = this.prStartDate;
+    data['pr_end_date'] = this.prEndDate;
+    data['latitude'] = this.latitude;
+    data['longitude'] = this.longitude;
+    data['type'] = this.type;
+    data['gender'] = this.gender;
+    data['start_age'] = this.startAge;
+    data['end_age'] = this.endAge;
+    data['person_limit'] = this.personLimit;
+    data['status'] = this.status;
+    data['active'] = this.active;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['is_deleted'] = this.isDeleted;
+    data['like'] = this.like;
+    data['view'] = this.view;
+    data['ongoing'] = this.ongoing;
+    data['offers'] = this.offers;
+    data['ladies'] = this.ladies;
+    data['stag'] = this.stag;
+    data['couples'] = this.couples;
+    data['papular_status'] = this.papularStatus;
+    data['papular_time'] = this.papularTime;
+    data['subscriotion_type'] = this.subscriotionType;
+    data['party_amenitie_id'] = this.partyAmenitieId;
+    data['image_status'] = this.imageStatus;
+    data['approval_status'] = this.approvalStatus;
+    data['organization'] = this.organization;
+    data['full_name'] = this.fullName;
+    data['profile_picture'] = this.profilePicture;
+    if (this.partyAmenities != null) {
+      data['party_amenitie'] =
+          this.partyAmenities.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+
 
   factory Party.fromJson(Map<String, dynamic> json) {
     var partyAmenitieFromJson = json['party_amenitie'] as List;
@@ -159,5 +211,12 @@ class PartyAmenitie {
       id: json['id'],
       name: json['name'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    return data;
   }
 }

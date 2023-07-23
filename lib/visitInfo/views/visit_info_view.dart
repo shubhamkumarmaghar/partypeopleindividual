@@ -130,7 +130,7 @@ class ProfileContainer extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 16.sp,
-                backgroundImage: const AssetImage("assets/img.png"),
+                backgroundImage: const AssetImage("assets/images/img.png"),
                 child: Stack(
                   children: [
                     Positioned(
@@ -138,7 +138,8 @@ class ProfileContainer extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 6.sp,
                         backgroundImage:
-                            const AssetImage('assets/indian_flag.png'),
+                            const NetworkImage("https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54"),
+                            //const AssetImage('assets/images/indian_flag.png'),
                       ),
                     ),
                   ],

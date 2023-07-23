@@ -8,6 +8,8 @@ import 'package:partypeopleindividual/visitInfo/views/visit_info_view.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../settings/view/settings.dart';
+
 class IndividualDrawerView extends StatefulWidget {
   IndividualDrawerView({
     Key? key,
@@ -86,7 +88,12 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                   CustomOptionWidget(
                     title: 'Settings',
                     icon: Icons.settings,
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(Settings(),
+                        duration: const Duration(milliseconds: 500),
+                      transition: Transition.leftToRight,
+                      );
+                    },
                   ),
                   CustomOptionWidget(
                     title: 'Frequently Asked Questions',
@@ -106,10 +113,10 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     title: 'Logout',
                     icon: Icons.exit_to_app,
                     onTap: () {
-
                       GetStorage().remove('token');
                       GetStorage().remove('loggedIn');
-
+                      GetStorage().remove('online_status');
+                      GetStorage().remove('online_notification_status');
                       Get.offAll(LoginScreen());
                     },
                   ),

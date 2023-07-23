@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
 import '../individualDashboard/models/party_model.dart';
+import '../widgets/custom_button.dart';
 import '../widgets/individual_amenities.dart';
 
 class Amenity {
@@ -46,14 +47,49 @@ class _PartyPreviewState extends State<PartyPreview> {
         _categories.forEach((category) {
           _categoryLists.add(CategoryList(
               title: category.name, amenities: category.amenities));
+
         });
+
       }
     });
   }
 
+  Future<void> ongoingParty(String id) async {
+    final response = await http.post(
+      Uri.parse('http://app.partypeople.in/v1/party/party_ongoing'),
+      headers: <String, String>{
+        'x-access-token': '${GetStorage().read('token')}',
+      },
+      body: <String, String>{
+        'party_id': id,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response,
+      // then parse the JSON.
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == 1) {
+        print('Party ongoing save successfully');
+        Get.snackbar('Welcome',
+            'You are welcome to join party');
+      }
+      else {
+        print('Failed to update ongoing Party data');
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to update Party onging data');
+    }
+  }
+
+
   @override
   void initState() {
     _fetchData();
+    print(widget.party.toJson());
     super.initState();
   }
 
@@ -336,6 +372,15 @@ class _PartyPreviewState extends State<PartyPreview> {
                   ),
                 ),
               ),
+            ),
+            Padding(
+              padding:
+              const EdgeInsets.symmetric(horizontal: 35.0, vertical: 12.0),
+              child:CustomButton(
+                width: Get.width * 0.6,
+                text: 'On Going',
+                onPressed:(){ongoingParty(widget.party.id);},
+              )
             ),
             Padding(
               padding:

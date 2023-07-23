@@ -79,6 +79,9 @@ class _PartyCardState extends State<PartyCard>
       print(jsonResponse);
       if (jsonResponse['status'] == 1) {
         print('Party Successfully added to wishlist');
+        likeParty(id);
+
+
       } else {
         print('Failed to add party to wishlist');
       }
@@ -86,6 +89,66 @@ class _PartyCardState extends State<PartyCard>
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Failed to add party to wishlist');
+    }
+  }
+
+  Future<void> likeParty(String id) async {
+    final response = await http.post(
+      Uri.parse('http://app.partypeople.in/v1/party/party_like'),
+      headers: <String, String>{
+        'x-access-token': '${GetStorage().read('token')}',
+      },
+      body: <String, String>{
+        'party_id': id,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response,
+      // then parse the JSON.
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == 1) {
+        print('Party like save successfully');
+
+      }
+      else {
+        print('Failed to like Party ');
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to like Party');
+    }
+  }
+
+  Future<void> viewParty(String id) async {
+    final response = await http.post(
+      Uri.parse('http://app.partypeople.in/v1/party/party_view'),
+      headers: <String, String>{
+        'x-access-token': '${GetStorage().read('token')}',
+      },
+      body: <String, String>{
+        'party_id': id,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response,
+      // then parse the JSON.
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == 1) {
+        print('Party view save successfully');
+
+      }
+      else {
+        print('Failed to update view Party ');
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to update view Party');
     }
   }
 
@@ -128,6 +191,7 @@ class _PartyCardState extends State<PartyCard>
     return widget.partyType == 'popular'
         ? GestureDetector(
             onTap: () {
+              viewParty(widget.party.id);
               Get.to(PartyPreview(party: widget.party));
             },
             child: Padding(
@@ -186,21 +250,21 @@ class _PartyCardState extends State<PartyCard>
                                   Icon(Icons.visibility,
                                       size: 16, color: Colors.red),
                                   Text(
-                                    "200 Views",
+                                      "${widget.party.view} Views",
                                     style: TextStyle(color: Colors.black),
                                   ),
                                   SizedBox(width: 10),
                                   Icon(Icons.thumb_up,
                                       size: 16, color: Colors.red),
                                   Text(
-                                    "4k Likes",
+                                      "${widget.party.like} Likes",
                                     style: TextStyle(color: Colors.black),
                                   ),
                                   SizedBox(width: 10),
                                   Icon(Icons.people, color: Colors.red),
                                   SizedBox(width: 5.sp),
                                   Text(
-                                    "3k Going",
+                                    "${widget.party.ongoing} Going",
                                     style: TextStyle(color: Colors.black),
                                   ),
                                 ],
@@ -332,6 +396,7 @@ class _PartyCardState extends State<PartyCard>
           )
         : GestureDetector(
             onTap: () {
+              viewParty(widget.party.id);
               Get.to(PartyPreview(party: widget.party));
             },
             child: Padding(
