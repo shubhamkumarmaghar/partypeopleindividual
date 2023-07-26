@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/edit_individual_profile/edit_individual_profile.dart';
-import 'package:partypeopleindividual/individual_blocked_report/blocked_report_screen.dart';
+import 'package:partypeopleindividual/individual_blocked_report/view/blocked_report_screen.dart';
 import 'package:partypeopleindividual/login/views/login_screen.dart';
 import 'package:partypeopleindividual/visitInfo/views/visit_info_view.dart';
 import 'package:sizer/sizer.dart';

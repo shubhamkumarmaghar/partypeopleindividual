@@ -1,6 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:partypeopleindividual/api_helper_service.dart';
+import 'package:partypeopleindividual/centralize_api.dart';
+import 'package:partypeopleindividual/visitInfo/controllers/visit_info_controller.dart';
 import 'package:sizer/sizer.dart';
+
+import '../model/visitinfo.dart';
 
 class VisitInfoView extends StatefulWidget {
   const VisitInfoView({Key? key}) : super(key: key);
@@ -10,6 +17,12 @@ class VisitInfoView extends StatefulWidget {
 }
 
 class _VisitInfoViewState extends State<VisitInfoView> {
+  //visitInfoController visit_info_controller = Get.put(visitInfoController());
+
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     var tabBarItem = TabBar(
@@ -40,14 +53,7 @@ class _VisitInfoViewState extends State<VisitInfoView> {
       ],
     );
 
-    var listItem = ListView.builder(
-      itemCount: 15,
-      itemBuilder: (BuildContext context, int index) {
-        return const ProfileContainer(userName: 'Bennn', time: '09:09');
-      },
-    );
-
-    return DefaultTabController(
+    return   DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
@@ -83,6 +89,7 @@ class _VisitInfoViewState extends State<VisitInfoView> {
             ),
           ),
         ),
+
         body: Container(
           color: Colors.white,
           child: TabBarView(
@@ -92,94 +99,137 @@ class _VisitInfoViewState extends State<VisitInfoView> {
                 children: [
                   SizedBox(height: 10.sp),
                   Text(
-                    'Only shows visitors from the past month',
+                    'Only shows visitors from the past mont ',
                     style: TextStyle(
                         fontSize: 10.sp, color: const Color(0xFFc4c4c4)),
                   ),
                   SizedBox(height: 10.sp),
-                  Expanded(child: listItem),
+                  GetBuilder<visitInfoController>(
+                    init: visitInfoController(),
+                    builder: (controller) {
+                      return controller.visiterdataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.visiterdataModel.data ??[],)):CircularProgressIndicator();
+                    },),
+
                 ],
               ),
-              listItem,
-              listItem,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 10.sp),
+                  Text(
+                    'Only shows visited people from the past month ',
+                    style: TextStyle(
+                        fontSize: 10.sp, color: const Color(0xFFc4c4c4)),
+                  ),
+                  SizedBox(height: 10.sp),
+                  GetBuilder<visitInfoController>(
+                    init: visitInfoController(),
+                    builder: (controller) {
+                      return controller.visiteddataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.visiteddataModel.data ??[],)):CircularProgressIndicator();
+                    },),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 10.sp),
+                  Text(
+                    'Only shows liked people from the past month ',
+                    style: TextStyle(
+                        fontSize: 10.sp, color: const Color(0xFFc4c4c4)),
+                  ),
+                  SizedBox(height: 10.sp),
+                  GetBuilder<visitInfoController>(
+                    init: visitInfoController(),
+                    builder: (controller) {
+
+                      return controller.likedataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.likedataModel.data ??[],)):CircularProgressIndicator();
+                    },),
+                ],
+              ),
+
             ],
           ),
         ),
       ),
     );
+
   }
 }
 
 class ProfileContainer extends StatelessWidget {
-  const ProfileContainer({
-    required this.userName,
-    required this.time,
+  ProfileContainer({
+    required this.dataList
   });
-
-  final String userName;
-  final String time;
+  final List<Data> dataList;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Padding(
-          padding: EdgeInsets.all(15.sp),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 16.sp,
-                backgroundImage: const AssetImage("assets/images/img.png"),
-                child: Stack(
+    return ListView.builder(
+      itemCount: dataList.length,
+      itemBuilder: (context, index) {
+         Data data = dataList[index];
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(15.sp),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 16.sp,
+                  backgroundImage: NetworkImage(data.profilePicture??'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54'),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        bottom: 3.sp,
+                        child: CircleAvatar(
+                          radius: 6.sp,
+                          backgroundImage:
+                          const NetworkImage("https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54"),
+                          //const AssetImage('assets/images/indian_flag.png'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 12.sp),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Positioned(
-                      bottom: 3.sp,
-                      child: CircleAvatar(
-                        radius: 6.sp,
-                        backgroundImage:
-                            const NetworkImage("https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54"),
-                            //const AssetImage('assets/images/indian_flag.png'),
+                    Text(
+                     data.username ??'',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: const Color(0xFF434343),
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
+                    /*Text(
+                      'DUMMY TEXT',
+                      style: TextStyle(
+                        fontSize: 8.sp,
+                        color: const Color(0xFF434343),
+                      ),
+                    ),
+                    Text(
+                      "profilepic",
+                      style: TextStyle(
+                          fontSize: 8.sp, color: const Color(0xFFc4c4c4)),
+                    ),
+                    */
                   ],
                 ),
-              ),
-              SizedBox(width: 12.sp),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    userName,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: const Color(0xFF434343),
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Text(
-                    'DUMMY TEXT',
-                    style: TextStyle(
-                      fontSize: 8.sp,
-                      color: const Color(0xFF434343),
-                    ),
-                  ),
-                  Text(
-                    time,
-                    style: TextStyle(
-                        fontSize: 8.sp, color: const Color(0xFFc4c4c4)),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Container(
-          color: const Color(0xFFc4c4c4),
-          height: 0.4.sp,
-          width: MediaQuery.of(context).size.width * 0.73,
-        ),
-      ],
-    );
+          Container(
+            color: const Color(0xFFc4c4c4),
+            height: 0.4.sp,
+            width: MediaQuery.of(context).size.width * 0.73,
+          ),
+        ],
+      );
+    },);
   }
 }

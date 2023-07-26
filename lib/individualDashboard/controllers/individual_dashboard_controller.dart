@@ -48,10 +48,10 @@ class IndividualDashboardController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    individualProfileController.individualProfileData();
     getAllNearbyPeoples();
     getAllCities();
-    individualProfileController.individualProfileData();
-    getPartyByDate();
+   getPartyByDate();
   }
 
   RxString noUserFoundController = "null".obs;
@@ -92,16 +92,17 @@ class IndividualDashboardController extends GetxController {
     print('nearby user');
     try {
       apiService.isLoading.value = true;
-      var response = await apiService.individualNearbyPeoples(
+      var response = await apiService.individualNearbyPeoples({'city_id': '1'},
         '${GetStorage().read('token')}',
       );
       print("Nearby People");
-      print(response.body);
+
       if (response['status'] == 1 && response['message'].contains('Success')) {
         try {
           print("Nearby People");
-          print(response.body);
+         //print(response.body);
           var usersData = response['data'] as List;
+          usersData.forEach((element) => log('Data :: $element'));
           usersList.addAll(usersData.map((user) => UserModel.fromJson(user)));
           apiService.isLoading.value = false;
           update();
@@ -111,13 +112,14 @@ class IndividualDashboardController extends GetxController {
           noUserFoundController.value = 'No User';
           apiService.isLoading.value = false;
         }
-      } else if (response['message'].contains('Not')) {
-        print("test Complete");
+      }
+      else if (response['status'] == 0 && response['message'].contains('Not')) {
+        print("User Not Found");
         // Store the response message in the controller if user not found
         noUserFoundController.value = response['message'];
         update();
 
-        Get.snackbar('Error', 'Response or response body is null');
+        Get.snackbar('Opps!', 'No User found ');
       }
     } on SocketException {
       print("test Complete");
@@ -128,21 +130,21 @@ class IndividualDashboardController extends GetxController {
       Get.snackbar('Network Error',
           'Please check your internet connection and try again!');
     } on HttpException {
-      print("test Complete");
+      print("http Exception : test Complete");
 
       noUserFoundController.value = 'No User';
       update();
 
       Get.snackbar('Error', 'Could not find the service you were looking for!');
     } on FormatException {
-      print("test Complete");
+      print("Format Exception : test Complete");
 
       noUserFoundController.value = 'No User';
       update();
 
       Get.snackbar('Error', 'Bad response format. Please contact support!');
     } catch (e) {
-      print("test Complete");
+      print("test Complete $e");
 
       noUserFoundController.value = 'No User';
       update();
@@ -253,4 +255,8 @@ class IndividualDashboardController extends GetxController {
       print('Error fetching parties: $e');
     }
   }
+
+
+
+
 }

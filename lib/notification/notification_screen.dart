@@ -31,6 +31,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       if (data['message'] == 'Notification Not Found.') {
         setState(() {
           isNotification = false;
+          print(data['data'].length);
         });
       } else {
         setState(() {
@@ -38,7 +39,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         });
       }
 
-      print(data['data'].length);
+
     });
   }
 

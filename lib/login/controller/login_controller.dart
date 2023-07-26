@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/otp/controller/otp_controller.dart';
@@ -10,7 +11,7 @@ class LoginController extends GetxController {
 
   RxString username = ''.obs;
   RxString mobileNumber = ''.obs;
-
+  RxString deviceToken = ''.obs;
   APIService apiService = Get.put(APIService());
   OTPController otpController = Get.put(OTPController());
 
@@ -46,9 +47,14 @@ class LoginController extends GetxController {
       return;
     }
 
+    await FirebaseMessaging.instance.getToken().then((token) {
+      print("token is $token");
+      deviceToken.value = token!;
+    });
+
     try {
       User? response = await apiService.login(
-          username.value, mobileNumber.value, 'your_valid_device_token_here');
+          username.value, mobileNumber.value, deviceToken.value);
 
       if (response.phone == null || response.phone.isEmpty) {
         Get.snackbar(loginFailedTitle, unexpectedErrorMessage);

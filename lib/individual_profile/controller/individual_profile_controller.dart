@@ -252,7 +252,7 @@ class IndividualProfileController extends GetxController {
   }
 
   Future<void> individualProfileUpdate() async {
-    print('Individual Profile Update :=> ${userData}');
+    print('Individual Profile Update :=> $userData');
     try {
       var response = await apiService.individualProfileUpdate(
           userData, '${GetStorage().read('token')}');
@@ -290,7 +290,7 @@ class IndividualProfileController extends GetxController {
       apiService.isLoading.value = true;
       var response = await apiService
           .individualProfileData('${GetStorage().read('token')}');
-      print(response);
+      print("profile data $response");
 
       if (response['status'] == 1 &&
           response['message'].contains('Data Found')) {
@@ -315,8 +315,8 @@ class IndividualProfileController extends GetxController {
           state.value = user['state'] ?? '';
           username.value = response['user_name'];
           gender.value = user['gender'] ?? '';
-          getPrefiledData = user?['org_amenitie_id']?.split(',');
-          print("indi amen :=> ${getPrefiledData}");
+          getPrefiledData = user['org_amenitie_id']?.split(',');
+          print("indi amen :=> $getPrefiledData");
           city.value = user['city'] ?? '';
           profilePhotoURL.value = user['profile_pic'] ?? '';
           coverPhotoURL.value = user['cover_photo'] ?? '';

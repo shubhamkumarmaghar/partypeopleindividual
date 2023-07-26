@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:adobe_xd/adobe_xd.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:like_button/like_button.dart';
 import 'package:partypeopleindividual/individualDashboard/controllers/individual_dashboard_controller.dart';
@@ -10,6 +14,7 @@ import 'package:partypeopleindividual/wishlist_screen/wishlist_screen.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../individualDrawer/views/individual_drawer_view.dart';
+import '../../individual_people_profile/view/individual_people_profile.dart';
 import '../../individual_profile_screen/individual_profile_screen.dart';
 import '../../widgets/party_card.dart';
 
@@ -22,6 +27,9 @@ class IndividualDashboardView extends StatefulWidget {
 }
 
 class _IndividualDashboardViewState extends State<IndividualDashboardView> {
+
+
+
   IndividualDashboardController individualDashboardController =
   Get.put(IndividualDashboardController());
   IndividualProfileController individualProfileController = Get.find();
@@ -29,7 +37,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
 
   @override
   void initState() {
-    _selectedIndex = 1;
+     _selectedIndex = 1;
     super.initState();
   } // selected index
 
@@ -41,7 +49,6 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-
           automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -315,12 +322,19 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                           scrollDirection: Axis.horizontal,
                           itemBuilder: ((context, index) =>
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  //PeopleViewed(individualDashboardController.usersList[index].id);
+                                  //Navigator.push(context, MaterialPageRoute(builder: (context) => IndividualPeopleProfile(),));
+                                 Get.to(()=>IndividualPeopleProfile(user_id: individualDashboardController.usersList[index].id,));
+                                },
                                 child: NearbyPeopleProfile(
                                   imageURL: individualDashboardController
                                       .usersList[index].profilePicture,
                                   name: individualDashboardController
                                       .usersList[index].username,
+                                  id: individualDashboardController.usersList[index].id,
+                                  likeStatus: individualDashboardController.usersList[index].likeStatus,
+                                  onlineStatus: individualDashboardController.usersList[index].onlineStatus,
                                 ),
                               )),
                         ),
@@ -697,16 +711,100 @@ class CityCard extends StatelessWidget {
 class NearbyPeopleProfile extends StatelessWidget {
   String imageURL;
   String name;
-
+  String id;
+  String likeStatus;
+  String onlineStatus;
   NearbyPeopleProfile({
     required this.name,
     required this.imageURL,
+    required this.id,
+    required this.likeStatus,
+    required this.onlineStatus,
     super.key,
   });
 
+  Future<void> likePeople(String id , bool status) async {
+    final response = await http.post(
+      Uri.parse('http://app.partypeople.in/v1/account/individual_user_like'),
+      headers: <String, String>{
+        'x-access-token': '${GetStorage().read('token')}',
+      },
+
+      body: <String, String>{
+        'user_like_status': status==true?"yes":"No",
+        'user_like_id': id
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response,
+      // then parse the JSON.
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == 1 && jsonResponse['message'].contains('likedsuccessfully')) {
+        print('User like save successfully');
+        //isLiked= true;
+      }
+      if (jsonResponse['status'] == 1 && jsonResponse['message'].contains('unlikedsuccessfully')) {
+        print('User unlike successfully');
+        //isLiked= false;
+      }
+      else {
+        print('Failed to like/ unlike ');
+        //isLiked= false;
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to like/unlike');
+     // isLiked= false;
+    }
+  }
+
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     /// send your request here
-    return !isLiked;
+    ///
+    print("$isLiked");
+    isLiked = likeStatus=='1'? false :true;
+    final response = await http.post(
+      Uri.parse('http://app.partypeople.in/v1/account/individual_user_like'),
+      headers: <String, String>{
+        'x-access-token': '${GetStorage().read('token')}',
+      },
+
+      body: <String, String>{
+        'user_like_status': isLiked==true?"yes":"No",
+        'user_like_id': id
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response,
+      // then parse the JSON.
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == 1 && jsonResponse['message']==('User likedsuccessfully')) {
+        print('User like save successfully');
+         isLiked= false;
+         likeStatus='1';
+      }
+      else if (jsonResponse['status'] == 1 && jsonResponse['message']==('User unlikedsuccessfully')) {
+        print('User unlike successfully');
+        isLiked= true;
+        likeStatus='1';
+      }
+      else {
+        print('Failed to like/ unlike ');
+         isLiked= true;
+        likeStatus='0';
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to like/unlike');
+      return isLiked= false;
+    }
+    return isLiked;
   }
 
   @override
@@ -796,6 +894,7 @@ class NearbyPeopleProfile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100.sp),
               ),
               child: LikeButton(
+
                 onTap: onLikeButtonTapped,
                 circleColor: const CircleColor(
                     start: Colors.white, end: Color(0xFFe3661d)),
@@ -803,7 +902,7 @@ class NearbyPeopleProfile extends StatelessWidget {
                 likeBuilder: (bool isLiked) {
                   return Icon(
                     Icons.favorite,
-                    color: isLiked ? const Color(0xFFf9090a) : Colors.white,
+                    color: likeStatus=='1' ? const Color(0xFFf9090a) : Colors.white,
                     size: Get.height * 0.022,
                   );
                 },
@@ -813,6 +912,24 @@ class NearbyPeopleProfile extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          Positioned(
+            top: Get.height * 0.001,
+            left: -Get.height * 0.001,
+            child: onlineStatus=='on'? Container(
+              width: Get.height * 0.032,
+              height: Get.height * 0.032,
+              padding: EdgeInsets.only(
+                left: Get.height * 0.029,
+                top: Get.height * 0.00045,
+              ),
+
+              child: Icon(
+                Icons.circle,
+                color:  Colors.green,
+                size: Get.height * 0.016,
+              ),
+            ):Container(),
           ),
         ],
       ),

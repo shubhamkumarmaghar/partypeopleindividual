@@ -204,11 +204,19 @@ class _PartyPreviewState extends State<PartyPreview> {
             const Divider(),
             widget.party.papularStatus == '1'
                 ? CustomListTile(
-                    icon: Icons.calendar_month,
+                    icon: Icons.calendar_month_outlined,
                     title: "Popular Party Dates",
                     subtitle:
                         "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(widget.party.prStartDate))} to ${widget.party.endDate != null ? DateFormat('EEEE, d MMMM y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.endDate) * 1000)) : ''}",
                   )
+                : Container(),
+            widget.party.status == '1'
+                ? CustomListTile(
+              icon: Icons.calendar_month_outlined,
+              title: "Popular Party Dates",
+              subtitle:
+              "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(widget.party.prStartDate))} to ${widget.party.endDate != null ? DateFormat('EEEE, d MMMM y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.endDate) * 1000)) : ''}",
+            )
                 : Container(),
             CustomListTile(
               icon: Icons.calendar_month,
@@ -280,7 +288,7 @@ class _PartyPreviewState extends State<PartyPreview> {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: ListTile(
                   leading: const Icon(
-                    Icons.monetization_on,
+                    Icons.currency_rupee,
                     color: Colors.white,
                   ),
                   title: const Text(

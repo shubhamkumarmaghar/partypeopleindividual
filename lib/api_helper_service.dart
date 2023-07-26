@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:partypeopleindividual/otp/model/otp_model.dart';
 
@@ -168,10 +169,47 @@ class APIService extends GetxController {
   }
 
   ///Get All Nearby Peoples
-  Future individualNearbyPeoples(header) async {
+  Future individualNearbyPeoples(Map<String, String> cityid ,header) async {
     final response = await _post(API.individualPeoplesNearby, null,
         headers: {'x-access-token': header});
 
     return response;
   }
+
+/// do block/unblock people
+  Future<void> DoBlockUnblockPeople(String id,String status) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse(API.blockUnblockApi),
+          headers: {
+            'x-access-token': '${GetStorage().read('token')}',
+          },
+          body: {
+            'block_user_id': id,
+            'status' : status
+          });
+
+      print("response of unblock data ${response.body}");
+
+
+      if (jsonDecode(response.body)['status'] == 0) {
+        print("User Unblocked successfully");
+        Get.snackbar('Unblocked' , 'You have successfully unblock ',);
+      }
+      else if(jsonDecode(response.body)['status'] == 1){
+        print("User blocked successfully");
+        Get.snackbar('Blocked' , 'You have successfully block ',);
+      }
+      else {
+        print("User Unblocked failed ${response.body}");
+        Get.snackbar('Opps!!!' , 'Process failed ',);
+      }
+    } on Exception catch (e) {
+      print('Exception in blocked data ${e}');
+    }
+    update();
+  }
+
+
+
 }

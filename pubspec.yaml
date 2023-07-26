@@ -42,6 +42,10 @@ dependencies:
   sizer: ^2.0.15
   smooth_star_rating_null_safety: ^1.0.4+2
   awesome_dialog: ^3.1.0
+  flutter_local_notifications: ^13.0.0
+  firebase_messaging: ^14.4.0
+  cloud_firestore: ^4.7.0
+  flutter_launcher_icons: ^0.13.1
 
 
   google_nav_bar: ^5.0.6
@@ -63,6 +67,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: "^0.13.1"
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/Logo.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
   flutter_lints: ^2.0.0
 flutter:
 
