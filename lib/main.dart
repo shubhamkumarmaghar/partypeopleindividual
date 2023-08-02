@@ -23,7 +23,7 @@ void main() async {
   FlutterLocalNotificationsPlugin pluginInstance =
   FlutterLocalNotificationsPlugin();
   var init = const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon'));
+      android: AndroidInitializationSettings('launcher_icon'));
   pluginInstance.initialize(init);
 
   NotificationSettings settings = await messaging.requestPermission();
@@ -69,6 +69,9 @@ class MyApp extends StatelessWidget {
         initialBinding: IndividualDashboardBinding(),
         debugShowCheckedModeBanner: false,
         title: 'Party People',
+        builder: (context,child){
+          return MediaQuery(data: MediaQuery.of(context).copyWith(textScaleFactor: 0.9), child: child ?? Text(''));
+        },
         theme: ThemeData.light(useMaterial3: false).copyWith(
           scaffoldBackgroundColor: Colors.red.shade900,
           primaryColor: Colors.red.shade900,
@@ -85,6 +88,7 @@ class MyApp extends StatelessWidget {
             ),
             // Add more text styles as needed
           ),
+
         ),
         home:SplashScreen(),
         //IndividualDashboardView(),

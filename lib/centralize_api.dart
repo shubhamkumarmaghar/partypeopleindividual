@@ -18,6 +18,8 @@ class API {
 
   static const String individualCities = '$baseUrl/party/cities';
 
+  static const String onlineStatus = '$baseUrl/account/update_online_time_expiry';
+
   static const String individualPeoplesNearby = '$baseUrl/home/near_by_users';
 
   static const String blockUnblockApi = '$baseUrl/account/individual_user_block';

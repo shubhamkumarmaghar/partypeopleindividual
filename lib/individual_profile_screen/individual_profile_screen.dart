@@ -175,7 +175,7 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
 
                                 // Profile Photo
                                 Positioned(
-                                  bottom: 0,
+                                  bottom: 10,
                                   child: Container(
                                     decoration: const BoxDecoration(
                                       boxShadow: [

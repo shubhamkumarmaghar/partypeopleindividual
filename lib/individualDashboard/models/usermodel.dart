@@ -1,12 +1,13 @@
 class UserModel {
   final String id;
-  final String fullName;
+  final dynamic fullName;
   final String username;
-  final String city;
+  final dynamic city;
   final String phone;
   final String profilePicture;
   final String onlineStatus;
   final String likeStatus;
+  final String gender;
 
   UserModel(
       {required this.id,
@@ -16,7 +17,8 @@ class UserModel {
       required this.phone,
       required this.profilePicture,
       required this.onlineStatus,
-      required this.likeStatus});
+      required this.likeStatus,
+      required this.gender});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -28,6 +30,7 @@ class UserModel {
       profilePicture: json['profile_picture'],
       onlineStatus: json['online_status'],
       likeStatus: json['like_status'],
+      gender: json['gender']
     );
   }
 }

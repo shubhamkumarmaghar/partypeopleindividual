@@ -45,7 +45,7 @@ class visitInfoController extends GetxController {
         var data=VisitInfoModel.fromJson(usersData) ;
         var list = data.data ?? [];
         for(var data1 in list){
-         log('visitor user id ${data1.id}');
+         log('visitor user id ${data1.userId}  length ${list.length}');
         }
 
        visiterdataModel = data;
@@ -82,7 +82,7 @@ class visitInfoController extends GetxController {
        var data=VisitInfoModel.fromJson(usersData) ;
        var list = data.data ?? [];
        for(var data1 in list){
-         log('visited user id ${data1.id}');
+         log('visited user id ${data1.userId}  length ${list.length}');
        }
 
        visiteddataModel = data;
@@ -119,7 +119,7 @@ class visitInfoController extends GetxController {
        var data=VisitInfoModel.fromJson(usersData) ;
        var list = data.data ?? [];
        for(var data1 in list){
-         log('liked people  user id ${data1.id}');
+         log('liked people  user id ${data1.userId}');
        }
 
        likedataModel = data;

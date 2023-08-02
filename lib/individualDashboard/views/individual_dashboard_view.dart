@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:adobe_xd/adobe_xd.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -14,9 +15,12 @@ import 'package:partypeopleindividual/wishlist_screen/wishlist_screen.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../individualDrawer/views/individual_drawer_view.dart';
-import '../../individual_people_profile/view/individual_people_profile.dart';
+import '../../individual_nearby_people_profile/view/individual_people_list.dart';
+import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
 import '../../individual_profile_screen/individual_profile_screen.dart';
+import '../../individual_profile_screen/individual_profile_screen_view.dart';
 import '../../widgets/party_card.dart';
+import 'nearby_people_profile.dart';
 
 class IndividualDashboardView extends StatefulWidget {
   const IndividualDashboardView({super.key});
@@ -66,7 +70,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                       IndividualDrawerView(),
                       duration: const Duration(milliseconds: 500),
                       transition: Transition.leftToRight,
-                    ),
+                    )?.then((value) =>individualDashboardController.getDataForDashboard()),
                 child: const Icon(
                   Icons.menu,
                   color: Colors.white,
@@ -77,7 +81,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
               child: Obx(() {
                 return Container(
                   alignment: Alignment.center,
-                  child: Text(
+                  child: Text("            "+
                     individualProfileController.username.value,
                     style: TextStyle(
                       fontFamily: 'Poppins',
@@ -100,7 +104,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                           const NotificationScreen(),
                           duration: const Duration(milliseconds: 500),
                           transition: Transition.rightToLeft,
-                        ),
+                        )?.then((value) =>individualDashboardController.getDataForDashboard()),
                     child: const Icon(
                       Icons.notifications,
                       color: Colors.white,
@@ -112,10 +116,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                   Obx(() {
                     IndividualDashboardController wishlistController =
                     Get.find();
-
                     return GestureDetector(
                       onTap: () {
-                        Get.to(const WishlistScreen());
+                        Get.to(const WishlistScreen())?.then((value) =>individualDashboardController.getDataForDashboard());
                       },
                       child: Icon(Icons.favorite,
                           color: wishlistController.wishlistedParties.isEmpty
@@ -141,7 +144,8 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
               setState(() {
                 _selectedIndex = index;
                 if (_selectedIndex == 2) {
-                  Get.to(IndividualProfileScreen());
+                //  Get.to(IndividualProfileScreen())?.then((value) =>individualDashboardController.getDataForDashboard());
+                  Get.to(IndividualProfileScreenView())?.then((value) =>individualDashboardController.getDataForDashboard());
                 }
               });
             },
@@ -209,6 +213,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // search bar
                       Container(
                         margin: EdgeInsets.only(top: Get.height * 0.02),
                         padding: EdgeInsets.symmetric(
@@ -226,6 +231,12 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10.sp)),
                                 child: TextField(
+                                  onTap:(){
+                                    Get.to(PeopleList(peopleList:individualDashboardController
+                                        .usersList ,))?.then((value) =>individualDashboardController.getDataForDashboard());
+                                  },
+                                  readOnly: true,
+                                //  enabled: false,
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
                                       icon: const Icon(
@@ -243,6 +254,8 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                           ],
                         ),
                       ),
+
+                      // get all cities
                       Container(
                         height: MediaQuery
                             .of(context)
@@ -274,9 +287,15 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                               )),
                         ),
                       ),
+
+                      // people nearby
                       Padding(
                         padding: EdgeInsets.only(
                             left: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.05,
+                            right: MediaQuery
                                 .of(context)
                                 .size
                                 .width * 0.05,
@@ -284,7 +303,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                                 .of(context)
                                 .size
                                 .height * 0.01),
-                        child: Text(
+                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                          Text(
                           'People Nearby (${individualDashboardController
                               .usersList.length})',
                           style: TextStyle(
@@ -292,23 +313,39 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w500),
                         ),
+                          GestureDetector(onTap:(){
+                            Get.to(PeopleList(peopleList:individualDashboardController
+                                .usersList ,))?.then((value) =>individualDashboardController.getDataForDashboard());
+                            },
+                            child:  Text(
+                              'See all ',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          )
+                         ,
+                          ],
+                        ),
+
                       ),
                       individualDashboardController
                           .noUserFoundController.value ==
                           'null'
                           ? Container(
-                        decoration: const BoxDecoration(
+                    /*    decoration: const BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
                               Color.fromARGB(255, 135, 19, 19),
                               Color(0xFF711b1b),
                             ],
                           ),
-                        ),
+                        ), */
                         height: MediaQuery
                             .of(context)
                             .size
-                            .width * 0.27,
+                            .width * 0.3,
                         padding: EdgeInsets.only(
                           left: MediaQuery
                               .of(context)
@@ -325,9 +362,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                                 onTap: () {
                                   //PeopleViewed(individualDashboardController.usersList[index].id);
                                   //Navigator.push(context, MaterialPageRoute(builder: (context) => IndividualPeopleProfile(),));
-                                 Get.to(()=>IndividualPeopleProfile(user_id: individualDashboardController.usersList[index].id,));
+                                 Get.to(()=>IndividualPeopleProfile(user_id: individualDashboardController.usersList[index].id,))?.then((value) =>individualDashboardController.getDataForDashboard());
                                 },
-                                child: NearbyPeopleProfile(
+                                child: NearByPeopleProfile(
                                   imageURL: individualDashboardController
                                       .usersList[index].profilePicture,
                                   name: individualDashboardController
@@ -408,6 +445,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                             return PartyCard(
                                 party: individualDashboardController
                                     .jsonPartyPopularData[index],
+                                onBack: ()=>individualDashboardController.getDataForDashboard(),
                                 partyType: 'popular');
                           },
                         ),
@@ -481,6 +519,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                             return PartyCard(
                               party: individualDashboardController
                                   .jsonPartyOrganisationDataToday[index],
+                              onBack: ()=>individualDashboardController.getDataForDashboard(),
                               partyType: 'today',
                             );
                           },
@@ -555,6 +594,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                             return PartyCard(
                               party: individualDashboardController
                                   .jsonPartyOrganisationDataTomm[index],
+                              onBack: ()=>individualDashboardController.getDataForDashboard(),
                               partyType: 'tommorow',
                             );
                           },
@@ -630,6 +670,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                               party: individualDashboardController
                                   .jsonPartyOgranisationDataUpcomming[
                               index],
+                              onBack: ()=>individualDashboardController.getDataForDashboard(),
                               partyType: 'upcoming',
                             );
                           },
@@ -701,235 +742,6 @@ class CityCard extends StatelessWidget {
             cityName,
             style: TextStyle(
                 color: Colors.white, fontFamily: 'Poppins', fontSize: 10.sp),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class NearbyPeopleProfile extends StatelessWidget {
-  String imageURL;
-  String name;
-  String id;
-  String likeStatus;
-  String onlineStatus;
-  NearbyPeopleProfile({
-    required this.name,
-    required this.imageURL,
-    required this.id,
-    required this.likeStatus,
-    required this.onlineStatus,
-    super.key,
-  });
-
-  Future<void> likePeople(String id , bool status) async {
-    final response = await http.post(
-      Uri.parse('http://app.partypeople.in/v1/account/individual_user_like'),
-      headers: <String, String>{
-        'x-access-token': '${GetStorage().read('token')}',
-      },
-
-      body: <String, String>{
-        'user_like_status': status==true?"yes":"No",
-        'user_like_id': id
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // If the server returns a 200 OK response,
-      // then parse the JSON.
-      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-      print(jsonResponse);
-      if (jsonResponse['status'] == 1 && jsonResponse['message'].contains('likedsuccessfully')) {
-        print('User like save successfully');
-        //isLiked= true;
-      }
-      if (jsonResponse['status'] == 1 && jsonResponse['message'].contains('unlikedsuccessfully')) {
-        print('User unlike successfully');
-        //isLiked= false;
-      }
-      else {
-        print('Failed to like/ unlike ');
-        //isLiked= false;
-      }
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to like/unlike');
-     // isLiked= false;
-    }
-  }
-
-  Future<bool> onLikeButtonTapped(bool isLiked) async {
-    /// send your request here
-    ///
-    print("$isLiked");
-    isLiked = likeStatus=='1'? false :true;
-    final response = await http.post(
-      Uri.parse('http://app.partypeople.in/v1/account/individual_user_like'),
-      headers: <String, String>{
-        'x-access-token': '${GetStorage().read('token')}',
-      },
-
-      body: <String, String>{
-        'user_like_status': isLiked==true?"yes":"No",
-        'user_like_id': id
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // If the server returns a 200 OK response,
-      // then parse the JSON.
-      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-      print(jsonResponse);
-      if (jsonResponse['status'] == 1 && jsonResponse['message']==('User likedsuccessfully')) {
-        print('User like save successfully');
-         isLiked= false;
-         likeStatus='1';
-      }
-      else if (jsonResponse['status'] == 1 && jsonResponse['message']==('User unlikedsuccessfully')) {
-        print('User unlike successfully');
-        isLiked= true;
-        likeStatus='1';
-      }
-      else {
-        print('Failed to like/ unlike ');
-         isLiked= true;
-        likeStatus='0';
-      }
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to like/unlike');
-      return isLiked= false;
-    }
-    return isLiked;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(
-        MediaQuery
-            .of(context)
-            .size
-            .width * 0.015,
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 0.005,
-              ),
-              Container(
-                width: Get.width * 0.151,
-                height: Get.width * 0.151,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: Get.width * 0.005,
-                    color: const Color(0xFFe3661d),
-                  ),
-
-                  borderRadius: BorderRadius.circular(100.sp), //<-- SEE HERE
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(Get.width * 0.006),
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(imageURL),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 0.01,
-              ),
-              Row(
-                children: [
-                  Icon(
-                    Icons.message,
-                    size: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.005,
-                  ),
-                  Text(
-                    name,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Poppins',
-                        fontSize: 10.sp),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Positioned(
-            top: Get.height * 0.001,
-            right: -Get.height * 0.006,
-            child: Container(
-              width: Get.height * 0.032,
-              height: Get.height * 0.032,
-              padding: EdgeInsets.only(
-                left: Get.height * 0.0045,
-                top: Get.height * 0.00045,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(100.sp),
-              ),
-              child: LikeButton(
-
-                onTap: onLikeButtonTapped,
-                circleColor: const CircleColor(
-                    start: Colors.white, end: Color(0xFFe3661d)),
-                size: Get.height * 0.022,
-                likeBuilder: (bool isLiked) {
-                  return Icon(
-                    Icons.favorite,
-                    color: likeStatus=='1' ? const Color(0xFFf9090a) : Colors.white,
-                    size: Get.height * 0.022,
-                  );
-                },
-                bubblesColor: const BubblesColor(
-                  dotPrimaryColor: Color(0xff0099cc),
-                  dotSecondaryColor: Color(0xff0099cc),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: Get.height * 0.001,
-            left: -Get.height * 0.001,
-            child: onlineStatus=='on'? Container(
-              width: Get.height * 0.032,
-              height: Get.height * 0.032,
-              padding: EdgeInsets.only(
-                left: Get.height * 0.029,
-                top: Get.height * 0.00045,
-              ),
-
-              child: Icon(
-                Icons.circle,
-                color:  Colors.green,
-                size: Get.height * 0.016,
-              ),
-            ):Container(),
           ),
         ],
       ),
@@ -1119,9 +931,9 @@ class PopularPartyCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Icon(
-                            Icons.add,
+                            CupertinoIcons.add_circled,
                             color: Colors.white,
-                            size: 15.sp,
+                            size: 15,
                           ),
                           Text(
                             'Join',

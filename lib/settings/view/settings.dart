@@ -151,13 +151,19 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+          extendBodyBehindAppBar: true,
           appBar: AppBar(
             flexibleSpace: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.pink, Colors.red.shade900],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+                  colors: [
+                  //  Colors.pink,
+                   // Colors.red.shade900
+                    Colors.red.shade800,
+                    Color(0xff7e160a),
+                    Color(0xff2e0303),],
+                //  begin: Alignment.topCenter,
+                 // end: Alignment.bottomCenter,
                 ),
               ),
             ),
@@ -191,12 +197,7 @@ class _SettingsState extends State<Settings> {
                     .size
                     .height,
                 child: ListView(children: [
-                  /*  CustomOptionWidget(
-                    title: 'Privacy',
-                    icon: Icons.privacy_tip_outlined,
-                    deleteaccount: false,
-                    onTap: () => Get.to(EditIndividualProfile()),
-                  ), */
+
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Card(
@@ -209,8 +210,12 @@ class _SettingsState extends State<Settings> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              Colors.red.shade400,
+                              //Colors.red.shade400,
+                             // Colors.red.shade800,
+
                               Colors.red.shade800,
+                              Color(0xff7e160a),
+                              Color(0xff2e0303),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -255,14 +260,6 @@ class _SettingsState extends State<Settings> {
                       ),
                     ),
                   ),
-                  /* CustomOptionWidget(
-                    title: 'Notifcations',
-                    icon: Icons.notifications_active_outlined,
-                    deleteaccount: false,
-                    onTap: () {
-                      Get.to(VisitInfoView());
-                    },
-                  ),*/
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Card(
@@ -275,8 +272,11 @@ class _SettingsState extends State<Settings> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              Colors.red.shade400,
+                             // Colors.red.shade400,
+                             // Colors.red.shade800,
                               Colors.red.shade800,
+                              Color(0xff7e160a),
+                              Color(0xff2e0303),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -324,14 +324,7 @@ class _SettingsState extends State<Settings> {
                     ),
                   ),
 
-                  /* CustomOptionWidget(
-                    title: 'Delete My Account',
-                    icon: Icons.delete_outline,
-                    deleteaccount: true,
-                    onTap: () {
-                      Get.to(BlockedReportedUsersView());
-                    },
-                  ),*/
+
                   GestureDetector(
                     onTap: () {
                       //deleteaccount(context);
@@ -346,12 +339,16 @@ class _SettingsState extends State<Settings> {
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16.0)),
                         clipBehavior: Clip.antiAlias,
-                        child: Container(
+                        child:
+                        Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                Colors.red.shade400,
+                               // Colors.red.shade400,
+                               // Colors.red.shade800,
                                 Colors.red.shade800,
+                                Color(0xff7e160a),
+                                Color(0xff2e0303),
                               ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,

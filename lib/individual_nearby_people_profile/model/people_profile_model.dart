@@ -62,7 +62,7 @@ class Data {
   List<OrganizationAmenities>? organizationAmenities;
   String? fullName;
   String? phone;
-
+  int? likeStatus;
   Data(
       {this.id,
         this.userId,
@@ -102,7 +102,8 @@ class Data {
         this.displayStatus,
         this.organizationAmenities,
         this.fullName,
-        this.phone});
+        this.phone,
+      this.likeStatus});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -141,6 +142,7 @@ class Data {
     coverPhoto = json['cover_photo'];
     status = json['status'];
     displayStatus = json['display_status'];
+    likeStatus = json['like_status'];
     if (json['organization_amenities'] != null) {
       organizationAmenities = <OrganizationAmenities>[];
       json['organization_amenities'].forEach((v) {
@@ -195,6 +197,7 @@ class Data {
     }
     data['full_name'] = this.fullName;
     data['phone'] = this.phone;
+    data['like_status']= this.likeStatus;
     return data;
   }
 }

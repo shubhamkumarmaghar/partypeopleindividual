@@ -387,7 +387,7 @@ class _PartyPreviewState extends State<PartyPreview> {
               const EdgeInsets.symmetric(horizontal: 35.0, vertical: 12.0),
               child:CustomButton(
                 width: Get.width * 0.6,
-                text: 'On Going',
+                text: 'Join',
                 onPressed:(){ongoingParty(widget.party.id);},
               )
             ),

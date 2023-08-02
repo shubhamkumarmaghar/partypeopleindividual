@@ -35,6 +35,7 @@ class Data {
   String? viewStatus;
   String? username;
   dynamic profilePicture;
+  String? date;
   Data(
       {this.id,
         this.userId,
@@ -42,6 +43,7 @@ class Data {
         this.viewStatus,
         this.username,
         this.profilePicture,
+        this.date
       });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -51,6 +53,7 @@ class Data {
     viewStatus = json['view_status'];
     username = json['username'];
     profilePicture = json['profile_picture'];
+    date =json['date'];
   }
 
   Map<String, dynamic> toJson() {
@@ -61,7 +64,7 @@ class Data {
     data['view_status'] = this.viewStatus;
     data['username'] = this.username;
     data['profile_picture'] = this.profilePicture;
-
+    data['date'] = this.date;
     return data;
   }
 }

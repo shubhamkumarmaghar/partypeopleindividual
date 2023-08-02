@@ -9,6 +9,7 @@ import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../settings/view/settings.dart';
+import '../../widgets/block_unblock.dart';
 
 class IndividualDrawerView extends StatefulWidget {
   IndividualDrawerView({
@@ -32,13 +33,22 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+          extendBodyBehindAppBar: true,
           appBar: AppBar(
             flexibleSpace: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.pink, Colors.red.shade900],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+                  colors: [
+                 //   Colors.pink,
+                   // Colors.red.shade900
+                    Colors.red.shade800,
+                    Color(0xff7e160a),
+                    Color(0xff2e0303),
+                  ],
+                 // begin: Alignment.topCenter,
+                //  end: Alignment.bottomCenter,
+
+
                 ),
               ),
             ),
@@ -113,11 +123,7 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     title: 'Logout',
                     icon: Icons.exit_to_app,
                     onTap: () {
-                      GetStorage().remove('token');
-                      GetStorage().remove('loggedIn');
-                      GetStorage().remove('online_status');
-                      GetStorage().remove('online_notification_status');
-                      Get.offAll(LoginScreen());
+                      BlockUnblock.showLogoutAlertDialog(context);
                     },
                   ),
                 ]),
@@ -154,8 +160,12 @@ class CustomOptionWidget extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.red.shade400,
+
+
+                 // Colors.red.shade400,
                   Colors.red.shade800,
+                  Color(0xff7e160a),
+                  Color(0xff2e0303),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -192,4 +202,6 @@ class CustomOptionWidget extends StatelessWidget {
       ),
     );
   }
+
+
 }

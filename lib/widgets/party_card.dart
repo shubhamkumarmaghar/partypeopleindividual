@@ -1,24 +1,29 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/individualDashboard/controllers/individual_dashboard_controller.dart';
 import 'package:partypeopleindividual/individual_party_preview/party_preview_screen.dart';
 import 'package:sizer/sizer.dart';
 import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 
 import '../individualDashboard/models/party_model.dart';
+import '../individual_party_preview/party_preview_screen_new.dart';
 
 class PartyCard extends StatefulWidget {
   final Party party;
   final String partyType;
+  final Function onBack;
 
   PartyCard({
     super.key,
     required this.party,
+    required this.onBack,
     required this.partyType,
   });
 
@@ -142,6 +147,10 @@ class _PartyCardState extends State<PartyCard>
         print('Party view save successfully');
 
       }
+      if (jsonResponse['status'] == 0) {
+        print('Party view already viewed');
+
+      }
       else {
         print('Failed to update view Party ');
       }
@@ -192,7 +201,8 @@ class _PartyCardState extends State<PartyCard>
         ? GestureDetector(
             onTap: () {
               viewParty(widget.party.id);
-              Get.to(PartyPreview(party: widget.party));
+             // Get.to(PartyPreview(party: widget.party));
+              Get.to(PartyPreviewScreen(party: widget.party))?.then((value) => widget.onBack());
             },
             child: Padding(
               padding: const EdgeInsets.only(right: 8.0),
@@ -234,15 +244,20 @@ class _PartyCardState extends State<PartyCard>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                widget.party.title!.capitalizeFirst!,
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 12.sp,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
+                              Row(children: [
+                                Text(
+                                  widget.party.title!.capitalizeFirst!,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 12.sp,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
+                                widget.party.orgBluetickStatus =='1'?
+                                Icon(Icons.verified,color:Colors.blueAccent,size: 18,):Container(),
+                              ],),
+
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
@@ -296,7 +311,7 @@ class _PartyCardState extends State<PartyCard>
                                       ),
                                     ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Column(
@@ -304,7 +319,7 @@ class _PartyCardState extends State<PartyCard>
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Rating (4/5)",
+                                        "Rating (${widget.party.orgRatings} /5.0)",
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontSize: 10.sp,
@@ -315,7 +330,7 @@ class _PartyCardState extends State<PartyCard>
                                       SmoothStarRating(
                                         allowHalfRating: false,
                                         starCount: 5,
-                                        rating: 4.00,
+                                        rating: double.parse(widget.party.orgRatings),
                                         size: 18.0,
                                         color: Colors.orange,
                                         borderColor: Colors.orange,
@@ -326,21 +341,49 @@ class _PartyCardState extends State<PartyCard>
                                       ),
                                     ],
                                   ),
-                                  Text(
-                                    DateFormat('EEEE, MMMM d, yyyy, h:mm a')
-                                        .format(
-                                      DateTime.fromMillisecondsSinceEpoch(
-                                        int.parse(widget.party.startDate!) *
-                                            1000,
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        DateFormat('EEEE, MMMM d, yyyy, h:mm a')
+                                            .format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                            int.parse(widget.party.startDate!) *
+                                                1000,
+                                          ),
+                                        ),
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 10.sp,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 10.sp,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                      GestureDetector(
+                                        onTap: (){
+                                          APIService apiserice = APIService();
+                                          apiserice.ongoingParty(widget.party.id);
+
+                                        },
+                                        child: Container(
+                                          decoration:
+                                          BoxDecoration(borderRadius: BorderRadius.circular(20),
+                                            color: Colors.orange,),
+                                          width: Get.width*0.2,
+                                          height: Get.height*0.031,
+
+                                          child: Row(mainAxisAlignment: MainAxisAlignment.center
+                                              ,children: [
+                                          Icon(CupertinoIcons.add_circled,color: Colors.white),
+                                            Text("Join",style: TextStyle(color: Colors.white,
+                                            fontSize: 16),)
+                                          ]
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
+
                                 ],
                               ),
                             ],
@@ -397,7 +440,8 @@ class _PartyCardState extends State<PartyCard>
         : GestureDetector(
             onTap: () {
               viewParty(widget.party.id);
-              Get.to(PartyPreview(party: widget.party));
+            //  Get.to(PartyPreview(party: widget.party))?.then((value) => widget.onBack());
+              Get.to(PartyPreviewScreen(party: widget.party))?.then((value) => widget.onBack());
             },
             child: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
@@ -436,16 +480,19 @@ class _PartyCardState extends State<PartyCard>
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                              children: [Row(children: [
                                 Text(
-                                  widget.party.title!.capitalizeFirst!,
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 12.sp,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                widget.party.title!.capitalizeFirst!,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 12.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
                                 ),
+                              ),
+                                widget.party.orgBluetickStatus =='1'?
+                              Icon(Icons.verified,color:Colors.blueAccent,size: 18,):Container(),],),
+
                                 widget.partyType == 'upcoming'
                                     ? Column(
                                         crossAxisAlignment:
@@ -492,7 +539,7 @@ class _PartyCardState extends State<PartyCard>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Rating (4/5)",
+                                "Rating (${widget.party.orgRatings} /5.0)",
                                       style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 10.sp,
@@ -503,7 +550,7 @@ class _PartyCardState extends State<PartyCard>
                                     SmoothStarRating(
                                       allowHalfRating: false,
                                       starCount: 5,
-                                      rating: 4.00,
+                                      rating: double.parse(widget.party.orgRatings),
                                       size: 18.0,
                                       color: Colors.orange,
                                       borderColor: Colors.orange,

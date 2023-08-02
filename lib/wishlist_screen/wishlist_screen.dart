@@ -92,15 +92,18 @@ class _WishlistScreenState extends State<WishlistScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
             flexibleSpace: Container(
-              decoration: BoxDecoration(
+            /*  decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Colors.pink, Colors.red.shade900],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
-              ),
+              ),*/
             ),
             title: Text("Wishlist",
                 style: TextStyle(
@@ -108,137 +111,160 @@ class _WishlistScreenState extends State<WishlistScreen> {
                   fontSize: 14.sp,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                ))),
-        body: allParties.isEmpty
+                )
+            ),
+        ),
+        body: Container(
+            decoration: const BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment(1, -0.45),
+            radius: 0.9,
+            colors: [
+              Color(0xff7e160a),
+              Color(0xff2e0303),
+            ],
+            stops: [0.0, 1],
+            transform: GradientXDTransform(
+              0.0,
+              -1.0,
+              1.23,
+              0.0,
+              -0.115,
+              1.0,
+              Alignment(0.0, 0.0),
+            ),
+          ),
+        ),
+            child:  allParties.isEmpty
             ? Center(
-                child: Text(
-                  'No Wishlist Items Found',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 14.sp,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+          child: Text(
+            'No Wishlist Items Found',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 14.sp,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        )
+            : Padding(
+          padding: const EdgeInsets.only(top: 14.0),
+          child: Stack(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: RadialGradient(
+                    center: Alignment(1, -0.45),
+                    radius: 0.9,
+                    colors: [
+                      Color(0xff7e160a),
+                      Color(0xff2e0303),
+                    ],
+                    stops: [0.0, 1],
+                    transform: GradientXDTransform(
+                      0.0,
+                      -1.0,
+                      1.23,
+                      0.0,
+                      -0.115,
+                      1.0,
+                      Alignment(0.0, 0.0),
+                    ),
                   ),
                 ),
-              )
-            : Padding(
-                padding: const EdgeInsets.only(top: 14.0),
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                        gradient: RadialGradient(
-                          center: Alignment(1, -0.45),
-                          radius: 0.9,
-                          colors: [
-                            Color(0xff7e160a),
-                            Color(0xff2e0303),
-                          ],
-                          stops: [0.0, 1],
-                          transform: GradientXDTransform(
-                            0.0,
-                            -1.0,
-                            1.23,
-                            0.0,
-                            -0.115,
-                            1.0,
-                            Alignment(0.0, 0.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                    ListView.builder(
-                      itemCount: allParties.length,
-                      itemBuilder: (context, index) {
-                        return Slidable(
-                          key: const ValueKey(0),
+              ),
+              ListView.builder(
+                itemCount: allParties.length,
+                itemBuilder: (context, index) {
+                  return Slidable(
+                    key: const ValueKey(0),
 
-                          // The end action pane is the one at the right or the bottom side.
-                          endActionPane: ActionPane(
-                            motion: ScrollMotion(),
-                            children: [
-                              Center(
-                                child: Container(
-                                  height: 66,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  child: Center(
-                                    child: SlidableAction(
-                                      onPressed: (value) {
-                                        print(
-                                            "Deleted party : ${allParties[index]['party_id']}");
-                                        deleteWishListParty(
-                                            allParties[index]['party_id']);
-                                      },
-                                      backgroundColor: Color(0xFFFE4A49),
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.delete,
-                                      label: 'Delete',
-                                    ),
-                                  ),
-                                ),
+                    // The end action pane is the one at the right or the bottom side.
+                    endActionPane: ActionPane(
+                      motion: ScrollMotion(),
+                      children: [
+                        Center(
+                          child: Container(
+                            height: 66,
+                            width:
+                            MediaQuery.of(context).size.width * 0.4,
+                            child: Center(
+                              child: SlidableAction(
+                                onPressed: (value) {
+                                  print(
+                                      "Deleted party : ${allParties[index]['party_id']}");
+                                  deleteWishListParty(
+                                      allParties[index]['party_id']);
+                                },
+                                backgroundColor: Color(0xFFFE4A49),
+                                foregroundColor: Colors.white,
+                                icon: Icons.delete,
+                                label: 'Delete',
                               ),
-                            ],
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              // Get.to(PartyPreview(
-                              // data: allParties[index],
-                              // isPopularParty: false,
-                              // isHistory: true,
-                              // ));
-                            },
-                            child: CustomListTile(
-                              endTime: '${allParties[index]['end_time']}',
-                              startTime: '${allParties[index]['start_time']}',
-                              endDate: '${allParties[index]['end_date']}',
-                              startDate: '${allParties[index]['start_date']}',
-                              title: allParties[index]['title'] == null
-                                  ? 'Title'
-                                  : '${allParties[index]['title']}',
-                              subtitle: '${allParties[index]['description']}',
-                              trailingText: "Trailing Text",
-                              leadingImage:
-                                  '${allParties[index]['cover_photo']}',
-                              leadingIcon: const Icon(Icons.history),
-                              trailingIcon: const Icon(Icons.add),
-                              city: '${allParties[index]['city_id']}',
                             ),
                           ),
-                        );
+                        ),
+                      ],
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        // Get.to(PartyPreview(
+                        // data: allParties[index],
+                        // isPopularParty: false,
+                        // isHistory: true,
+                        // ));
                       },
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(bottom: 85),
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        "Swipe left to remove the party from the wishlist.",
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 9.sp,
-                          color: Colors.white,
-                          letterSpacing: 1.2,
-                          fontWeight: FontWeight.normal,
-                        ),
+                      child: CustomListTile(
+                        endTime: '${allParties[index]['end_time']}',
+                        startTime: '${allParties[index]['start_time']}',
+                        endDate: '${allParties[index]['end_date']}',
+                        startDate: '${allParties[index]['start_date']}',
+                        title: allParties[index]['title'] == null
+                            ? 'Title'
+                            : '${allParties[index]['title']}',
+                        subtitle: '${allParties[index]['description']}',
+                        trailingText: "Trailing Text",
+                        leadingImage:
+                        '${allParties[index]['cover_photo']}',
+                        leadingIcon: const Icon(Icons.history),
+                        trailingIcon: const Icon(Icons.add),
+                        city: '${allParties[index]['city_id']}',
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.only(bottom: 50),
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        "Total Wishlist Parties ( ${allParties.length} )",
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 12.sp,
-                          color: Colors.white,
-                          letterSpacing: 1.2,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ),
-                  ],
+                  );
+                },
+              ),
+              Container(
+                padding: EdgeInsets.only(bottom: 85),
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  "Swipe left to remove the party from the wishlist.",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 9.sp,
+                    color: Colors.white,
+                    letterSpacing: 1.2,
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
-              ));
+              ),
+              Container(
+                padding: EdgeInsets.only(bottom: 50),
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  "Total Wishlist Parties ( ${allParties.length} )",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 12.sp,
+                    color: Colors.white,
+                    letterSpacing: 1.2,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )));
   }
 }
 

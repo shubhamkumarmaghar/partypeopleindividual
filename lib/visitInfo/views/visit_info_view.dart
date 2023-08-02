@@ -2,11 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/centralize_api.dart';
 import 'package:partypeopleindividual/visitInfo/controllers/visit_info_controller.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
 import '../model/visitinfo.dart';
 
 class VisitInfoView extends StatefulWidget {
@@ -18,7 +20,6 @@ class VisitInfoView extends StatefulWidget {
 
 class _VisitInfoViewState extends State<VisitInfoView> {
   //visitInfoController visit_info_controller = Get.put(visitInfoController());
-
   @override
   void initState() {
     super.initState();
@@ -99,7 +100,7 @@ class _VisitInfoViewState extends State<VisitInfoView> {
                 children: [
                   SizedBox(height: 10.sp),
                   Text(
-                    'Only shows visitors from the past mont ',
+                    'Only shows visitors from the past month ',
                     style: TextStyle(
                         fontSize: 10.sp, color: const Color(0xFFc4c4c4)),
                   ),
@@ -107,7 +108,9 @@ class _VisitInfoViewState extends State<VisitInfoView> {
                   GetBuilder<visitInfoController>(
                     init: visitInfoController(),
                     builder: (controller) {
-                      return controller.visiterdataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.visiterdataModel.data ??[],)):CircularProgressIndicator();
+                      Iterable<Data>? visiterdata = controller.visiterdataModel.data?.reversed;
+                      List<Data>? dataList = visiterdata?.toList();
+                      return dataList != null? Expanded(child: ProfileContainer(dataList:dataList ??[],)):CircularProgressIndicator();
                     },),
 
                 ],
@@ -125,7 +128,10 @@ class _VisitInfoViewState extends State<VisitInfoView> {
                   GetBuilder<visitInfoController>(
                     init: visitInfoController(),
                     builder: (controller) {
-                      return controller.visiteddataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.visiteddataModel.data ??[],)):CircularProgressIndicator();
+                      Iterable<Data>? visiteddata = controller.visiteddataModel.data?.reversed;
+                      List<Data>? dataList = visiteddata?.toList();
+
+                      return dataList != null? Expanded(child: ProfileContainer(dataList:dataList ??[],)):CircularProgressIndicator();
                     },),
                 ],
               ),
@@ -142,8 +148,10 @@ class _VisitInfoViewState extends State<VisitInfoView> {
                   GetBuilder<visitInfoController>(
                     init: visitInfoController(),
                     builder: (controller) {
+                      Iterable<Data>? visiteddata = controller.visiteddataModel.data?.reversed;
+                      List<Data>? dataList = visiteddata?.toList();
 
-                      return controller.likedataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.likedataModel.data ??[],)):CircularProgressIndicator();
+                      return dataList != null? Expanded(child: ProfileContainer(dataList:dataList ??[],)):CircularProgressIndicator();
                     },),
                 ],
               ),
@@ -161,75 +169,90 @@ class ProfileContainer extends StatelessWidget {
   ProfileContainer({
     required this.dataList
   });
-  final List<Data> dataList;
-
+  List<Data> dataList;
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: dataList.length,
-      itemBuilder: (context, index) {
-         Data data = dataList[index];
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(15.sp),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 16.sp,
-                  backgroundImage: NetworkImage(data.profilePicture??'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54'),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        bottom: 3.sp,
-                        child: CircleAvatar(
-                          radius: 6.sp,
-                          backgroundImage:
-                          const NetworkImage("https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54"),
-                          //const AssetImage('assets/images/indian_flag.png'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 12.sp),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+
+    return SizedBox(
+      height: Get.height*0.4,
+      width: Get.width,
+
+      child: ListView.builder(
+        itemCount: dataList.length,
+        itemBuilder: (context, index) {
+           Data data = dataList[index];
+           var dateAndTime = data.date?.split(' ');
+           String? time = dateAndTime?[1];
+           String? date = dateAndTime?[0];
+
+        return GestureDetector(
+          onTap: (){
+            Get.to(IndividualPeopleProfile(user_id: data.userId??""));
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(15.sp),
+                child: Row(
                   children: [
-                    Text(
-                     data.username ??'',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: const Color(0xFF434343),
-                        fontWeight: FontWeight.w700,
+                    CircleAvatar(
+                      radius: 16.sp,
+                      backgroundImage: NetworkImage(data.profilePicture??'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54'),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            bottom: 3.sp,
+                            child: CircleAvatar(
+                              radius: 6.sp,
+                              backgroundImage:
+                              const NetworkImage("https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54"),
+                              //const AssetImage('assets/images/indian_flag.png'),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    /*Text(
-                      'DUMMY TEXT',
-                      style: TextStyle(
-                        fontSize: 8.sp,
-                        color: const Color(0xFF434343),
-                      ),
+                    SizedBox(width: 12.sp),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                         data.username ??'',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: const Color(0xFF434343),
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                        "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(date.toString()))}    ($time)",
+
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: const Color(0xFF434343),
+                          ),
+                        ),
+                        /* Text(
+                          "profilepic",
+                          style: TextStyle(
+                              fontSize: 8.sp, color: const Color(0xFFc4c4c4)),
+                        ),
+                        */
+                      ],
                     ),
-                    Text(
-                      "profilepic",
-                      style: TextStyle(
-                          fontSize: 8.sp, color: const Color(0xFFc4c4c4)),
-                    ),
-                    */
                   ],
                 ),
-              ],
-            ),
+              ),
+           /*   Container(
+                color: const Color(0xFFc4c4c4),
+                height: 0.4.sp,
+                width: MediaQuery.of(context).size.width * 0.73,
+              ),*/
+            ],
           ),
-          Container(
-            color: const Color(0xFFc4c4c4),
-            height: 0.4.sp,
-            width: MediaQuery.of(context).size.width * 0.73,
-          ),
-        ],
-      );
-    },);
+        );
+      },),
+    );
   }
 }

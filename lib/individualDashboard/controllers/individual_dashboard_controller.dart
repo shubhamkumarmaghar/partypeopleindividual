@@ -33,6 +33,7 @@ class IndividualDashboardController extends GetxController {
   RxInt lengthOfTommParties = 0.obs;
   RxInt lengthOfUpcomingParties = 0.obs;
   RxInt lengthOfPopularParties = 0.obs;
+  RxInt onlineStatus = 0.obs;
 
   RxList<UserModel> usersList = RxList<UserModel>();
 
@@ -48,10 +49,30 @@ class IndividualDashboardController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    getDataForDashboard();
+  }
+  void getDataForDashboard(){
+
+    lengthOfTodayParties = 0.obs;
+     lengthOfTommParties = 0.obs;
+    lengthOfUpcomingParties = 0.obs;
+     lengthOfPopularParties = 0.obs;
+    onlineStatus = 0.obs;
+     usersList= RxList<UserModel>();
+
+     wishlistedParties = RxList<Party>([]);
+
+     jsonPartyOrganisationDataToday = <Party>[].obs;
+     jsonPartyOrganisationDataTomm = <Party>[].obs;
+     jsonPartyOgranisationDataUpcomming = <Party>[].obs;
+     jsonPartyPopularData = <Party>[].obs;
+
+
     individualProfileController.individualProfileData();
     getAllNearbyPeoples();
     getAllCities();
-   getPartyByDate();
+    getPartyByDate();
+    getOnlineStatus();
   }
 
   RxString noUserFoundController = "null".obs;
@@ -89,25 +110,26 @@ class IndividualDashboardController extends GetxController {
   }
 
   Future<void> getAllNearbyPeoples() async {
-    print('nearby user');
+    print('nearby user 1');
     try {
       apiService.isLoading.value = true;
       var response = await apiService.individualNearbyPeoples({'city_id': '1'},
         '${GetStorage().read('token')}',
       );
-      print("Nearby People");
+      print("Nearby People 2");
 
       if (response['status'] == 1 && response['message'].contains('Success')) {
         try {
-          print("Nearby People");
+          print("Nearby People 3");
          //print(response.body);
           var usersData = response['data'] as List;
           usersData.forEach((element) => log('Data :: $element'));
           usersList.addAll(usersData.map((user) => UserModel.fromJson(user)));
+          log("length of people near by ${usersList.length}");
           apiService.isLoading.value = false;
           update();
         } catch (e) {
-          print("test Complete");
+          print("test Complete 0  $e  ");
 
           noUserFoundController.value = 'No User';
           apiService.isLoading.value = false;
@@ -121,8 +143,11 @@ class IndividualDashboardController extends GetxController {
 
         Get.snackbar('Opps!', 'No User found ');
       }
+      else {
+        Get.snackbar('Opps!', 'No User found ');
+      }
     } on SocketException {
-      print("test Complete");
+      print("test Complete 1");
 
       noUserFoundController.value = 'No User';
       update();
@@ -159,6 +184,13 @@ class IndividualDashboardController extends GetxController {
   Future<void> getPartyByDate() async {
     try {
       // Fetch all parties
+      /// status': '1' current date parties
+      /// status': '2' tomarrow date parties
+       /// status': '3' tomarrow date parties
+      ///
+      /// 'filter_type': '2' == regular parties
+      /// 'filter_type': '1' == popular parties
+
       http.Response response = await http.post(
         Uri.parse(
             'http://app.partypeople.in/v1/party/get_all_individual_party'),
@@ -177,7 +209,7 @@ class IndividualDashboardController extends GetxController {
       dynamic decodedData = jsonDecode(response.body);
       dynamic popularDecodedData = jsonDecode(popularResponse.body);
       print("all parties $decodedData");
-      print("all Popular parties $decodedData");
+      print("all Popular parties $popularDecodedData");
       // Initialize lists to store parties
       List<Party> todayParties = [];
       List<Party> tomorrowParties = [];
@@ -205,7 +237,7 @@ class IndividualDashboardController extends GetxController {
             Party parsedParty = Party.fromJson(party);
             DateTime startDate = DateTime.fromMillisecondsSinceEpoch(
                 int.parse(parsedParty.startDate) * 1000);
-            print(party);
+            print( party);
 
             // Extract the Date part only from startDate
             DateTime startDateDateOnly =
@@ -227,10 +259,34 @@ class IndividualDashboardController extends GetxController {
       // Loop through popular parties and add them to popularParties list
       if (popularDecodedData['data'] != null) {
         List<dynamic> allPopularParties = popularDecodedData['data'];
+
+        allPopularParties.sort((a, b) {
+          DateTime startDateA = DateTime.fromMillisecondsSinceEpoch(
+              int.parse(a['start_date']) * 1000);
+          DateTime startDateB = DateTime.fromMillisecondsSinceEpoch(
+              int.parse(b['start_date']) * 1000);
+          return startDateA.compareTo(startDateB);
+        });
         for (var party in allPopularParties) {
           try {
             Party parsedParty = Party.fromJson(party);
             popularParties.add(parsedParty);
+            DateTime startDate = DateTime.fromMillisecondsSinceEpoch(
+                int.parse(parsedParty.startDate) * 1000);
+            print(party);
+
+            // Extract the Date part only from startDate
+            DateTime startDateDateOnly =
+            DateTime(startDate.year, startDate.month, startDate.day);
+
+            if (startDateDateOnly.isAtSameMomentAs(today)) {
+              todayParties.add(parsedParty);
+            } else if (startDateDateOnly.isAtSameMomentAs(tomorrow)) {
+              tomorrowParties.add(parsedParty);
+            } else if (startDateDateOnly.isAfter(tomorrow)) {
+              upcomingParties.add(parsedParty);
+            }
+
           } catch (e) {
             print('Error parsing popular party: $e');
           }
@@ -253,6 +309,65 @@ class IndividualDashboardController extends GetxController {
       update();
     } catch (e) {
       print('Error fetching parties: $e');
+    }
+  }
+
+
+  /// GET ONLINE STATUS
+
+
+  Future<void> getOnlineStatus() async {
+    try {
+
+      // Get current date
+      DateTime now = DateTime.now();
+      log("current"+ now.toString());
+      String onlinetime = now.add(Duration(minutes: 5)).toString();
+      var  time = onlinetime.split('.');
+      onlinetime = time[0];
+
+      log("After adding few min "+ onlinetime.toString());
+      final response = await http.post(
+        Uri.parse(API.onlineStatus),
+        body:{'online_time_expiry' : onlinetime},
+        headers: {
+          'x-access-token': '${GetStorage().read('token')}',
+
+        },
+      );
+
+      if (response.statusCode == 200) {
+
+       var decode = jsonDecode(response.body);
+        if (decode['status'] == 1 ) {
+          try {
+            onlineStatus.value = decode['status'];
+            log("online Status : $onlineStatus");
+            apiService.isLoading.value = false;
+            update();
+          } catch (e) {
+            print("error catch for online status   $e  ");
+            apiService.isLoading.value = false;
+          }
+        }
+        else {
+          print("Opps!', 'online status failed ");
+         // Get.snackbar('Opps!', 'No User found ');
+        }
+        update();
+      } else {
+        throw Exception("Error with the request: ${response.statusCode}");
+      }
+    } on SocketException {
+      Get.snackbar('No Internet connection',
+          'Please check your internet connection and try again.',
+          snackPosition: SnackPosition.BOTTOM);
+    } on HttpException {
+      Get.snackbar('Something went wrong', 'Couldn\'t find the post.',
+          snackPosition: SnackPosition.BOTTOM);
+    } on FormatException {
+      Get.snackbar('Something went wrong', 'Bad response format.',
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 

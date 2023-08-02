@@ -160,14 +160,14 @@ class BlockedReportedUserItem extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      /*Text(
-                      'DUMMY TEXT',
+                      Text(
+                        data.date ??'',
                       style: TextStyle(
                         fontSize: 8.sp,
                         color: const Color(0xFF434343),
                       ),
                     ),
-                    Text(
+                  /*  Text(
                       "profilepic",
                       style: TextStyle(
                           fontSize: 8.sp, color: const Color(0xFFc4c4c4)),
@@ -186,7 +186,7 @@ class BlockedReportedUserItem extends StatelessWidget {
           ],
         ),
         onTap: (){
-          BlockUnblock.showBlockedAlertDialog(context,data.userId??'', 'Unblock');
+          BlockUnblock.showBlockedAlertDialog(context,data.individualId??'', 'Unblock');
 
         },);
 

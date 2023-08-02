@@ -12,6 +12,7 @@ class PeopleProfileController extends GetxController {
 
   PeopleProfileData peopleProfileData = PeopleProfileData();
   APIService apiService = Get.find();
+  List<OrganizationAmenities> amentiesdata=[];
 
   @override
   void onInit() {
@@ -46,7 +47,7 @@ class PeopleProfileController extends GetxController {
 
           var data = PeopleProfileData.fromJson(usersData);
 
-          var amentiesdata = data.data?.organizationAmenities??[];
+           amentiesdata = data.data?.organizationAmenities??[];
           // amenties = amentiesdata;
 
          /* var list = data.data ?? [];

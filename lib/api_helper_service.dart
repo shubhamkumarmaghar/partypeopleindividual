@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -191,14 +192,17 @@ class APIService extends GetxController {
 
       print("response of unblock data ${response.body}");
 
-
-      if (jsonDecode(response.body)['status'] == 0) {
-        print("User Unblocked successfully");
-        Get.snackbar('Unblocked' , 'You have successfully unblock ',);
-      }
-      else if(jsonDecode(response.body)['status'] == 1){
+      if (jsonDecode(response.body)['status'] == 1 && jsonDecode(response.body)['message'] == 'User block successfully') {
         print("User blocked successfully");
         Get.snackbar('Blocked' , 'You have successfully block ',);
+      }
+      else if(jsonDecode(response.body)['status'] == 1 && jsonDecode(response.body)['message'] == "User already block successfully"){
+        print("User already block successfully");
+        Get.snackbar('Blocked' , 'User already block successfully',);
+      }
+      else if(jsonDecode(response.body)['status'] == 1 && jsonDecode(response.body)['message'] == "User unblock successfully"){
+        print("User unblocked successfully");
+        Get.snackbar('Unblocked' , 'You have successfully Unblock ',);
       }
       else {
         print("User Unblocked failed ${response.body}");
@@ -210,6 +214,84 @@ class APIService extends GetxController {
     update();
   }
 
+/// on going parties
+
+  Future<void> ongoingParty(String id) async {
+    final response = await http.post(
+      Uri.parse('http://app.partypeople.in/v1/party/party_ongoing'),
+      headers: <String, String>{
+        'x-access-token': '${GetStorage().read('token')}',
+      },
+      body: <String, String>{
+        'party_id': id,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response,
+      // then parse the JSON.
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == 1) {
+        print('Party ongoing save successfully');
+        Get.snackbar('Welcome',
+            'You are welcome to join party');
+      }
+      else {
+        print('Failed to update ongoing Party data');
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to update Party onging data');
+    }
+  }
+
+
+  /// all indiviusal people like
+
+
+  static Future<int>
+   likePeople(String id , bool status) async {
+    final response = await http.post(
+      Uri.parse('http://app.partypeople.in/v1/account/individual_user_like'),
+      headers: <String, String>{
+        'x-access-token': '${GetStorage().read('token')}',
+      },
+
+      body: <String, String>{
+        'user_like_status': status==true?"yes":"No",
+        'user_like_id': id
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response,
+      // then parse the JSON.
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == 1 && jsonResponse['message'].contains('User liked successfully')) {
+        print('User like save successfully');
+        return 1;
+
+      }
+      else if (jsonResponse['status'] == 1 && jsonResponse['message'].contains('User unliked successfully')) {
+        print('User unlike successfully');
+        return 0;
+
+      }
+      else {
+        print('else  Failed to like/ unlike ');
+        return 0;
+        //isLiked= false;
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to like/unlike');
+
+    }
+  }
 
 
 }
