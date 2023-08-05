@@ -10,6 +10,8 @@ import 'package:sizer/sizer.dart';
 import 'package:shimmer/shimmer.dart';
 import '../api_helper_service.dart';
 import '../individualDashboard/models/party_model.dart';
+import '../individual_nearby_people_profile/view/individual_people_profile.dart';
+import '../party_organization_details_view/view/organization_detalis_view.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/individual_amenities.dart';
 
@@ -60,7 +62,7 @@ getSelectedID();
   void getSelectedID() {
     for (var i = 0; i < widget.party.partyAmenities.length; i++) {
       var amenityName = widget.party.partyAmenities[i].name;
-      print("kmfslkmdskmkm"+ amenityName);
+      print("amenity name"+ amenityName);
       setState(() {
         _categories.forEach((category) {
           category.amenities.forEach((amenity) {
@@ -207,16 +209,21 @@ getSelectedID();
                         child: Container(
                           width: Get.width*0.2,
                           height: Get.height*0.04,
+                          padding: EdgeInsets.all(5),
                           decoration:
                           BoxDecoration(borderRadius: BorderRadius.circular(12),
                             color: Colors.orange,),
-                          child:  Row(mainAxisAlignment: MainAxisAlignment.center
-                              ,children: [
-                                Icon(CupertinoIcons.add_circled,color: Colors.white),
-                                SizedBox(width: Get.width*0.003,),
-                                Text("Join",style: TextStyle(color: Colors.white,
-                                    fontSize: 16),)
-                              ]
+                          child:  FittedBox(
+                            child: Row(mainAxisAlignment: MainAxisAlignment.center
+                                ,children: [
+                                  Icon(CupertinoIcons.add_circled,color: Colors.white),
+                                  SizedBox(width: Get.width*0.003,),
+                                  widget.party.ongoingStatus == 0 ?
+                                  Text("Join",style: TextStyle(color: Colors.white,
+                                      fontSize: 16),) : Text("Joined",style: TextStyle(color: Colors.white,
+                                      fontSize: 16),)
+                                ]
+                            ),
                           ),
                         ),
                       )),
@@ -242,7 +249,7 @@ getSelectedID();
                   style: TextStyle(
                       fontFamily: 'malgun',
                       fontSize: 28,
-                      color: Colors.black54,
+                      color: Colors.black87,
                       fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(
@@ -255,7 +262,28 @@ getSelectedID();
                   style: TextStyle(
                     fontFamily: 'malgun',
                     fontSize: 12.sp,
-                    color: const Color(0xff7D7373),
+                    color: Colors.black,
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 15,
+                ),
+                GestureDetector(
+                  onTap: (){
+                    Get.to(()
+                    =>  OrganizationDetaisView(organizationData: widget.party.userId , mobileno: widget.party.phoneNumber,),arguments: widget.party.userId
+                    );
+                  },
+                  child: Text(
+                    'Organized By : ${widget.party.organization.capitalizeFirst!} ',
+                    textAlign: TextAlign.start,
+                    maxLines: 2,
+                    style: TextStyle(
+                        fontFamily: 'malgun',
+                        fontSize: 12.sp,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
                 const Divider(),
@@ -281,7 +309,7 @@ getSelectedID();
                 */
                 CustomListTile(
                   icon: Icons.calendar_month,
-                  title: "${widget.party.prStartDate != null ? DateFormat('d MMMM, y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.startDate) * 1000)) : ''} to ${widget.party.endDate != null ? DateFormat(' d MMMM, y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.endDate) * 1000)) : ''}",
+                  title: "${widget.party.prStartDate != null ? DateFormat('d MMMM, y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.startDate) * 1000)) : ''} ",
                   subtitle:
                   "${widget.party.startTime}  to  ${widget.party.endTime }",
                   sub: true,
@@ -385,7 +413,7 @@ getSelectedID();
                           style: TextStyle(
                               fontFamily: 'malgun',
                               fontSize: 17,
-                              color: Colors.grey,fontWeight: FontWeight.w600),
+                              color: Colors.black,fontWeight: FontWeight.w600),
                         ),  Container(
                           padding: const EdgeInsets.only(top: 4, bottom: 5),
                           child: Row(
@@ -399,28 +427,28 @@ getSelectedID();
                                     style: TextStyle(
                                         fontFamily: 'malgun',
                                         fontSize: 15,
-                                        color: Colors.grey,fontWeight: FontWeight.w600),
+                                        color: Colors.black,fontWeight: FontWeight.w600),
                                   ),
                                   Text(
                                     'Couples',
                                     style: TextStyle(
                                         fontFamily: 'malgun',
                                         fontSize: 15,
-                                        color: Colors.grey,fontWeight: FontWeight.w600),
+                                        color: Colors.black,fontWeight: FontWeight.w600),
                                   ),
                                   Text(
                                     'Stag',
                                     style: TextStyle(
                                         fontFamily: 'malgun',
                                         fontSize: 15,
-                                        color: Colors.grey,fontWeight: FontWeight.w600),
+                                        color: Colors.black,fontWeight: FontWeight.w600),
                                   ),
                                   Text(
                                     'Others',
                                     style: TextStyle(
                                         fontFamily: 'malgun',
                                         fontSize: 15,
-                                        color: Colors.grey,fontWeight: FontWeight.w600),
+                                        color: Colors.black,fontWeight: FontWeight.w600),
                                   ),
                                 ],
                               ),
@@ -431,36 +459,36 @@ getSelectedID();
                                   widget.party.ladies == '0'
                                       ? const Text(
                                     "  - NA",
-                                    style: TextStyle(color: Colors.grey,fontWeight: FontWeight.w600),
+                                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600),
                                   )
                                       : Text(
                                     "  - ₹ ${widget.party.ladies}",
-                                    style: const TextStyle(color: Colors.grey,fontWeight: FontWeight.w600),
+                                    style: const TextStyle(color: Colors.black,fontWeight: FontWeight.w600),
                                   ),
                                   widget.party.couples == '0'
                                       ? const Text(
                                     "  - NA",
-                                    style: TextStyle(color: Colors.grey,fontWeight: FontWeight.w600),
+                                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600),
                                   )
                                       : Text(
                                     "  - ₹ ${widget.party.couples}",
-                                    style: const TextStyle(color: Colors.grey,fontWeight: FontWeight.w600),
+                                    style: const TextStyle(color: Colors.black,fontWeight: FontWeight.w600),
                                   ),
                                   widget.party.stag == '0'
                                       ? const Text(
                                     "  - NA",
-                                    style: TextStyle(color: Colors.grey,fontWeight: FontWeight.w600),
+                                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600),
                                   )
                                       : Text(
                                     "  - ₹ ${widget.party.stag}",
-                                    style: const TextStyle(color: Colors.grey,fontWeight: FontWeight.w600),
+                                    style: const TextStyle(color: Colors.black,fontWeight: FontWeight.w600),
                                   ),
                                   widget.party.others == '0'
                                       ? const Text("  - NA",
-                                      style: TextStyle(color: Colors.grey,fontWeight: FontWeight.w600))
+                                      style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600))
                                       : Text(
                                     "  - ₹ ${widget.party.others}",
-                                    style: const TextStyle(color: Colors.grey,fontWeight: FontWeight.w600),
+                                    style: const TextStyle(color: Colors.black,fontWeight: FontWeight.w600),
                                   ),
                                 ],
                               ),
@@ -577,7 +605,7 @@ getSelectedID();
         Text(IconText,style: TextStyle(
           fontFamily: 'malgun',
           fontSize: 14,
-          color: Colors.grey,
+          color: Colors.black,
         ),)
       ]),
     );
@@ -637,7 +665,7 @@ class CustomListTile extends StatelessWidget {
           style: const TextStyle(
             fontFamily: 'malgun',
             fontSize: 18,
-            color: Colors.black38,
+            color: Colors.black87,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -646,7 +674,7 @@ class CustomListTile extends StatelessWidget {
             style: const TextStyle(
               fontFamily: 'malgun',
               fontSize: 14,
-              color: Colors.grey,
+              color: Colors.black,
             ),
           ):Container(),],)
         ],

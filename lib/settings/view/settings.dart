@@ -2,11 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart' as http;
-import 'package:partypeopleindividual/edit_individual_profile/edit_individual_profile.dart';
-import 'package:partypeopleindividual/individual_blocked_report/view/blocked_report_screen.dart';
-import 'package:partypeopleindividual/login/views/login_screen.dart';
-import 'package:partypeopleindividual/visitInfo/views/visit_info_view.dart';
+import 'package:partypeopleindividual/settings/controllers/settings_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -20,9 +16,10 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  bool isprivacySwitched = GetStorage().read("online_status") ?? false;
-  bool isnotificationSwitched = GetStorage().read(
-      "online_notification_status") ?? false;
+
+  SettingController settingController = Get.put(SettingController());
+  bool isprivacySwitched =  false;
+  bool isnotificationSwitched = false;
 
   void _launchURL(url) async {
     if (await canLaunch(url)) {
@@ -32,121 +29,16 @@ class _SettingsState extends State<Settings> {
     }
   }
 
-  Future<void> updateonlineStatus(status) async {
-    // API endpoint URL
-    String url = 'http://app.partypeople.in/v1/account/update_online_status';
 
-    // Request headers
-    Map<String, String> headers = {
-      'x-access-token': '${GetStorage().read('token')}',
-    };
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isprivacySwitched =  GetStorage().read("privacy_online_status");
+    isnotificationSwitched =  GetStorage().read("online_notification_status") ;
+    print("isprivacyswitch :$isprivacySwitched"  + "    isnotification : $isnotificationSwitched");
 
-    // Request body
-    Map<String, dynamic> body = {
-      'online_status': status == true ? "on" : "off",
-    };
-
-    try {
-      // Send POST request
-      http.Response response = await http.post(
-        Uri.parse(url),
-        headers: headers,
-        body: body,
-      );
-      print(response.body);
-      // Check response status code
-      if (response.statusCode == 200) {
-        // Request successful
-        print('status successfullu updated');
-      } else {
-        // Request failed
-        print(
-            'Failed to update status. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      // Error occurred
-      print('Error occurred while updating status: $e');
-    }
   }
-
-  Future<void> updatenotificationStatus(status) async {
-    // API endpoint URL
-    String url = 'http://app.partypeople.in/v1/account/update_notification_status';
-
-    // Request headers
-    Map<String, String> headers = {
-      'x-access-token': '${GetStorage().read('token')}',
-    };
-
-    // Request body
-    Map<String, dynamic> body = {
-      'notification_status': status == true ? "on" : "off",
-    };
-
-    try {
-      // Send POST request
-      http.Response response = await http.post(
-        Uri.parse(url),
-        headers: headers,
-        body: body,
-      );
-      print(response.body);
-      // Check response status code
-      if (response.statusCode == 200) {
-        // Request successful
-        print('Notification status successfullu updated');
-      } else {
-        // Request failed
-        print(
-            'Failed to update Notification status. Status code: ${response
-                .statusCode}');
-      }
-    } catch (e) {
-      // Error occurred
-      print('Error occurred while updating Notification status: $e');
-    }
-  }
-
-  Future<void> deleteaccount() async {
-    // API endpoint URL
-    String url = 'http://app.partypeople.in/v1/account/delete_my_account';
-
-    // Request headers
-    Map<String, String> headers = {
-      'x-access-token': '${GetStorage().read('token')}',
-    };
-
-    // Request body not required
-
-    try {
-      // Send POST request
-      http.Response response = await http.post(
-        Uri.parse(url),
-        headers: headers,
-      );
-      print(response.body);
-      // Check response status code
-      if (response.statusCode == 200) {
-        // Request successful
-        print('Account Successfully Deleted');
-        GetStorage().remove('token');
-        GetStorage().remove('loggedIn');
-        GetStorage().remove('online_status');
-        GetStorage().remove('online_notification_status');
-
-        Get.offAll(const LoginScreen());
-      } else {
-        // Request failed
-        print(
-            'Failed to Delete account. Status code: ${response
-                .statusCode}');
-      }
-    } catch (e) {
-      // Error occurred
-      print('Error occurred while deleting account: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -212,7 +104,6 @@ class _SettingsState extends State<Settings> {
                             colors: [
                               //Colors.red.shade400,
                              // Colors.red.shade800,
-
                               Colors.red.shade800,
                               Color(0xff7e160a),
                               Color(0xff2e0303),
@@ -223,7 +114,8 @@ class _SettingsState extends State<Settings> {
                         ),
                         padding: EdgeInsets.symmetric(
                             vertical: 16.0, horizontal: 24.0),
-                        child: Row(
+                        child:
+                        Row(
                           children: [
                             Icon(
                               Icons.privacy_tip_outlined,
@@ -232,23 +124,38 @@ class _SettingsState extends State<Settings> {
                             ),
                             SizedBox(width: 16.0),
                             Expanded(
-                              child: Text(
-                                "Privacy",
+                              child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,children: [  Text(
+                                "Online Status",
                                 style: TextStyle(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                     fontFamily: 'Poppins'),
                               ),
+                                Text(
+                                "Your Profile will be hidden when it turn on ",
+                                maxLines: 3,
+                                style: TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontFamily: 'Poppins'),
+                              ),
+
+                              ],),
                             ),
+
                             Switch(value: isprivacySwitched,
                               onChanged: (value) {
-                                updateonlineStatus(value);
-                                GetStorage().write("online_status", value);
+                                settingController.updatePrivacyStatus(value);
+                                GetStorage().write("privacy_online_status", value);
+
+
                                 setState(() {
                                   isprivacySwitched = value;
                                   print('$isprivacySwitched ${GetStorage().read(
-                                      'online_status')}');
+                                      'privacy_online_status')}');
                                 });
                               },
                               activeTrackColor: Colors.lightGreenAccent,
@@ -293,7 +200,9 @@ class _SettingsState extends State<Settings> {
                             ),
                             SizedBox(width: 16.0),
                             Expanded(
-                              child: Text(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,children: [
+                                  Text(
                                 "Notifications",
                                 style: TextStyle(
                                     fontSize: 13.sp,
@@ -301,11 +210,23 @@ class _SettingsState extends State<Settings> {
                                     color: Colors.white,
                                     fontFamily: 'Poppins'),
                               ),
+                                Text(
+                                  "Your will not receive notification when it turn on ",
+                                  maxLines: 3,
+                                  style: TextStyle(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontFamily: 'Poppins'),
+                                ),
+
+                              ],),
                             ),
+
                             Switch(
                               value: isnotificationSwitched,
                               onChanged: (value) {
-                                updatenotificationStatus(value);
+                                settingController.updateNotificationStatus(value);
                                 GetStorage().write(
                                     "online_notification_status", value);
                                 setState(() {
@@ -323,7 +244,6 @@ class _SettingsState extends State<Settings> {
                       ),
                     ),
                   ),
-
 
                   GestureDetector(
                     onTap: () {
@@ -392,14 +312,14 @@ class _SettingsState extends State<Settings> {
     AwesomeDialog(
       context: context,
       dialogType: DialogType.question,
-      animType: AnimType.BOTTOMSLIDE,
+      animType: AnimType.bottomSlide,
       title: 'Delete Your Account?',
       desc: 'Are you sure you want to delete your Account?',
       titleTextStyle: TextStyle(fontSize: 22,color: Colors.black),
       descTextStyle: TextStyle(fontSize: 18,color: Colors.black54),
       btnOkText: "Delete",
       btnOkOnPress: () {
-       deleteaccount();
+       settingController.deleteAccount();
       },
       btnCancelText: "Cancel",
       btnCancelOnPress: () {
@@ -411,13 +331,13 @@ class _SettingsState extends State<Settings> {
 class CustomOptionWidget extends StatelessWidget {
   final IconData icon;
   final String title;
-  bool deleteaccount;
+  final bool deleteAccount;
   final VoidCallback? onTap;
 
   CustomOptionWidget({
     required this.icon,
     required this.title,
-    required this.deleteaccount,
+    required this.deleteAccount,
     this.onTap,
   });
 
@@ -463,7 +383,7 @@ class CustomOptionWidget extends StatelessWidget {
                         fontFamily: 'Poppins'),
                   ),
                 ),
-                deleteaccount==false?Icon(
+                deleteAccount==false?Icon(
                   Icons.arrow_forward_ios_outlined,
                   size: 16.0,
                   color: Colors.white,

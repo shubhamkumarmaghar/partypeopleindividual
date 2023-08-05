@@ -173,6 +173,7 @@ class _PeopleListState extends State<PeopleList> {
                             id: showList[index].id,
                             likeStatus: showList[index].likeStatus,
                             onlineStatus: showList[index].onlineStatus,
+                            privacyStatus: showList[index].privacyOnline,
                           ),
                           // personGrid(index: index),
                         );

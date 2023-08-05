@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,9 @@ class IndividualProfileController extends GetxController {
   RxString state = ''.obs;
   RxString gender = ''.obs;
   RxString city = ''.obs;
+  RxString privacyOnlineStatus = ''.obs;
+  RxString notification = ''.obs;
+
   TextEditingController dobController = TextEditingController();
   RxList selectedAmenities = [].obs;
   var getPrefiledData;
@@ -237,16 +241,15 @@ class IndividualProfileController extends GetxController {
         Get.snackbar('Error', 'Response or response body is null');
       }
     } on SocketException {
-      Get.snackbar('Network Error',
-          'Please check your internet connection and try again!');
+     log('Network Error : Please check your internet connection and try again!');
     } on HttpException {
-      Get.snackbar('Error', 'Could not find the service you were looking for!');
+  log ('Http Error Could not find the service you were looking for!');
     } on FormatException {
-      Get.snackbar('Error', 'Bad response format. Please contact support!');
+      log('Error Bad response format. Please contact support!');
     } catch (e) {
       // If the exact error type isn't matched in the preceding catch clauses
-      Get.snackbar('Unexpected Error',
-          'Something unexpected happened. Try again later!');
+   /*   Get.snackbar('Unexpected Error',
+          'Something unexpected happened. Try again later!');*/
       print('Unexpected error: $e');
     }
   }
@@ -271,16 +274,15 @@ class IndividualProfileController extends GetxController {
         Get.snackbar('Error', 'Response or response body is null');
       }
     } on SocketException {
-      Get.snackbar('Network Error',
-          'Please check your internet connection and try again!');
+     log('Network Error : Please check your internet connection and try again!');
     } on HttpException {
-      Get.snackbar('Error', 'Could not find the service you were looking for!');
+      log('Error Could not find the service you were looking for!');
     } on FormatException {
-      Get.snackbar('Error', 'Bad response format. Please contact support!');
+      log('Error Bad response format. Please contact support!');
     } catch (e) {
       // If the exact error type isn't matched in the preceding catch clauses
-      Get.snackbar('Unexpected Error',
-          'Something unexpected happened. Try again later!');
+    /*  Get.snackbar('Unexpected Error',
+          'Something unexpected happened. Try again later!'); */
       print('Unexpected error: $e');
     }
   }
@@ -323,7 +325,11 @@ class IndividualProfileController extends GetxController {
           organization_id.value = user['id'] ?? "";
           // Set dobController's text to the 'dob' value
           dobController.text = dob.value;
+          privacyOnlineStatus.value = response['privacy_online']??'';
+          notification.value = response['notification']??'';
           apiService.isLoading.value = false;
+
+
           update();
         } catch (e) {
           // Log the error or handle it appropriately
@@ -359,16 +365,17 @@ class IndividualProfileController extends GetxController {
         Get.snackbar('Error', 'Response or response body is null');
       }
     } on SocketException {
-      Get.snackbar('Network Error',
-          'Please check your internet connection and try again!');
+  log('Network Error Please check your internet connection and try again!');
     } on HttpException {
-      Get.snackbar('Error', 'Could not find the service you were looking for!');
+      log('Http Error Could not find the service you were looking for!');
     } on FormatException {
-      Get.snackbar('Error', 'Bad response format. Please contact support!');
+      log('Error Bad response format. Please contact support!');
     } catch (e) {
       // If the exact error type isn't matched in the preceding catch clauses
-      Get.snackbar('Unexpected Error',
+     /* Get.snackbar('Unexpected Error',
           'Something unexpected happened. Try again later!');
+
+      */
       print('Unexpected error: $e');
     }
   }

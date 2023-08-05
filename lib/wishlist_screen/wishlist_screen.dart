@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:adobe_xd/gradient_xd_transform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:sizer/sizer.dart';
@@ -185,9 +187,9 @@ class _WishlistScreenState extends State<WishlistScreen> {
                       children: [
                         Center(
                           child: Container(
-                            height: 66,
-                            width:
-                            MediaQuery.of(context).size.width * 0.4,
+                            alignment: Alignment.center,
+                            height: Get.height*0.08,
+                            width: MediaQuery.of(context).size.width * 0.4,
                             child: Center(
                               child: SlidableAction(
                                 onPressed: (value) {
@@ -196,7 +198,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                   deleteWishListParty(
                                       allParties[index]['party_id']);
                                 },
-                                backgroundColor: Color(0xFFFE4A49),
+                                backgroundColor: Colors.transparent,
                                 foregroundColor: Colors.white,
                                 icon: Icons.delete,
                                 label: 'Delete',
@@ -313,7 +315,8 @@ class CustomListTile extends StatelessWidget {
           bottom: MediaQuery.of(context).size.width * 0.07),
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF3c0103),
+          color: Colors.white,
+         // color: Colors.white,
           boxShadow: [
             const BoxShadow(
               color: Color.fromARGB(255, 110, 19, 9),
@@ -342,7 +345,7 @@ class CustomListTile extends StatelessWidget {
                           : title,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: const Color(0xFFd3b2b1),
+                        color: const Color(0xFF3c0103),
                         fontWeight: FontWeight.bold,
                         fontSize: 15.0.sp,
                       ),
@@ -352,7 +355,7 @@ class CustomListTile extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.calendar_month,
-                          color: const Color(0xFFd3b2b1),
+                          color: const Color(0xFF3c0103),
                           size: 13.sp,
                         ),
                         SizedBox(

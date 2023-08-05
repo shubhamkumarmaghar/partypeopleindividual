@@ -19,7 +19,7 @@ class BlockedReportedUsersView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Blocked and Reported Users',
+          'Blocked Users',
           style: TextStyle(
             fontSize: 16.sp,
             color: Colors.white,
@@ -34,7 +34,7 @@ class BlockedReportedUsersView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
+          /*  Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 5.sp),
               child: Container(
                 padding: EdgeInsets.all(5.sp),
@@ -51,7 +51,7 @@ class BlockedReportedUsersView extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
+            ),  */
             Container(height: Get.height*0.4,child:
             GetBuilder<BlockReportController>(
               init: BlockReportController(),
@@ -69,7 +69,8 @@ class BlockedReportedUsersView extends StatelessWidget {
                   );
                 },
               ),
-            ),*/
+            ),
+
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 5.sp),
               child: Container(
@@ -88,6 +89,7 @@ class BlockedReportedUsersView extends StatelessWidget {
                 ),
               ),
             ),
+           */
            /* Expanded(
               child: ListView.builder(
                 itemCount: 10,

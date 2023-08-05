@@ -108,9 +108,9 @@ class _VisitInfoViewState extends State<VisitInfoView> {
                   GetBuilder<visitInfoController>(
                     init: visitInfoController(),
                     builder: (controller) {
-                      Iterable<Data>? visiterdata = controller.visiterdataModel.data?.reversed;
-                      List<Data>? dataList = visiterdata?.toList();
-                      return dataList != null? Expanded(child: ProfileContainer(dataList:dataList ??[],)):CircularProgressIndicator();
+                      //Iterable<Data>? visiterdata = controller.visiterdataModel.data?.reversed;
+                     // List<Data>? dataList = visiterdata?.toList();
+                      return controller.visiterdataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.visiterdataModel.data ??[],)):CircularProgressIndicator();
                     },),
 
                 ],
@@ -128,10 +128,10 @@ class _VisitInfoViewState extends State<VisitInfoView> {
                   GetBuilder<visitInfoController>(
                     init: visitInfoController(),
                     builder: (controller) {
-                      Iterable<Data>? visiteddata = controller.visiteddataModel.data?.reversed;
-                      List<Data>? dataList = visiteddata?.toList();
+                   //   Iterable<Data>? visiteddata = controller.visiteddataModel.data?.reversed;
+                    //  List<Data>? dataList = visiteddata?.toList();
 
-                      return dataList != null? Expanded(child: ProfileContainer(dataList:dataList ??[],)):CircularProgressIndicator();
+                      return controller.visiteddataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.visiteddataModel.data ??[],)):CircularProgressIndicator();
                     },),
                 ],
               ),
@@ -148,10 +148,10 @@ class _VisitInfoViewState extends State<VisitInfoView> {
                   GetBuilder<visitInfoController>(
                     init: visitInfoController(),
                     builder: (controller) {
-                      Iterable<Data>? visiteddata = controller.visiteddataModel.data?.reversed;
-                      List<Data>? dataList = visiteddata?.toList();
+                     // Iterable<Data>? visiteddata = controller.likedataModel.data?.reversed;
+                    //  List<Data>? dataList = visiteddata?.toList();
 
-                      return dataList != null? Expanded(child: ProfileContainer(dataList:dataList ??[],)):CircularProgressIndicator();
+                      return controller.likedataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.likedataModel.data ??[],)):CircularProgressIndicator();
                     },),
                 ],
               ),
@@ -172,7 +172,6 @@ class ProfileContainer extends StatelessWidget {
   List<Data> dataList;
   @override
   Widget build(BuildContext context) {
-
     return SizedBox(
       height: Get.height*0.4,
       width: Get.width,

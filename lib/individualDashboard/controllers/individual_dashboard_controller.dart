@@ -53,11 +53,11 @@ class IndividualDashboardController extends GetxController {
   }
   void getDataForDashboard(){
 
-    lengthOfTodayParties = 0.obs;
+     lengthOfTodayParties = 0.obs;
      lengthOfTommParties = 0.obs;
-    lengthOfUpcomingParties = 0.obs;
+     lengthOfUpcomingParties = 0.obs;
      lengthOfPopularParties = 0.obs;
-    onlineStatus = 0.obs;
+     onlineStatus = 0.obs;
      usersList= RxList<UserModel>();
 
      wishlistedParties = RxList<Party>([]);
@@ -67,12 +67,12 @@ class IndividualDashboardController extends GetxController {
      jsonPartyOgranisationDataUpcomming = <Party>[].obs;
      jsonPartyPopularData = <Party>[].obs;
 
-
+    getOnlineStatus();
     individualProfileController.individualProfileData();
     getAllNearbyPeoples();
     getAllCities();
     getPartyByDate();
-    getOnlineStatus();
+
   }
 
   RxString noUserFoundController = "null".obs;
@@ -97,15 +97,11 @@ class IndividualDashboardController extends GetxController {
         throw Exception("Error with the request: ${response.statusCode}");
       }
     } on SocketException {
-      Get.snackbar('No Internet connection',
-          'Please check your internet connection and try again.',
-          snackPosition: SnackPosition.BOTTOM);
+      log('Socket Exception No Internet connection Please check your internet connection and try again.');
     } on HttpException {
-      Get.snackbar('Something went wrong', 'Couldn\'t find the post.',
-          snackPosition: SnackPosition.BOTTOM);
+      log('HttpException Something went wrong Couldn\'t find the post.');
     } on FormatException {
-      Get.snackbar('Something went wrong', 'Bad response format.',
-          snackPosition: SnackPosition.BOTTOM);
+         log('Format Exception Something went wrong Bad response format');
     }
   }
 
@@ -149,33 +145,34 @@ class IndividualDashboardController extends GetxController {
     } on SocketException {
       print("test Complete 1");
 
+      log('Socket Exception Could not find the service you were looking for!');
       noUserFoundController.value = 'No User';
       update();
 
-      Get.snackbar('Network Error',
+     /* Get.snackbar('Network Error',
           'Please check your internet connection and try again!');
+      */
     } on HttpException {
-      print("http Exception : test Complete");
-
       noUserFoundController.value = 'No User';
       update();
 
-      Get.snackbar('Error', 'Could not find the service you were looking for!');
+      log('Http Exception Could not find the service you were looking for!');
     } on FormatException {
       print("Format Exception : test Complete");
 
       noUserFoundController.value = 'No User';
       update();
-
-      Get.snackbar('Error', 'Bad response format. Please contact support!');
+      log("Format Exception: Something went wrong', 'Bad response format.");
+     /* Get.snackbar('Error', 'Bad response format. Please contact support!');*/
     } catch (e) {
       print("test Complete $e");
 
       noUserFoundController.value = 'No User';
       update();
       // If the exact error type isn't matched in the preceding catch clauses
-      Get.snackbar('Unexpected Error',
-          'Something unexpected happened. Try again later!');
+      log('Unexpected Error Something unexpected happened. Try again later!');
+    /*  Get.snackbar('Unexpected Error',
+          'Something unexpected happened. Try again later!'); */
     }
   }
 
@@ -359,15 +356,21 @@ class IndividualDashboardController extends GetxController {
         throw Exception("Error with the request: ${response.statusCode}");
       }
     } on SocketException {
-      Get.snackbar('No Internet connection',
+
+      log("Socket Exception: Something went wrong', 'Bad response format.");
+     /* Get.snackbar('No Internet connection',
           'Please check your internet connection and try again.',
-          snackPosition: SnackPosition.BOTTOM);
+          snackPosition: SnackPosition.BOTTOM);*/
     } on HttpException {
-      Get.snackbar('Something went wrong', 'Couldn\'t find the post.',
-          snackPosition: SnackPosition.BOTTOM);
+      log("Http Exception: Something went wrong', 'Bad response format.");
+
+     /* Get.snackbar('Something went wrong', 'Couldn\'t find the post.',
+          snackPosition: SnackPosition.BOTTOM); */
     } on FormatException {
-      Get.snackbar('Something went wrong', 'Bad response format.',
+      log("Format Exception: Something went wrong', 'Bad response format.");
+     /* Get.snackbar('Something went wrong', 'Bad response format.',
           snackPosition: SnackPosition.BOTTOM);
+      */
     }
   }
 

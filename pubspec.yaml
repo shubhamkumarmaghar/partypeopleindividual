@@ -64,6 +64,7 @@ dependencies:
   cached_network_image: any
   lottie: ^1.2.1
   flutter_slidable: ^3.0.0
+  flutter_multi_select_items: ^0.4.2
 
 dev_dependencies:
   flutter_test:

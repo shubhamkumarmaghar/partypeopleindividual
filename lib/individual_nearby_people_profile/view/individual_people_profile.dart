@@ -13,6 +13,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../api_helper_service.dart';
+import '../../individual_profile_screen/profilephotoview.dart';
 import '../../widgets/block_unblock.dart';
 import '../../widgets/individual_amenities.dart';
 import '../controller/people_profile_controller.dart';
@@ -118,7 +119,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
           final List<OrganizationAmenities>? amenties =
               data?.organizationAmenities;
           log("${amenties?[0].name}");
-          return SingleChildScrollView(
+          return data != null ?SingleChildScrollView(
               child: Container(
             child: Column(
               children: [
@@ -135,7 +136,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                           bottomLeft: Radius.circular(20),
                           bottomRight: Radius.circular(20),
                         ),
-                        color: Color(0xff390202),
+                        //color: Color(0xff390202),
                         image: DecorationImage(
                           fit: BoxFit.cover,
                           image: controller
@@ -151,7 +152,12 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                     // Profile Photo
                     Positioned(
                       bottom: 10,
-                      child: Container(
+                      child:
+                      GestureDetector(onTap: (){Get.to(()=>
+                          ProfilePhotoView(profileUrl:data?.profilePic??"",)
+                      );
+                      },
+                        child: Container(
                         decoration: const BoxDecoration(
                           boxShadow: [
                             BoxShadow(
@@ -164,12 +170,12 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                         ),
                         child: CircleAvatar(
                             radius: 55,
-
                             backgroundImage: data?.profilePic != null
                                 ? NetworkImage('${data?.profilePic}')
                                 : NetworkImage(
                                     'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fman.png?alt=media&token=53575bc0-dd6c-404e-b8f3-52eaf8fe0fe4')),
                       ),
+                    ),
                     ),
                   ],
                 ),
@@ -202,8 +208,10 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                             onTap: () {
                               // Get.to(peopleList());
                             },
-                            child: iconButtonNeumorphic(
-                                icon: CupertinoIcons.chat_bubble_2_fill,color: Colors.orange),
+                            child: GestureDetector(
+                              child: iconButtonNeumorphic(
+                                  icon: CupertinoIcons.chat_bubble_2_fill,color: Colors.orange),
+                            ),
                           ),
                           data?.likeStatus ==1 ?iconButtonNeumorphic(
                               icon: Icons.favorite,color: Colors.red):
@@ -270,7 +278,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                       children: [
                         Expanded(
                           child: CustomTextview(
-                              data?.dob ?? "NA", Icons.calendar_month),
+                              calAge(data?.dob??""), Icons.calendar_month),
                         ),
                         Expanded(
                           child: CustomTextview(
@@ -468,7 +476,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                 ),
               ],
             ),
-          ));
+          )):Center(child: CircularProgressIndicator());
         },
       ),
     );
@@ -558,4 +566,38 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
           ],
         ));
   }
+
+  String calAge(String birthdate) {
+    try {
+      int age;
+      if (birthdate == '') {
+        return "NA";
+      }
+      else {
+        DateTime birthDate = DateTime.parse(birthdate);
+        DateTime currentDate = DateTime.now();
+        age = currentDate.year - birthDate.year;
+        int month1 = currentDate.month;
+        int month2 = birthDate.month;
+        if (month2 > month1) {
+          age--;
+        } else if (month1 == month2) {
+          int day1 = currentDate.day;
+          int day2 = birthDate.day;
+          if (day2 > day1) {
+            age--;
+          }
+        }
+      }
+      print("$age");
+      return age.toString();
+    }
+    catch(e)
+    {
+      print(e);
+      return "NA";
+    }
+
+  }
+
 }

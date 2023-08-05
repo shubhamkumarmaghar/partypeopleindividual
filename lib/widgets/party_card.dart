@@ -345,13 +345,13 @@ class _PartyCardState extends State<PartyCard>
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        DateFormat('EEEE, MMMM d, yyyy, h:mm a')
+                                        DateFormat('EEEE, MMMM d, yyyy ')
                                             .format(
                                           DateTime.fromMillisecondsSinceEpoch(
                                             int.parse(widget.party.startDate!) *
                                                 1000,
                                           ),
-                                        ),
+                                        ) + '  ${widget.party.startTime}',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontSize: 10.sp,
@@ -371,13 +371,16 @@ class _PartyCardState extends State<PartyCard>
                                             color: Colors.orange,),
                                           width: Get.width*0.2,
                                           height: Get.height*0.031,
-
-                                          child: Row(mainAxisAlignment: MainAxisAlignment.center
-                                              ,children: [
-                                          Icon(CupertinoIcons.add_circled,color: Colors.white),
-                                            Text("Join",style: TextStyle(color: Colors.white,
-                                            fontSize: 16),)
-                                          ]
+                                          padding: EdgeInsets.all(5),
+                                          child: FittedBox(
+                                            child: Row(mainAxisAlignment: MainAxisAlignment.center
+                                                ,children: [
+                                            Icon(CupertinoIcons.add_circled,color: Colors.white),
+                                              widget.party.ongoingStatus == 0 ? Text("Join",style: TextStyle(color: Colors.white,
+                                              fontSize: 16),) :Text("Joined",style: TextStyle(color: Colors.white,
+                                                  fontSize: 16),)
+                                            ]
+                                            ),
                                           ),
                                         ),
                                       )
@@ -509,14 +512,14 @@ class _PartyCardState extends State<PartyCard>
                                           ),
                                           Text(
                                             DateFormat(
-                                                    'EEEE, MMMM d, yyyy, h:mm a')
+                                                    'EEEE, MMMM d, yyyy')
                                                 .format(
                                               DateTime
                                                   .fromMillisecondsSinceEpoch(
                                                       int.parse(widget.party
                                                               .startDate!) *
                                                           1000),
-                                            ),
+                                            ) + '  ${widget.party.startTime}',
                                             style: TextStyle(
                                               fontFamily: 'Poppins',
                                               fontSize: 9.sp,

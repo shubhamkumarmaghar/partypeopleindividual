@@ -9,42 +9,44 @@ import 'package:http/http.dart' as http;
 import 'package:like_button/like_button.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../chatScreen/views/chat_screen_view.dart';
+
 class NearByPeopleProfile extends StatefulWidget {
-  String imageURL;
-  String name;
-  String id;
+  final String imageURL;
+  final String name;
+  final String id;
   String likeStatus;
-  String onlineStatus;
-  NearByPeopleProfile({super.key,  required this.name,
+  final String onlineStatus;
+  final String privacyStatus;
+
+  NearByPeopleProfile({
+    super.key,
+    required this.name,
     required this.imageURL,
     required this.id,
     required this.likeStatus,
-    required this.onlineStatus,});
+    required this.onlineStatus,
+    required this.privacyStatus
+  });
 
   @override
   State<NearByPeopleProfile> createState() => _NearByPeopleProfileState();
 }
 
 class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
-
-
-
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     /// send your request here
     ///
     print("$isLiked");
-    if(widget.likeStatus == '1')
-    {
+    if (widget.likeStatus == '1') {
       return isLiked;
-    }
-    else {
-        isLiked = widget.likeStatus == '1' ? false : true;
+    } else {
+      isLiked = widget.likeStatus == '1' ? false : true;
       final response = await http.post(
         Uri.parse('http://app.partypeople.in/v1/account/individual_user_like'),
         headers: <String, String>{
           'x-access-token': '${GetStorage().read('token')}',
         },
-
         body: <String, String>{
           'user_like_status': isLiked == true ? "yes" : "No",
           'user_like_id': widget.id
@@ -61,20 +63,16 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
           print('User like save successfully');
           isLiked = false;
           widget.likeStatus = '1';
-          setState(() {
-
-          });
-        }
-        else if (jsonResponse['status'] == 1 &&
+          setState(() {});
+        } else if (jsonResponse['status'] == 1 &&
             jsonResponse['message'] == ('User unliked successfully')) {
           print('User unlike successfully');
           isLiked = true;
           widget.likeStatus = '1';
-        }
-        else {
+        } else {
           print('Failed to like/ unlike ');
           isLiked = true;
-         widget.likeStatus = '0';
+          widget.likeStatus = '0';
         }
       } else {
         // If the server did not return a 200 OK response,
@@ -84,133 +82,120 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
       }
     }
     return isLiked;
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return
-      SizedBox(
-        height: Get.height*0.25,
-        width: Get.width*0.25,
-        /*padding: EdgeInsets.all(
+    return SizedBox(
+      height: Get.height * 0.23,
+      width: Get.width * 0.23,
+      /*padding: EdgeInsets.all(
         MediaQuery
             .of(context)
             .size
             .width * 0.015,
       ),*/
+      child: FittedBox(
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            widget!=null ?
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.005,
-                ),
-                Container(
-                  width: Get.width * 0.151,
-                  height: Get.width * 0.151,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: Get.width * 0.005,
-                      color: const Color(0xFFe3661d),
-                    ),
-
-                    borderRadius: BorderRadius.circular(100.sp), //<-- SEE HERE
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(Get.width * 0.001),
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(widget.imageURL),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.01,
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width:Get.width*0.03 ,
-                      child: Icon(
-                        CupertinoIcons.chat_bubble_2_fill,
-                        size: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.02,
-                          color: const Color(0xFFe3661d)
+            widget != null
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.005,
                       ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.005,
-                    ),
-                    SizedBox(
-                      width: Get.width*0.15,
-                      height: Get.height*0.04,
-                      child:
-                      Text(
-                        widget.name,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Poppins',
-                          fontSize: 10.sp,
+                      Container(
+                        width: Get.width * 0.151,
+                        height: Get.width * 0.151,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: Get.width * 0.005,
+                            color: const Color(0xFFe3661d),
+                          ),
+
+                          borderRadius:
+                              BorderRadius.circular(100.sp), //<-- SEE HERE
                         ),
-                        maxLines: 2,
+                        child: Padding(
+                          padding: EdgeInsets.all(Get.width * 0.001),
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(widget.imageURL),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ):
-            Column(crossAxisAlignment: CrossAxisAlignment.center,
-                children: [      SizedBox(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 0.005,
-            ),
-              Container(
-                width: Get.width * 0.151,
-                height: Get.width * 0.151,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: Get.width * 0.005,
-                    color: const Color(0xFFe3661d),
-                  ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.01,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(()=>ChatScreenView);
+                            },
+                            child: SizedBox(
+                            width: Get.width * 0.03,
+                            child:  Icon(CupertinoIcons.chat_bubble_2_fill,
+                                  size: MediaQuery.of(context).size.height * 0.02,
+                                  color: const Color(0xFFe3661d)),
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.height * 0.005,
+                          ),
+                          SizedBox(
+                            width: Get.width * 0.15,
+                            height: Get.height * 0.04,
+                            child: Text(
+                              widget.name,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Poppins',
+                                fontSize: 10.sp,
+                              ),
+                              maxLines: 2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.005,
+                        ),
+                        Container(
+                          width: Get.width * 0.151,
+                          height: Get.width * 0.151,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: Get.width * 0.005,
+                              color: const Color(0xFFe3661d),
+                            ),
 
-                  borderRadius: BorderRadius.circular(100.sp), //<-- SEE HERE
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(Get.width * 0.001),
-                  child: CircleAvatar(
-                   // backgroundImage: NetworkImage(widget.imageURL),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 0.01,
-              ),]),
+                            borderRadius:
+                                BorderRadius.circular(100.sp), //<-- SEE HERE
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(Get.width * 0.001),
+                            child: CircleAvatar(
+                                // backgroundImage: NetworkImage(widget.imageURL),
+                                ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.01,
+                        ),
+                      ]),
             Positioned(
               top: Get.height * 0.001,
-              right: Get.width*0.02,
+              right: Get.width * 0.001,
               child: Container(
                 width: Get.height * 0.032,
                 height: Get.height * 0.032,
@@ -223,25 +208,25 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                   borderRadius: BorderRadius.circular(100.sp),
                 ),
                 child:
-                /*   IconButton(
-                onPressed: (){
-                },
-                icon: Icon(Icons.favorite ,color: likeStatus=='1' ? const Color(0xFFf9090a) : Colors.white,
-                size: Get.height * 0.022,),
+                    /*   IconButton(
+                  onPressed: (){
+                  },
+                  icon: Icon(Icons.favorite ,color: likeStatus=='1' ? const Color(0xFFf9090a) : Colors.white,
+                  size: Get.height * 0.022,),
 
-              ) */
+                ) */
 
-                LikeButton(
-                  onTap: onLikeButtonTapped ,
+                    LikeButton(
+                  onTap: onLikeButtonTapped,
                   circleColor: const CircleColor(
                       start: Colors.white, end: Color(0xFFe3661d)),
                   size: Get.height * 0.022,
-
                   likeBuilder: (bool isLiked) {
-
                     return Icon(
                       Icons.favorite,
-                      color: widget.likeStatus=='1' ? const Color(0xFFf9090a) : Colors.white,
+                      color: widget.likeStatus == '1'
+                          ? const Color(0xFFf9090a)
+                          : Colors.white,
                       size: Get.height * 0.022,
                     );
                   },
@@ -253,32 +238,34 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
               ),
             ),
             Positioned(
-              bottom: Get.height * 0.063,
-              right: Get.height * 0.024,
-              child: widget.onlineStatus=='on'? Container(
-                width: Get.height * 0.019,
-                height: Get.height * 0.019,
-               // color: Colors.white,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFe3661d),
-                  borderRadius: BorderRadius.circular(100.sp),
-                ),
+              bottom: Get.height * 0.05,
+              right: Get.height * 0.015,
+              child: widget.onlineStatus == 'on'&& widget.privacyStatus == 'Yes'
+                  ? Container(
+                      width: Get.height * 0.019,
+                      height: Get.height * 0.019,
+                      // color: Colors.white,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFe3661d),
+                        borderRadius: BorderRadius.circular(100.sp),
+                      ),
 
-              /*  padding: EdgeInsets.only(
-                  left: Get.height * 0.029,
-                  top: Get.height * 0.00045,
-                ), */
+                      /*  padding: EdgeInsets.only(
+                    left: Get.height * 0.029,
+                    top: Get.height * 0.00045,
+                  ), */
 
-                child: Icon(
-                  Icons.circle,
-                  color:  Colors.green,
-                  size: Get.height * 0.018,
-
-                ),
-              ):Container(),
+                      child: Icon(
+                        Icons.circle,
+                        color: Colors.green,
+                        size: Get.height * 0.018,
+                      ),
+                    )
+                  : Container(),
             ),
           ],
         ),
-      );
+      ),
+    );
   }
 }

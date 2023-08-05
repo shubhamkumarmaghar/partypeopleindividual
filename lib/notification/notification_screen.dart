@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -95,14 +97,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
           "Notifications",
           style: TextStyle(fontSize: 13.sp, color: Colors.white),
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.white,
       ),
       body: data == null
-          ? Center(
-              child: CupertinoActivityIndicator(
-                color: Colors.black,
+          ? Container(width: Get.width,height: Get.height,
+            color: Colors.white,
+            child: Center(
+                child: CupertinoActivityIndicator(
+                  color: Colors.black,
+                ),
               ),
-            )
+          )
           :
           Container(
             color: Colors.white,

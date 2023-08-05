@@ -43,6 +43,8 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
   void initState() {
      _selectedIndex = 1;
     super.initState();
+
+
   } // selected index
 
   @override
@@ -79,9 +81,29 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
             ),
             Expanded(
               child: Obx(() {
+      // get status for privacy and notification
+
+      if(individualProfileController.privacyOnlineStatus.value.toString() =='No')
+      {
+        GetStorage().write("privacy_online_status", true);
+      }
+      else{
+        GetStorage().write("privacy_online_status", false);
+      }
+      print("privacy_online_status   ${ GetStorage().read("privacy_online_status")}  ${individualProfileController.privacyOnlineStatus.value}");
+      if(individualProfileController.notification.value =='off')
+      {
+        GetStorage().write("online_notification_status", false);
+      }
+      else{
+        GetStorage().write("online_notification_status", true);
+      }
+
+      print("online_notification_status   ${ GetStorage().read("online_notification_status")}   ${individualProfileController.notification.value}");
+
                 return Container(
                   alignment: Alignment.center,
-                  child: Text("            "+
+                  child: Text("          "+
                     individualProfileController.username.value,
                     style: TextStyle(
                       fontFamily: 'Poppins',
@@ -98,21 +120,8 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
               padding: EdgeInsets.symmetric(horizontal: 15.sp, vertical: 5.sp),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () =>
-                        Get.to(
-                          const NotificationScreen(),
-                          duration: const Duration(milliseconds: 500),
-                          transition: Transition.rightToLeft,
-                        )?.then((value) =>individualDashboardController.getDataForDashboard()),
-                    child: const Icon(
-                      Icons.notifications,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
+
+
                   Obx(() {
                     IndividualDashboardController wishlistController =
                     Get.find();
@@ -125,7 +134,23 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                               ? Colors.white
                               : Colors.red),
                     );
-                  }),
+                  }
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  GestureDetector(
+                    onTap: () =>
+                        Get.to(
+                          const NotificationScreen(),
+                          duration: const Duration(milliseconds: 300),
+                          transition: Transition.rightToLeft,
+                        )?.then((value) =>individualDashboardController.getDataForDashboard()),
+                    child: const Icon(
+                      Icons.notifications,
+                      color: Colors.white,
+                    ),
+                  ),
                 ],
               ),
             )
@@ -365,13 +390,12 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                                  Get.to(()=>IndividualPeopleProfile(user_id: individualDashboardController.usersList[index].id,))?.then((value) =>individualDashboardController.getDataForDashboard());
                                 },
                                 child: NearByPeopleProfile(
-                                  imageURL: individualDashboardController
-                                      .usersList[index].profilePicture,
-                                  name: individualDashboardController
-                                      .usersList[index].username,
+                                  imageURL: individualDashboardController.usersList[index].profilePicture,
+                                  name: individualDashboardController.usersList[index].username,
                                   id: individualDashboardController.usersList[index].id,
                                   likeStatus: individualDashboardController.usersList[index].likeStatus,
                                   onlineStatus: individualDashboardController.usersList[index].onlineStatus,
+                                  privacyStatus: individualDashboardController.usersList[index].privacyOnline,
                                 ),
                               )),
                         ),
