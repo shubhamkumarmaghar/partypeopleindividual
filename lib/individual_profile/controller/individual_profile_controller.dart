@@ -315,6 +315,7 @@ class IndividualProfileController extends GetxController {
           qualification.value = user['qualification'] ?? '';
           country.value = user['country'] ?? '';
           state.value = user['state'] ?? '';
+          GetStorage().write('state', state.value);
           username.value = response['user_name'];
           gender.value = user['gender'] ?? '';
           getPrefiledData = user['org_amenitie_id']?.split(',');

@@ -255,20 +255,20 @@ class _IndividualProfileScreenViewState
                                 Expanded(
                                   child: CustomTextview(
                                       individualProfileController
-                                          .lastname.value,
+                                          .lastname.value.capitalizeFirst.toString(),
                                       Icons.person),
                                 ),
                               ],
                             ),
                             CustomTextFieldview(
-                                individualProfileController.bio.value,
+                                individualProfileController.bio.value.capitalizeFirst.toString(),
                                 Icons.description),
 
                             Row(
                               children: [
                                 Expanded(
                                   child: CustomTextview(
-                                      individualProfileController.dob.value,
+                                      individualProfileController.dob.value.capitalizeFirst.toString(),
                                       Icons.calendar_month),
                                   /*  CustomDateField(
                         validate: true,
@@ -420,14 +420,15 @@ class _IndividualProfileScreenViewState
                                                     spacing: 6.0,
                                                     runSpacing: 6.0,
                                                     children: categoryList
-                                                        .amenities
+                                                        . amenities
                                                         .map((amenity) {
                                                       return GestureDetector(
                                                         /*  onTap: () =>
                                           _selectAmenity(
                                               amenity),
                                       */
-                                                        child: Chip(
+                                                        child:amenity.selected
+                                                            ? Chip(
                                                           /*avatar: CircleAvatar(
                                           backgroundColor:
                                           amenity.selected
@@ -450,7 +451,7 @@ class _IndividualProfileScreenViewState
                                                                   ? Colors.red
                                                                   : Colors.grey[
                                                                       400],
-                                                        ),
+                                                        ):Container(),
                                                       );
                                                     }).toList(),
                                                   ),

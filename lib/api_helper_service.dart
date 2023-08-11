@@ -171,7 +171,7 @@ class APIService extends GetxController {
 
   ///Get All Nearby Peoples
   Future individualNearbyPeoples(Map<String, String> cityid ,header) async {
-    final response = await _post(API.individualPeoplesNearby, null,
+    final response = await _post(API.individualPeoplesNearby, cityid,
         headers: {'x-access-token': header});
 
     return response;
@@ -293,5 +293,38 @@ class APIService extends GetxController {
     }
   }
 
+  static Future<void> lastMessage(String id , String message) async {
+    final response = await http.post(
+      Uri.parse('http://app.partypeople.in/v1/chat/update_chat_message'),
+      headers: <String, String>{
+        'x-access-token': '${GetStorage().read('token')}',
+      },
 
+      body: <String, String>{
+        'individual_user_id': id,
+        'message': message
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response,
+      // then parse the JSON.
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == 1 && jsonResponse['message'].contains('Last message update successfully')) {
+        print('last message save successfully');
+
+      }
+      else {
+        print('else  Failed to update message successfully ');
+
+        //isLiked= false;
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to update message successfully ');
+
+    }
+  }
 }

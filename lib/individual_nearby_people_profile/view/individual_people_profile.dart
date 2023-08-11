@@ -13,6 +13,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../api_helper_service.dart';
+import '../../chatScreen/views/chat_screen_view.dart';
 import '../../individual_profile_screen/profilephotoview.dart';
 import '../../widgets/block_unblock.dart';
 import '../../widgets/individual_amenities.dart';
@@ -20,9 +21,9 @@ import '../controller/people_profile_controller.dart';
 import '../model/people_profile_model.dart';
 
 class IndividualPeopleProfile extends StatefulWidget {
-  final String user_id;
 
-  const IndividualPeopleProfile({Key? key, required this.user_id})
+
+  const IndividualPeopleProfile({Key? key })
       : super(key: key);
 
   @override
@@ -31,75 +32,13 @@ class IndividualPeopleProfile extends StatefulWidget {
 }
 
 class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
-  PeopleProfileController peopleProfileController =
-      Get.put(PeopleProfileController());
-  List<Category> _categories = [];
-  List<CategoryList> _categoryLists = [];
-  List<OrganizationAmenities>? amenties=[];
-  List selectedAmenities = [];
-
-  Future<void> _fetchData() async {
-    try {
-      http.Response response = await http.get(
-        Uri.parse(
-            'http://app.partypeople.in/v1/party/individual_organization_amenities'),
-        headers: {'x-access-token': '${GetStorage().read('token')}'},
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-
-        setState(() {
-          if (data['status'] == 1) {
-            _categories = (data['data'] as List)
-                .map((category) => Category.fromJson(category))
-                .toList();
-
-            _categories.forEach((category) {
-              _categoryLists.add(CategoryList(
-                  title: category.name, amenities: category.amenities));
-            });
-            getSelectedID();
-          } else {
-            print('Error with the data status: ${data['status']}');
-          }
-        });
-      } else {
-        print('Failed to load data: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error: $e');
-      throw Exception('Failed to load data');
-    }
-  }
-
-  void getSelectedID() {
-    print(peopleProfileController.amentiesdata);
-    for (var i = 0; i < peopleProfileController.amentiesdata.length; i++) {
-      var amenityName = peopleProfileController.amentiesdata[i].name;
-      print(amenityName);
-      setState(() {
-        _categories.forEach((category) {
-          category.amenities.forEach((amenity) {
-            if (amenity.name == amenityName) {
-              if (selectedAmenities
-                  .contains(amenity.id)) {
-              } else {
-                selectedAmenities.add(amenity.id);
-              }
-              amenity.selected = true;
-            }
-          });
-        });
-      });
-    }
-  }
+ // PeopleProfileController peopleProfileController = Get.put(PeopleProfileController());
 
   @override
   void initState() {
     super.initState();
-    peopleProfileController.PeopleViewed(widget.user_id);
-    _fetchData();
+   // peopleProfileController.PeopleViewed(widget.user_id);
+    //_fetchData();
   }
 
   @override
@@ -118,7 +57,6 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
           var data = controller.peopleProfileData.data;
           final List<OrganizationAmenities>? amenties =
               data?.organizationAmenities;
-          log("${amenties?[0].name}");
           return data != null ?SingleChildScrollView(
               child: Container(
             child: Column(
@@ -154,7 +92,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                       bottom: 10,
                       child:
                       GestureDetector(onTap: (){Get.to(()=>
-                          ProfilePhotoView(profileUrl:data?.profilePic??"",)
+                          ProfilePhotoView(profileUrl:data.profilePic??"",)
                       );
                       },
                         child: Container(
@@ -170,8 +108,8 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                         ),
                         child: CircleAvatar(
                             radius: 55,
-                            backgroundImage: data?.profilePic != null
-                                ? NetworkImage('${data?.profilePic}')
+                            backgroundImage: data.profilePic != null
+                                ? NetworkImage('${data.profilePic}')
                                 : NetworkImage(
                                     'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fman.png?alt=media&token=53575bc0-dd6c-404e-b8f3-52eaf8fe0fe4')),
                       ),
@@ -200,12 +138,14 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                             onTap: () {
                               //  peopleProfileController.apiService.DoBlockUnblockPeople('${data?.userId}', 'Block');
                               BlockUnblock.showBlockedAlertDialog(
-                                  context, '${data?.userId}', 'Block');
+                                  context, '${data.userId}', 'Block');
                             },
                             child: iconButtonNeumorphic(icon: Icons.block,color: Colors.red),
                           ),
                           GestureDetector(
                             onTap: () {
+                              Get.to(ChatScreenView(),arguments: controller.userId)?.
+                              then((value) => APIService.lastMessage(controller.userId, GetStorage().read('last_message')) );
                               // Get.to(peopleList());
                             },
                             child: GestureDetector(
@@ -213,11 +153,11 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                   icon: CupertinoIcons.chat_bubble_2_fill,color: Colors.orange),
                             ),
                           ),
-                          data?.likeStatus ==1 ?iconButtonNeumorphic(
+                          data.likeStatus ==1 ?iconButtonNeumorphic(
                               icon: Icons.favorite,color: Colors.red):
                           GestureDetector(
                             onTap: () async {
-                            data?.likeStatus =  await APIService.likePeople(widget.user_id, true) ;
+                            data.likeStatus =  await APIService.likePeople(controller.userId, true) ;
                             setState(() {
 
                             });
@@ -232,11 +172,11 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                       children: [
                         Expanded(
                           child:
-                              CustomTextview(data?.name ?? "NA", Icons.person),
+                              CustomTextview(data.name?.split(' ')[0].capitalizeFirst ?? "NA", Icons.person),
                         ),
                         Expanded(
                           child:
-                              CustomTextview(data?.name ?? "NA", Icons.person),
+                              CustomTextview(data.name?.split(" ").last.capitalizeFirst ?? "NA", Icons.person),
                         ),
                       ],
                     ),
@@ -265,7 +205,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                               Container(
                                 width: Get.width * 0.75,
                                 child: Text(
-                                  data?.bio ?? "NA",
+                                  data.bio.toString().capitalizeFirst ?? "",
                                   maxLines: 5,
                                   style: TextStyle(
                                       color: Colors.black54, fontSize: 16),
@@ -278,7 +218,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                       children: [
                         Expanded(
                           child: CustomTextview(
-                              calAge(data?.dob??""), Icons.calendar_month),
+                              calAge(data.dob??""), Icons.calendar_month),
                         ),
                         Expanded(
                           child: CustomTextview(
@@ -331,7 +271,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
 
                     SizedBox(height: 20,),
                     Text("Hobbies",style: TextStyle(color: Colors.black54,fontSize: 20),),
-                    _categoryLists.isEmpty
+                    controller.categoryLists.isEmpty
                         ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -354,11 +294,10 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                           physics:
                           const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: _categoryLists.length,
+                          itemCount: controller.categoryLists.length,
                           itemBuilder: (context, index) {
                             final categoryList =
-                            _categoryLists[index];
-
+                            controller.categoryLists[index];
                             return Card(
                               elevation: 3,
                               shape: RoundedRectangleBorder(
@@ -395,6 +334,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                               amenity),
                                       */
                                           child:
+                                              amenity.selected ?
                                           Chip(
                                             /*avatar: CircleAvatar(
                                           backgroundColor:
@@ -415,7 +355,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                             ),
                                             backgroundColor:
                                                  Colors.red,
-                                          ),
+                                          ) :Container(),
                                         );
                                       }).toList(),
                                     ),
@@ -589,12 +529,12 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
           }
         }
       }
-      print("$age");
-      return age.toString();
+      log("$age");
+      return age.toString()+ ' Years';
     }
     catch(e)
     {
-      print(e);
+      log('${e}');
       return "NA";
     }
 

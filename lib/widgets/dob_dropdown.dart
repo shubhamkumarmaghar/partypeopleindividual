@@ -33,9 +33,11 @@ class _CustomDateFieldState extends State<CustomDateField> {
       initialDate: DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
+      initialEntryMode: DatePickerEntryMode.calendarOnly
     );
     if (picked != null) {
       setState(() {
+
         _selectedDate = picked;
         widget.controller.text =
             DateFormat('dd/MM/yyyy').format(_selectedDate!);

@@ -148,10 +148,9 @@ class _SettingsState extends State<Settings> {
 
                             Switch(value: isprivacySwitched,
                               onChanged: (value) {
+                              print("value ------------$value");
                                 settingController.updatePrivacyStatus(value);
                                 GetStorage().write("privacy_online_status", value);
-
-
                                 setState(() {
                                   isprivacySwitched = value;
                                   print('$isprivacySwitched ${GetStorage().read(

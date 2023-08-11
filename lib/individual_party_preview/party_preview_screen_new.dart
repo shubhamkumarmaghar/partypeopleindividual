@@ -660,21 +660,31 @@ class CustomListTile extends StatelessWidget {
         SizedBox(width: Get.width*0.05,),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [  Text(
-          title,
+          children: [  
+            FittedBox(
+              child: Container(width: Get.width*0.7,
+                child: Text(
+          title.capitalizeFirst!,
           style: const TextStyle(
-            fontFamily: 'malgun',
-            fontSize: 18,
-            color: Colors.black87,
-            fontWeight: FontWeight.w500,
+                fontFamily: 'malgun',
+                fontSize: 18,
+                color: Colors.black87,
+                fontWeight: FontWeight.w500,
           ),
         ),
-          sub == true? Text(
-            subtitle,
-            style: const TextStyle(
-              fontFamily: 'malgun',
-              fontSize: 14,
-              color: Colors.black,
+              ),
+            ),
+          sub == true? FittedBox(
+            child: Container(
+              width: Get.width*0.7,
+              child: Text(
+                subtitle,
+                style: const TextStyle(
+                  fontFamily: 'malgun',
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+              ),
             ),
           ):Container(),],)
         ],

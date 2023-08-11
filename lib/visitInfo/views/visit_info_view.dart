@@ -1,11 +1,13 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/centralize_api.dart';
 import 'package:partypeopleindividual/visitInfo/controllers/visit_info_controller.dart';
+import 'package:partypeopleindividual/widgets/cached_image_placeholder.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
@@ -186,7 +188,7 @@ class ProfileContainer extends StatelessWidget {
 
         return GestureDetector(
           onTap: (){
-            Get.to(IndividualPeopleProfile(user_id: data.userId??""));
+            Get.to(()=>IndividualPeopleProfile(),arguments:data.userId??"" );
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,11 +197,15 @@ class ProfileContainer extends StatelessWidget {
                 padding: EdgeInsets.all(15.sp),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 16.sp,
-                      backgroundImage: NetworkImage(data.profilePicture??'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54'),
-                      child: Stack(
+                     Stack(
                         children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(Get.width*0.5,),
+                            child: CachedNetworkImage(height: Get.width*0.12,
+                              width: Get.width*0.12,
+                              imageUrl: data.profilePicture,
+                              errorWidget: (context,url,error) => const CircleAvatar(child: Icon(Icons.person)),),
+                          ),
                           Positioned(
                             bottom: 3.sp,
                             child: CircleAvatar(
@@ -211,7 +217,7 @@ class ProfileContainer extends StatelessWidget {
                           ),
                         ],
                       ),
-                    ),
+
                     SizedBox(width: 12.sp),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

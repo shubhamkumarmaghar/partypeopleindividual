@@ -34,6 +34,7 @@ class IndividualDashboardController extends GetxController {
   RxInt lengthOfUpcomingParties = 0.obs;
   RxInt lengthOfPopularParties = 0.obs;
   RxInt onlineStatus = 0.obs;
+  RxString partyCity = ''.obs;
 
   RxList<UserModel> usersList = RxList<UserModel>();
 
@@ -71,7 +72,12 @@ class IndividualDashboardController extends GetxController {
     individualProfileController.individualProfileData();
     getAllNearbyPeoples();
     getAllCities();
-    getPartyByDate();
+    getPopularParty();
+    getTodayPary();
+    getTomarrowParty();
+    getUpcomingParty();
+
+    //getPartyByDate();
 
   }
 
@@ -106,10 +112,15 @@ class IndividualDashboardController extends GetxController {
   }
 
   Future<void> getAllNearbyPeoples() async {
-    print('nearby user 1');
+    String state = GetStorage().read('state');
+
     try {
       apiService.isLoading.value = true;
-      var response = await apiService.individualNearbyPeoples({'city_id': '1'},
+      var response = await apiService.individualNearbyPeoples(
+        {
+          'city_id': state.toLowerCase(),
+          'state' : state.toLowerCase()
+      },
         '${GetStorage().read('token')}',
       );
       print("Nearby People 2");
@@ -187,11 +198,17 @@ class IndividualDashboardController extends GetxController {
       ///
       /// 'filter_type': '2' == regular parties
       /// 'filter_type': '1' == popular parties
-
+      String getcity = GetStorage().read('state') ?? 'delhi';
+      if(partyCity.value == '')
+        {
+          partyCity.value = getcity;
+          log('partycity ${partyCity.value}');
+        }
+      log('else partycity ${partyCity.value}');
       http.Response response = await http.post(
         Uri.parse(
             'http://app.partypeople.in/v1/party/get_all_individual_party'),
-        body: {'status': '0', 'city': 'delhi', 'filter_type': '2'},
+        body: {'status': '0', 'city': partyCity.value, 'filter_type': '2'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -199,7 +216,7 @@ class IndividualDashboardController extends GetxController {
       http.Response popularResponse = await http.post(
         Uri.parse(
             'http://app.partypeople.in/v1/party/get_all_individual_party'),
-        body: {'status': '0', 'city': 'delhi', 'filter_type': '1'},
+        body: {'status': '0', 'city': partyCity.value, 'filter_type': '1'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -310,6 +327,232 @@ class IndividualDashboardController extends GetxController {
   }
 
 
+Future<void> getTodayPary() async{
+  try {
+    // Fetch all parties
+    /// status': '1' current date parties
+    /// status': '2' tomarrow date parties
+    /// status': '3' tomarrow date parties
+    ///
+    /// 'filter_type': '2' == regular parties
+    /// 'filter_type': '1' == popular parties
+    String getcity = GetStorage().read('state') ?? 'delhi';
+    if (partyCity.value == '') {
+      partyCity.value = getcity;
+      log('partycity ${partyCity.value}');
+    }
+    log('else partycity ${partyCity.value}');
+    http.Response response = await http.post(
+      Uri.parse(
+          'http://app.partypeople.in/v1/party/get_all_individual_party'),
+      body: {'status': '1', 'city': partyCity.value.toLowerCase(), 'filter_type': '2'},
+      headers: {'x-access-token': '${GetStorage().read('token')}'},
+    );
+
+    dynamic decodedData = jsonDecode(response.body);
+
+    print("all today parties $decodedData");
+
+
+    List<Party> todayParties = [];
+
+
+    // Loop through parties and sort them into appropriate lists
+    if (decodedData['data'] != null) {
+      List<dynamic> allParties = decodedData['data'];
+      for (var party in allParties) {
+        try {
+          Party parsedParty = Party.fromJson(party);
+          print( party);
+            todayParties.add(parsedParty);
+
+          ///setting length
+          lengthOfTodayParties.value = todayParties.length;
+
+          ///setting number of party
+          jsonPartyOrganisationDataToday.value = todayParties;
+          update();
+        } catch (e) {
+          print('Error parsing today party: $e');
+        }
+      }
+      }
+    }
+  catch(e){
+    print('Error fetching today parties: $e');
+  }
+
+}
+
+Future<void> getTomarrowParty() async{
+    try {
+      // Fetch all parties
+      /// status': '1' current date parties
+      /// status': '2' tomarrow date parties
+      /// status': '3' tomarrow date parties
+      ///
+      /// 'filter_type': '2' == regular parties
+      /// 'filter_type': '1' == popular parties
+      String getcity = GetStorage().read('state') ?? 'delhi';
+      if (partyCity.value == '') {
+        partyCity.value = getcity;
+        log('tomarrow partycity ${partyCity.value}');
+      }
+      log('else tomarrow partycity ${partyCity.value}');
+      http.Response response = await http.post(
+        Uri.parse(
+            'http://app.partypeople.in/v1/party/get_all_individual_party'),
+        body: {'status': '2', 'city': partyCity.value, 'filter_type': '2'},
+        headers: {'x-access-token': '${GetStorage().read('token')}'},
+      );
+
+      dynamic decodedData = jsonDecode(response.body);
+
+      print("all tomarrow parties $decodedData");
+
+
+      List<Party> tomarrowParties = [];
+
+
+      // Loop through parties and sort them into appropriate lists
+      if (decodedData['data'] != null) {
+        List<dynamic> allParties = decodedData['data'];
+        for (var party in allParties) {
+          try {
+            Party parsedParty = Party.fromJson(party);
+            print( party);
+            tomarrowParties.add(parsedParty);
+
+            ///setting length
+            lengthOfTommParties.value = tomarrowParties.length;
+
+            ///setting number of party
+            jsonPartyOrganisationDataTomm.value = tomarrowParties;
+            update();
+          } catch (e) {
+            print('Error parsing today party: $e');
+          }
+        }
+      }
+    }
+    catch(e){
+      print('Error fetching today parties: $e');
+    }
+
+  }
+
+  Future<void> getUpcomingParty() async{
+    try {
+      // Fetch all parties
+      /// status': '1' current date parties
+      /// status': '2' tomarrow date parties
+      /// status': '3' tomarrow date parties
+      ///
+      /// 'filter_type': '2' == regular parties
+      /// 'filter_type': '1' == popular parties
+      String getcity = GetStorage().read('state') ?? 'delhi';
+      if (partyCity.value == '') {
+        partyCity.value = getcity;
+        log('upcoming partycity ${partyCity.value}');
+      }
+      log('else upcoming partycity ${partyCity.value}');
+      http.Response response = await http.post(
+        Uri.parse(
+            'http://app.partypeople.in/v1/party/get_all_individual_party'),
+        body: {'status': '3', 'city': partyCity.value, 'filter_type': '2'},
+        headers: {'x-access-token': '${GetStorage().read('token')}'},
+      );
+
+      dynamic decodedData = jsonDecode(response.body);
+
+      print("all upcoming parties $decodedData");
+
+
+      List<Party> upcomingParties = [];
+
+
+      // Loop through parties and sort them into appropriate lists
+      if (decodedData['data'] != null) {
+        List<dynamic> allParties = decodedData['data'];
+        for (var party in allParties) {
+          try {
+            Party parsedParty = Party.fromJson(party);
+            print( party);
+            upcomingParties.add(parsedParty);
+
+            ///setting length
+            lengthOfUpcomingParties.value = upcomingParties.length;
+
+            ///setting number of party
+            jsonPartyOgranisationDataUpcomming.value = upcomingParties;
+            update();
+          } catch (e) {
+            print('Error parsing today party: $e');
+          }
+        }
+      }
+    }
+    catch(e){
+      print('Error fetching today parties: $e');
+    }
+
+  }
+
+  Future<void> getPopularParty() async{
+    try {
+      // Fetch all parties
+      /// status': '1' current date parties
+      /// status': '2' tomarrow date parties
+      /// status': '3' tomarrow date parties
+      ///
+      /// 'filter_type': '2' == regular parties
+      /// 'filter_type': '1' == popular parties
+      String getcity = GetStorage().read('state') ?? 'delhi';
+      if (partyCity.value == '') {
+        partyCity.value = getcity;
+        log('upcoming partycity ${partyCity.value}');
+      }
+      log('else upcoming partycity ${partyCity.value}');
+      http.Response response = await http.post(
+        Uri.parse(
+            'http://app.partypeople.in/v1/party/get_all_individual_party'),
+        body: {'status': '0', 'city': partyCity.value, 'filter_type': '1'},
+        headers: {'x-access-token': '${GetStorage().read('token')}'},
+      );
+
+      dynamic decodedData = jsonDecode(response.body);
+
+      print("all popular parties $decodedData");
+
+
+      List<Party> popularParties = [];
+
+      // Loop through parties and sort them into appropriate lists
+      if (decodedData['data'] != null) {
+        List<dynamic> allParties = decodedData['data'];
+        for (var party in allParties) {
+          try {
+            Party parsedParty = Party.fromJson(party);
+            print( party);
+            popularParties.add(parsedParty);
+
+            ///setting length
+            lengthOfPopularParties.value = popularParties.length;
+
+            ///setting number of party
+            jsonPartyPopularData.value = popularParties;
+            update();
+          } catch (e) {
+            print('Error parsing today party: $e');
+          }
+        }
+      }
+    }
+    catch(e){
+      print('Error fetching today parties: $e');
+    }
+
+  }
   /// GET ONLINE STATUS
 
 
@@ -319,14 +562,14 @@ class IndividualDashboardController extends GetxController {
       // Get current date
       DateTime now = DateTime.now();
       log("current"+ now.toString());
-      String onlinetime = now.add(Duration(minutes: 5)).toString();
-      var  time = onlinetime.split('.');
-      onlinetime = time[0];
+      String onlineTime = now.add(Duration(minutes: 5)).toString();
+      var  time = onlineTime.split('.');
+      onlineTime = time[0];
 
-      log("After adding few min "+ onlinetime.toString());
+      log("After adding few min "+ onlineTime.toString());
       final response = await http.post(
         Uri.parse(API.onlineStatus),
-        body:{'online_time_expiry' : onlinetime},
+        body:{'online_time_expiry' : onlineTime},
         headers: {
           'x-access-token': '${GetStorage().read('token')}',
 
@@ -373,8 +616,6 @@ class IndividualDashboardController extends GetxController {
       */
     }
   }
-
-
 
 
 }

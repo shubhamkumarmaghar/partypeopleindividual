@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:adobe_xd/gradient_xd_transform.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +8,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:like_button/like_button.dart';
+import 'package:partypeopleindividual/individual_nearby_people_profile/controller/people_profile_controller.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../individualDashboard/models/usermodel.dart';
@@ -14,19 +18,20 @@ import '../../individual_nearby_people_profile/view/individual_people_profile.da
 class PeopleList extends StatefulWidget {
   final List<UserModel> peopleList;
 
-  const PeopleList({Key? key, required this.peopleList}) : super(key: key);
+   PeopleList({Key? key, required this.peopleList}) : super(key: key);
 
   @override
   State<PeopleList> createState() => _PeopleListState();
 }
 
 class _PeopleListState extends State<PeopleList> {
-
   List<UserModel> maleList = [];
   List<UserModel> femaleList = [];
   List<UserModel> showList = [];
   List<UserModel> otherList = [];
   int choiceIndex = 0;
+  Timer? _debounce;
+  TextEditingController? _textEditingController ;
 
   void getMaleFemaleList() {
     widget.peopleList.forEach((element) {
@@ -128,11 +133,16 @@ class _PeopleListState extends State<PeopleList> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10.sp)),
                       child: TextField(
+                        controller: _textEditingController,
+                        onChanged:  _onSearchChanged('${_textEditingController?.text}'),
+                        style: TextStyle(color: Colors.grey),
                         decoration: InputDecoration(
                             border: InputBorder.none,
-                            icon: const Icon(
-                              Icons.search,
-                              color: Colors.white,
+                            icon: Container(margin: EdgeInsets.only(left: 15),
+                              child: const Icon(
+                                Icons.search,
+                                color: Colors.grey,
+                              ),
                             ),
                             hintText: 'Search user by username',
                             hintStyle: TextStyle(
@@ -164,8 +174,8 @@ class _PeopleListState extends State<PeopleList> {
                           onTap: () {
                             Get.to(() =>
                                 IndividualPeopleProfile(
-                                  user_id: showList[index].id,
-                                ));
+                                ),
+                            arguments: showList[index].id);
                           },
                           child: NearByPeopleProfile(
                             imageURL: showList[index].profilePicture,
@@ -205,7 +215,8 @@ class _PeopleListState extends State<PeopleList> {
             .size
             .width * 0.015,
       ),*/
-      child: Stack(
+      child:
+      Stack(
         clipBehavior: Clip.none,
         children: [
           Column(
@@ -351,11 +362,11 @@ class _PeopleListState extends State<PeopleList> {
         return Column( mainAxisSize: MainAxisSize.min,
           children: <Widget>[
 
-            iconText(CupertinoIcons.person_3, 'All People',    FilterChip(
+            iconText(Icons.people_outline, 'All People',    FilterChip(
                 label: Text('All People'),
                 selected: controller.list[0],
-                selectedColor: Colors.red,
-                backgroundColor: Colors.green,
+                selectedColor: Colors.red.shade900,
+                backgroundColor: Colors.grey,
                 labelStyle: TextStyle(color: Colors.white),
                 onSelected: (value){
                   controller.setChip(selectedIndex: 0);
@@ -367,8 +378,8 @@ class _PeopleListState extends State<PeopleList> {
             ),
             iconText(Icons.male, 'Male',  FilterChip(
               label: Text('Male'),
-              selectedColor: Colors.red,
-              backgroundColor: Colors.green,
+              selectedColor: Colors.red.shade900,
+              backgroundColor: Colors.grey,
               labelStyle: TextStyle(color: Colors.white),
               selected: controller.list[1],
               onSelected: (value){ controller.setChip(selectedIndex: 1);
@@ -382,8 +393,8 @@ class _PeopleListState extends State<PeopleList> {
             iconText(Icons.female, 'Female', FilterChip(
                 label: Text('Female'),
                 selected: controller.list[2],
-                selectedColor: Colors.red,
-                backgroundColor: Colors.green,
+                selectedColor: Colors.red.shade900,
+                backgroundColor: Colors.grey,
                 labelStyle: TextStyle(color: Colors.white),
                 onSelected: (value) {
                   controller.setChip(selectedIndex: 2);
@@ -411,7 +422,14 @@ class _PeopleListState extends State<PeopleList> {
     );
   }
 
+  _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      log("jbflkasudghfaskfoookokokokokokokokokok  ${_textEditingController?.text}");
+    });
+  }
 }
+
 class MyFilterChip extends StatefulWidget {
   const MyFilterChip({super.key, required this.onChanged,required this.text, required this.status });
 

@@ -50,7 +50,7 @@ void onInit(){
 
   Future<void> updatePrivacyStatus(status) async {
     // API endpoint URL
-    String url = 'http://app.partypeople.in/v1/account/update_online_status';
+    String url = 'http://app.partypeople.in/v1/account/update_privacy_online_status';
 
     // Request headers
     Map<String, String> headers = {
@@ -59,7 +59,7 @@ void onInit(){
 
     // Request body
     Map<String, dynamic> body = {
-      'online_status': status == true ? "No" : "Yes",
+      'privacy_online_status': status == true ? "No" : "Yes",
     };
 
     try {

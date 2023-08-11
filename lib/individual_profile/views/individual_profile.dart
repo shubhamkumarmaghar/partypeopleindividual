@@ -488,7 +488,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
             }
             _isLoading = false;
           });
-        } on FirebaseException catch (e) {
+        } on FirebaseException {
           // Handle Firebase specific exceptions
           setState(() {
             _isLoading = false;
@@ -499,7 +499,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
           });
         }
       }
-    } on PlatformException catch (e) {
+    } on PlatformException {
       // Handle exceptions related to camera, files and permissions
       setState(() {
         _isLoading = false;

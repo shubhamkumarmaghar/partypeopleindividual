@@ -213,84 +213,121 @@ class _PartyCardState extends State<PartyCard>
                 ),
                 child: Stack(
                   children: [
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                        horizontal: Get.width * 0.03,
-                        vertical: Get.width * 0.02,
-                      ),
-                      width: MediaQuery.of(context).size.width * 0.82,
-                      height: MediaQuery.of(context).size.width * 0.65,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
+                    FittedBox(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(
+                          horizontal: Get.width * 0.03,
+                          vertical: Get.width * 0.02,
                         ),
-                        borderRadius: BorderRadius.circular(12.sp),
-                      ),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          width: double.maxFinite,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10.sp,
-                            vertical: 5.sp,
+                        width: MediaQuery.of(context).size.width * 0.82,
+                        height: MediaQuery.of(context).size.width * 0.65,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
                           ),
-                          height: Get.width * 0.35,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.8),
-                            borderRadius: BorderRadius.circular(10.sp),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(children: [
-                                Text(
-                                  widget.party.title!.capitalizeFirst!,
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 12.sp,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          borderRadius: BorderRadius.circular(12.sp),
+                        ),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            width: double.maxFinite,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.sp,
+                              vertical: 5.sp,
+                            ),
+                            height: Get.width * 0.35,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(10.sp),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                FittedBox(
+                                  child: Row(children: [
+                                    Text(
+                                      widget.party.title!.capitalizeFirst!,
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 12.sp,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    widget.party.orgBluetickStatus =='1'?
+                                    Icon(Icons.verified,color:Colors.blueAccent,size: 18,):Container(),
+                                  ],),
                                 ),
-                                widget.party.orgBluetickStatus =='1'?
-                                Icon(Icons.verified,color:Colors.blueAccent,size: 18,):Container(),
-                              ],),
-
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Icon(Icons.visibility,
-                                      size: 16, color: Colors.red),
-                                  Text(
-                                      "${widget.party.view} Views",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Icon(Icons.thumb_up,
-                                      size: 16, color: Colors.red),
-                                  Text(
-                                      "${widget.party.like} Likes",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Icon(Icons.people, color: Colors.red),
-                                  SizedBox(width: 5.sp),
-                                  Text(
-                                    "${widget.party.ongoing} Going",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ],
-                              ),
-                              widget.partyType == 'upcoming'
-                                  ? Column(
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Icon(Icons.visibility,
+                                        size: 16, color: Colors.red),
+                                    Text(
+                                        "${widget.party.view} Views",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Icon(Icons.thumb_up,
+                                        size: 16, color: Colors.red),
+                                    Text(
+                                        "${widget.party.like} Likes",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Icon(Icons.people, color: Colors.red),
+                                    SizedBox(width: 5.sp),
+                                    Text(
+                                      "${widget.party.ongoing} Going",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ],
+                                ),
+                                widget.partyType == 'upcoming'
+                                    ? Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Party Starts",
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 10.sp,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: 8.sp),
+                                        ],
+                                      )
+                                    : FittedBox(
+                                      child: Container(
+                                  width: Get.width*0.81,
+                                        child: Text(
+                                            widget.party.description.capitalizeFirst!,
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 10.sp,
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          maxLines: 3,
+                                          ),
+                                      ),
+                                    ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Party Starts",
+                                          "Rating (${widget.party.orgRatings} /5.0)",
                                           style: TextStyle(
                                             fontFamily: 'Poppins',
                                             fontSize: 10.sp,
@@ -298,98 +335,70 @@ class _PartyCardState extends State<PartyCard>
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        SizedBox(height: 8.sp),
+                                        SmoothStarRating(
+                                          allowHalfRating: false,
+                                          starCount: 5,
+                                          rating: double.parse(widget.party.orgRatings),
+                                          size: 18.0,
+                                          color: Colors.orange,
+                                          borderColor: Colors.orange,
+                                          filledIconData: Icons.star,
+                                          halfFilledIconData: Icons.star_half,
+                                          defaultIconData: Icons.star_border,
+                                          spacing: .5,
+                                        ),
                                       ],
-                                    )
-                                  : Text(
-                                      widget.party.description.capitalizeFirst!,
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 10.sp,
-                                        color: Colors.black87,
-                                        fontWeight: FontWeight.bold,
-                                      ),
                                     ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Rating (${widget.party.orgRatings} /5.0)",
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 10.sp,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SmoothStarRating(
-                                        allowHalfRating: false,
-                                        starCount: 5,
-                                        rating: double.parse(widget.party.orgRatings),
-                                        size: 18.0,
-                                        color: Colors.orange,
-                                        borderColor: Colors.orange,
-                                        filledIconData: Icons.star,
-                                        halfFilledIconData: Icons.star_half,
-                                        defaultIconData: Icons.star_border,
-                                        spacing: .5,
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        DateFormat('EEEE, MMMM d, yyyy ')
-                                            .format(
-                                          DateTime.fromMillisecondsSinceEpoch(
-                                            int.parse(widget.party.startDate!) *
-                                                1000,
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          DateFormat('MMMM d, yyyy ')
+                                              .format(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                              int.parse(widget.party.startDate!) *
+                                                  1000,
+                                            ),
+                                          ) + '  ${widget.party.startTime}',
+                                          style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontSize: 10.sp,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                        ) + '  ${widget.party.startTime}',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 10.sp,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
                                         ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: (){
-                                          APIService apiserice = APIService();
-                                          apiserice.ongoingParty(widget.party.id);
+                                        GestureDetector(
+                                          onTap: (){
+                                            APIService apiserice = APIService();
+                                            apiserice.ongoingParty(widget.party.id);
 
-                                        },
-                                        child: Container(
-                                          decoration:
-                                          BoxDecoration(borderRadius: BorderRadius.circular(20),
-                                            color: Colors.orange,),
-                                          width: Get.width*0.2,
-                                          height: Get.height*0.031,
-                                          padding: EdgeInsets.all(5),
-                                          child: FittedBox(
-                                            child: Row(mainAxisAlignment: MainAxisAlignment.center
-                                                ,children: [
-                                            Icon(CupertinoIcons.add_circled,color: Colors.white),
-                                              widget.party.ongoingStatus == 0 ? Text("Join",style: TextStyle(color: Colors.white,
-                                              fontSize: 16),) :Text("Joined",style: TextStyle(color: Colors.white,
-                                                  fontSize: 16),)
-                                            ]
+                                          },
+                                          child: Container(
+                                            decoration:
+                                            BoxDecoration(borderRadius: BorderRadius.circular(20),
+                                              color: Colors.orange,),
+                                            width: Get.width*0.2,
+                                            height: Get.height*0.031,
+                                            padding: EdgeInsets.all(5),
+                                            child: FittedBox(
+                                              child: Row(mainAxisAlignment: MainAxisAlignment.center
+                                                  ,children: [
+                                              Icon(CupertinoIcons.add_circled,color: Colors.white),
+                                                widget.party.ongoingStatus == 0 ? Text("Join",style: TextStyle(color: Colors.white,
+                                                fontSize: 16),) :Text("Joined",style: TextStyle(color: Colors.white,
+                                                    fontSize: 16),)
+                                              ]
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                        )
+                                      ],
+                                    ),
 
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -400,7 +409,7 @@ class _PartyCardState extends State<PartyCard>
                       child: Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
-                          color: Colors.red,
+                          color: Colors.red.shade900,
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: Text(
@@ -416,7 +425,7 @@ class _PartyCardState extends State<PartyCard>
                         icon: Icon(
                           isFavorite ? Icons.favorite : Icons.favorite_border,
                         ),
-                        color: isFavorite ? Colors.red : Colors.white,
+                        color: isFavorite ? Colors.red.shade900 : Colors.white,
                         onPressed: () {
                           setState(() {
                             isFavorite = true;
@@ -446,161 +455,167 @@ class _PartyCardState extends State<PartyCard>
             //  Get.to(PartyPreview(party: widget.party))?.then((value) => widget.onBack());
               Get.to(PartyPreviewScreen(party: widget.party))?.then((value) => widget.onBack());
             },
-            child: Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Card(
-                  elevation: 8.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.sp),
-                  ),
-                  child: Stack(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: Get.width * 0.03,
-                          vertical: Get.width * 0.02,
-                        ),
-                        width: MediaQuery.of(context).size.width * 0.55,
-                        height: MediaQuery.of(context).size.width * 0.65,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
+            child: FittedBox(
+              child: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Card(
+                    elevation: 8.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.sp),
+                    ),
+                    child: Stack(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: Get.width * 0.03,
+                            vertical: Get.width * 0.02,
                           ),
-                          borderRadius: BorderRadius.circular(12.sp),
-                        ),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            width: double.maxFinite,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10.sp, vertical: 5.sp),
-                            height: Get.width * 0.35,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(10.sp),
+                          width: MediaQuery.of(context).size.width * 0.55,
+                          height: MediaQuery.of(context).size.width * 0.65,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
                             ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [Row(children: [
-                                Text(
-                                widget.party.title!.capitalizeFirst!,
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 12.sp,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            borderRadius: BorderRadius.circular(12.sp),
+                          ),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              width: double.maxFinite,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10.sp, vertical: 5.sp),
+                              height: Get.width * 0.35,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(10.sp),
                               ),
-                                widget.party.orgBluetickStatus =='1'?
-                              Icon(Icons.verified,color:Colors.blueAccent,size: 18,):Container(),],),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  FittedBox(
+                                    child: Row(children: [
+                                    Text(
+                                    widget.party.title!.capitalizeFirst!,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 12.sp,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                ),
+                                    widget.party.orgBluetickStatus =='1'?
+                                Icon(Icons.verified,color:Colors.blueAccent,size: 18,):Container(),],),
+                                  ),
 
-                                widget.partyType == 'upcoming'
-                                    ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Party Starts",
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontSize: 10.sp,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
+                                  widget.partyType == 'upcoming'
+                                      ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Party Starts",
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 10.sp,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          Text(
-                                            DateFormat(
-                                                    'EEEE, MMMM d, yyyy')
-                                                .format(
-                                              DateTime
-                                                  .fromMillisecondsSinceEpoch(
-                                                      int.parse(widget.party
-                                                              .startDate!) *
-                                                          1000),
-                                            ) + '  ${widget.party.startTime}',
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontSize: 9.sp,
-                                              color: Colors.grey[700],
+                                            Text(
+                                              DateFormat(
+                                                      'EEEE, MMMM d, yyyy')
+                                                  .format(
+                                                DateTime
+                                                    .fromMillisecondsSinceEpoch(
+                                                        int.parse(widget.party
+                                                                .startDate!) *
+                                                            1000),
+                                              ) + '  ${widget.party.startTime}',
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 9.sp,
+                                                color: Colors.grey[700],
+                                              ),
                                             ),
+                                          ],
+                                        )
+                                      : Text(
+                                          widget
+                                              .party.description.capitalizeFirst!,
+                                          maxLines: 3,
+                                          style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontSize: 10.sp,
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                        ],
-                                      )
-                                    : Text(
-                                        widget
-                                            .party.description.capitalizeFirst!,
+                                        ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                  "Rating (${widget.party.orgRatings} /5.0)",
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontSize: 10.sp,
-                                          color: Colors.black87,
+                                          color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                "Rating (${widget.party.orgRatings} /5.0)",
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 10.sp,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
+                                      SmoothStarRating(
+                                        allowHalfRating: false,
+                                        starCount: 5,
+                                        rating: double.parse(widget.party.orgRatings),
+                                        size: 18.0,
+                                        color: Colors.orange,
+                                        borderColor: Colors.orange,
+                                        filledIconData: Icons.star,
+                                        halfFilledIconData: Icons.star_half,
+                                        defaultIconData: Icons.star_border,
+                                        spacing: .5,
                                       ),
-                                    ),
-                                    SmoothStarRating(
-                                      allowHalfRating: false,
-                                      starCount: 5,
-                                      rating: double.parse(widget.party.orgRatings),
-                                      size: 18.0,
-                                      color: Colors.orange,
-                                      borderColor: Colors.orange,
-                                      filledIconData: Icons.star,
-                                      halfFilledIconData: Icons.star_half,
-                                      defaultIconData: Icons.star_border,
-                                      spacing: .5,
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        top: 8.0,
-                        right: 8.0,
-                        child: IconButton(
-                          icon: Icon(
-                            isFavorite ? Icons.favorite : Icons.favorite_border,
-                          ),
-                          color: isFavorite ? Colors.red : Colors.white,
-                          onPressed: () {
-                            setState(() {
-                              isFavorite = true;
-                            });
-                            // Call your function to process the favorite status
-                            wishlistParty(widget.party.id);
+                        Positioned(
+                          top: 8.0,
+                          right: 8.0,
+                          child: IconButton(
+                            icon: Icon(
+                              isFavorite ? Icons.favorite : Icons.favorite_border,
+                            ),
+                            color: isFavorite ? Colors.red : Colors.white,
+                            onPressed: () {
+                              setState(() {
+                                isFavorite = true;
+                              });
+                              // Call your function to process the favorite status
+                              wishlistParty(widget.party.id);
 
-                            // Show SnackBar with feedback message
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  isFavorite
-                                      ? 'Added to Wishlist'
-                                      : 'Removed from Wishlist',
+                              // Show SnackBar with feedback message
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    isFavorite
+                                        ? 'Added to Wishlist'
+                                        : 'Removed from Wishlist',
+                                  ),
+                                  duration: Duration(seconds: 2),
                                 ),
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                )),
+                      ],
+                    ),
+                  )),
+            ),
           );
   }
 }

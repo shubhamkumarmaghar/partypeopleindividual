@@ -14,6 +14,7 @@ import 'package:partypeopleindividual/notification/notification_screen.dart';
 import 'package:partypeopleindividual/wishlist_screen/wishlist_screen.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../chatList/view/chat_list_view.dart';
 import '../../individualDrawer/views/individual_drawer_view.dart';
 import '../../individual_nearby_people_profile/view/individual_people_list.dart';
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
@@ -81,6 +82,8 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
             ),
             Expanded(
               child: Obx(() {
+
+                GetStorage().write("my_user_id",individualProfileController.username.value.toString() );
       // get status for privacy and notification
 
       if(individualProfileController.privacyOnlineStatus.value.toString() =='No')
@@ -170,7 +173,10 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                 _selectedIndex = index;
                 if (_selectedIndex == 2) {
                 //  Get.to(IndividualProfileScreen())?.then((value) =>individualDashboardController.getDataForDashboard());
-                  Get.to(IndividualProfileScreenView())?.then((value) =>individualDashboardController.getDataForDashboard());
+                  Get.to(IndividualProfileScreenView());
+                }
+                if(_selectedIndex == 0){
+                  Get.to(ChatList());
                 }
               });
             },
@@ -182,8 +188,8 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
             tabBackgroundColor: const Color(0xFF802a2a),
             tabs: const [
               GButton(
-                icon: Icons.search,
-                text: 'Search',
+                icon: CupertinoIcons.chat_bubble_2_fill,
+                text: 'Chats',
                 textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 iconSize: 24,
               ),
@@ -302,7 +308,11 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                           scrollDirection: Axis.horizontal,
                           itemBuilder: ((context, index) =>
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  individualDashboardController.partyCity.value = individualDashboardController
+                                      .allCityList[index].name;
+                                  individualDashboardController.getPartyByDate();
+                                },
                                 child: CityCard(
                                   cityName: individualDashboardController
                                       .allCityList[index].name,
@@ -387,7 +397,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                                 onTap: () {
                                   //PeopleViewed(individualDashboardController.usersList[index].id);
                                   //Navigator.push(context, MaterialPageRoute(builder: (context) => IndividualPeopleProfile(),));
-                                 Get.to(()=>IndividualPeopleProfile(user_id: individualDashboardController.usersList[index].id,))?.then((value) =>individualDashboardController.getDataForDashboard());
+                                 Get.to(()=>IndividualPeopleProfile(),arguments: individualDashboardController.usersList[index].id)?.then((value) =>individualDashboardController.getDataForDashboard());
                                 },
                                 child: NearByPeopleProfile(
                                   imageURL: individualDashboardController.usersList[index].profilePicture,

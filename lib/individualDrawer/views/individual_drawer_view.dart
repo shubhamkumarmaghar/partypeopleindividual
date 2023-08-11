@@ -160,8 +160,6 @@ class CustomOptionWidget extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-
-
                  // Colors.red.shade400,
                   Colors.red.shade800,
                   Color(0xff7e160a),
