@@ -26,7 +26,7 @@ class ChatListController extends GetxController{
     try {
       isApiLoading = true;
       http.Response response = await http.post(
-        Uri.parse('http://app.partypeople.in/v1/chat/get_chat_user_list_data'),
+        Uri.parse('https://app.partypeople.in/v1/chat/get_chat_user_list_data'),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 

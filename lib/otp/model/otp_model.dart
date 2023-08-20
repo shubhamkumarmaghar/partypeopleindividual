@@ -30,6 +30,7 @@ class OTPVerificationData {
   String uniqueId;
   String? userType;
   String token;
+  String type;
 
   OTPVerificationData({
     required this.userId,
@@ -43,6 +44,7 @@ class OTPVerificationData {
     required this.uniqueId,
     required this.userType,
     required this.token,
+    required this.type
   });
 
   factory OTPVerificationData.fromJson(Map<String, dynamic> json) {
@@ -58,6 +60,7 @@ class OTPVerificationData {
       uniqueId: json['unique_id'],
       userType: json['user_type'] as String?,
       token: json['token'],
+      type: json['type']
     );
   }
 }

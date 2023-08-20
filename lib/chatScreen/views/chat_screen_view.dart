@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
+import '../../individual_profile_screen/profilephotoview.dart';
+import '../../individual_subscription/view/subscription_view.dart';
 import '../controllers/chat_screen_controller.dart';
 import '../model/chat_model.dart';
 
@@ -24,6 +26,9 @@ class _ChatScreenViewState extends State<ChatScreenView> {
   //showEmoji -- for storing value of showing or hiding emoji
   //isUploading -- for checking if image is uploading or not?
   bool _showEmoji = false, _isUploading = false;
+  bool me = false;
+  @override
+
 
 
   @override
@@ -53,8 +58,23 @@ class _ChatScreenViewState extends State<ChatScreenView> {
           ),
           ),),
           toolbarHeight: MediaQuery.of(context).size.height * 0.1,
-              leading: Container(
-                child: StreamBuilder(
+              leading: IconButton(
+                padding: EdgeInsets.symmetric(horizontal: 18.sp),
+                alignment: Alignment.centerLeft,
+                enableFeedback: true,
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  Get.back();
+                },
+                iconSize: 16.sp,
+              ),
+
+              // previous we are sending last msg from here but now on closed method is used
+              /*Container(
+                child:
+
+
+                StreamBuilder(
                   stream: controller.getLastMessage(controller.getUserModel),
                   builder: (context,snapshot) {
                     Message? _message ;
@@ -77,6 +97,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                   }
                 ),
               ),
+              */
               centerTitle: false,
               titleSpacing: 0.0,
               title: Row(
@@ -84,22 +105,27 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                   FittedBox(
                     child: Stack(
                       children: [
-                        Container(
-                          width: Get.width * 0.151,
-                          height: Get.width * 0.151,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: Get.width * 0.005,
-                              color: const Color(0xFFe3661d),
-                            ),
+                        GestureDetector(
+                      onTap: () {
+                        Get.to(  ProfilePhotoView(profileUrl: controller.getUserModel?.data?.profilePicture??'',));
 
-                            borderRadius: BorderRadius.circular(100.sp), //<-- SEE HERE
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(Get.width * 0.006),
-                            child: CircleAvatar(
-                              // backgroundImage: NetworkImage(imageURL),
-                              backgroundImage: NetworkImage(controller.getUserModel?.data?.profilePicture??""),
+            },
+                          child: Container(
+                            width: Get.width * 0.151,
+                            height: Get.width * 0.151,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: Get.width * 0.005,
+                                color: const Color(0xFFe3661d),
+                              ),
+                              borderRadius: BorderRadius.circular(100.sp), //<-- SEE HERE
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(Get.width * 0.006),
+                              child: CircleAvatar(
+                                // backgroundImage: NetworkImage(imageURL),
+                                backgroundImage: NetworkImage(controller.getUserModel?.data?.profilePicture??"https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54"),
+                              ),
                             ),
                           ),
                         ),
@@ -111,7 +137,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                               height: Get.height * 0.019,
                               // color: Colors.white,
                               decoration: BoxDecoration(
-                                color: Colors.red,
+                                color: const Color(0xFFe3661d),
                                 borderRadius: BorderRadius.circular(100.sp),
                               ),
                               child: Icon(
@@ -121,15 +147,6 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                               ),
                             ),
                         ),
-                        /*    Positioned(
-                                bottom: 3.sp,
-                                child: CircleAvatar(
-                                  radius: 6.sp,
-                                  backgroundImage:
-                                  const NetworkImage("https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54"),
-                                  //const AssetImage('assets/images/indian_flag.png'),
-                                ),
-                              ), */
                       ],
                     ),
                   ),
@@ -206,11 +223,13 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                             padding: EdgeInsets.only(top: Get.height * .01),
                             physics: const BouncingScrollPhysics(),
                             itemBuilder: (context, index) {
-                              String lastmessage = listmessage[listmessage.length-1].msg;
-
+                              for(int i =0 ;i<listmessage.length ;i++) {
+                                if(listmessage[i].fromId == controller.myUsername)
+                                  me = true;
+                                break;
+                              }
                              var data = listmessage[index];
                              data.toId == controller.myUsername;
-
                               var time = '${DateFormat('d MMMM y ,hh:mm').format(DateTime.fromMillisecondsSinceEpoch(int.parse(data.sent)))}';
                               return messageContainer(message: listmessage[index],
                                 text: listmessage[index].msg,
@@ -272,22 +291,38 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                             hintText: 'Type your message here',
                             hintStyle: TextStyle(
                                 color: Color(0xffd4d3d5), fontSize: 12.sp),
-
                             border: InputBorder.none,
                           ),
                         ),
                       ),
                       GestureDetector(
                         onTap: () {
-                          if(_textController.text.isNotEmpty )
-                            {
-                              controller.sendMessage(controller.getUserModel, _textController.text, Type.text);
-
-                              _textController.text ='';
+                          String plan = GetStorage().read('plan_plan_expiry');
+                          if(plan == 'Yes'){
+                            if(me==true)
+                              {
+                                if (_textController.text.isNotEmpty) {
+                                  controller.sendMessage(
+                                      controller.getUserModel, _textController.text,
+                                      Type.text);
+                                  _textController.text = '';
+                                }
+                              }
+                            Get.to(
+                                SubscriptionView()
+                            );
+                          }else {
+                            if (_textController.text.isNotEmpty) {
+                              controller.sendMessage(
+                                  controller.getUserModel, _textController.text,
+                                  Type.text);
+                              _textController.text = '';
                             }
-
+                          }
                         },
                         child: Container(
+                          width: Get.width*0.2,
+                        color: Colors.transparent,
                         /*  decoration:
                           BoxDecoration(
                             borderRadius: BorderRadius.only(
@@ -333,7 +368,7 @@ class messageContainer extends StatelessWidget {
        updateReadMessage();
      }
     return Padding(
-        padding: EdgeInsets.all(10.sp),
+        padding: EdgeInsets.only(left:10.sp ,top: 8 ,bottom: 8,right: 10),
         child: isMe == true
             ?
             // my messages
@@ -361,7 +396,7 @@ class messageContainer extends StatelessWidget {
                         //  color: isMe ? Color(0xFFefeef0) : Color(0xFF49d298),
                         ),
                         child: Padding(
-                          padding: EdgeInsets.all(10.sp),
+                          padding: EdgeInsets.all(6.sp),
                           child: Text(
                             text,
                             style: TextStyle(

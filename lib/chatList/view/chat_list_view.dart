@@ -79,13 +79,11 @@ class _ChatListState extends State<ChatList> {
                 var data = controller.chatList[index];
                 return GestureDetector(
                   onTap: (){
-                    log(GetStorage().read('last_message'));
-                    Get.to(()=>ChatScreenView(),arguments:data.id??"" )?.
+                    Get.to(()=>ChatScreenView(),arguments:data.id )?.
                     then((value) async {
-                       await APIService.lastMessage(data.id, GetStorage().read('last_message'));
-                       controller.getChatList();
+                      // await APIService.lastMessage(data.id, GetStorage().read('last_message'));
+                       await controller.getChatList();
                     });
-                    log(GetStorage().read('last_message'));
                   },
                   child:
                   Column(
@@ -109,7 +107,6 @@ class _ChatListState extends State<ChatList> {
                                         width: Get.width * 0.005,
                                         color: const Color(0xFFe3661d),
                                       ),
-
                                       borderRadius: BorderRadius.circular(100.sp), //<-- SEE HERE
                                     ),
                                     child: Padding(
@@ -129,7 +126,7 @@ class _ChatListState extends State<ChatList> {
                                       height: Get.height * 0.019,
                                       // color: Colors.white,
                                       decoration: BoxDecoration(
-                                        color: Colors.red,
+                                        color: const Color(0xFFe3661d),
                                         borderRadius: BorderRadius.circular(100.sp),
                                       ),
                                       child: Icon(

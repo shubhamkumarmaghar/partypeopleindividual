@@ -41,7 +41,7 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
     try {
       http.Response response = await http.get(
         Uri.parse(
-            'http://app.partypeople.in/v1/party/individual_organization_amenities'),
+            'https://app.partypeople.in/v1/party/individual_organization_amenities'),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 

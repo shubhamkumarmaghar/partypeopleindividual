@@ -16,7 +16,7 @@ class WishlistController extends GetxController{
   }
   Future<void> getWishlistParty() async {
     final response = await http.post(
-      Uri.parse('http://app.partypeople.in/v1/party/get_wish_list_party'),
+      Uri.parse('https://app.partypeople.in/v1/party/get_wish_list_party'),
       headers: <String, String>{
         'x-access-token': GetStorage().read('token'),
       },
@@ -46,7 +46,7 @@ class WishlistController extends GetxController{
 
   Future<void> deleteWishListParty(partyID) async {
     // API endpoint URL
-    String url = 'http://app.partypeople.in/v1/party/delete_to_wish_list_party';
+    String url = 'https://app.partypeople.in/v1/party/delete_to_wish_list_party';
 
     // Request headers
     Map<String, String> headers = {

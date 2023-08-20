@@ -23,6 +23,7 @@ import 'package:partypeopleindividual/widgets/qualification_dropdown_widget.dart
 
 import '../../widgets/dob_dropdown.dart';
 import '../../widgets/gender_dropdown_selecter.dart';
+import '../widgets/active_city_select.dart';
 
 class EditIndividualProfile extends StatefulWidget {
   const EditIndividualProfile({super.key});
@@ -44,7 +45,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
     try {
       http.Response response = await http.get(
         Uri.parse(
-            'http://app.partypeople.in/v1/party/individual_organization_amenities'),
+            'https://app.partypeople.in/v1/party/individual_organization_amenities'),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -117,13 +118,24 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
 
   Future<void> futureInit() async {
     await individualProfileController.individualProfileData();
-    await _fetchData();
+    individualProfileController.getAllCities();
+     _fetchData();
+
+
   }
 
   @override
   void initState() {
     futureInit();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+
+    individualProfileController.activeCities.clear();
+    individualProfileController.activeCity="".obs;
+    super.dispose();
   }
 
   APIService apiService = Get.put(APIService());
@@ -324,6 +336,13 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                 onCountryChanged: (onCountryChanged) {},
                                 onStateChanged: (onCountryChanged) {},
                                 onCityChanged: (onCityChanged) {}),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ActiveCitySelect(),
+                                ),
+                              ],
+                            ),
                             const SizedBox(
                               height: 10,
                             ),

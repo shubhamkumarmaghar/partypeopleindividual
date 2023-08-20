@@ -12,6 +12,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 
+import '../../api_helper_service.dart';
 import '../model/chat_model.dart';
 import '../model/user_model.dart';
 
@@ -48,7 +49,7 @@ class ChatScreenController  extends GetxController{
 
     try {
       http.Response response = await http.post(
-        Uri.parse('http://app.partypeople.in/v1/account/get_single_user'),
+        Uri.parse('https://app.partypeople.in/v1/account/get_single_user'),
         body: {'user_id': userId},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
@@ -70,7 +71,7 @@ class ChatScreenController  extends GetxController{
  Future<void> addChatUserToList() async
  {
    try{
-    http.Response response = await http.post(Uri.parse('http://app.partypeople.in/v1/chat/add_chat'),
+    http.Response response = await http.post(Uri.parse('https://app.partypeople.in/v1/chat/add_chat'),
        body: {'individual_user_id': userId } ,
        headers: {'x-access-token' : '${GetStorage().read('token')}'}
     );
@@ -429,6 +430,24 @@ class ChatScreenController  extends GetxController{
       .snapshots();
   }
 
+  Future<void> getLastMessageString(
+      GetUserModel? user) async {
+
+    await  firestore
+        .collection('chats/${getConversationID(user?.data?.username??"")}/messages/')
+        .orderBy('sent', descending: true)
+        .limit(1).get().then((value) async {
+      Message? _message ;
+      final data = value.docs;
+      final list =
+          data.map((e) => Message.fromJson(e.data())).toList() ?? [];
+      if (list.isNotEmpty) _message = list[0];
+      String? lastMessage = _message?.msg;
+      await APIService.lastMessage(userId!, lastMessage!);
+    });
+  }
+
+
   //send chat image
 
    Future<void> sendChatImage(GetUserModel? chatUser, File file) async {
@@ -479,9 +498,9 @@ class ChatScreenController  extends GetxController{
 
 
   @override
-  void onClose() {
-    var a = getLastMessage(getUserModel);
-    log('dispose  $a');
+  void onClose() async{
+   await getLastMessageString(getUserModel);
+
     super.onClose();
   }
   }

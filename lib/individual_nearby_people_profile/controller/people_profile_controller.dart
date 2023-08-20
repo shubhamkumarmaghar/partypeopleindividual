@@ -33,7 +33,7 @@ class PeopleProfileController extends GetxController {
     try {
       http.Response response = await http.get(
         Uri.parse(
-            'http://app.partypeople.in/v1/party/individual_organization_amenities'),
+            'https://app.partypeople.in/v1/party/individual_organization_amenities'),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -86,7 +86,7 @@ class PeopleProfileController extends GetxController {
   Future<void> PeopleViewed(String id) async {
     final response = await http.post(
       Uri.parse(
-          'http://app.partypeople.in/v1/account/get_individual_profile_view'),
+          'https://app.partypeople.in/v1/account/get_individual_profile_view'),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },

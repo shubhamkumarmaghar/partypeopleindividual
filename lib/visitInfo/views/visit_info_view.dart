@@ -177,7 +177,6 @@ class ProfileContainer extends StatelessWidget {
     return SizedBox(
       height: Get.height*0.4,
       width: Get.width,
-
       child: ListView.builder(
         itemCount: dataList.length,
         itemBuilder: (context, index) {
@@ -185,7 +184,6 @@ class ProfileContainer extends StatelessWidget {
            var dateAndTime = data.date?.split(' ');
            String? time = dateAndTime?[1];
            String? date = dateAndTime?[0];
-
         return GestureDetector(
           onTap: (){
             Get.to(()=>IndividualPeopleProfile(),arguments:data.userId??"" );

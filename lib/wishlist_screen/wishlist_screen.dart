@@ -23,7 +23,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
  // WishlistController wishlistController = Get.put(WishlistController());
   /*Future<void> getWishlistParty() async {
     final response = await http.post(
-      Uri.parse('http://app.partypeople.in/v1/party/get_wish_list_party'),
+      Uri.parse('https://app.partypeople.in/v1/party/get_wish_list_party'),
       headers: <String, String>{
         'x-access-token': GetStorage().read('token'),
       },
@@ -57,7 +57,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
 /*
   Future<void> deleteWishListParty(partyID) async {
     // API endpoint URL
-    String url = 'http://app.partypeople.in/v1/party/delete_to_wish_list_party';
+    String url = 'https://app.partypeople.in/v1/party/delete_to_wish_list_party';
 
     // Request headers
     Map<String, String> headers = {
@@ -324,85 +324,90 @@ class CustomListTile extends StatelessWidget {
       imageProvider = NetworkImage(leadingImage);
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-          left: MediaQuery.of(context).size.width * 0.08,
-          right: MediaQuery.of(context).size.width * 0.08,
-          bottom: MediaQuery.of(context).size.width * 0.07),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-         // color: Colors.white,
-          boxShadow: [
-            const BoxShadow(
-              color: Color.fromARGB(255, 110, 19, 9),
-              blurRadius: 10,
-              spreadRadius: 3,
-            ),
-          ],
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(margin: EdgeInsets.only(left: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    title.length > 1
-                        ? title[0].toUpperCase() + title.substring(1)
-                        : title,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: const Color(0xFF3c0103),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15.0.sp,
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_month,
-                        color: const Color(0xFF3c0103),
-                        size: 13.sp,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.015,
-                      ),
-                      Text(
-                        "${startDate} $startTime\n${endDate} $endTime",
+    return FittedBox(
+      child: Padding(
+        padding: EdgeInsets.only(
+            left: MediaQuery.of(context).size.width * 0.08,
+            right: MediaQuery.of(context).size.width * 0.08,
+            bottom: MediaQuery.of(context).size.width * 0.07),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+           // color: Colors.white,
+            boxShadow: [
+              const BoxShadow(
+                color: Color.fromARGB(255, 110, 19, 9),
+                blurRadius: 10,
+                spreadRadius: 3,
+              ),
+            ],
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(margin: EdgeInsets.only(left: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: Get.width*0.5,
+                      child: Text(
+                        title.length > 1
+                            ? title[0].toUpperCase() + title.substring(1)
+                            : title,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 9.sp,
-                          color: Colors.grey[600],
+                          color: const Color(0xFF3c0103),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.0.sp,
                         ),
                       ),
-                    ],
+                    ),
+                    const SizedBox(height: 10.0),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_month,
+                          color: const Color(0xFF3c0103),
+                          size: 13.sp,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.015,
+                        ),
+                        Text(
+                          "${startDate} $startTime\n${endDate} $endTime",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 9.sp,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5.0),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10.0),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.25,
+                height: MediaQuery.of(context).size.height * 0.12,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
                   ),
-                  const SizedBox(height: 5.0),
-                ],
-              ),
-            ),
-            const SizedBox(width: 10.0),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.25,
-              height: MediaQuery.of(context).size.height * 0.12,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
+                  child: Image(
+                    image: imageProvider,
+                    fit: BoxFit.fill,
+                  ),
                 ),
-                child: Image(
-                  image: imageProvider,
-                  fit: BoxFit.fill,
-                ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

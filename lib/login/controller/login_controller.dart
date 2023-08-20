@@ -56,7 +56,7 @@ class LoginController extends GetxController {
       User? response = await apiService.login(
           username.value, mobileNumber.value, deviceToken.value);
 
-      if (response.phone == null || response.phone.isEmpty) {
+      if (response.phone.isEmpty) {
         Get.snackbar(loginFailedTitle, unexpectedErrorMessage);
       } else {
         otpController.header.value = response.token;

@@ -25,7 +25,7 @@ class BlockReportController extends GetxController {
  Future<void> getBlockedData() async {
     try {
       http.Response response = await http.post(
-          Uri.parse('http://app.partypeople.in/v1/account/get_individual_block_list'),
+          Uri.parse('https://app.partypeople.in/v1/account/get_individual_block_list'),
           headers: {
             'x-access-token': '${GetStorage().read('token')}',
           });
@@ -59,7 +59,7 @@ class BlockReportController extends GetxController {
  Future<void> DoBlockUnblockPeople(String id,String status) async {
    try {
      http.Response response = await http.post(
-         Uri.parse('http://app.partypeople.in/v1/account/individual_user_block'),
+         Uri.parse('https://app.partypeople.in/v1/account/individual_user_block'),
          headers: {
            'x-access-token': '${GetStorage().read('token')}',
          },
@@ -92,7 +92,7 @@ class BlockReportController extends GetxController {
  Future<void> getReportedData() async {
    try {
      http.Response response = await http.post(
-         Uri.parse('http://app.partypeople.in/v1/account/get_individual_view_list'),
+         Uri.parse('https://app.partypeople.in/v1/account/get_individual_view_list'),
          headers: {
            'x-access-token': '${GetStorage().read('token')}',
          });

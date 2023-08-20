@@ -6,9 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:partypeopleindividual/login/views/login_screen.dart';
 import 'package:partypeopleindividual/otp/model/otp_model.dart';
 
 import 'centralize_api.dart';
+import 'constants.dart';
 import 'login/model/user_model.dart';
 
 class APIService extends GetxController {
@@ -18,7 +20,12 @@ class APIService extends GetxController {
   Future<User> login(String username, String phone, String deviceToken) async {
     try {
       final response = await _post(API.login,
-          {'phone': phone, 'username': username, 'device_token': deviceToken});
+          {'phone': phone,
+            'username': username,
+            'user_type':'Individual',
+            'device_token': deviceToken,
+
+          });
 
       if (response['status'] == 1) {
         // Login successful, return user data
@@ -40,19 +47,30 @@ class APIService extends GetxController {
   }
 
   ///This method is used to verify otp
-  Future<OTPVerificationResponse> verifyOTP(String otp, String header) async {
+  Future<OTPVerificationResponse?> verifyOTP(String otp, String header) async {
     try {
       final response = await _post(API.otp, {
         'otp': otp,
+        'user_type':'Individual'
       }, headers: {
         'x-access-token': header
       });
 
       if (response['status'] == 1) {
         // Login successful, return user data
-        final otpVerificationResponse = response;
-        return OTPVerificationResponse.fromJson(otpVerificationResponse);
-      } else {
+        if(response['message'] != 'Sorry ! you can not login here') {
+          final otpVerificationResponse = response;
+          return OTPVerificationResponse.fromJson(otpVerificationResponse);
+        }
+        else{
+          Get.snackbar(loginFailedTitle, organizationUser);
+          Get.offAll(LoginScreen());
+          return null;
+        }
+      }
+
+
+        else {
         // Handle failure
         throw Exception(response['message']);
       }
@@ -216,9 +234,9 @@ class APIService extends GetxController {
 
 /// on going parties
 
-  Future<void> ongoingParty(String id) async {
+  static Future<bool> ongoingParty(String id) async {
     final response = await http.post(
-      Uri.parse('http://app.partypeople.in/v1/party/party_ongoing'),
+      Uri.parse('https://app.partypeople.in/v1/party/party_ongoing'),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -236,9 +254,11 @@ class APIService extends GetxController {
         print('Party ongoing save successfully');
         Get.snackbar('Welcome',
             'You are welcome to join party');
+        return true;
       }
       else {
         print('Failed to update ongoing Party data');
+        return false;
       }
     } else {
       // If the server did not return a 200 OK response,
@@ -251,10 +271,9 @@ class APIService extends GetxController {
   /// all indiviusal people like
 
 
-  static Future<int>
-   likePeople(String id , bool status) async {
+  static Future<int> likePeople(String id , bool status) async {
     final response = await http.post(
-      Uri.parse('http://app.partypeople.in/v1/account/individual_user_like'),
+      Uri.parse('https://app.partypeople.in/v1/account/individual_user_like'),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -295,7 +314,7 @@ class APIService extends GetxController {
 
   static Future<void> lastMessage(String id , String message) async {
     final response = await http.post(
-      Uri.parse('http://app.partypeople.in/v1/chat/update_chat_message'),
+      Uri.parse('https://app.partypeople.in/v1/chat/update_chat_message'),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -324,6 +343,42 @@ class APIService extends GetxController {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Failed to update message successfully ');
+
+    }
+  }
+
+  static Future<String> updateStaticCity(String orgId , String activeCity) async {
+    final response = await http.post(
+      Uri.parse('https://app.partypeople.in/v1/account/update_city'),
+      headers: <String, String>{
+        'x-access-token': '${GetStorage().read('token')}',
+      },
+
+      body: <String, String>{
+        'active_city': activeCity,
+        'organization_id': orgId
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response,
+      // then parse the JSON.
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == 1 && jsonResponse['message'].contains('User city update successfully')) {
+        print('active city updated successfully');
+        return '1';
+
+      }
+      else {
+        print('else  Failed to active city updated  ');
+        return '0';
+
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to update active city ');
 
     }
   }

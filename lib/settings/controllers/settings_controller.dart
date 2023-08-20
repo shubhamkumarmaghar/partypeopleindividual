@@ -13,7 +13,7 @@ void onInit(){
 
   Future<void> updateOnlineStatus(status) async {
     // API endpoint URL
-    String url = 'http://app.partypeople.in/v1/account/update_online_status';
+    String url = 'https://app.partypeople.in/v1/account/update_online_status';
 
     // Request headers
     Map<String, String> headers = {
@@ -50,7 +50,7 @@ void onInit(){
 
   Future<void> updatePrivacyStatus(status) async {
     // API endpoint URL
-    String url = 'http://app.partypeople.in/v1/account/update_privacy_online_status';
+    String url = 'https://app.partypeople.in/v1/account/update_privacy_online_status';
 
     // Request headers
     Map<String, String> headers = {
@@ -88,7 +88,7 @@ void onInit(){
 
   Future<void> updateNotificationStatus(status) async {
     // API endpoint URL
-    String url = 'http://app.partypeople.in/v1/account/update_notification_status';
+    String url = 'https://app.partypeople.in/v1/account/update_notification_status';
 
     // Request headers
     Map<String, String> headers = {
@@ -126,7 +126,7 @@ void onInit(){
 
   Future<void> deleteAccount() async {
     // API endpoint URL
-    String url = 'http://app.partypeople.in/v1/account/delete_my_account';
+    String url = 'https://app.partypeople.in/v1/account/delete_my_account';
 
     // Request headers
     Map<String, String> headers = {

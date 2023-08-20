@@ -354,7 +354,8 @@ class _PeopleListState extends State<PeopleList> {
   }
 
   Future bottomMaleFemale(BuildContext context){
-    return   showModalBottomSheet( context: context, builder: (context) {
+    return   showModalBottomSheet( context: context, builder: (context)
+    {
       return GetBuilder<FilterChipController>(
         init: FilterChipController(),
         builder: (controller) {

@@ -15,6 +15,7 @@ import 'package:sizer/sizer.dart';
 import '../../api_helper_service.dart';
 import '../../chatScreen/views/chat_screen_view.dart';
 import '../../individual_profile_screen/profilephotoview.dart';
+import '../../individual_subscription/view/subscription_view.dart';
 import '../../widgets/block_unblock.dart';
 import '../../widgets/individual_amenities.dart';
 import '../controller/people_profile_controller.dart';
@@ -144,14 +145,23 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Get.to(ChatScreenView(),arguments: controller.userId)?.
-                              then((value) => APIService.lastMessage(controller.userId, GetStorage().read('last_message')) );
-                              // Get.to(peopleList());
+                              String plan = GetStorage().read('plan_plan_expiry');
+                              if(plan == 'Yes'){
+                                Get.to(
+                                    SubscriptionView()
+                                );
+                              }
+                              else {
+                                Get.to(ChatScreenView(),
+                                    arguments: controller.userId)?.
+                                then((value) =>
+                                    APIService.lastMessage(controller.userId,
+                                        GetStorage().read('last_message')));
+                                // Get.to(peopleList());
+                              }
                             },
-                            child: GestureDetector(
-                              child: iconButtonNeumorphic(
-                                  icon: CupertinoIcons.chat_bubble_2_fill,color: Colors.orange),
-                            ),
+                            child: iconButtonNeumorphic(
+                                icon: CupertinoIcons.chat_bubble_2_fill,color: Colors.orange),
                           ),
                           data.likeStatus ==1 ?iconButtonNeumorphic(
                               icon: Icons.favorite,color: Colors.red):

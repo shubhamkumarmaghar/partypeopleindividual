@@ -20,6 +20,7 @@ import '../../individual_nearby_people_profile/view/individual_people_list.dart'
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
 import '../../individual_profile_screen/individual_profile_screen.dart';
 import '../../individual_profile_screen/individual_profile_screen_view.dart';
+import '../../individual_subscription/view/subscription_view.dart';
 import '../../widgets/party_card.dart';
 import 'nearby_people_profile.dart';
 
@@ -123,8 +124,6 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
               padding: EdgeInsets.symmetric(horizontal: 15.sp, vertical: 5.sp),
               child: Row(
                 children: [
-
-
                   Obx(() {
                     IndividualDashboardController wishlistController =
                     Get.find();
@@ -309,9 +308,19 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                           itemBuilder: ((context, index) =>
                               GestureDetector(
                                 onTap: () {
-                                  individualDashboardController.partyCity.value = individualDashboardController
-                                      .allCityList[index].name;
-                                  individualDashboardController.getPartyByDate();
+                                  String plan = GetStorage().read('plan_plan_expiry');
+                                  if(plan == 'Yes'){
+                                    Get.to(
+
+                                        SubscriptionView()
+                                    );
+                                  }
+                                  else{
+                                    individualDashboardController.partyCity.value = individualDashboardController
+                                        .allCityList[index].name;
+                                  }
+
+                                  //individualDashboardController.getPartyByDate();
                                 },
                                 child: CityCard(
                                   cityName: individualDashboardController
@@ -762,7 +771,7 @@ class CityCard extends StatelessWidget {
             child: CircleAvatar(
               radius: Get.width * 0.067,
               backgroundImage: NetworkImage(
-                'http://app.partypeople.in/$imageURL',
+                'https://app.partypeople.in/$imageURL',
               ),
             ),
           ),

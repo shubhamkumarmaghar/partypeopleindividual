@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:sizer/sizer.dart';
 import 'package:shimmer/shimmer.dart';
 import '../api_helper_service.dart';
@@ -33,13 +35,14 @@ class PartyPreviewScreen extends StatefulWidget {
 }
 
 class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
+  String join = 'Join';
   List<Category> _categories = [];
   final List<CategoryList> _categoryLists = [];
   List selectedAmenities = [];
 
   Future<void> _fetchData() async {
     http.Response response = await http.get(
-      Uri.parse('http://app.partypeople.in/v1/party/party_amenities'),
+      Uri.parse('https://app.partypeople.in/v1/party/party_amenities'),
       headers: {'x-access-token': '${GetStorage().read('token')}'},
     );
     final data = jsonDecode(response.body);
@@ -54,7 +57,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
               title: category.name, amenities: category.amenities));
 
         });
-getSelectedID();
+          getSelectedID();
       }
     });
   }
@@ -80,12 +83,6 @@ getSelectedID();
       });
     }
   }
-
-
-
-
-
-
   @override
   void initState() {
     _fetchData();
@@ -201,10 +198,19 @@ getSelectedID();
                   Positioned(
                       top: Get.height*0.27,
                       right: Get.width*0.06,
-                      child: GestureDetector(onTap: (){
-                        APIService apiserice = APIService();
-                        apiserice.ongoingParty(widget.party.id);
+                      child: GestureDetector(onTap: () async {
+                        var data = await APIService.ongoingParty(widget.party.id);
+                        if(data ==true)
+                          {
+                            setState(() {
+
+                            });
+                            join='Joined';
+
+                          }
+                        log(data.toString());
                         //ongoingParty(widget.party.id);
+
                       },
                         child: Container(
                           width: Get.width*0.2,
@@ -219,7 +225,7 @@ getSelectedID();
                                   Icon(CupertinoIcons.add_circled,color: Colors.white),
                                   SizedBox(width: Get.width*0.003,),
                                   widget.party.ongoingStatus == 0 ?
-                                  Text("Join",style: TextStyle(color: Colors.white,
+                                  Text(join,style: TextStyle(color: Colors.white,
                                       fontSize: 16),) : Text("Joined",style: TextStyle(color: Colors.white,
                                       fontSize: 16),)
                                 ]
@@ -317,7 +323,7 @@ getSelectedID();
                 CustomListTile(
                   icon: Icons.location_on,
                   title: "${widget.party.latitude} ",
-                  subtitle: "${widget.party.longitude} ",
+                  subtitle: "${widget.party.longitude} , ${widget.party.pincode}",
                   sub: true,
                 ),
                 /*   CustomListTile(
@@ -346,18 +352,23 @@ getSelectedID();
                   title: widget.party.gender
                       .replaceAll('[', '')
                       .replaceAll(']', '')
-                      .capitalizeFirst!,
+                      ,
                   subtitle: widget.party.gender
                       .replaceAll('[', '')
                       .replaceAll(']', '')
                       .capitalizeFirst!,
                   sub: false,
                 ),
-                CustomListTile(
-                  icon: Icons.phone,
-                  title: "Party Contact Number",
-                  subtitle: widget.party.phoneNumber,
-                  sub: true,
+                GestureDetector(
+                  onTap: (){
+                    UrlLauncher.launch("tel://${widget.party.phoneNumber}");
+                  },
+                  child: CustomListTile(
+                    icon: Icons.phone,
+                    title: "Call Us",
+                    subtitle: widget.party.phoneNumber,
+                    sub: true,
+                  ),
                 ),
                 CustomListTile(
                   icon: Icons.group,
@@ -367,7 +378,7 @@ getSelectedID();
                 ),
                 CustomListTile(
                   icon: Icons.warning,
-                  title: "People Limit",
+                  title: "Maximum Guests",
                   subtitle: widget.party.personLimit,
                   sub: true,
                 ),
@@ -525,7 +536,6 @@ getSelectedID();
                     const SizedBox(height: 4),
                     itemBuilder: (context, index) {
                       final categoryList = _categoryLists[index];
-
                       return categoryList.amenities.isNotEmpty
                           ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -550,7 +560,8 @@ getSelectedID();
                               children: categoryList.amenities.map((amenity) {
                                 return GestureDetector(
                                   onTap: () {},
-                                  child: amenity.selected
+                                  child:
+                                  amenity.selected
                                       ? Chip(
                                     label: Text(
                                       amenity.name,

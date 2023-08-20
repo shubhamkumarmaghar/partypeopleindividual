@@ -34,7 +34,7 @@ class _PartyPreviewState extends State<PartyPreview> {
 
   Future<void> _fetchData() async {
     http.Response response = await http.get(
-      Uri.parse('http://app.partypeople.in/v1/party/party_amenities'),
+      Uri.parse('https://app.partypeople.in/v1/party/party_amenities'),
       headers: {'x-access-token': '${GetStorage().read('token')}'},
     );
     final data = jsonDecode(response.body);
@@ -57,7 +57,7 @@ class _PartyPreviewState extends State<PartyPreview> {
 
   Future<void> ongoingParty(String id) async {
     final response = await http.post(
-      Uri.parse('http://app.partypeople.in/v1/party/party_ongoing'),
+      Uri.parse('https://app.partypeople.in/v1/party/party_ongoing'),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },

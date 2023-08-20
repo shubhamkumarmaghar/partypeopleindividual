@@ -43,7 +43,7 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
     } else {
       isLiked = widget.likeStatus == '1' ? false : true;
       final response = await http.post(
-        Uri.parse('http://app.partypeople.in/v1/account/individual_user_like'),
+        Uri.parse('https://app.partypeople.in/v1/account/individual_user_like'),
         headers: <String, String>{
           'x-access-token': '${GetStorage().read('token')}',
         },

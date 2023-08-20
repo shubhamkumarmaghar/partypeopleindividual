@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import '../../api_helper_service.dart';
 import '../../individualDashboard/views/individual_dashboard_view.dart';
 import '../../individual_profile/views/individual_profile.dart';
+import '../../login/views/login_screen.dart';
 
 class OTPController extends GetxController {
   RxString otp = ''.obs;
@@ -35,22 +36,30 @@ class OTPController extends GetxController {
     try {
       OTPVerificationResponse? response =
           await apiService.verifyOTP(otp.value, header.value);
-
-      if (response.data.phone.isEmpty || response.data.token.isEmpty) {
-        Get.snackbar(loginFailedTitle, unexpectedErrorMessage);
-      } else {
-        ///Login Successfully
-        ///Differentiate User Between Organisation and Individual
-        print(
-            "Checking token on successfull otp verification : ${response.data.token}");
-        // Save token to local storage
-        await GetStorage().write('token', response.data.token);
-        updateUserType();
-
-        Get.snackbar(loginSuccessTitle, loginSuccessMessage);
-        getAPIOverview();
-        //Get.offAll(const IndividualProfile());
+      if(response != null){
+        if (response.data.phone.isEmpty || response.data.token.isEmpty) {
+          Get.snackbar(loginFailedTitle, unexpectedErrorMessage);
+        }
+        else if(response.data.type=='Individual' && response.data.phone.isNotEmpty && response.data.token.isNotEmpty){
+          ///Login Successfully
+          ///Differentiate User Between Organisation and Individual
+          print(
+              "Checking token on successfull otp verification : ${response.data.token}");
+          // Save token to local storage
+          await GetStorage().write('token', response.data.token);
+          updateUserType();
+          Get.snackbar(loginSuccessTitle, loginSuccessMessage);
+          getAPIOverview();
+          //Get.offAll(const IndividualProfile());
+        }
+        else if(response.message == 'Sorry ! you can not login here' && response.status == 0)
+        {
+          Get.snackbar(loginFailedTitle, organizationUser);
+          Get.to(LoginScreen());
+        }
       }
+
+
     } catch (e) {
       Get.snackbar(loginFailedTitle, checkCredentialsMessage);
     } finally {}
@@ -71,7 +80,7 @@ class OTPController extends GetxController {
     isLoading.value = true;
     try {
       http.Response response = await http.post(
-          Uri.parse('http://app.partypeople.in/v1/party/organization_details'),
+          Uri.parse('https://app.partypeople.in/v1/party/organization_details'),
           headers: {
             'x-access-token': '${GetStorage().read('token')}',
           });

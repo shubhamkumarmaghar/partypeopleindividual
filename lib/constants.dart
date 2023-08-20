@@ -7,3 +7,5 @@ const String checkCredentialsMessage =
 const String loginSuccessTitle = 'Login Successful';
 const String loginSuccessMessage =
     'Congratulations! You have successfully logged in.';
+const String organizationUser =
+    'Sorry ! you can not login here ';

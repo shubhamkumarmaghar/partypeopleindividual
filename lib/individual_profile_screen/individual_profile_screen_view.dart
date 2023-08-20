@@ -39,7 +39,7 @@ class _IndividualProfileScreenViewState
     try {
       http.Response response = await http.get(
         Uri.parse(
-            'http://app.partypeople.in/v1/party/individual_organization_amenities'),
+            'https://app.partypeople.in/v1/party/individual_organization_amenities'),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -508,13 +508,20 @@ class _IndividualProfileScreenViewState
             SizedBox(
               width: Get.width * 0.03,
             ),
-            NeumorphicText(text,
-                style: NeumorphicStyle(
-                  color: Colors.black54,
-                ),
-                textStyle: NeumorphicTextStyle(
-                  fontSize: 14,
-                )),
+            Container(
+              width: Get.width*.28,
+              height: Get.height*0.02,
+              alignment: Alignment.centerLeft,
+              child: FittedBox(
+                child: NeumorphicText(text,
+                    style: NeumorphicStyle(
+                      color: Colors.black54,
+                    ),
+                    textStyle: NeumorphicTextStyle(
+                      fontSize: 14,
+                    )),
+              ),
+            ),
           ],
         ));
   }

@@ -52,7 +52,7 @@ class IndividualDashboardController extends GetxController {
     super.onInit();
     getDataForDashboard();
   }
-  void getDataForDashboard(){
+  void getDataForDashboard() async {
 
      lengthOfTodayParties = 0.obs;
      lengthOfTommParties = 0.obs;
@@ -67,11 +67,12 @@ class IndividualDashboardController extends GetxController {
      jsonPartyOrganisationDataTomm = <Party>[].obs;
      jsonPartyOgranisationDataUpcomming = <Party>[].obs;
      jsonPartyPopularData = <Party>[].obs;
+      getOnlineStatus();
+     await getAllCities();
 
-    getOnlineStatus();
-    individualProfileController.individualProfileData();
+  await individualProfileController.individualProfileData();
     getAllNearbyPeoples();
-    getAllCities();
+
     getPopularParty();
     getTodayPary();
     getTomarrowParty();
@@ -82,7 +83,6 @@ class IndividualDashboardController extends GetxController {
   }
 
   RxString noUserFoundController = "null".obs;
-
   Future<void> getAllCities() async {
     try {
       final response = await http.get(
@@ -97,7 +97,11 @@ class IndividualDashboardController extends GetxController {
             json.decode(response.body)['data'] as List;
         allCityList.value =
             cityListJson.map((city) => IndividualCity.fromJson(city)).toList();
-        log("cities $cityListJson");
+     //  individualProfileController.activeCities.add('Select Active city');
+     //  allCityList.forEach((element) {
+      //    individualProfileController.activeCities.add(element.name);
+      //  });
+       // log("cities $cityListJson");
         update();
       } else {
         throw Exception("Error with the request: ${response.statusCode}");
@@ -113,12 +117,21 @@ class IndividualDashboardController extends GetxController {
 
   Future<void> getAllNearbyPeoples() async {
     String state = GetStorage().read('state');
+    String city ='';
+    if(individualProfileController.city.value.toString().isNotEmpty)
+      {
+         city = individualProfileController.city.value.toString();
+        log("city for nearbypeople $city");
+      }
+    else{
+      city ='delhi';
+    }
 
     try {
       apiService.isLoading.value = true;
       var response = await apiService.individualNearbyPeoples(
         {
-          'city_id': state.toLowerCase(),
+          'city_id': city.toLowerCase(),
           'state' : state.toLowerCase()
       },
         '${GetStorage().read('token')}',
@@ -207,7 +220,7 @@ class IndividualDashboardController extends GetxController {
       log('else partycity ${partyCity.value}');
       http.Response response = await http.post(
         Uri.parse(
-            'http://app.partypeople.in/v1/party/get_all_individual_party'),
+            'https://app.partypeople.in/v1/party/get_all_individual_party'),
         body: {'status': '0', 'city': partyCity.value, 'filter_type': '2'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
@@ -215,7 +228,7 @@ class IndividualDashboardController extends GetxController {
       // Fetch popular parties
       http.Response popularResponse = await http.post(
         Uri.parse(
-            'http://app.partypeople.in/v1/party/get_all_individual_party'),
+            'https://app.partypeople.in/v1/party/get_all_individual_party'),
         body: {'status': '0', 'city': partyCity.value, 'filter_type': '1'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
@@ -338,13 +351,13 @@ Future<void> getTodayPary() async{
     /// 'filter_type': '1' == popular parties
     String getcity = GetStorage().read('state') ?? 'delhi';
     if (partyCity.value == '') {
-      partyCity.value = getcity;
+      partyCity.value =individualProfileController.city.value.toString();
       log('partycity ${partyCity.value}');
     }
     log('else partycity ${partyCity.value}');
     http.Response response = await http.post(
       Uri.parse(
-          'http://app.partypeople.in/v1/party/get_all_individual_party'),
+          'https://app.partypeople.in/v1/party/get_all_individual_party'),
       body: {'status': '1', 'city': partyCity.value.toLowerCase(), 'filter_type': '2'},
       headers: {'x-access-token': '${GetStorage().read('token')}'},
     );
@@ -395,14 +408,14 @@ Future<void> getTomarrowParty() async{
       /// 'filter_type': '1' == popular parties
       String getcity = GetStorage().read('state') ?? 'delhi';
       if (partyCity.value == '') {
-        partyCity.value = getcity;
+        partyCity.value =individualProfileController.city.value.toString();
         log('tomarrow partycity ${partyCity.value}');
       }
       log('else tomarrow partycity ${partyCity.value}');
       http.Response response = await http.post(
         Uri.parse(
-            'http://app.partypeople.in/v1/party/get_all_individual_party'),
-        body: {'status': '2', 'city': partyCity.value, 'filter_type': '2'},
+            'https://app.partypeople.in/v1/party/get_all_individual_party'),
+        body: {'status': '2', 'city': partyCity.value.toLowerCase(), 'filter_type': '2'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -452,14 +465,14 @@ Future<void> getTomarrowParty() async{
       /// 'filter_type': '1' == popular parties
       String getcity = GetStorage().read('state') ?? 'delhi';
       if (partyCity.value == '') {
-        partyCity.value = getcity;
+        partyCity.value = individualProfileController.city.value.toString();
         log('upcoming partycity ${partyCity.value}');
       }
       log('else upcoming partycity ${partyCity.value}');
       http.Response response = await http.post(
         Uri.parse(
-            'http://app.partypeople.in/v1/party/get_all_individual_party'),
-        body: {'status': '3', 'city': partyCity.value, 'filter_type': '2'},
+            'https://app.partypeople.in/v1/party/get_all_individual_party'),
+        body: {'status': '3', 'city': partyCity.value.toLowerCase(), 'filter_type': '2'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -509,14 +522,14 @@ Future<void> getTomarrowParty() async{
       /// 'filter_type': '1' == popular parties
       String getcity = GetStorage().read('state') ?? 'delhi';
       if (partyCity.value == '') {
-        partyCity.value = getcity;
+        partyCity.value = individualProfileController.city.value.toString();
         log('upcoming partycity ${partyCity.value}');
       }
       log('else upcoming partycity ${partyCity.value}');
       http.Response response = await http.post(
         Uri.parse(
-            'http://app.partypeople.in/v1/party/get_all_individual_party'),
-        body: {'status': '0', 'city': partyCity.value, 'filter_type': '1'},
+            'https://app.partypeople.in/v1/party/get_all_individual_party'),
+        body: {'status': '0', 'city': partyCity.value.toLowerCase(), 'filter_type': '1'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -582,7 +595,8 @@ Future<void> getTomarrowParty() async{
         if (decode['status'] == 1 ) {
           try {
             onlineStatus.value = decode['status'];
-            log("online Status : $onlineStatus");
+            log("online Status : $onlineStatus  ${decode['plan_plan_expiry']}");
+            GetStorage().write('subscription_plan_expiry', decode['plan_plan_expiry']);
             apiService.isLoading.value = false;
             update();
           } catch (e) {

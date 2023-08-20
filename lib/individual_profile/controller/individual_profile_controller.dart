@@ -1,11 +1,15 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 
+import '../../centralize_api.dart';
+import '../../individualDashboard/models/city.dart';
 import '../../widgets/submit_application.dart';
 
 class IndividualProfileController extends GetxController {
@@ -23,16 +27,20 @@ class IndividualProfileController extends GetxController {
   RxString country = ''.obs;
   RxString state = ''.obs;
   RxString gender = ''.obs;
+  RxString activeCity = ''.obs;
   RxString city = ''.obs;
   RxString privacyOnlineStatus = ''.obs;
   RxString notification = ''.obs;
 
   TextEditingController dobController = TextEditingController();
   RxList selectedAmenities = [].obs;
+  RxList activeCities = [].obs;
+  RxList<IndividualCity> allCityList = RxList();
   var getPrefiledData;
   Map<String, String> userData = {};
 
   APIService apiService = Get.put(APIService());
+
 
   // Add this function to your controller.
   void onContinueButtonPressed() {
@@ -324,13 +332,12 @@ class IndividualProfileController extends GetxController {
           profilePhotoURL.value = user['profile_pic'] ?? '';
           coverPhotoURL.value = user['cover_photo'] ?? '';
           organization_id.value = user['id'] ?? "";
+          activeCity.value = user['active_city']??'';
           // Set dobController's text to the 'dob' value
           dobController.text = dob.value;
           privacyOnlineStatus.value = response['privacy_online']??'';
           notification.value = response['notification']??'';
           apiService.isLoading.value = false;
-
-
           update();
         } catch (e) {
           // Log the error or handle it appropriately
@@ -350,7 +357,7 @@ class IndividualProfileController extends GetxController {
           city.value = '';
           profilePhotoURL.value = '';
           coverPhotoURL.value = '';
-
+          activeCity.value = '';
           dobController.text = '';
           apiService.isLoading.value = false;
         }
@@ -379,5 +386,44 @@ class IndividualProfileController extends GetxController {
       */
       print('Unexpected error: $e');
     }
+  }
+
+  Future<void> getAllCities() async {
+    try {
+      final response = await http.get(
+        Uri.parse(API.individualCities),
+        headers: {
+          'x-access-token': '${GetStorage().read('token')}',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> cityListJson =
+        json.decode(response.body)['data'] as List;
+        allCityList.value =
+            cityListJson.map((city) => IndividualCity.fromJson(city)).toList();
+            activeCities.add('Select Active city');
+        allCityList.forEach((element) {
+          activeCities.add(element.name);
+        });
+        log("cities $cityListJson");
+        update();
+      } else {
+        throw Exception("Error with the request: ${response.statusCode}");
+      }
+    } on SocketException {
+      log('Socket Exception No Internet connection Please check your internet connection and try again.');
+    } on HttpException {
+      log('HttpException Something went wrong Couldn\'t find the post.');
+    } on FormatException {
+      log('Format Exception Something went wrong Bad response format');
+    }
+  }
+
+  @override
+  void onClose() {
+    activeCities.clear();
+    activeCity="".obs;
+    super.onClose();
   }
 }

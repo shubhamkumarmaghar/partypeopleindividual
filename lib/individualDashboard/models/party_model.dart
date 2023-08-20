@@ -46,6 +46,8 @@ class Party {
   final String orgRatings;
   final String orgBluetickStatus;
   final int ongoingStatus;
+  final int likeStatus;
+  final String pincode;
 
   Party({
     required this.id,
@@ -94,7 +96,9 @@ class Party {
     required this.partyAmenities,
     required this.orgRatings,
     required this.orgBluetickStatus,
-    required this.ongoingStatus
+    required this.ongoingStatus,
+    required this.likeStatus,
+    required this.pincode
   });
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -144,6 +148,8 @@ class Party {
     data['org_ratings'] = this.profilePicture;
     data['org_bluetick_status'] = this.profilePicture;
     data['ongoing_status'] = this.ongoingStatus;
+    data['like_status'] = this.likeStatus;
+    data['pincode'] =this.pincode;
     if (this.partyAmenities != null) {
       data['party_amenitie'] =
           this.partyAmenities.map((v) => v.toJson()).toList();
@@ -204,7 +210,10 @@ class Party {
       orgRatings: json['org_ratings'] ?? '',
       orgBluetickStatus: json['org_bluetick_status'] ?? '',
       ongoingStatus: json['ongoing_status'],
+      likeStatus: json['like_status'],
+      pincode: json['pincode'],
       partyAmenities: partyAmenitieList,
+
     );
   }
 }

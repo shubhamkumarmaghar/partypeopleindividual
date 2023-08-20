@@ -24,7 +24,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   getAllNotification() async {
     http.Response response = await http.post(
         Uri.parse(
-            'http://app.partypeople.in/v1/notification/get_all_notification'),
+            'https://app.partypeople.in/v1/notification/get_all_notification'),
         headers: {"x-access-token": '${GetStorage().read('token')}'});
 
     print(response.body);
@@ -49,7 +49,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   readNotification() async {
     http.Response response = await http.post(
         Uri.parse(
-            'http://app.partypeople.in/v1/notification/single_notification_read_status_update'),
+            'https://app.partypeople.in/v1/notification/single_notification_read_status_update'),
         headers: {"x-access-token": '${GetStorage().read('token')}'});
 
     print(response.body);

@@ -30,7 +30,7 @@ class visitInfoController extends GetxController {
  Future<void> getVisitorData() async {
     try {
       http.Response response = await http.post(
-          Uri.parse('http://app.partypeople.in/v1/account/get_individual_visitor_list'),
+          Uri.parse('https://app.partypeople.in/v1/account/get_individual_visitor_list'),
           headers: {
             'x-access-token': '${GetStorage().read('token')}',
           });
@@ -67,7 +67,7 @@ class visitInfoController extends GetxController {
  Future<void> getVisitedData() async {
    try {
      http.Response response = await http.post(
-         Uri.parse('http://app.partypeople.in/v1/account/get_individual_view_list'),
+         Uri.parse('https://app.partypeople.in/v1/account/get_individual_view_list'),
          headers: {
            'x-access-token': '${GetStorage().read('token')}',
          });
@@ -77,8 +77,6 @@ class visitInfoController extends GetxController {
 
      if (jsonDecode(response.body)['data']!= null && jsonDecode(response.body)['message'] == 'Data Found') {
        var usersData = jsonDecode(response.body ) as Map<String,dynamic>;
-
-
        var data=VisitInfoModel.fromJson(usersData) ;
        var list = data.data ?? [];
        for(var data1 in list){
@@ -90,7 +88,7 @@ class visitInfoController extends GetxController {
        // dynamic decodedData = jsonDecode(response.body);
        // visitorinfo =  decodedData['data'];
        // return decodedData;
-
+update();
      } else {
        print("No data found ${response.body}");
      }
@@ -104,7 +102,7 @@ class visitInfoController extends GetxController {
  Future<void> getLikePeopleData() async {
    try {
      http.Response response = await http.post(
-         Uri.parse('http://app.partypeople.in/v1/account/get_individual_like_list'),
+         Uri.parse('https://app.partypeople.in/v1/account/get_individual_like_list'),
          headers: {
            'x-access-token': '${GetStorage().read('token')}',
          });

@@ -37,6 +37,7 @@ class _PartyCardState extends State<PartyCard>
   late AnimationController _controller;
   late Animation _colorAnimation;
   late Animation _sizeAnimation;
+  String join = 'Join';
 
   @override
   void initState() {
@@ -68,7 +69,7 @@ class _PartyCardState extends State<PartyCard>
 
   Future<void> wishlistParty(String id) async {
     final response = await http.post(
-      Uri.parse('http://app.partypeople.in/v1/party/add_to_wish_list_party'),
+      Uri.parse('https://app.partypeople.in/v1/party/add_to_wish_list_party'),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -99,7 +100,7 @@ class _PartyCardState extends State<PartyCard>
 
   Future<void> likeParty(String id) async {
     final response = await http.post(
-      Uri.parse('http://app.partypeople.in/v1/party/party_like'),
+      Uri.parse('https://app.partypeople.in/v1/party/party_like'),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -129,7 +130,7 @@ class _PartyCardState extends State<PartyCard>
 
   Future<void> viewParty(String id) async {
     final response = await http.post(
-      Uri.parse('http://app.partypeople.in/v1/party/party_view'),
+      Uri.parse('https://app.partypeople.in/v1/party/party_view'),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -213,121 +214,85 @@ class _PartyCardState extends State<PartyCard>
                 ),
                 child: Stack(
                   children: [
-                    FittedBox(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: Get.width * 0.03,
-                          vertical: Get.width * 0.02,
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: Get.width * 0.03,
+                        vertical: Get.width * 0.02,
+                      ),
+                      width: MediaQuery.of(context).size.width * 0.82,
+                      height: MediaQuery.of(context).size.width * 0.65,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
                         ),
-                        width: MediaQuery.of(context).size.width * 0.82,
-                        height: MediaQuery.of(context).size.width * 0.65,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
+                        borderRadius: BorderRadius.circular(12.sp),
+                      ),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          width: double.maxFinite,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10.sp,
+                            vertical: 5.sp,
                           ),
-                          borderRadius: BorderRadius.circular(12.sp),
-                        ),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            width: double.maxFinite,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.sp,
-                              vertical: 5.sp,
-                            ),
-                            height: Get.width * 0.35,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(10.sp),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                FittedBox(
-                                  child: Row(children: [
-                                    Text(
-                                      widget.party.title!.capitalizeFirst!,
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 12.sp,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                          height: Get.width * 0.35,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(10.sp),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FittedBox(
+                                child: Row(children: [
+                                  Text(
+                                    widget.party.title!.capitalizeFirst!,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 12.sp,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    widget.party.orgBluetickStatus =='1'?
-                                    Icon(Icons.verified,color:Colors.blueAccent,size: 18,):Container(),
-                                  ],),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Icon(Icons.visibility,
-                                        size: 16, color: Colors.red),
-                                    Text(
-                                        "${widget.party.view} Views",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Icon(Icons.thumb_up,
-                                        size: 16, color: Colors.red),
-                                    Text(
-                                        "${widget.party.like} Likes",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Icon(Icons.people, color: Colors.red),
-                                    SizedBox(width: 5.sp),
-                                    Text(
-                                      "${widget.party.ongoing} Going",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ],
-                                ),
-                                widget.partyType == 'upcoming'
-                                    ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Party Starts",
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontSize: 10.sp,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 8.sp),
-                                        ],
-                                      )
-                                    : FittedBox(
-                                      child: Container(
-                                  width: Get.width*0.81,
-                                        child: Text(
-                                            widget.party.description.capitalizeFirst!,
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontSize: 10.sp,
-                                              color: Colors.black87,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          maxLines: 3,
-                                          ),
-                                      ),
-                                    ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Column(
+                                  ),
+                                  widget.party.orgBluetickStatus =='1'?
+                                  Icon(Icons.verified,color:Colors.blueAccent,size: 18,):Container(),
+                                ],),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Icon(Icons.visibility,
+                                      size: 16, color: Colors.red),
+                                  Text(
+                                      "${widget.party.view} Views",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Icon(Icons.thumb_up,
+                                      size: 16, color: Colors.red),
+                                  Text(
+                                      "${widget.party.like} Likes",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Icon(Icons.people, color: Colors.red),
+                                  SizedBox(width: 5.sp),
+                                  Text(
+                                    "${widget.party.ongoing} Going",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                              widget.partyType == 'upcoming'
+                                  ? Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Rating (${widget.party.orgRatings} /5.0)",
+                                          "Party Starts",
                                           style: TextStyle(
                                             fontFamily: 'Poppins',
                                             fontSize: 10.sp,
@@ -335,70 +300,110 @@ class _PartyCardState extends State<PartyCard>
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        SmoothStarRating(
-                                          allowHalfRating: false,
-                                          starCount: 5,
-                                          rating: double.parse(widget.party.orgRatings),
-                                          size: 18.0,
-                                          color: Colors.orange,
-                                          borderColor: Colors.orange,
-                                          filledIconData: Icons.star,
-                                          halfFilledIconData: Icons.star_half,
-                                          defaultIconData: Icons.star_border,
-                                          spacing: .5,
-                                        ),
+                                        SizedBox(height: 8.sp),
                                       ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          DateFormat('MMMM d, yyyy ')
-                                              .format(
-                                            DateTime.fromMillisecondsSinceEpoch(
-                                              int.parse(widget.party.startDate!) *
-                                                  1000,
-                                            ),
-                                          ) + '  ${widget.party.startTime}',
+                                    )
+                                  : FittedBox(
+                                    child: Container(
+                                width: Get.width*0.81,
+                                      child: Text(
+                                          widget.party.description.capitalizeFirst!,
                                           style: TextStyle(
                                             fontFamily: 'Poppins',
                                             fontSize: 10.sp,
-                                            color: Colors.black,
+                                            color: Colors.black87,
                                             fontWeight: FontWeight.bold,
                                           ),
+                                        maxLines: 3,
                                         ),
-                                        GestureDetector(
-                                          onTap: (){
-                                            APIService apiserice = APIService();
-                                            apiserice.ongoingParty(widget.party.id);
+                                    ),
+                                  ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Rating (${widget.party.orgRatings} /5.0)",
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 10.sp,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SmoothStarRating(
+                                        allowHalfRating: false,
+                                        starCount: 5,
+                                        rating: double.parse(widget.party.orgRatings),
+                                        size: 18.0,
+                                        color: Colors.orange,
+                                        borderColor: Colors.orange,
+                                        filledIconData: Icons.star,
+                                        halfFilledIconData: Icons.star_half,
+                                        defaultIconData: Icons.star_border,
+                                        spacing: .5,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        DateFormat('MMMM d, yyyy ')
+                                            .format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                            int.parse(widget.party.startDate!) *
+                                                1000,
+                                          ),
+                                        ) + '  ${widget.party.startTime}',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 10.sp,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      GestureDetector (
+                                        onTap: () async{
+                                          var data = await APIService.ongoingParty(widget.party.id);
+                                          if(data ==true)
+                                          {
+                                            setState(() {
 
-                                          },
-                                          child: Container(
-                                            decoration:
-                                            BoxDecoration(borderRadius: BorderRadius.circular(20),
-                                              color: Colors.orange,),
-                                            width: Get.width*0.2,
-                                            height: Get.height*0.031,
-                                            padding: EdgeInsets.all(5),
-                                            child: FittedBox(
-                                              child: Row(mainAxisAlignment: MainAxisAlignment.center
-                                                  ,children: [
-                                              Icon(CupertinoIcons.add_circled,color: Colors.white),
-                                                widget.party.ongoingStatus == 0 ? Text("Join",style: TextStyle(color: Colors.white,
-                                                fontSize: 16),) :Text("Joined",style: TextStyle(color: Colors.white,
-                                                    fontSize: 16),)
-                                              ]
-                                              ),
+                                            });
+                                            join='Joined';
+
+                                          }
+                                        },
+                                        child: Container(
+                                          decoration:
+                                          BoxDecoration(borderRadius: BorderRadius.circular(20),
+                                            color: Colors.orange,),
+                                          width: Get.width*0.2,
+                                          height: Get.height*0.031,
+                                          padding: EdgeInsets.all(5),
+                                          child: FittedBox(
+                                            child: Row(mainAxisAlignment: MainAxisAlignment.center
+                                                ,children: [
+                                            Icon(CupertinoIcons.add_circled,color: Colors.white),
+                                              widget.party.ongoingStatus == 0 ? Text(join,style: TextStyle(color: Colors.white,
+                                              fontSize: 16),) :Text("Joined",style: TextStyle(color: Colors.white,
+                                                  fontSize: 16),)
+                                            ]
                                             ),
                                           ),
-                                        )
-                                      ],
-                                    ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
 
-                                  ],
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -421,7 +426,9 @@ class _PartyCardState extends State<PartyCard>
                     Positioned(
                       top: 8.0,
                       right: 8.0,
-                      child: IconButton(
+                      child:
+                      widget.party.likeStatus == 0 ?
+                      IconButton(
                         icon: Icon(
                           isFavorite ? Icons.favorite : Icons.favorite_border,
                         ),
@@ -442,7 +449,12 @@ class _PartyCardState extends State<PartyCard>
                             ),
                           );
                         },
-                      ),
+                      ):IconButton(
+                        icon: Icon(
+                          Icons.favorite
+                        ),
+                        color: Colors.red.shade900 , onPressed: () {  },
+                      )
                     ),
                   ],
                 ),
@@ -583,7 +595,7 @@ class _PartyCardState extends State<PartyCard>
                             ),
                           ),
                         ),
-                        Positioned(
+                       /* Positioned(
                           top: 8.0,
                           right: 8.0,
                           child: IconButton(
@@ -611,6 +623,40 @@ class _PartyCardState extends State<PartyCard>
                               );
                             },
                           ),
+                        ), */
+
+                        Positioned(
+                            top: 8.0,
+                            right: 8.0,
+                            child:
+                            widget.party.likeStatus == 0 ?
+                            IconButton(
+                              icon: Icon(
+                                isFavorite ? Icons.favorite : Icons.favorite_border,
+                              ),
+                              color: isFavorite ? Colors.red.shade900 : Colors.white,
+                              onPressed: () {
+                                setState(() {
+                                  isFavorite = true;
+                                });
+                                wishlistParty(widget.party.id);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      isFavorite
+                                          ? 'Added to Wishlist'
+                                          : 'Removed from Wishlist',
+                                    ),
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+                              },
+                            ):IconButton(
+                              icon: Icon(
+                                  Icons.favorite
+                              ),
+                              color: Colors.red.shade900 , onPressed: () {  },
+                            )
                         ),
                       ],
                     ),

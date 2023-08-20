@@ -1,5 +1,5 @@
 class API {
-  static const String baseUrl = 'http://app.partypeople.in/v1';
+  static const String baseUrl = 'https://app.partypeople.in/v1';
 
   static const String login = '$baseUrl/account/login';
 
