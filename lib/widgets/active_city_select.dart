@@ -54,13 +54,11 @@ class _ActiveCitySelectState extends State<ActiveCitySelect> {
               ),
             ),
             onChanged: (String? newValue) async{
-              String response = await APIService.updateStaticCity(individualProfileController.organization_id.value, newValue.toString());
+              String response = await individualProfileController.apiService.updateActiveCity(individualProfileController.organization_id.value, newValue.toString());
             if(response == '1'){
               dropdownValue = newValue;
               individualProfileController.activeCity.value = dropdownValue!;
-
               setState(() {
-
 
               });
             }

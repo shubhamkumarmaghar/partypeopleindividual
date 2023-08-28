@@ -21,6 +21,7 @@ class IndividualDrawerView extends StatefulWidget {
 }
 
 class _IndividualDrawerViewState extends State<IndividualDrawerView> {
+  String approvalStauts = GetStorage().read('approval_status')??'0';
   void _launchURL(url) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -85,7 +86,13 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     title: 'Likes and Views',
                     icon: Icons.view_agenda,
                     onTap: () {
-                      Get.to(VisitInfoView());
+
+                      if(approvalStauts=='1') {
+                        Get.to(VisitInfoView());
+                      }
+                      else{
+                        Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
+                      }
                     },
                   ),
                   CustomOptionWidget(

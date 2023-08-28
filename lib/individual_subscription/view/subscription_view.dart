@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:partypeopleindividual/individual_subscription/controller/subscription_controller.dart';
 import 'package:sizer/sizer.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../model/SubscriptionModel.dart';
 
@@ -18,6 +19,52 @@ class SubscriptionView extends StatefulWidget {
 }
 
 class _SubscriptionViewState extends State<SubscriptionView> {
+
+ SubscriptionController subController = Get.put(SubscriptionController());
+  Razorpay _razorpay = Razorpay();
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    print('Payment Successul ${response.signature} (${response.paymentId})');
+    subController.updateSubsPaymentStatus(subsId: subController.subsOrderId, paymentStatus: 1, paymentResponse: response.orderId.toString(), paymentId: response.paymentId.toString(),);
+    //SubscriptionController.updateSubsPaymentStatus(subsId: subsId, paymentStatus: paymentStatus, paymentResponse: paymentResponse, paymentId: paymentId)
+
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    try {
+      // Payment failure logic
+      subController.updateSubsPaymentStatus(subsId: subController.subsOrderId, paymentStatus: 0, paymentResponse: response.message.toString(), paymentId: response.code.toString(),);
+
+      print('Payment error: ${response.message} (${response.code})');
+    } catch (e) {
+      print('Error in payment error callback: $e');
+    }
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    try {
+      // External wallet logic
+      print('External wallet selected: ${response.walletName}');
+    } catch (e) {
+      print('Error in external wallet callback: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,19 +147,35 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                     CarouselSlider(
                       items: [
                         GestureDetector(
-                          onTap: (){
+                          onTap: () async{
+                            String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData![0].id);
+                           if(value =='1')
                             selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData![0].name , amount:controller.subscriptionModel.subsData![0].amount );
-                          },
+                           },
                           child: subscriptionPlansView(
                               subscriptionData:
                                   controller.subscriptionModel.subsData![0]),
                         ),
-                        subscriptionPlansView(
-                            subscriptionData:
-                                controller.subscriptionModel.subsData![1]),
-                        subscriptionPlansView(
-                            subscriptionData:
-                                controller.subscriptionModel.subsData![2]),
+                        GestureDetector(
+                          onTap: () async{
+                            String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData![1].id);
+                            if(value =='1')
+                              selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData![1].name , amount:controller.subscriptionModel.subsData![1].amount );
+                          },
+                          child: subscriptionPlansView(
+                              subscriptionData:
+                              controller.subscriptionModel.subsData![1]),
+                        ),
+                        GestureDetector(
+                          onTap: () async{
+                            String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData![2].id);
+                            if(value =='1')
+                              selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData![2].name , amount:controller.subscriptionModel.subsData![2].amount );
+                          },
+                          child: subscriptionPlansView(
+                              subscriptionData:
+                              controller.subscriptionModel.subsData![2]),
+                        ),
 
                         /*  ListView.builder(itemCount:controller.subscriptionModel.subsData?.length ,
                      scrollDirection: Axis.horizontal,
@@ -318,7 +381,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
               ]),
         ),
       ),
-      Positioned(
+   /*   Positioned(
      // top: Get.height*0.001-20,
       bottom: Get.height*.65,
       left: 30,
@@ -335,7 +398,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
             //const Color(0xFFffa914),
           ),
         ),
-      ),
+      ),*/
     ]);
   }
 
@@ -357,25 +420,53 @@ class _SubscriptionViewState extends State<SubscriptionView> {
               Text('₹'+amount , style: TextStyle(fontSize: 22 , fontWeight: FontWeight.w600, color: Colors.blue),),
             ]),
           Spacer(),
-            Container(
-              margin: EdgeInsets.only(right: Get.width * 0.028),
-              height: MediaQuery.of(context).size.width * 0.12,
-              width: MediaQuery.of(context).size.width * 0.5,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  //color: Colors.amber,
-               border: Border.all(color: Colors.red.shade900)
-                //const Color(0xFFffa914),
-              ),
-              child:Text(
-                'CONTINUE',textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'Poppins',
-                    fontSize: 20),
-              ),
+            GestureDetector(
+              onTap: (){
+                {
+                  Navigator.pop(context);
+                  var options = {
+                    'key': 'rzp_test_qiTDenaoeqV1Zr',
+                    // Replace with your Razorpay API key
+                    'amount': (int.parse(amount)) * 100,
+                    // Amount in paise (e.g., for INR 500.00, use 50000)
+                    'name': 'PARTY PEOPLE ',
+                    'description': 'RAMBER ENTERTAINMENT PVT LTD',
+                    'prefill': {
+                      'contact': 'CUSTOMER_CONTACT_NUMBER',
+                      'email': 'CUSTOMER_EMAIL'
+                    },
+                    'external': {
+                      'wallets': ['paytm'] // Supported wallets
+                    }
+                  };
 
+                  try {
+                    _razorpay.open(options);
+                  } catch (e) {
+                    print(e.toString());
+                  }
+                };
+              },
+              child: Container(
+                margin: EdgeInsets.only(right: Get.width * 0.028),
+                height: MediaQuery.of(context).size.width * 0.12,
+                width: MediaQuery.of(context).size.width * 0.5,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    //color: Colors.amber,
+                 border: Border.all(color: Colors.red.shade900)
+                  //const Color(0xFFffa914),
+                ),
+                child:Text(
+                  'CONTINUE',textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Poppins',
+                      fontSize: 20),
+                ),
+
+              ),
             ),
           ],
         ),

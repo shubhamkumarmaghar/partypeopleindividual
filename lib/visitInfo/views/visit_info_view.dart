@@ -1,15 +1,17 @@
 import 'dart:developer';
 
+import 'dart:ui' as ui;
+import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:partypeopleindividual/api_helper_service.dart';
-import 'package:partypeopleindividual/centralize_api.dart';
-import 'package:partypeopleindividual/visitInfo/controllers/visit_info_controller.dart';
-import 'package:partypeopleindividual/widgets/cached_image_placeholder.dart';
-import 'package:sizer/sizer.dart';
 
+import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
+import 'package:partypeopleindividual/visitInfo/controllers/visit_info_controller.dart';
+
+import 'package:sizer/sizer.dart';
+import 'package:blur/blur.dart';
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
 import '../model/visitinfo.dart';
 
@@ -21,6 +23,7 @@ class VisitInfoView extends StatefulWidget {
 }
 
 class _VisitInfoViewState extends State<VisitInfoView> {
+  String plan = GetStorage().read('plan_plan_expiry');
   //visitInfoController visit_info_controller = Get.put(visitInfoController());
   @override
   void initState() {
@@ -112,7 +115,10 @@ class _VisitInfoViewState extends State<VisitInfoView> {
                     builder: (controller) {
                       //Iterable<Data>? visiterdata = controller.visiterdataModel.data?.reversed;
                      // List<Data>? dataList = visiterdata?.toList();
-                      return controller.visiterdataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.visiterdataModel.data ??[],)):CircularProgressIndicator();
+
+                      // type 1 is for visiter
+                      String type = '1';
+                      return controller.visiterdataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.visiterdataModel.data ??[],plan: plan, type :type)):CircularProgressIndicator();
                     },),
 
                 ],
@@ -132,8 +138,9 @@ class _VisitInfoViewState extends State<VisitInfoView> {
                     builder: (controller) {
                    //   Iterable<Data>? visiteddata = controller.visiteddataModel.data?.reversed;
                     //  List<Data>? dataList = visiteddata?.toList();
-
-                      return controller.visiteddataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.visiteddataModel.data ??[],)):CircularProgressIndicator();
+                      // type 1 is for visited
+                      String type = '2';
+                      return controller.visiteddataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.visiteddataModel.data ??[],plan:plan,type: type,)):CircularProgressIndicator();
                     },),
                 ],
               ),
@@ -152,8 +159,9 @@ class _VisitInfoViewState extends State<VisitInfoView> {
                     builder: (controller) {
                      // Iterable<Data>? visiteddata = controller.likedataModel.data?.reversed;
                     //  List<Data>? dataList = visiteddata?.toList();
-
-                      return controller.likedataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.likedataModel.data ??[],)):CircularProgressIndicator();
+                      // type 1 is for visiter
+                      String type = '3';
+                      return controller.likedataModel.data != null? Expanded(child: ProfileContainer(dataList:controller.likedataModel.data ??[],plan:plan,type: type,)):CircularProgressIndicator();
                     },),
                 ],
               ),
@@ -168,10 +176,14 @@ class _VisitInfoViewState extends State<VisitInfoView> {
 }
 
 class ProfileContainer extends StatelessWidget {
+String approvalStatus = GetStorage().read('approval_status');
+String newUser = GetStorage().read('newUser');
   ProfileContainer({
-    required this.dataList
+    required this.dataList,required this.plan,required this.type
   });
-  List<Data> dataList;
+  List<VisiterInfoData> dataList;
+  String plan;
+  String type;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -180,7 +192,7 @@ class ProfileContainer extends StatelessWidget {
       child: ListView.builder(
         itemCount: dataList.length,
         itemBuilder: (context, index) {
-           Data data = dataList[index];
+           VisiterInfoData data = dataList[index];
            var dateAndTime = data.date?.split(' ');
            String? time = dateAndTime?[1];
            String? date = dateAndTime?[0];
@@ -193,35 +205,39 @@ class ProfileContainer extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.all(15.sp),
-                child: Row(
+                child:
+                Row(
                   children: [
-                     Stack(
-                        children: [
-                          ClipRRect(
+                    Stack(
+                      children: [
+                        Blur(
+                            blur: type=='3'? plan =='No'? newUser =='1' ? 0 : 2.5 : 2.5 : 0,
+                         child:  ClipRRect(
                             borderRadius: BorderRadius.circular(Get.width*0.5,),
                             child: CachedNetworkImage(height: Get.width*0.12,
                               width: Get.width*0.12,
                               imageUrl: data.profilePicture,
                               errorWidget: (context,url,error) => const CircleAvatar(child: Icon(Icons.person)),),
                           ),
-                          Positioned(
-                            bottom: 3.sp,
-                            child: CircleAvatar(
-                              radius: 6.sp,
-                              backgroundImage:
-                              const NetworkImage("https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54"),
-                              //const AssetImage('assets/images/indian_flag.png'),
-                            ),
+                        ),
+                        Positioned(
+                          bottom: 3.sp,
+                          child: CircleAvatar(
+                            radius: 6.sp,
+                            backgroundImage:
+                            const NetworkImage("https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54"),
+                            //const AssetImage('assets/images/indian_flag.png'),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
 
                     SizedBox(width: 12.sp),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                         data.username ??'',
+                          data.username ??'',
                           style: TextStyle(
                             fontSize: 12.sp,
                             color: const Color(0xFF434343),
@@ -229,7 +245,7 @@ class ProfileContainer extends StatelessWidget {
                           ),
                         ),
                         Text(
-                        "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(date.toString()))}    ($time)",
+                          "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(date.toString()))}    ($time)",
 
                           style: TextStyle(
                             fontSize: 12,
@@ -237,15 +253,16 @@ class ProfileContainer extends StatelessWidget {
                           ),
                         ),
                         /* Text(
-                          "profilepic",
-                          style: TextStyle(
-                              fontSize: 8.sp, color: const Color(0xFFc4c4c4)),
-                        ),
-                        */
+                            "profilepic",
+                            style: TextStyle(
+                                fontSize: 8.sp, color: const Color(0xFFc4c4c4)),
+                          ),
+                          */
                       ],
                     ),
                   ],
                 ),
+
               ),
            /*   Container(
                 color: const Color(0xFFc4c4c4),

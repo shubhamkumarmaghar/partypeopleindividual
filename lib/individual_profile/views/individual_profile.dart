@@ -21,6 +21,7 @@ import 'package:partypeopleindividual/widgets/individual_amenities.dart';
 import 'package:partypeopleindividual/widgets/occupation_dropdown_selector.dart';
 import 'package:partypeopleindividual/widgets/qualification_dropdown_widget.dart';
 
+import '../../widgets/active_city_select.dart';
 import '../../widgets/dob_dropdown.dart';
 import '../../widgets/gender_dropdown_selecter.dart';
 
@@ -124,7 +125,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                             child: Container(
                               height: 300,
                               decoration: BoxDecoration(
-                                color: Colors.blue,
+                                color: Colors.white,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
                                   image: _coverImage == null
@@ -264,6 +265,15 @@ class _IndividualProfileState extends State<IndividualProfile> {
                           onCountryChanged: (onCountryChanged) {},
                           onStateChanged: (onCountryChanged) {},
                           onCityChanged: (onCityChanged) {}),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ActiveCitySelect(),
+                          ),
+                        ],
+                      ),
+
                       const SizedBox(
                         height: 10,
                       ),

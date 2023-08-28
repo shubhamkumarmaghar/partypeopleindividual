@@ -2,7 +2,7 @@
 class VisitInfoModel {
   int? status;
   String? message;
-  List<Data>? data;
+  List<VisiterInfoData>? data;
 
   VisitInfoModel({this.status, this.message, this.data});
 
@@ -10,9 +10,9 @@ class VisitInfoModel {
     status = json['status'];
     message = json['message'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <VisiterInfoData>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new VisiterInfoData.fromJson(v));
       });
     }
   }
@@ -28,7 +28,7 @@ class VisitInfoModel {
   }
 }
 
-class Data {
+class VisiterInfoData {
   String? id;
   String? userId;
   String? individualId;
@@ -37,7 +37,7 @@ class Data {
   dynamic profilePicture;
   String? likeunlike;
   String? date;
-  Data(
+  VisiterInfoData(
       {this.id,
         this.userId,
         this.individualId,
@@ -47,7 +47,7 @@ class Data {
       this.likeunlike,
       this.date});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  VisiterInfoData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['user_id'];
     individualId = json['individual_id'];

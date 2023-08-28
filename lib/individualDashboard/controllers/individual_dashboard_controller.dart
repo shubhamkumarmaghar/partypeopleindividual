@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -18,6 +19,9 @@ class IndividualDashboardController extends GetxController {
   RxList<IndividualCity> allCityList = RxList();
   IndividualProfileController individualProfileController =
       Get.put(IndividualProfileController());
+  RxString approvalStatus = '${GetStorage().read('approval_status')}'.obs;
+  RxString newUser = '${GetStorage().read('newUser')}'.obs;
+  RxString plan = '${GetStorage().read('plan_plan_expiry')}'.obs;
 
   APIService apiService = Get.find();
   RxList<Party> jsonPartyOrganisationDataToday = <Party>[].obs;
@@ -34,6 +38,8 @@ class IndividualDashboardController extends GetxController {
   RxInt lengthOfUpcomingParties = 0.obs;
   RxInt lengthOfPopularParties = 0.obs;
   RxInt onlineStatus = 0.obs;
+  RxString chatCount = ''.obs;
+  RxString notificationCount = ''.obs;
   RxString partyCity = ''.obs;
 
   RxList<UserModel> usersList = RxList<UserModel>();
@@ -50,29 +56,31 @@ class IndividualDashboardController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+
     getDataForDashboard();
+
+    Timer.periodic(Duration(seconds: 5), (timer) {
+      getOnlineStatus();
+      //getDataForDashboard();
+    });
   }
   void getDataForDashboard() async {
 
-     lengthOfTodayParties = 0.obs;
-     lengthOfTommParties = 0.obs;
-     lengthOfUpcomingParties = 0.obs;
-     lengthOfPopularParties = 0.obs;
-     onlineStatus = 0.obs;
-     usersList= RxList<UserModel>();
-
-     wishlistedParties = RxList<Party>([]);
-
-     jsonPartyOrganisationDataToday = <Party>[].obs;
-     jsonPartyOrganisationDataTomm = <Party>[].obs;
-     jsonPartyOgranisationDataUpcomming = <Party>[].obs;
-     jsonPartyPopularData = <Party>[].obs;
-      getOnlineStatus();
-     await getAllCities();
-
-  await individualProfileController.individualProfileData();
+    lengthOfTodayParties = 0.obs;
+    lengthOfTommParties = 0.obs;
+    lengthOfUpcomingParties = 0.obs;
+    lengthOfPopularParties = 0.obs;
+    onlineStatus = 0.obs;
+    usersList= RxList<UserModel>();
+    wishlistedParties = RxList<Party>([]);
+    jsonPartyOrganisationDataToday = <Party>[].obs;
+    jsonPartyOrganisationDataTomm = <Party>[].obs;
+    jsonPartyOgranisationDataUpcomming = <Party>[].obs;
+    jsonPartyPopularData = <Party>[].obs;
+    getAllCities();
+    getOnlineStatus();
+    await individualProfileController.individualProfileData();
     getAllNearbyPeoples();
-
     getPopularParty();
     getTodayPary();
     getTomarrowParty();
@@ -118,9 +126,9 @@ class IndividualDashboardController extends GetxController {
   Future<void> getAllNearbyPeoples() async {
     String state = GetStorage().read('state');
     String city ='';
-    if(individualProfileController.city.value.toString().isNotEmpty)
+    if(individualProfileController.activeCity.value.toString().isNotEmpty)
       {
-         city = individualProfileController.city.value.toString();
+         city = individualProfileController.activeCity.value.toString();
         log("city for nearbypeople $city");
       }
     else{
@@ -349,9 +357,8 @@ Future<void> getTodayPary() async{
     ///
     /// 'filter_type': '2' == regular parties
     /// 'filter_type': '1' == popular parties
-    String getcity = GetStorage().read('state') ?? 'delhi';
-    if (partyCity.value == '') {
-      partyCity.value =individualProfileController.city.value.toString();
+    if (individualProfileController.activeCity.value.isNotEmpty) {
+      partyCity.value =individualProfileController.activeCity.value.toString();
       log('partycity ${partyCity.value}');
     }
     log('else partycity ${partyCity.value}');
@@ -406,9 +413,8 @@ Future<void> getTomarrowParty() async{
       ///
       /// 'filter_type': '2' == regular parties
       /// 'filter_type': '1' == popular parties
-      String getcity = GetStorage().read('state') ?? 'delhi';
-      if (partyCity.value == '') {
-        partyCity.value =individualProfileController.city.value.toString();
+      if (individualProfileController.activeCity.value.isNotEmpty == '') {
+        partyCity.value =individualProfileController.activeCity.value.toString();
         log('tomarrow partycity ${partyCity.value}');
       }
       log('else tomarrow partycity ${partyCity.value}');
@@ -463,9 +469,8 @@ Future<void> getTomarrowParty() async{
       ///
       /// 'filter_type': '2' == regular parties
       /// 'filter_type': '1' == popular parties
-      String getcity = GetStorage().read('state') ?? 'delhi';
-      if (partyCity.value == '') {
-        partyCity.value = individualProfileController.city.value.toString();
+      if (individualProfileController.activeCity.value.isNotEmpty) {
+        partyCity.value = individualProfileController.activeCity.value.toString();
         log('upcoming partycity ${partyCity.value}');
       }
       log('else upcoming partycity ${partyCity.value}');
@@ -520,16 +525,15 @@ Future<void> getTomarrowParty() async{
       ///
       /// 'filter_type': '2' == regular parties
       /// 'filter_type': '1' == popular parties
-      String getcity = GetStorage().read('state') ?? 'delhi';
-      if (partyCity.value == '') {
-        partyCity.value = individualProfileController.city.value.toString();
+      if (individualProfileController.city.value.isNotEmpty) {
+        partyCity.value = individualProfileController.activeCity.value.toString();
         log('upcoming partycity ${partyCity.value}');
       }
       log('else upcoming partycity ${partyCity.value}');
       http.Response response = await http.post(
         Uri.parse(
             'https://app.partypeople.in/v1/party/get_all_individual_party'),
-        body: {'status': '0', 'city': partyCity.value.toLowerCase(), 'filter_type': '1'},
+        body: {'status': '5', 'city': partyCity.value.toLowerCase(), 'filter_type': '1'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -590,13 +594,33 @@ Future<void> getTomarrowParty() async{
       );
 
       if (response.statusCode == 200) {
-
        var decode = jsonDecode(response.body);
         if (decode['status'] == 1 ) {
           try {
             onlineStatus.value = decode['status'];
             log("online Status : $onlineStatus  ${decode['plan_plan_expiry']}");
-            GetStorage().write('subscription_plan_expiry', decode['plan_plan_expiry']);
+            GetStorage().write('plan_plan_expiry', decode['plan_plan_expiry']);
+            String approval_date =  decode['approval_date'];
+            chatCount.value = decode['chat_count'];
+            notificationCount.value = decode['notification_count']??'';
+
+            log('notification count ${notificationCount.value}');
+            log('chatcount ${decode['chat_count']}');
+            if(approval_date.isNotEmpty) {
+              GetStorage().write('approval_status', '1');
+              DateTime approvalTime = DateTime.parse(approval_date);
+              DateTime newApproval_time = approvalTime.add(Duration(days: 2));
+              if (newApproval_time.isAfter(DateTime.now())) {
+                GetStorage().write('newUser', '1');
+              }
+              else{
+                GetStorage().write('newUser', '0');
+              }
+              log('${approvalTime.toString()}');
+            }
+            else{
+              GetStorage().write('approval_status', '0');
+            }
             apiService.isLoading.value = false;
             update();
           } catch (e) {

@@ -388,7 +388,8 @@ class _PartyPreviewState extends State<PartyPreview> {
               child:CustomButton(
                 width: Get.width * 0.6,
                 text: 'Join',
-                onPressed:(){ongoingParty(widget.party.id);},
+                onPressed:(){
+                  ongoingParty(widget.party.id);},
               )
             ),
             Padding(

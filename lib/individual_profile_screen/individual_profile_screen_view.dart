@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:blur/blur.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
@@ -147,30 +148,51 @@ class _IndividualProfileScreenViewState
                               alignment: Alignment.center,
                               children: <Widget>[
                                 //Cover Photo
-                                Container(
-                                  height: 300,
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue,
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: _coverImage != null
-                                            ? FileImage(_coverImage!)
-                                                as ImageProvider<Object>
-                                            : individualProfileController
-                                                    .coverPhotoURL
-                                                    .value
-                                                    .isNotEmpty
-                                                ? NetworkImage(
-                                                    individualProfileController
-                                                        .coverPhotoURL
-                                                        .value) as ImageProvider<
-                                                    Object>
-                                                : const AssetImage(
-                                                        'assets/images/default-cover-4.jpg')
-                                                    as ImageProvider<Object>),
+                                individualProfileController.descStatusApproval.value =='0' ?
+                                Blur(blur: 5.0,
+                                  child:
+                                  Container(
+                                    height: 300,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: _coverImage != null
+                                              ? FileImage(_coverImage!)
+                                              : individualProfileController
+                                                      .coverPhotoURL
+                                                      .value
+                                                      .isNotEmpty
+                                                  ? NetworkImage(
+                                                      individualProfileController
+                                                          .coverPhotoURL
+                                                          .value)
+                                                  : const AssetImage(
+                                                          'assets/images/default-cover-4.jpg')
+                                                      as ImageProvider<Object>),
+                                    ),
                                   ),
-                                ),
-
+                                ):Container(
+                        height: 300,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: _coverImage != null
+                                  ? FileImage(_coverImage!)
+                                  : individualProfileController
+                                  .coverPhotoURL
+                                  .value
+                                  .isNotEmpty
+                                  ? NetworkImage(
+                                  individualProfileController
+                                      .coverPhotoURL
+                                      .value)
+                                  : const AssetImage(
+                                  'assets/images/default-cover-4.jpg')
+                              as ImageProvider<Object>),
+                        ),
+                      ),
                                 // Profile Photo
                                 Positioned(
                                     bottom: 10,
@@ -179,31 +201,50 @@ class _IndividualProfileScreenViewState
                                         ProfilePhotoView(profileUrl:individualProfileController.profilePhotoURL.value ,)
                                     );
                                     },
-                                      child: Container(
+                                      child:  Container(
                                       decoration: const BoxDecoration(
-                                        boxShadow: [
+                                       /* boxShadow: [
                                           BoxShadow(
                                             blurRadius: 10,
-                                            color: Colors.black38,
+                                            color: Colors.transparent,
                                             spreadRadius: 5,
                                           ),
-                                        ],
+                                        ],*/
                                         shape: BoxShape.circle,
                                       ),
-                                      child: CircleAvatar(
+                                      child:
+                                      individualProfileController.descStatusApproval.value =='0' ?
+                                      Blur(
+                                        blur :2.5,
+                                        child: CircleAvatar(
+                                          radius: 55,
+                                          backgroundImage: _profileImage != null
+                                              ? FileImage(_profileImage!)
+                                              : (individualProfileController
+                                                          .profilePhotoURL
+                                                          .value
+                                                          .isNotEmpty
+                                                      ? NetworkImage(
+                                                          individualProfileController
+                                                              .profilePhotoURL.value)
+                                                      : const AssetImage(
+                                                          'assets/images/man.png'))
+                                                  as ImageProvider<Object>?,
+                                        ),
+                                      ):   CircleAvatar(
                                         radius: 55,
                                         backgroundImage: _profileImage != null
                                             ? FileImage(_profileImage!)
                                             : (individualProfileController
-                                                        .profilePhotoURL
-                                                        .value
-                                                        .isNotEmpty
-                                                    ? NetworkImage(
-                                                        individualProfileController
-                                                            .profilePhotoURL.value)
-                                                    : const AssetImage(
-                                                        'assets/images/man.png'))
-                                                as ImageProvider<Object>?,
+                                            .profilePhotoURL
+                                            .value
+                                            .isNotEmpty
+                                            ? NetworkImage(
+                                            individualProfileController
+                                                .profilePhotoURL.value)
+                                            : const AssetImage(
+                                            'assets/images/man.png'))
+                                        as ImageProvider<Object>?,
                                       ),
                                     ),
                                   ),
@@ -260,9 +301,11 @@ class _IndividualProfileScreenViewState
                                 ),
                               ],
                             ),
-                            CustomTextFieldview(
-                                individualProfileController.bio.value.capitalizeFirst.toString(),
-                                Icons.description),
+                        Blur(blur: individualProfileController.descStatusApproval.value =='0' ?2.5 :0,
+                              child: CustomTextFieldview(
+                                  individualProfileController.bio.value.capitalizeFirst.toString(),
+                                  Icons.description),
+                            ),
 
                             Row(
                               children: [

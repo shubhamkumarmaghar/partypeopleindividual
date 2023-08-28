@@ -347,7 +347,7 @@ class APIService extends GetxController {
     }
   }
 
-  static Future<String> updateStaticCity(String orgId , String activeCity) async {
+   Future<String> updateActiveCity(String orgId , String activeCity) async {
     final response = await http.post(
       Uri.parse('https://app.partypeople.in/v1/account/update_city'),
       headers: <String, String>{

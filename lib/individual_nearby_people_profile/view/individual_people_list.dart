@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
-
+import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:adobe_xd/gradient_xd_transform.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,6 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:like_button/like_button.dart';
-import 'package:partypeopleindividual/individual_nearby_people_profile/controller/people_profile_controller.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../individualDashboard/models/usermodel.dart';
@@ -134,7 +135,10 @@ class _PeopleListState extends State<PeopleList> {
                           borderRadius: BorderRadius.circular(10.sp)),
                       child: TextField(
                         controller: _textEditingController,
-                        onChanged:  _onSearchChanged('${_textEditingController?.text}'),
+                        onChanged:(value){
+                          log('value $value');
+                          _onSearchChanged(value);
+                        }  ,
                         style: TextStyle(color: Colors.grey),
                         decoration: InputDecoration(
                             border: InputBorder.none,
@@ -400,7 +404,6 @@ class _PeopleListState extends State<PeopleList> {
                 onSelected: (value) {
                   controller.setChip(selectedIndex: 2);
                   showList=femaleList;
-
                   setState(() {
 
                   });
@@ -424,10 +427,52 @@ class _PeopleListState extends State<PeopleList> {
   }
 
   _onSearchChanged(String query) {
-    if (_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      log("jbflkasudghfaskfoookokokokokokokokokok  ${_textEditingController?.text}");
+    if (_debounce?.isActive ?? false)
+      _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 2000), () async{
+        final response = await http.post(
+          Uri.parse(
+              'https://app.partypeople.in/v1/home/users_search'),
+          headers: <String, String>{
+            'x-access-token': '${GetStorage().read('token')}',
+          },
+          body: <String, String>{
+            'keyword': query
+          },
+        );
+        if (response.statusCode == 200) {
+          // If the server returns a 200 OK response,
+          // then parse the JSON.
+          Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+          print(jsonResponse);
+
+          if (jsonDecode(response.body)['status'] == 1)  {
+            var usersData = jsonDecode(response.body)['data'] as List;
+            showList.clear();
+            maleList.clear();
+            femaleList.clear();
+            otherList.clear();
+            showList.addAll(usersData.map((user) => UserModel.fromJson(user)));
+            getMaleFemaleList();
+            setState(() {
+
+            });
+            log('User data found $query ${jsonDecode(response.body)['data'][0]['id']}');
+           // String id = jsonDecode(response.body)['data'][0]['id'].toString();
+            //Get.to(IndividualPeopleProfile(),arguments: id);
+          }
+          else {
+            print('data not found');
+            Get.snackbar('Opps!', 'No User Found with this username, try another');
+          }
+        }
+        else {
+          // If the server did not return a 200 OK response,
+          // then throw an exception.
+          throw Exception('data not found');
+        }
     });
+
   }
 }
 

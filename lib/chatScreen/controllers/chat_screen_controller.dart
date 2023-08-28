@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 
 import '../../api_helper_service.dart';
+import '../../chatList/model/user_chat_list.dart';
 import '../model/chat_model.dart';
 import '../model/user_model.dart';
 
@@ -20,17 +21,21 @@ import '../model/user_model.dart';
 class ChatScreenController  extends GetxController{
   GetUserModel? getUserModel;
   var isApiLoading = false;
-  String? userId;
+  String? userId ='';
   String myUsername ="";
-
+  List<ChatUserListModel>  chatList = [];
 
   @override
   void onInit(){
     super.onInit();
-    userId = Get.arguments as String;
+    userId = Get.arguments ??'0' ;
     myUsername= GetStorage().read('my_user_id');
-    getChatUserData();
-
+    if(userId=='0'){
+      getChatList();
+    }
+    else {
+      getChatUserData(id: userId.toString());
+    }
 
   }
   // for authentication
@@ -44,21 +49,30 @@ class ChatScreenController  extends GetxController{
 
   //for getting current mate data
 
-  Future<void> getChatUserData() async {
+  Future<void> getChatUserData({required String id}) async {
     isApiLoading = true;
-
     try {
       http.Response response = await http.post(
         Uri.parse('https://app.partypeople.in/v1/account/get_single_user'),
-        body: {'user_id': userId},
+        body: {'user_id': id},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
       if (response.statusCode == 200) {
-        final decodedData = jsonDecode(response.body);
-        print(decodedData);
-       getUserModel = GetUserModel.fromJson(decodedData);
-        addChatUserToList();
+        if(jsonDecode(response.body)['status'] ==1 && jsonDecode(response.body)['message'] == 'Found' ) {
+          final decodedData = jsonDecode(response.body);
+          print(decodedData);
+          getUserModel = GetUserModel.fromJson(decodedData);
+        /*  if(userId !='0') {
+            addChatUserToList();
+          }*/
+        }
+        else{
+          log('user data not found');
+        }
+      }
+      else{
+        print('response is not 200 current response is ${response.statusCode}');
       }
       isApiLoading = false;
       update();
@@ -67,6 +81,44 @@ class ChatScreenController  extends GetxController{
       update();
     }
   }
+
+
+  // get chatList
+
+  Future<void> getChatList() async {
+    try {
+      isApiLoading = true;
+      http.Response response = await http.post(
+        Uri.parse('https://app.partypeople.in/v1/chat/get_chat_user_list_data'),
+        headers: {'x-access-token': '${GetStorage().read('token')}'},
+      );
+
+      if (response.statusCode == 200) {
+        var decode = jsonDecode(response.body);
+        if (decode['message'] == 'user data found') {
+          log('chat list $decode');
+          final List<dynamic> chatuserlist = decode['data'] as List;
+          chatList =
+              chatuserlist.map((e) => ChatUserListModel.fromJson(e)).toList();
+          isApiLoading = false;
+          update();
+        }
+        else {
+          log('No user data found');
+          isApiLoading = false;
+          update();
+        }
+      }
+      else {
+        log('user is not added to chat list , response is not 200 ');
+      }
+    }
+    catch(e){
+      log('found error $e');
+    }
+  }
+
+
 // for adding user to chat list
  Future<void> addChatUserToList() async
  {
@@ -421,30 +473,43 @@ class ChatScreenController  extends GetxController{
 
   //get only last message of a specific chat
    Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
-       GetUserModel? user) {
+      // GetUserModel? user
+       String username
+       ) {
 
-  return firestore
+/*  return firestore
       .collection('chats/${getConversationID(user?.data?.username??"")}/messages/')
+      .orderBy('sent', descending: true)
+      .limit(1)
+      .snapshots();*/
+  return firestore
+      .collection('chats/${getConversationID(username??"")}/messages/')
       .orderBy('sent', descending: true)
       .limit(1)
       .snapshots();
   }
 
   Future<void> getLastMessageString(
-      GetUserModel? user) async {
-
-    await  firestore
-        .collection('chats/${getConversationID(user?.data?.username??"")}/messages/')
-        .orderBy('sent', descending: true)
-        .limit(1).get().then((value) async {
-      Message? _message ;
-      final data = value.docs;
-      final list =
-          data.map((e) => Message.fromJson(e.data())).toList() ?? [];
-      if (list.isNotEmpty) _message = list[0];
-      String? lastMessage = _message?.msg;
-      await APIService.lastMessage(userId!, lastMessage!);
-    });
+  {required String username ,required String id}) async {
+     try {
+       await firestore
+           .collection('chats/${getConversationID(username)}/messages/')
+           .orderBy('sent', descending: true)
+           .limit(1).get().then((value) async {
+         Message? _message;
+         final data = value.docs;
+         final list =
+             data.map((e) => Message.fromJson(e.data())).toList() ?? [];
+         if (list.isNotEmpty) _message = list[0];
+         String? lastMessage = _message?.msg;
+         log('last message $lastMessage');
+         await APIService.lastMessage(id, lastMessage!);
+       });
+     }
+     catch(e)
+    {
+      log('error message $e');
+    }
   }
 
 
@@ -499,7 +564,7 @@ class ChatScreenController  extends GetxController{
 
   @override
   void onClose() async{
-   await getLastMessageString(getUserModel);
+
 
     super.onClose();
   }

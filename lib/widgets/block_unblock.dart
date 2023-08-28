@@ -48,6 +48,11 @@ static  void showLogoutAlertDialog(BuildContext context
       GetStorage().remove('loggedIn');
       GetStorage().remove('online_status');
       GetStorage().remove('online_notification_status');
+      GetStorage().remove('plan_plan_expiry');
+      GetStorage().remove('newUser');
+      GetStorage().remove('plan_plan_expiry');
+      GetStorage().remove('approval_status');
+
       Get.offAll(LoginScreen());
     },
     btnCancelText: "Cancel",

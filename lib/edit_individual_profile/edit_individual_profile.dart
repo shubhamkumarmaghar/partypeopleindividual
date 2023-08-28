@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,6 +21,7 @@ import 'package:partypeopleindividual/widgets/custom_textfield.dart';
 import 'package:partypeopleindividual/widgets/individual_amenities.dart';
 import 'package:partypeopleindividual/widgets/occupation_dropdown_selector.dart';
 import 'package:partypeopleindividual/widgets/qualification_dropdown_widget.dart';
+import 'package:blur/blur.dart';
 
 import '../../widgets/dob_dropdown.dart';
 import '../../widgets/gender_dropdown_selecter.dart';
@@ -166,27 +168,51 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                 //Cover Photo
                                 GestureDetector(
                                   onTap: () => _updatePhoto('cover'),
-                                  child: Container(
+                                  child: individualProfileController.descStatusApproval.value =='0' ? Blur( blur: 2.5,
+                                    child: Container(
+                                      height: 300,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: _coverImage != null
+                                                ? FileImage(_coverImage!)
+                                                    as ImageProvider<Object>
+                                                : individualProfileController
+                                                        .coverPhotoURL
+                                                        .value
+                                                        .isNotEmpty
+                                                    ? NetworkImage(
+                                                        individualProfileController
+                                                            .coverPhotoURL
+                                                            .value) as ImageProvider<
+                                                        Object>
+                                                    : const AssetImage(
+                                                            'assets/images/default-cover-4.jpg')
+                                                        as ImageProvider<Object>),
+                                      ),
+                                    ),
+                                  ):Container(
                                     height: 300,
                                     decoration: BoxDecoration(
-                                      color: Colors.blue,
+                                      color: Colors.white,
                                       image: DecorationImage(
                                           fit: BoxFit.cover,
                                           image: _coverImage != null
                                               ? FileImage(_coverImage!)
-                                                  as ImageProvider<Object>
+                                          as ImageProvider<Object>
                                               : individualProfileController
-                                                      .coverPhotoURL
-                                                      .value
-                                                      .isNotEmpty
-                                                  ? NetworkImage(
-                                                      individualProfileController
-                                                          .coverPhotoURL
-                                                          .value) as ImageProvider<
-                                                      Object>
-                                                  : const AssetImage(
-                                                          'assets/images/default-cover-4.jpg')
-                                                      as ImageProvider<Object>),
+                                              .coverPhotoURL
+                                              .value
+                                              .isNotEmpty
+                                              ? NetworkImage(
+                                              individualProfileController
+                                                  .coverPhotoURL
+                                                  .value) as ImageProvider<
+                                              Object>
+                                              : const AssetImage(
+                                              'assets/images/default-cover-4.jpg')
+                                          as ImageProvider<Object>),
                                     ),
                                   ),
                                 ),
@@ -207,20 +233,37 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         ],
                                         shape: BoxShape.circle,
                                       ),
-                                      child: CircleAvatar(
+                                      child: individualProfileController.descStatusApproval.value =='0' ?Blur( blur: 2.5,
+                                        child:
+                                        CircleAvatar(
+                                          radius: 55,
+                                          backgroundImage: _profileImage != null
+                                              ? FileImage(_profileImage!)
+                                              : (individualProfileController
+                                                          .profilePhotoURL
+                                                          .value
+                                                          .isNotEmpty
+                                                      ? NetworkImage(
+                                                          individualProfileController
+                                                              .profilePhotoURL.value)
+                                                      : const AssetImage(
+                                                          'assets/images/man.png'))
+                                                  as ImageProvider<Object>?,
+                                        ),
+                                      ):CircleAvatar(
                                         radius: 55,
                                         backgroundImage: _profileImage != null
                                             ? FileImage(_profileImage!)
                                             : (individualProfileController
-                                                        .profilePhotoURL
-                                                        .value
-                                                        .isNotEmpty
-                                                    ? NetworkImage(
-                                                        individualProfileController
-                                                            .profilePhotoURL.value)
-                                                    : const AssetImage(
-                                                        'assets/images/man.png'))
-                                                as ImageProvider<Object>?,
+                                            .profilePhotoURL
+                                            .value
+                                            .isNotEmpty
+                                            ? NetworkImage(
+                                            individualProfileController
+                                                .profilePhotoURL.value)
+                                            : const AssetImage(
+                                            'assets/images/man.png'))
+                                        as ImageProvider<Object>?,
                                       ),
                                     ),
                                   ),
@@ -292,18 +335,20 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         icon: Icons.person)),
                               ],
                             ),
+                            Blur(blur: individualProfileController.descStatusApproval.value =='0' ?2.5 :0,
+                              child: CustomTextField(
+                                  validate: true,
+                                  hintText: 'Bio',
+                                  obscureText: false,
+                                  initialValue:
+                                  individualProfileController.bio.value,
+                                  icon: Icons.description,
+                                  onChanged: (value) {
+                                    individualProfileController.bio.value = value;
+                                  },
+                                  maxLines: 3),
+                            ),
 
-                            CustomTextField(
-                                validate: true,
-                                hintText: 'Bio',
-                                obscureText: false,
-                                initialValue:
-                                    individualProfileController.bio.value,
-                                icon: Icons.description,
-                                onChanged: (value) {
-                                  individualProfileController.bio.value = value;
-                                },
-                                maxLines: 3),
 
                             Row(
                               children: [

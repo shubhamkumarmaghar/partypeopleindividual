@@ -8,17 +8,20 @@ class ChatUserListModel {
     this.displayName,
     required this.displayStatus,
     required this.type,
+    required this.blockStatus
+
   });
-  late final String id;
-  late final String username;
-  late final String onlineStatus;
+  late final dynamic id;
+  late final dynamic username;
+  late final dynamic onlineStatus;
   late final String createdAt;
-  late final String profilePic;
+  late final dynamic profilePic;
   late final dynamic displayName;
-  late final String displayStatus;
+  late final dynamic displayStatus;
   late final String type;
   late final dynamic lastMessage;
   late final dynamic lastMessageTime;
+  late final String blockStatus;
 
 
   ChatUserListModel.fromJson(Map<String, dynamic> json){
@@ -32,6 +35,7 @@ class ChatUserListModel {
     type = json['type'];
     lastMessage = json['message'];
     lastMessageTime = json['update_date'];
+    blockStatus = json['block_status'];
 
   }
 
@@ -47,6 +51,7 @@ class ChatUserListModel {
     _data['type'] = type;
     _data['message'] = lastMessage;
     _data['update_data'] = lastMessageTime;
+    _data['block_status'] = blockStatus;
     return _data;
   }
 }

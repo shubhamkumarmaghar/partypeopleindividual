@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -9,7 +11,8 @@ import '../controllers/chat_screen_controller.dart';
 import '../model/chat_model.dart';
 
 class ChatScreenView extends StatefulWidget {
-  const ChatScreenView({super.key});
+  String? id ;
+   ChatScreenView({this.id});
 
   @override
   State<ChatScreenView> createState() => _ChatScreenViewState();
@@ -17,8 +20,11 @@ class ChatScreenView extends StatefulWidget {
 
 class _ChatScreenViewState extends State<ChatScreenView> {
 
+  ChatScreenController chatScreenController = Get.put(ChatScreenController());
   List<Message>  listmessage =[];
-
+  String approvalStatus =GetStorage().read('approval_status')??'0';
+  String newUser = GetStorage().read('newUser')??'0';
+  String plan = GetStorage().read('plan_plan_expiry')??'Yes';
 
   //for handling message text changes
   final _textController = TextEditingController();
@@ -27,9 +33,20 @@ class _ChatScreenViewState extends State<ChatScreenView> {
   //isUploading -- for checking if image is uploading or not?
   bool _showEmoji = false, _isUploading = false;
   bool me = false;
+  String indiUsername='';
+
   @override
+  void initState(){
+    chatScreenController.getChatUserData(id: widget.id.toString());
+    super.initState();
+  }
 
-
+  void dispose() {
+    log("before last message");
+    chatScreenController.getLastMessageString(username: indiUsername,id: widget.id.toString());
+    log("after last message");
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +54,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
       child: GetBuilder<ChatScreenController>(
         init: ChatScreenController(),
         builder: (controller) {
+          indiUsername = controller.getUserModel?.data?.username ??"";
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
@@ -223,10 +241,10 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                             padding: EdgeInsets.only(top: Get.height * .01),
                             physics: const BouncingScrollPhysics(),
                             itemBuilder: (context, index) {
-                              for(int i =0 ;i<listmessage.length ;i++) {
-                                if(listmessage[i].fromId == controller.myUsername)
+
+                                if(listmessage[index].fromId == controller.myUsername) {
                                   me = true;
-                                break;
+                                  log('me ::::::::::: $me');
                               }
                              var data = listmessage[index];
                              data.toId == controller.myUsername;
@@ -297,9 +315,14 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          String plan = GetStorage().read('plan_plan_expiry');
                           if(plan == 'Yes'){
-                            if(me==true)
+                            if(newUser=='1'){
+                              controller.sendMessage(
+                                  controller.getUserModel, _textController.text,
+                                  Type.text);
+                              _textController.text = '';
+                            }else{
+                              if(me==true)
                               {
                                 if (_textController.text.isNotEmpty) {
                                   controller.sendMessage(
@@ -308,15 +331,25 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                   _textController.text = '';
                                 }
                               }
-                            Get.to(
-                                SubscriptionView()
-                            );
+                              else{
+                                Get.to(
+                                    SubscriptionView()
+                                );
+                              }
+                            }
+
                           }else {
                             if (_textController.text.isNotEmpty) {
+                              if(listmessage.isEmpty){
+                                if(controller.userId !='0'){
+                                controller.addChatUserToList();
+                                }
+                              }
                               controller.sendMessage(
                                   controller.getUserModel, _textController.text,
                                   Type.text);
                               _textController.text = '';
+
                             }
                           }
                         },
@@ -353,6 +386,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
 }
 
 class messageContainer extends StatelessWidget {
+
   messageContainer(
       {required this.text, required this.isMe, required this.time,required this.message,required this.updateReadMessage});
   Message? message;

@@ -7,6 +7,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:like_button/like_button.dart';
+import 'package:partypeopleindividual/individual_subscription/view/subscription_view.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../chatScreen/views/chat_screen_view.dart';
@@ -34,52 +35,116 @@ class NearByPeopleProfile extends StatefulWidget {
 }
 
 class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
+ String approvalStatus =GetStorage().read('approval_status')??'0';
+  String newUser = GetStorage().read('newUser')??'0';
+  String plan = GetStorage().read('plan_plan_expiry')??'Yes';
+
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     /// send your request here
     ///
     print("$isLiked");
-    if (widget.likeStatus == '1') {
-      return isLiked;
-    } else {
-      isLiked = widget.likeStatus == '1' ? false : true;
-      final response = await http.post(
-        Uri.parse('https://app.partypeople.in/v1/account/individual_user_like'),
-        headers: <String, String>{
-          'x-access-token': '${GetStorage().read('token')}',
-        },
-        body: <String, String>{
-          'user_like_status': isLiked == true ? "yes" : "No",
-          'user_like_id': widget.id
-        },
-      );
-
-      if (response.statusCode == 200) {
-        // If the server returns a 200 OK response,
-        // then parse the JSON.
-        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-        print(jsonResponse);
-        if (jsonResponse['status'] == 1 &&
-            jsonResponse['message'] == ('User liked successfully')) {
-          print('User like save successfully');
-          isLiked = false;
-          widget.likeStatus = '1';
-          setState(() {});
-        } else if (jsonResponse['status'] == 1 &&
-            jsonResponse['message'] == ('User unliked successfully')) {
-          print('User unlike successfully');
-          isLiked = true;
-          widget.likeStatus = '1';
+    if(approvalStatus =='1') {
+      if(newUser == '1') {
+        if (widget.likeStatus == '1') {
+          return isLiked;
         } else {
-          print('Failed to like/ unlike ');
-          isLiked = true;
-          widget.likeStatus = '0';
+          isLiked = widget.likeStatus == '1' ? false : true;
+          final response = await http.post(
+            Uri.parse(
+                'https://app.partypeople.in/v1/account/individual_user_like'),
+            headers: <String, String>{
+              'x-access-token': '${GetStorage().read('token')}',
+            },
+            body: <String, String>{
+              'user_like_status': isLiked == true ? "yes" : "No",
+              'user_like_id': widget.id
+            },
+          );
+
+          if (response.statusCode == 200) {
+            // If the server returns a 200 OK response,
+            // then parse the JSON.
+            Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+            print(jsonResponse);
+            if (jsonResponse['status'] == 1 &&
+                jsonResponse['message'] == ('User liked successfully')) {
+              print('User like save successfully');
+              isLiked = false;
+              widget.likeStatus = '1';
+              setState(() {});
+            } else if (jsonResponse['status'] == 1 &&
+                jsonResponse['message'] == ('User unliked successfully')) {
+              print('User unlike successfully');
+              isLiked = true;
+              widget.likeStatus = '1';
+            } else {
+              print('Failed to like/ unlike ');
+              isLiked = true;
+              widget.likeStatus = '0';
+            }
+          } else {
+            // If the server did not return a 200 OK response,
+            // then throw an exception.
+            throw Exception('Failed to like/unlike');
+            return isLiked = false;
+          }
         }
-      } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
-        throw Exception('Failed to like/unlike');
-        return isLiked = false;
       }
+      else {
+        if(newUser =='No'){
+          if (widget.likeStatus == '1') {
+            return isLiked;
+          } else {
+            isLiked = widget.likeStatus == '1' ? false : true;
+            final response = await http.post(
+              Uri.parse(
+                  'https://app.partypeople.in/v1/account/individual_user_like'),
+              headers: <String, String>{
+                'x-access-token': '${GetStorage().read('token')}',
+              },
+              body: <String, String>{
+                'user_like_status': isLiked == true ? "yes" : "No",
+                'user_like_id': widget.id
+              },
+            );
+
+            if (response.statusCode == 200) {
+              // If the server returns a 200 OK response,
+              // then parse the JSON.
+              Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+              print(jsonResponse);
+              if (jsonResponse['status'] == 1 &&
+                  jsonResponse['message'] == ('User liked successfully')) {
+                print('User like save successfully');
+                isLiked = false;
+                widget.likeStatus = '1';
+                setState(() {});
+              } else if (jsonResponse['status'] == 1 &&
+                  jsonResponse['message'] == ('User unliked successfully')) {
+                print('User unlike successfully');
+                isLiked = true;
+                widget.likeStatus = '1';
+              } else {
+                print('Failed to like/ unlike ');
+                isLiked = true;
+                widget.likeStatus = '0';
+              }
+            } else {
+              // If the server did not return a 200 OK response,
+              // then throw an exception.
+              throw Exception('Failed to like/unlike');
+              return isLiked = false;
+            }
+          }
+        }
+        else {
+          Get.to(() => SubscriptionView());
+        }
+      }
+    }
+    else {
+      Get.snackbar('Sorry!',
+          'Your account is not approved , please wait until it got approved');
     }
     return isLiked;
   }

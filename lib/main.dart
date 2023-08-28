@@ -6,11 +6,10 @@ import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/individualDashboard/bindings/individual_dashboard_binding.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:partypeopleindividual/individualDashboard/views/individual_dashboard_view.dart';
 import 'package:partypeopleindividual/splash_screen/view/splash_screen.dart';
 import 'package:sizer/sizer.dart';
 
-import 'individual_profile/views/individual_profile.dart';
+
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   return;
@@ -25,7 +24,8 @@ void main() async {
   FlutterLocalNotificationsPlugin pluginInstance =
   FlutterLocalNotificationsPlugin();
   var init = const InitializationSettings(
-      android: AndroidInitializationSettings('launcher_icon'));
+      android: AndroidInitializationSettings('@mipmap/launcher_icon')
+  );
   pluginInstance.initialize(init);
 
   NotificationSettings settings = await messaging.requestPermission();

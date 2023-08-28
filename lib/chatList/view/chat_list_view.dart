@@ -1,18 +1,12 @@
 import 'dart:developer';
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:intl/intl.dart';
-import 'package:partypeopleindividual/api_helper_service.dart';
+import 'package:partypeopleindividual/chatScreen/controllers/chat_screen_controller.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../chatScreen/controllers/chat_screen_controller.dart';
+import '../../chatScreen/model/chat_model.dart';
 import '../../chatScreen/views/chat_screen_view.dart';
-import '../controller/chat_list_controller.dart';
 
 class ChatList extends StatefulWidget {
   const ChatList({super.key});
@@ -22,10 +16,11 @@ class ChatList extends StatefulWidget {
 }
 
 class _ChatListState extends State<ChatList> {
+  Message? _message;
   @override
   Widget build(BuildContext context) {
     return  SafeArea(
-      child: GetBuilder<ChatListController>(init: ChatListController(),
+      child: GetBuilder<ChatScreenController>(init: ChatScreenController(),
       builder: (controller){
         return Scaffold(
           appBar:  AppBar(
@@ -79,11 +74,16 @@ class _ChatListState extends State<ChatList> {
                 var data = controller.chatList[index];
                 return GestureDetector(
                   onTap: (){
-                    Get.to(()=>ChatScreenView(),arguments:data.id )?.
+                    if(data.blockStatus =='Block')
+                      {
+                        Get.snackbar('Blocked User', 'User is Blocked ,Please Unblock First');
+                      }
+                    else{
+                    Get.to(()=>ChatScreenView(id: data.id.toString()),arguments:data.id )?.
                     then((value) async {
-                      // await APIService.lastMessage(data.id, GetStorage().read('last_message'));
                        await controller.getChatList();
                     });
+                    }
                   },
                   child:
                   Column(
@@ -161,12 +161,43 @@ class _ChatListState extends State<ChatList> {
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                Text(
-                                  'last message : ${data.lastMessage ??''}',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: const Color(0xFF434343),
-                                  ),
+                                StreamBuilder(
+                                  stream: controller.getLastMessage(data.username),
+                                  builder: (context, snapshot) {
+
+                                    final data = snapshot.data?.docs;
+                                    final list =
+                                        data?.map((e) => Message.fromJson(e.data())).toList() ?? [];
+                                    if (list.isNotEmpty){ _message = list[0];
+                                    log('${_message!.msg}');
+                                    log('${_message!.toId}');
+                                    }
+
+                                    return Row(
+                                      children: [_message?.fromId == controller.myUsername.toString()?
+                                        _message?.read == ''?Icon(
+                                    Icons.done_all,
+                                      color: Colors.grey,
+                                      size: 13.sp,
+                                    ):Icon(
+                                    Icons.done_all,
+                                    color: Color(0xFF49d298),
+                                    size: 13.sp,
+                                    ):Container(),
+                                        Text(
+                                          _message != null
+                                              ?  ' ${_message!.msg}'
+                                              : "",
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: const Color(0xFF434343),
+                                            fontWeight: _message?.read=="" ? FontWeight.bold :FontWeight.normal
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
                                 ),
                                 /* Text(
                           "profilepic",

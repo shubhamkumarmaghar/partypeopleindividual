@@ -97,7 +97,7 @@ void onInit(){
 
     // Request body
     Map<String, dynamic> body = {
-      'notification_status': status == true ? "on" : "off",
+      'notification_status': status == true ? "off" : "on",
     };
 
     try {
@@ -111,7 +111,7 @@ void onInit(){
       // Check response status code
       if (response.statusCode == 200) {
         // Request successful
-        print('Notification status successfullu updated');
+        print('Notification status successfully updated');
       } else {
         // Request failed
         print(

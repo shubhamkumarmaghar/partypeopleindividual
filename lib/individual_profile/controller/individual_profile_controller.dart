@@ -31,6 +31,8 @@ class IndividualProfileController extends GetxController {
   RxString city = ''.obs;
   RxString privacyOnlineStatus = ''.obs;
   RxString notification = ''.obs;
+  RxString descStatusApproval = ''.obs;
+
 
   TextEditingController dobController = TextEditingController();
   RxList selectedAmenities = [].obs;
@@ -97,6 +99,12 @@ class IndividualProfileController extends GetxController {
       Get.snackbar('Location Error', 'Country should not be empty');
       return;
     }
+
+    if (activeCity.value.isEmpty) {
+      Get.snackbar('Location Error', 'Active City should not be empty');
+      return;
+    }
+
 
     if (state.value.isEmpty) {
       Get.snackbar('Location Error', 'State should not be empty');
@@ -193,6 +201,10 @@ class IndividualProfileController extends GetxController {
       return;
     }
 
+    if (activeCity.value.isEmpty) {
+      Get.snackbar('Location Error', 'Active City should not be empty');
+      return;
+    }
     if (city.value.isEmpty) {
       Get.snackbar('Location Error', 'City should not be empty');
       return;
@@ -337,6 +349,9 @@ class IndividualProfileController extends GetxController {
           dobController.text = dob.value;
           privacyOnlineStatus.value = response['privacy_online']??'';
           notification.value = response['notification']??'';
+          int count = response['notification_count']??'';
+          descStatusApproval.value = count.toString();
+         log('descStatusApproval ::: ${descStatusApproval.value}');
           apiService.isLoading.value = false;
           update();
         } catch (e) {
@@ -423,7 +438,7 @@ class IndividualProfileController extends GetxController {
   @override
   void onClose() {
     activeCities.clear();
-    activeCity="".obs;
+    //activeCity="".obs;
     super.onClose();
   }
 }

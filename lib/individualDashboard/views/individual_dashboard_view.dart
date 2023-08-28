@@ -1,13 +1,13 @@
-import 'dart:convert';
+
+import 'dart:developer';
 
 import 'package:adobe_xd/adobe_xd.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:like_button/like_button.dart';
+import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/individualDashboard/controllers/individual_dashboard_controller.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
 import 'package:partypeopleindividual/notification/notification_screen.dart';
@@ -18,7 +18,6 @@ import '../../chatList/view/chat_list_view.dart';
 import '../../individualDrawer/views/individual_drawer_view.dart';
 import '../../individual_nearby_people_profile/view/individual_people_list.dart';
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
-import '../../individual_profile_screen/individual_profile_screen.dart';
 import '../../individual_profile_screen/individual_profile_screen_view.dart';
 import '../../individual_subscription/view/subscription_view.dart';
 import '../../widgets/party_card.dart';
@@ -32,18 +31,20 @@ class IndividualDashboardView extends StatefulWidget {
       _IndividualDashboardViewState();
 }
 
-class _IndividualDashboardViewState extends State<IndividualDashboardView> {
-
+class _IndividualDashboardViewState extends State<IndividualDashboardView> with SingleTickerProviderStateMixin{
 
 
   IndividualDashboardController individualDashboardController =
   Get.put(IndividualDashboardController());
   IndividualProfileController individualProfileController = Get.find();
   int _selectedIndex = 1; // Initial
-
+  late AnimationController _animationController;
+  bool isPlaying = false;
   @override
   void initState() {
      _selectedIndex = 1;
+     _animationController =
+         AnimationController( duration: Duration(milliseconds: 450), vsync: this);
     super.initState();
 
 
@@ -143,14 +144,41 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                   ),
                   GestureDetector(
                     onTap: () =>
+                      // _animationController.stop();
                         Get.to(
                           const NotificationScreen(),
                           duration: const Duration(milliseconds: 300),
                           transition: Transition.rightToLeft,
                         )?.then((value) =>individualDashboardController.getDataForDashboard()),
-                    child: const Icon(
-                      Icons.notifications,
-                      color: Colors.white,
+                    child: Obx(()
+                      {
+                     return Stack(children: [
+                        Container(
+                          margin: EdgeInsets.only(top: 4),
+                        height: 40,
+                        width: 40,
+                        alignment: Alignment.center,
+                        child: Lottie.network('https://assets-v2.lottiefiles.com/a/48f00168-1170-11ee-9e1b-970c7c37303f/6xmibrIyay.json',
+                           // controller: _animationController,
+                            height: 40,
+                            width: 40,
+                            animate:  individualDashboardController.notificationCount.value.toString() == '0' ?false :true,
+                            fit: BoxFit.cover
+                            //fit: BoxFit.cover
+                        ),
+                      ),
+                        individualDashboardController.notificationCount.value.toString() == '0'
+                            ? Container()
+                            :const Positioned(
+                          right: 0,
+                          top: 0,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.orange,
+                            maxRadius: 5,
+                          ),
+                        ),],
+                      );
+                      }
                     ),
                   ),
                 ],
@@ -175,7 +203,12 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                   Get.to(IndividualProfileScreenView());
                 }
                 if(_selectedIndex == 0){
-                  Get.to(ChatList());
+                  if(individualDashboardController.approvalStatus.value=='1') {
+                    Get.to(ChatList());
+                  }else{
+                    log('approval sdvfdb ${individualDashboardController.approvalStatus}');
+                    Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
+                  }
                 }
               });
             },
@@ -185,14 +218,32 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
             color: Colors.white,
             activeColor: Colors.white,
             tabBackgroundColor: const Color(0xFF802a2a),
-            tabs: const [
+            tabs:  [
+
               GButton(
                 icon: CupertinoIcons.chat_bubble_2_fill,
                 text: 'Chats',
+                leading: Obx((){
+                  return Stack(
+                    children:[
+                      Icon(CupertinoIcons.chat_bubble_2_fill,color: Colors.white ,size: 28),
+                      individualDashboardController.chatCount.value == '0'
+                          ? Container()
+                          :const Positioned(
+                        right: 0,
+                        top: 0,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.orange,
+                          maxRadius: 5,
+                        ),
+                      ),
+                    ],
+                  );}
+                ),
                 textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 iconSize: 24,
               ),
-              GButton(
+              GButton(semanticLabel:'bkk' ,
                 icon: Icons.home,
                 text: 'Home',
                 textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -308,18 +359,39 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                           itemBuilder: ((context, index) =>
                               GestureDetector(
                                 onTap: () {
-                                  String plan = GetStorage().read('plan_plan_expiry');
-                                  if(plan == 'Yes'){
-                                    Get.to(
 
-                                        SubscriptionView()
-                                    );
+                                  if(individualDashboardController.approvalStatus.value =='1') {
+                                      if (individualDashboardController.plan.value == 'Yes') {
+                                        Get.to(
+                                            SubscriptionView()
+                                        );
+                                      }
+                                      else {
+                                        if (index == 0) {
+                                          individualDashboardController
+                                              .individualProfileController
+                                              .activeCity.value =
+                                              individualDashboardController
+                                                  .allCityList[index].name;
+                                          individualDashboardController
+                                              .apiService
+                                              .updateActiveCity(
+                                              individualProfileController
+                                                  .organization_id.value,
+                                              individualDashboardController
+                                                  .individualProfileController
+                                                  .activeCity.value);
+                                        }
+
+                                      else {
+                                          Get.snackbar('Sorry!', 'Coming Soon');
+                                        }
+                                  }
+
                                   }
                                   else{
-                                    individualDashboardController.partyCity.value = individualDashboardController
-                                        .allCityList[index].name;
+                                    Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
                                   }
-
                                   //individualDashboardController.getPartyByDate();
                                 },
                                 child: CityCard(
@@ -404,10 +476,14 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> {
                           itemBuilder: ((context, index) =>
                               GestureDetector(
                                 onTap: () {
-                                  //PeopleViewed(individualDashboardController.usersList[index].id);
-                                  //Navigator.push(context, MaterialPageRoute(builder: (context) => IndividualPeopleProfile(),));
-                                 Get.to(()=>IndividualPeopleProfile(),arguments: individualDashboardController.usersList[index].id)?.then((value) =>individualDashboardController.getDataForDashboard());
-                                },
+                                  if(individualDashboardController.approvalStatus.value=='1'){
+                                    Get.to(()=>IndividualPeopleProfile(),
+                                        arguments: individualDashboardController.usersList[index].id)?.then((value) =>individualDashboardController.getDataForDashboard());
+                                  }
+                                  else{
+                                    Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
+                                  }
+                               },
                                 child: NearByPeopleProfile(
                                   imageURL: individualDashboardController.usersList[index].profilePicture,
                                   name: individualDashboardController.usersList[index].username,

@@ -119,7 +119,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
               String formattedDateTime = DateFormat('h:mm a, EEE, d/MM/y')
                   .format(notificationCreatedOn
-                  .add(Duration(hours: 5, minutes: 30)));
+                  //.add(Duration(hours: 5, minutes: 30))
+              );
 
               return data['data'] != null
                   ? Container(

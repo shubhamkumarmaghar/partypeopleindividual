@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:sizer/sizer.dart';
+import 'package:confetti/confetti.dart';
 import 'package:shimmer/shimmer.dart';
 import '../api_helper_service.dart';
 import '../individualDashboard/models/party_model.dart';
@@ -39,6 +41,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
   List<Category> _categories = [];
   final List<CategoryList> _categoryLists = [];
   List selectedAmenities = [];
+  late ConfettiController _controllerBottomCenter;
 
   Future<void> _fetchData() async {
     http.Response response = await http.get(
@@ -87,6 +90,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
   void initState() {
     _fetchData();
     print(" ${widget.party.toJson()}");
+    _controllerBottomCenter =
+        ConfettiController(duration: const Duration(seconds: 10));
     super.initState();
   }
 
@@ -195,10 +200,12 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                       */
                   ),
                     ),
+
                   Positioned(
                       top: Get.height*0.27,
                       right: Get.width*0.06,
                       child: GestureDetector(onTap: () async {
+
                         var data = await APIService.ongoingParty(widget.party.id);
                         if(data ==true)
                           {
@@ -206,9 +213,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
 
                             });
                             join='Joined';
-
+                            _controllerBottomCenter.play();
                           }
-                        log(data.toString());
                         //ongoingParty(widget.party.id);
 
                       },
@@ -242,7 +248,13 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                 Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CustomTextIcon(icon: CupertinoIcons.heart, IconText: "${widget.party.like} Likes"),
-                      CustomTextIcon(icon: CupertinoIcons.eye, IconText: "${widget.party.view} Views"),
+                      GestureDetector(onTap: (){
+                        setState(() {
+
+                        });
+                        _controllerBottomCenter.play();
+
+                      },child: CustomTextIcon(icon: CupertinoIcons.eye, IconText: "${widget.party.view} Views")),
                       CustomTextIcon(icon: CupertinoIcons.person_3, IconText: "${widget.party.ongoing} Going"),
                     ]),
                 const SizedBox(
@@ -293,8 +305,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                   ),
                 ),
                 const Divider(),
-/*
-                widget.party.papularStatus == '1'
+
+               /* widget.party.papularStatus == '1'
                     ? CustomListTile(
                   icon: Icons.calendar_month_outlined,
                   title: "Popular Party Dates",
@@ -303,23 +315,22 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                   sub: true,
                 )
                     : Container(),
-                widget.party.status == '1'
+                */
+                widget.party.papularStatus == '1'
                     ? CustomListTile(
                   icon: Icons.calendar_month_outlined,
                   title: "Popular Party Dates",
                   subtitle:
-                  "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(widget.party.prStartDate))} to ${widget.party.endDate != null ? DateFormat('EEEE, d MMMM y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.endDate) * 1000)) : ''}",
+                  "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(widget.party.prStartDate))}",
                   sub: true,)
-                    : Container(),
-
-                */
-                CustomListTile(
+                    : CustomListTile(
                   icon: Icons.calendar_month,
                   title: "${widget.party.prStartDate != null ? DateFormat('d MMMM, y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.startDate) * 1000)) : ''} ",
                   subtitle:
                   "${widget.party.startTime}  to  ${widget.party.endTime }",
                   sub: true,
                 ),
+
                 CustomListTile(
                   icon: Icons.location_on,
                   title: "${widget.party.latitude} ",
@@ -585,11 +596,27 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                           : Container();
                     },
                   ),
-                )
+                ),
+
 
 
               ],
             ),
+          ),bottomSheet: Container(
+            height: 1,
+            width: Get.width,
+            child: Align(
+        alignment: Alignment.bottomCenter,
+        child: ConfettiWidget(
+            confettiController: _controllerBottomCenter,
+            blastDirection: -pi / 2,
+            emissionFrequency: 0.01,
+            numberOfParticles: 20,
+            maxBlastForce: 100,
+            minBlastForce: 80,
+            gravity: 0.3,
+        ),
+      ),
           ),
       );
 
@@ -792,5 +819,30 @@ class BoostButton extends StatelessWidget {
         ),
       ),
     );
+
+  }
+  /// A custom Path to paint stars.
+  Path drawStar(Size size) {
+    // Method to convert degree to radians
+    double degToRad(double deg) => deg * (pi / 180.0);
+
+    const numberOfPoints = 5;
+    final halfWidth = size.width / 2;
+    final externalRadius = halfWidth;
+    final internalRadius = halfWidth / 2.5;
+    final degreesPerStep = degToRad(360 / numberOfPoints);
+    final halfDegreesPerStep = degreesPerStep / 2;
+    final path = Path();
+    final fullAngle = degToRad(360);
+    path.moveTo(size.width, halfWidth);
+
+    for (double step = 0; step < fullAngle; step += degreesPerStep) {
+      path.lineTo(halfWidth + externalRadius * cos(step),
+          halfWidth + externalRadius * sin(step));
+      path.lineTo(halfWidth + internalRadius * cos(step + halfDegreesPerStep),
+          halfWidth + internalRadius * sin(step + halfDegreesPerStep));
+    }
+    path.close();
+    return path;
   }
 }

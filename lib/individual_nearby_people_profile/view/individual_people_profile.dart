@@ -1,23 +1,16 @@
-import 'dart:convert';
-import 'dart:developer';
-import 'dart:io';
 
-import 'package:adobe_xd/gradient_xd_transform.dart';
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart' as http;
-import 'package:shimmer/shimmer.dart';
-import 'package:sizer/sizer.dart';
 
 import '../../api_helper_service.dart';
 import '../../chatScreen/views/chat_screen_view.dart';
 import '../../individual_profile_screen/profilephotoview.dart';
 import '../../individual_subscription/view/subscription_view.dart';
 import '../../widgets/block_unblock.dart';
-import '../../widgets/individual_amenities.dart';
 import '../controller/people_profile_controller.dart';
 import '../model/people_profile_model.dart';
 
@@ -38,6 +31,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
   @override
   void initState() {
     super.initState();
+
    // peopleProfileController.PeopleViewed(widget.user_id);
     //_fetchData();
   }
@@ -145,20 +139,11 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              String plan = GetStorage().read('plan_plan_expiry');
-                              if(plan == 'Yes'){
-                                Get.to(
-                                    SubscriptionView()
-                                );
-                              }
-                              else {
                                 Get.to(ChatScreenView(),
-                                    arguments: controller.userId)?.
-                                then((value) =>
-                                    APIService.lastMessage(controller.userId,
-                                        GetStorage().read('last_message')));
+                                    arguments: controller.userId);
+                                    //?.then((value) => APIService.lastMessage(controller.userId, GetStorage().read('last_message')));
                                 // Get.to(peopleList());
-                              }
+
                             },
                             child: iconButtonNeumorphic(
                                 icon: CupertinoIcons.chat_bubble_2_fill,color: Colors.orange),
@@ -232,19 +217,19 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                         ),
                         Expanded(
                           child: CustomTextview(
-                              data?.gender ?? "NA", Icons.people),
+                              data.gender ?? "NA", Icons.people),
                         ),
                       ],
                     ),
                     Row(
                       children: [
                         Expanded(
-                          child: CustomTextview(data?.qualification ?? "NA",
+                          child: CustomTextview(data.qualification ?? "NA",
                               Icons.description_outlined),
                         ),
                         Expanded(
                           child: CustomTextview(
-                              data?.occupation ?? "NA", Icons.work),
+                              data.occupation ?? "NA", Icons.work),
                         ),
                       ],
                     ),
@@ -252,12 +237,12 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                       children: [
                         Expanded(
                           child: CustomTextview(
-                              data?.country ?? "NA", Icons.location_on),
+                              data.country ?? "NA", Icons.location_on),
                           //QualificationWidget(),
                         ),
                         Expanded(
                           child: CustomTextview(
-                              data?.state ?? "NA", Icons.location_on),
+                              data.state ?? "NA", Icons.location_on),
 
                           //OccupationWidget(),
                         ),
@@ -267,12 +252,12 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                       children: [
                         Expanded(
                           child: CustomTextview(
-                              data?.city ?? "NA", Icons.location_city),
+                              data.city ?? "NA", Icons.location_city),
                           //QualificationWidget(),
                         ),
                         Expanded(
                           child: CustomTextview(
-                              data?.pincode ?? "NA", Icons.pin_drop),
+                              data.pincode ?? "NA", Icons.pin_drop),
 
                           //OccupationWidget(),
                         ),
