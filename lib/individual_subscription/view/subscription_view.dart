@@ -93,7 +93,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
       body: GetBuilder<SubscriptionController>(
           init: SubscriptionController(),
           builder: (controller) {
-            return Container(
+            return controller.isLoading == false ? Container(
               decoration: const BoxDecoration(
                 gradient: RadialGradient(
                   center: Alignment(1, -0.45),
@@ -154,7 +154,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                            },
                           child: subscriptionPlansView(
                               subscriptionData:
-                                  controller.subscriptionModel.subsData![0]),
+                                  controller.subscriptionModel.subsData[0]),
                         ),
                         GestureDetector(
                           onTap: () async{
@@ -164,7 +164,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                           },
                           child: subscriptionPlansView(
                               subscriptionData:
-                              controller.subscriptionModel.subsData![1]),
+                              controller.subscriptionModel.subsData[1]),
                         ),
                         GestureDetector(
                           onTap: () async{
@@ -174,7 +174,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                           },
                           child: subscriptionPlansView(
                               subscriptionData:
-                              controller.subscriptionModel.subsData![2]),
+                              controller.subscriptionModel.subsData[2]),
                         ),
 
                         /*  ListView.builder(itemCount:controller.subscriptionModel.subsData?.length ,
@@ -283,6 +283,14 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                       ),
                     ), */
                   ]),
+            ) :
+            Container(width: Get.width,height: Get.height,
+              color: Colors.white,
+              child: Center(
+                child: CupertinoActivityIndicator(
+                  color: Colors.black,
+                ),
+              ),
             );
           }),
     );

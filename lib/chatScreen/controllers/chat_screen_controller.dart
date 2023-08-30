@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -24,6 +25,7 @@ class ChatScreenController  extends GetxController{
   String? userId ='';
   String myUsername ="";
   List<ChatUserListModel>  chatList = [];
+  AudioPlayer player = AudioPlayer();
 
   @override
   void onInit(){
@@ -63,6 +65,7 @@ class ChatScreenController  extends GetxController{
           final decodedData = jsonDecode(response.body);
           print(decodedData);
           getUserModel = GetUserModel.fromJson(decodedData);
+       //  await getFirebaseMessagingToken();
         /*  if(userId !='0') {
             addChatUserToList();
           }*/
@@ -147,7 +150,7 @@ class ChatScreenController  extends GetxController{
      log('error found  $e');
    }
  }
- 
+
 
   // for storing self information
   /*static ChatUser me = ChatUser(
@@ -195,30 +198,34 @@ class ChatScreenController  extends GetxController{
 
   // for sending push notification
   Future<void> sendPushNotification(
-  GetUserModel chatUser, String msg) async {
-  try {
-  final body = {
-  "to": chatUser.data?.deviceToken,
-  "notification": {
-  "title": myUsername, //our name should be send
-  "body": msg,
-  "android_channel_id": "chats"
-  },
-  // "data": {
-  //   "some_data": "User ID: ${me.id}",
-  // },
-  };
+  GetUserModel chatUser, String msg ,String? username,  ) async {
 
-  var res = await post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
-  headers: {
-  HttpHeaders.contentTypeHeader: 'application/json',
-  HttpHeaders.authorizationHeader:
-  'key=AAAA8XNSH0I:APA91bE4_3dlb09VoZdl3ZEf3qUIGjWoJY8nybtqvyZLmfBEQVfkh0C1aN_93cmMDGbt2Fkz-6T_j7GhMHngNnwgCU2JJM3RB42-zzEoUlGLTQFlkJKPy-VvaekPdufFsYypPLfJxqnx'
-  },
-  body: jsonEncode(body));
-  log('Response status: ${res.statusCode}');
-  log('Response body: ${res.body}');
-  } catch (e) {
+
+    try {
+      final body = {
+        "to": chatUser.data?.deviceToken,
+        "notification": {
+          "title": myUsername, //our name should be send
+          "body": msg,
+          "android_channel_id": "chats"
+        },
+        // "data": {
+        //   "some_data": "User ID: ${me.id}",
+        // },
+      };
+
+      var res = await post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+          headers: {
+            HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.authorizationHeader:
+            'key=AAAA8XNSH0I:APA91bE4_3dlb09VoZdl3ZEf3qUIGjWoJY8nybtqvyZLmfBEQVfkh0C1aN_93cmMDGbt2Fkz-6T_j7GhMHngNnwgCU2JJM3RB42-zzEoUlGLTQFlkJKPy-VvaekPdufFsYypPLfJxqnx'
+          },
+          body: jsonEncode(body));
+      log('Response status: ${res.statusCode}');
+      log('Response body: ${res.body}');
+    }
+
+  catch (e) {
   log('\nsendPushNotificationE: $e');
   }
   }
@@ -417,21 +424,29 @@ class ChatScreenController  extends GetxController{
   // for sending message
   Future<void> sendMessage(
   GetUserModel? chatUser, String msg, Type type) async {
-  //message sending time (also used as id)
-  final time = DateTime.now().millisecondsSinceEpoch.toString();
+    //message sending time (also used as id)
+    final time = DateTime
+        .now()
+        .millisecondsSinceEpoch
+        .toString();
 
-  //message to send
-  final Message message = Message(
-  toId: chatUser?.data?.username??"",
-  msg: msg,
-  read: '',
-  type: type,
-  fromId: GetStorage().read("my_user_id"),
-      sent: time,
-      fcmToken: chatUser?.data?.deviceToken ??'');
-  final ref = firestore
-      .collection('chats/${getConversationID(chatUser?.data?.username ??'')}/messages/');
-  await ref.doc(time).set(message.toJson()).then((value) => sendPushNotification(chatUser!, type == Type.text ? msg : 'image'));
+    //message to send
+    final Message message = Message(
+        toId: chatUser?.data?.username ?? "",
+        msg: msg,
+        read: '',
+        type: type,
+        fromId: GetStorage().read("my_user_id"),
+        sent: time,
+        fcmToken: chatUser?.data?.deviceToken ?? '');
+    final ref = firestore
+        .collection(
+        'chats/${getConversationID(chatUser?.data?.username ?? '')}/messages/');
+
+    await ref.doc(time).set(message.toJson()).then((value) =>
+        sendPushNotification(chatUser!, type == Type.text ? msg : 'image',
+            chatUser.data?.username));
+    await player.play(AssetSource('sound/sent.wav'));
   }
 
 
@@ -448,10 +463,12 @@ class ChatScreenController  extends GetxController{
              .millisecondsSinceEpoch
              .toString()});
          log(' another user read the message');
+       await  player.play(AssetSource('sound/receive.wav'));
        }
        else{
          log('another user is not seen message yet');
        }
+      // await player.play(AssetSource('sound/Gun_Sound.mp3'));
       /* firestore
           .collection('chats')
           .doc('${getConversationID(message.fromId)}')
@@ -483,30 +500,30 @@ class ChatScreenController  extends GetxController{
       .limit(1)
       .snapshots();*/
   return firestore
-      .collection('chats/${getConversationID(username??"")}/messages/')
+      .collection('chats/${getConversationID(username)}/messages/')
       .orderBy('sent', descending: true)
       .limit(1)
       .snapshots();
   }
 
   Future<void> getLastMessageString(
-  {required String username ,required String id}) async {
-     try {
-       await firestore
-           .collection('chats/${getConversationID(username)}/messages/')
-           .orderBy('sent', descending: true)
-           .limit(1).get().then((value) async {
-         Message? _message;
-         final data = value.docs;
-         final list =
-             data.map((e) => Message.fromJson(e.data())).toList() ?? [];
-         if (list.isNotEmpty) _message = list[0];
-         String? lastMessage = _message?.msg;
-         log('last message $lastMessage');
-         await APIService.lastMessage(id, lastMessage!);
-       });
-     }
-     catch(e)
+      {required String username ,required String id}) async {
+    try {
+      await firestore
+          .collection('chats/${getConversationID(username)}/messages/')
+          .orderBy('sent', descending: true)
+          .limit(1).get().then((value) async {
+        Message? _message;
+        final data = value.docs;
+        final list =
+            data.map((e) => Message.fromJson(e.data())).toList() ?? [];
+        if (list.isNotEmpty) _message = list[0];
+        String? lastMessage = _message?.msg;
+        log('last message $lastMessage');
+        await APIService.lastMessage(id, lastMessage!);
+      });
+    }
+    catch(e)
     {
       log('error message $e');
     }

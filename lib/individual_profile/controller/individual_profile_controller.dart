@@ -34,6 +34,7 @@ class IndividualProfileController extends GetxController {
   RxString descStatusApproval = ''.obs;
 
 
+
   TextEditingController dobController = TextEditingController();
   RxList selectedAmenities = [].obs;
   RxList activeCities = [].obs;
@@ -345,12 +346,12 @@ class IndividualProfileController extends GetxController {
           coverPhotoURL.value = user['cover_photo'] ?? '';
           organization_id.value = user['id'] ?? "";
           activeCity.value = user['active_city']??'';
+          descStatusApproval.value = user['approval_desciption_status']??'';
           // Set dobController's text to the 'dob' value
           dobController.text = dob.value;
           privacyOnlineStatus.value = response['privacy_online']??'';
           notification.value = response['notification']??'';
-          int count = response['notification_count']??'';
-          descStatusApproval.value = count.toString();
+
          log('descStatusApproval ::: ${descStatusApproval.value}');
           apiService.isLoading.value = false;
           update();

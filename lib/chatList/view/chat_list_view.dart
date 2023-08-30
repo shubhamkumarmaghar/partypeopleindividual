@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:partypeopleindividual/chatScreen/controllers/chat_screen_controller.dart';
@@ -169,10 +170,7 @@ class _ChatListState extends State<ChatList> {
                                     final list =
                                         data?.map((e) => Message.fromJson(e.data())).toList() ?? [];
                                     if (list.isNotEmpty){ _message = list[0];
-                                    log('${_message!.msg}');
-                                    log('${_message!.toId}');
                                     }
-
                                     return Row(
                                       children: [_message?.fromId == controller.myUsername.toString()?
                                         _message?.read == ''?Icon(
@@ -192,7 +190,7 @@ class _ChatListState extends State<ChatList> {
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: const Color(0xFF434343),
-                                            fontWeight: _message?.read=="" ? FontWeight.bold :FontWeight.normal
+                                            fontWeight: _message?.fromId == controller.myUsername.toString()?  FontWeight.normal :FontWeight.bold
                                           ),
                                         ),
                                       ],

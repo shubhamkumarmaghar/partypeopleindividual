@@ -10,9 +10,10 @@ import 'package:http/http.dart' as http;
 class SubscriptionController extends GetxController{
 
 
- SubscriptionModel subscriptionModel = SubscriptionModel();
+ SubscriptionModel subscriptionModel = SubscriptionModel(subsData: []);
  List<SubscriptionData> subsList = [];
  int subsOrderId = 0;
+ RxBool isLoading = false.obs;
 
  @override
  void onInit(){
@@ -22,6 +23,7 @@ class SubscriptionController extends GetxController{
  
  Future<void> getSubscriptionPlans() async{
    try {
+     isLoading.value = true;
      final response = await http.post(Uri.parse(
          'https://app.partypeople.in/v1/subscription/subscription_plan'),
        headers: <String, String>{
@@ -34,7 +36,9 @@ class SubscriptionController extends GetxController{
            jsonResponse['message'].contains('Data Found')) {
          var data = SubscriptionModel.fromJson(jsonResponse);
          subscriptionModel = data;
+         isLoading.value = false;
          update();
+
        }
      }
      else

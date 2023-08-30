@@ -11,6 +11,7 @@ import '../../chatScreen/views/chat_screen_view.dart';
 import '../../individual_profile_screen/profilephotoview.dart';
 import '../../individual_subscription/view/subscription_view.dart';
 import '../../widgets/block_unblock.dart';
+import '../../widgets/calculate_age.dart';
 import '../controller/people_profile_controller.dart';
 import '../model/people_profile_model.dart';
 
@@ -213,7 +214,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                       children: [
                         Expanded(
                           child: CustomTextview(
-                              calAge(data.dob??""), Icons.calendar_month),
+                    CalculateAge.calAge(data.dob??""), Icons.calendar_month),
                         ),
                         Expanded(
                           child: CustomTextview(

@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -249,7 +248,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                              var data = listmessage[index];
                              data.toId == controller.myUsername;
                               var time = '${DateFormat('d MMMM y ,hh:mm').format(DateTime.fromMillisecondsSinceEpoch(int.parse(data.sent)))}';
-                              return messageContainer(message: listmessage[index],
+                              return MessageContainer(message: listmessage[index],
                                 text: listmessage[index].msg,
                                 isMe:  data.fromId == controller.myUsername ?true:false
                                 ,time: time,
@@ -321,7 +320,8 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                   controller.getUserModel, _textController.text,
                                   Type.text);
                               _textController.text = '';
-                            }else{
+                            }
+                            else{
                               if(me==true)
                               {
                                 if (_textController.text.isNotEmpty) {
@@ -338,7 +338,8 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                               }
                             }
 
-                          }else {
+                          }
+                          else {
                             if (_textController.text.isNotEmpty) {
                               if(listmessage.isEmpty){
                                 if(controller.userId !='0'){
@@ -385,9 +386,8 @@ class _ChatScreenViewState extends State<ChatScreenView> {
   }
 }
 
-class messageContainer extends StatelessWidget {
-
-  messageContainer(
+class MessageContainer extends StatelessWidget {
+  MessageContainer(
       {required this.text, required this.isMe, required this.time,required this.message,required this.updateReadMessage});
   Message? message;
   String text;

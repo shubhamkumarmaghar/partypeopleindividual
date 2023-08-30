@@ -2,11 +2,11 @@ class SubscriptionModel {
   SubscriptionModel({
      this.status,
      this.message,
-     this.subsData,
+     required this.subsData,
   });
     int? status;
     String? message;
-    List<SubscriptionData>? subsData;
+    List<SubscriptionData> subsData = [];
 
   SubscriptionModel.fromJson(Map<String, dynamic> json){
     status = json['status'];
@@ -18,7 +18,7 @@ class SubscriptionModel {
     final _data = <String, dynamic>{};
     _data['status'] = status;
     _data['message'] = message;
-    _data['data'] = subsData?.map((e)=>e.toJson()).toList();
+    _data['data'] = subsData.map((e)=>e.toJson()).toList();
     return _data;
   }
 

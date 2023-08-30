@@ -602,12 +602,13 @@ Future<void> getTomarrowParty() async{
             GetStorage().write('plan_plan_expiry', decode['plan_plan_expiry']);
             String approval_date =  decode['approval_date'];
             chatCount.value = decode['chat_count'];
-            notificationCount.value = decode['notification_count']??'';
-
+            notificationCount.value = decode['notification_count']??'0';
             log('notification count ${notificationCount.value}');
             log('chatcount ${decode['chat_count']}');
-            if(approval_date.isNotEmpty) {
-              GetStorage().write('approval_status', '1');
+            if(approval_date !='') {
+              GetStorage().write('approval_status', '${decode['approval_status']}');
+              approvalStatus.value = GetStorage().read('approval_status');
+              log('approval status ${approvalStatus}');
               DateTime approvalTime = DateTime.parse(approval_date);
               DateTime newApproval_time = approvalTime.add(Duration(days: 2));
               if (newApproval_time.isAfter(DateTime.now())) {
@@ -619,7 +620,9 @@ Future<void> getTomarrowParty() async{
               log('${approvalTime.toString()}');
             }
             else{
+              log('approval statushvkkhb ${approvalStatus}');
               GetStorage().write('approval_status', '0');
+              approvalStatus.value = GetStorage().read('approval_status');
             }
             apiService.isLoading.value = false;
             update();
@@ -630,7 +633,7 @@ Future<void> getTomarrowParty() async{
         }
         else {
           print("Opps!', 'online status failed ");
-         // Get.snackbar('Opps!', 'No User found ');
+
         }
         update();
       } else {

@@ -202,24 +202,23 @@ String newUser = GetStorage().read('newUser');
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
+            children: [     Padding(
                 padding: EdgeInsets.all(15.sp),
                 child:
                 Row(
                   children: [
-                    Stack(
+                    Blur(
+                      blur: type=='3'? newUser =='0'? plan =='No'? 0 : 2.5 : 2.5 : 0,
+                      child:
+                  Stack(
                       children: [
-                        Blur(
-                            blur: type=='3'? plan =='No'? newUser =='1' ? 0 : 2.5 : 2.5 : 0,
-                         child:  ClipRRect(
+                         ClipRRect(
                             borderRadius: BorderRadius.circular(Get.width*0.5,),
                             child: CachedNetworkImage(height: Get.width*0.12,
                               width: Get.width*0.12,
                               imageUrl: data.profilePicture,
                               errorWidget: (context,url,error) => const CircleAvatar(child: Icon(Icons.person)),),
                           ),
-                        ),
                         Positioned(
                           bottom: 3.sp,
                           child: CircleAvatar(
@@ -231,19 +230,21 @@ String newUser = GetStorage().read('newUser');
                         ),
                       ],
                     ),
-
+        ),
                     SizedBox(width: 12.sp),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        Blur(
+                          blur: type=='3'? newUser =='0'? plan =='No'? 0 : 2.5 : 2.5 : 0,
+                          child:  Text(
                           data.username ??'',
                           style: TextStyle(
                             fontSize: 12.sp,
                             color: const Color(0xFF434343),
                             fontWeight: FontWeight.w700,
                           ),
-                        ),
+                        ),),
                         Text(
                           "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(date.toString()))}    ($time)",
 

@@ -13,7 +13,7 @@ import 'package:partypeopleindividual/individual_profile/controller/individual_p
 import 'package:partypeopleindividual/notification/notification_screen.dart';
 import 'package:partypeopleindividual/wishlist_screen/wishlist_screen.dart';
 import 'package:sizer/sizer.dart';
-
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import '../../chatList/view/chat_list_view.dart';
 import '../../individualDrawer/views/individual_drawer_view.dart';
 import '../../individual_nearby_people_profile/view/individual_people_list.dart';
@@ -40,6 +40,17 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
   int _selectedIndex = 1; // Initial
   late AnimationController _animationController;
   bool isPlaying = false;
+
+  Future _handleRefresh() async {
+   // controller.getAPIOverview();
+  //  controller.getOrganisationDetailsPopular();
+     individualDashboardController.getDataForDashboard();
+    log("ndskfnsl");
+    return await Future.delayed( Duration(seconds:1)
+
+
+    );
+  }
   @override
   void initState() {
      _selectedIndex = 1;
@@ -56,6 +67,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
 
     return SafeArea(
       child: Scaffold(
+         backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -154,7 +166,6 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                       {
                      return Stack(children: [
                         Container(
-                          margin: EdgeInsets.only(top: 4),
                         height: 40,
                         width: 40,
                         alignment: Alignment.center,
@@ -167,7 +178,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                             //fit: BoxFit.cover
                         ),
                       ),
-                        individualDashboardController.notificationCount.value.toString() == '0'
+                       /* individualDashboardController.notificationCount.value.toString() == '0'
                             ? Container()
                             :const Positioned(
                           right: 0,
@@ -176,7 +187,8 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                             backgroundColor: Colors.orange,
                             maxRadius: 5,
                           ),
-                        ),],
+                        ),*/
+                     ],
                       );
                       }
                     ),
@@ -259,553 +271,556 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
           ),
         ),
         body: Obx(() {
-          return Stack(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: RadialGradient(
-                    center: Alignment(1, -0.45),
-                    radius: 0.9,
-                    colors: [
-                      Color(0xffb80b0b),
-                      Color(0xff390202),
-                    ],
-                    stops: [0.0, 1],
-                    transform: GradientXDTransform(
-                      0.0,
-                      -1.0,
-                      1.23,
-                      0.0,
-                      -0.115,
-                      1.0,
-                      Alignment(0.0, 0.0),
+          return LiquidPullToRefresh(
+            onRefresh: _handleRefresh,color:  Color(0xffb80b0b),
+            showChildOpacityTransition: false,
+            child: Stack(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    gradient: RadialGradient(
+                      center: Alignment(1, -0.45),
+                      radius: 0.9,
+                      colors: [
+                        Color(0xffb80b0b),
+                        Color(0xff390202),
+                      ],
+                      stops: [0.0, 1],
+                      transform: GradientXDTransform(
+                        0.0,
+                        -1.0,
+                        1.23,
+                        0.0,
+                        -0.115,
+                        1.0,
+                        Alignment(0.0, 0.0),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                    top: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.065),
-                width: double.infinity,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // search bar
-                      Container(
-                        margin: EdgeInsets.only(top: Get.height * 0.02),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Get.width * 0.1,
+                Container(
+                  margin: EdgeInsets.only(
+                      top: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.065),
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // search bar
+                        Container(
+                          margin: EdgeInsets.only(top: Get.height * 0.02),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Get.width * 0.1,
+                          ),
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.05,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10.sp)),
+                                  child: TextField(
+                                    onTap:(){
+                                      Get.to(PeopleList(peopleList:individualDashboardController
+                                          .usersList ,))?.then((value) =>individualDashboardController.getDataForDashboard());
+                                    },
+                                    readOnly: true,
+                                  //  enabled: false,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        icon: const Icon(
+                                          Icons.search,
+                                          color: Colors.white,
+                                        ),
+                                        hintText: 'Search user by username',
+                                        hintStyle: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 11.sp,
+                                            fontFamily: 'Poppins')),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.05,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10.sp)),
-                                child: TextField(
-                                  onTap:(){
-                                    Get.to(PeopleList(peopleList:individualDashboardController
-                                        .usersList ,))?.then((value) =>individualDashboardController.getDataForDashboard());
+
+                        // get all cities
+                        Container(
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.27,
+                          margin: EdgeInsets.only(
+                              top: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * 0.02,
+                              left: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.05),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount:
+                            individualDashboardController.allCityList.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: ((context, index) =>
+                                GestureDetector(
+                                  onTap: () {
+                                    if(individualDashboardController.approvalStatus.value =='1') {
+                                        if (individualDashboardController.plan.value == 'Yes') {
+                                          Get.to(
+                                              SubscriptionView()
+                                          );
+                                        }
+                                        else {
+                                          if (index == 0) {
+                                            individualDashboardController
+                                                .individualProfileController
+                                                .activeCity.value =
+                                                individualDashboardController
+                                                    .allCityList[index].name;
+                                            individualDashboardController
+                                                .apiService
+                                                .updateActiveCity(
+                                                individualProfileController
+                                                    .organization_id.value,
+                                                individualDashboardController
+                                                    .individualProfileController
+                                                    .activeCity.value);
+                                          }
+
+                                        else {
+                                            Get.snackbar('Sorry!', 'Coming Soon');
+                                          }
+                                    }
+
+                                    }
+                                    else{
+                                      Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
+                                    }
+                                    //individualDashboardController.getPartyByDate();
                                   },
-                                  readOnly: true,
-                                //  enabled: false,
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      icon: const Icon(
-                                        Icons.search,
-                                        color: Colors.white,
-                                      ),
-                                      hintText: 'Search user by username',
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 11.sp,
-                                          fontFamily: 'Poppins')),
-                                ),
+                                  child: CityCard(
+                                    cityName: individualDashboardController
+                                        .allCityList[index].name,
+                                    imageURL: individualDashboardController
+                                        .allCityList[index].imageUrl,
+                                  ),
+                                )),
+                          ),
+                        ),
+
+                        // people nearby
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.05,
+                              right: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.05,
+                              bottom: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * 0.01),
+                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                            Text(
+                            'People Nearby (${individualDashboardController
+                                .usersList.length})',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500),
+                          ),
+                            GestureDetector(onTap:(){
+                              Get.to(PeopleList(peopleList:individualDashboardController
+                                  .usersList ,))?.then((value) =>individualDashboardController.getDataForDashboard());
+                              },
+                              child:  Text(
+                                'See all ',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500),
                               ),
+                            )
+                           ,
+                            ],
+                          ),
+
+                        ),
+                        individualDashboardController
+                            .noUserFoundController.value ==
+                            'null'
+                            ? Container(
+                      /*    decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color.fromARGB(255, 135, 19, 19),
+                                Color(0xFF711b1b),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-
-                      // get all cities
-                      Container(
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.27,
-                        margin: EdgeInsets.only(
-                            top: MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.02,
+                          ), */
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.3,
+                          padding: EdgeInsets.only(
                             left: MediaQuery
                                 .of(context)
                                 .size
-                                .width * 0.05),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount:
-                          individualDashboardController.allCityList.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: ((context, index) =>
-                              GestureDetector(
-                                onTap: () {
-
-                                  if(individualDashboardController.approvalStatus.value =='1') {
-                                      if (individualDashboardController.plan.value == 'Yes') {
-                                        Get.to(
-                                            SubscriptionView()
-                                        );
-                                      }
-                                      else {
-                                        if (index == 0) {
-                                          individualDashboardController
-                                              .individualProfileController
-                                              .activeCity.value =
-                                              individualDashboardController
-                                                  .allCityList[index].name;
-                                          individualDashboardController
-                                              .apiService
-                                              .updateActiveCity(
-                                              individualProfileController
-                                                  .organization_id.value,
-                                              individualDashboardController
-                                                  .individualProfileController
-                                                  .activeCity.value);
-                                        }
-
-                                      else {
-                                          Get.snackbar('Sorry!', 'Coming Soon');
-                                        }
-                                  }
-
-                                  }
-                                  else{
-                                    Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
-                                  }
-                                  //individualDashboardController.getPartyByDate();
-                                },
-                                child: CityCard(
-                                  cityName: individualDashboardController
-                                      .allCityList[index].name,
-                                  imageURL: individualDashboardController
-                                      .allCityList[index].imageUrl,
+                                .width * 0.05,
+                          ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: individualDashboardController
+                                .usersList.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: ((context, index) =>
+                                GestureDetector(
+                                  onTap: () {
+                                    if(individualDashboardController.approvalStatus.value=='1'){
+                                      Get.to(()=>IndividualPeopleProfile(),
+                                          arguments: individualDashboardController.usersList[index].id)?.then((value) =>individualDashboardController.getDataForDashboard());
+                                    }
+                                    else{
+                                      Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
+                                    }
+                                 },
+                                  child: NearByPeopleProfile(
+                                    imageURL: individualDashboardController.usersList[index].profilePicture,
+                                    name: individualDashboardController.usersList[index].username,
+                                    id: individualDashboardController.usersList[index].id,
+                                    likeStatus: individualDashboardController.usersList[index].likeStatus,
+                                    onlineStatus: individualDashboardController.usersList[index].onlineStatus,
+                                    privacyStatus: individualDashboardController.usersList[index].privacyOnline,
+                                  ),
+                                )),
+                          ),
+                        )
+                            : const Center(
+                          child: Text("No Peoples Around You"),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.05,
+                            top: Get.height * 0.005,
+                          ),
+                          child: Text(
+                            'Popular Events in Delhi',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        individualDashboardController.jsonPartyPopularData.isEmpty
+                            ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'No Party Available',
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    // Deep purple color for the text
+                                    fontFamily: 'Poppins', // Custom font
+                                  ),
                                 ),
-                              )),
-                        ),
-                      ),
-
-                      // people nearby
-                      Padding(
-                        padding: EdgeInsets.only(
+                                Text(
+                                  'Check back later for updates.',
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey,
+                                    // Lighter purple color for the text
+                                    fontFamily: 'Raleway', // Custom font
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                            : Container(
+                          margin: EdgeInsets.only(
+                            top: Get.width * 0.05,
                             left: MediaQuery
                                 .of(context)
                                 .size
                                 .width * 0.05,
-                            right: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.05,
-                            bottom: MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.01),
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                          Text(
-                          'People Nearby (${individualDashboardController
-                              .usersList.length})',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500),
-                        ),
-                          GestureDetector(onTap:(){
-                            Get.to(PeopleList(peopleList:individualDashboardController
-                                .usersList ,))?.then((value) =>individualDashboardController.getDataForDashboard());
+                            bottom: Get.width * 0.05,
+                          ),
+                          height: Get.width * 0.65,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: individualDashboardController
+                                .lengthOfPopularParties.value,
+                            itemBuilder: (context, index) {
+                              return PartyCard(
+                                  party: individualDashboardController
+                                      .jsonPartyPopularData[index],
+                                  onBack: ()=>individualDashboardController.getDataForDashboard(),
+                                  partyType: 'popular');
                             },
-                            child:  Text(
-                              'See all ',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.05,
+                            top: Get.height * 0.003,
+                          ),
+                          child: Text(
+                            'TODAY (${individualDashboardController
+                                .lengthOfTodayParties})',
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                color: Colors.white,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        individualDashboardController
+                            .jsonPartyOrganisationDataToday.isEmpty
+                            ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'No Party Available',
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    // Deep purple color for the text
+                                    fontFamily: 'Poppins', // Custom font
+                                  ),
+                                ),
+                                Text(
+                                  'Check back later for updates.',
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey,
+                                    // Lighter purple color for the text
+                                    fontFamily: 'Raleway', // Custom font
+                                  ),
+                                ),
+                              ],
                             ),
-                          )
-                         ,
-                          ],
-                        ),
-
-                      ),
-                      individualDashboardController
-                          .noUserFoundController.value ==
-                          'null'
-                          ? Container(
-                    /*    decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Color.fromARGB(255, 135, 19, 19),
-                              Color(0xFF711b1b),
-                            ],
                           ),
-                        ), */
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.3,
-                        padding: EdgeInsets.only(
-                          left: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.05,
-                        ),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: individualDashboardController
-                              .usersList.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: ((context, index) =>
-                              GestureDetector(
-                                onTap: () {
-                                  if(individualDashboardController.approvalStatus.value=='1'){
-                                    Get.to(()=>IndividualPeopleProfile(),
-                                        arguments: individualDashboardController.usersList[index].id)?.then((value) =>individualDashboardController.getDataForDashboard());
-                                  }
-                                  else{
-                                    Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
-                                  }
-                               },
-                                child: NearByPeopleProfile(
-                                  imageURL: individualDashboardController.usersList[index].profilePicture,
-                                  name: individualDashboardController.usersList[index].username,
-                                  id: individualDashboardController.usersList[index].id,
-                                  likeStatus: individualDashboardController.usersList[index].likeStatus,
-                                  onlineStatus: individualDashboardController.usersList[index].onlineStatus,
-                                  privacyStatus: individualDashboardController.usersList[index].privacyOnline,
-                                ),
-                              )),
-                        ),
-                      )
-                          : const Center(
-                        child: Text("No Peoples Around You"),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.05,
-                          top: Get.height * 0.005,
-                        ),
-                        child: Text(
-                          'Popular Events in Delhi',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                      individualDashboardController.jsonPartyPopularData.isEmpty
-                          ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'No Party Available',
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                  // Deep purple color for the text
-                                  fontFamily: 'Poppins', // Custom font
-                                ),
-                              ),
-                              Text(
-                                'Check back later for updates.',
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey,
-                                  // Lighter purple color for the text
-                                  fontFamily: 'Raleway', // Custom font
-                                ),
-                              ),
-                            ],
+                        )
+                            : Container(
+                          margin: EdgeInsets.only(
+                            top: Get.width * 0.05,
+                            left: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.05,
+                            bottom: Get.width * 0.05,
                           ),
-                        ),
-                      )
-                          : Container(
-                        margin: EdgeInsets.only(
-                          top: Get.width * 0.05,
-                          left: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.05,
-                          bottom: Get.width * 0.05,
-                        ),
-                        height: Get.width * 0.65,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: individualDashboardController
-                              .lengthOfPopularParties.value,
-                          itemBuilder: (context, index) {
-                            return PartyCard(
+                          height: Get.width * 0.65,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: individualDashboardController
+                                .jsonPartyOrganisationDataToday.length,
+                            itemBuilder: (context, index) {
+                              return PartyCard(
                                 party: individualDashboardController
-                                    .jsonPartyPopularData[index],
+                                    .jsonPartyOrganisationDataToday[index],
                                 onBack: ()=>individualDashboardController.getDataForDashboard(),
-                                partyType: 'popular');
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.05,
-                          top: Get.height * 0.003,
-                        ),
-                        child: Text(
-                          'TODAY (${individualDashboardController
-                              .lengthOfTodayParties})',
-                          style: TextStyle(
-                              fontFamily: 'Poppins',
-                              color: Colors.white,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                      individualDashboardController
-                          .jsonPartyOrganisationDataToday.isEmpty
-                          ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'No Party Available',
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                  // Deep purple color for the text
-                                  fontFamily: 'Poppins', // Custom font
-                                ),
-                              ),
-                              Text(
-                                'Check back later for updates.',
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey,
-                                  // Lighter purple color for the text
-                                  fontFamily: 'Raleway', // Custom font
-                                ),
-                              ),
-                            ],
+                                partyType: 'today',
+                              );
+                            },
                           ),
                         ),
-                      )
-                          : Container(
-                        margin: EdgeInsets.only(
-                          top: Get.width * 0.05,
-                          left: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.05,
-                          bottom: Get.width * 0.05,
-                        ),
-                        height: Get.width * 0.65,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: individualDashboardController
-                              .jsonPartyOrganisationDataToday.length,
-                          itemBuilder: (context, index) {
-                            return PartyCard(
-                              party: individualDashboardController
-                                  .jsonPartyOrganisationDataToday[index],
-                              onBack: ()=>individualDashboardController.getDataForDashboard(),
-                              partyType: 'today',
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.05,
-                          top: Get.height * 0.003,
-                        ),
-                        child: Text(
-                          'TOMORROW (${individualDashboardController
-                              .jsonPartyOrganisationDataTomm.length})',
-                          style: TextStyle(
-                              fontFamily: 'Poppins',
-                              color: Colors.white,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                      individualDashboardController
-                          .jsonPartyOrganisationDataTomm.isEmpty
-                          ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'No Party Available',
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                  // Deep purple color for the text
-                                  fontFamily: 'Poppins', // Custom font
-                                ),
-                              ),
-                              Text(
-                                'Check back later for updates.',
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey,
-                                  // Lighter purple color for the text
-                                  fontFamily: 'Raleway', // Custom font
-                                ),
-                              ),
-                            ],
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.05,
+                            top: Get.height * 0.003,
+                          ),
+                          child: Text(
+                            'TOMORROW (${individualDashboardController
+                                .jsonPartyOrganisationDataTomm.length})',
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                color: Colors.white,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500),
                           ),
                         ),
-                      )
-                          : Container(
-                        margin: EdgeInsets.only(
-                          top: Get.width * 0.05,
-                          left: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.05,
-                          bottom: Get.width * 0.05,
-                        ),
-                        height: Get.width * 0.65,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: individualDashboardController
-                              .jsonPartyOrganisationDataTomm.length,
-                          itemBuilder: (context, index) {
-                            return PartyCard(
-                              party: individualDashboardController
-                                  .jsonPartyOrganisationDataTomm[index],
-                              onBack: ()=>individualDashboardController.getDataForDashboard(),
-                              partyType: 'tommorow',
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.05,
-                          top: Get.height * 0.003,
-                        ),
-                        child: Text(
-                          'UPCOMING (${individualDashboardController
-                              .jsonPartyOgranisationDataUpcomming.length})',
-                          style: TextStyle(
-                              fontFamily: 'Poppins',
-                              color: Colors.white,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                      individualDashboardController
-                          .jsonPartyOgranisationDataUpcomming.isEmpty
-                          ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'No Party Available',
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                  // Deep purple color for the text
-                                  fontFamily: 'Poppins', // Custom font
+                        individualDashboardController
+                            .jsonPartyOrganisationDataTomm.isEmpty
+                            ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'No Party Available',
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    // Deep purple color for the text
+                                    fontFamily: 'Poppins', // Custom font
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                'Check back later for updates.',
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey,
-                                  // Lighter purple color for the text
-                                  fontFamily: 'Raleway', // Custom font
+                                Text(
+                                  'Check back later for updates.',
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey,
+                                    // Lighter purple color for the text
+                                    fontFamily: 'Raleway', // Custom font
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
+                          ),
+                        )
+                            : Container(
+                          margin: EdgeInsets.only(
+                            top: Get.width * 0.05,
+                            left: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.05,
+                            bottom: Get.width * 0.05,
+                          ),
+                          height: Get.width * 0.65,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: individualDashboardController
+                                .jsonPartyOrganisationDataTomm.length,
+                            itemBuilder: (context, index) {
+                              return PartyCard(
+                                party: individualDashboardController
+                                    .jsonPartyOrganisationDataTomm[index],
+                                onBack: ()=>individualDashboardController.getDataForDashboard(),
+                                partyType: 'tommorow',
+                              );
+                            },
                           ),
                         ),
-                      )
-                          : Container(
-                        margin: EdgeInsets.only(
-                          top: Get.width * 0.05,
-                          left: MediaQuery
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.05,
+                            top: Get.height * 0.003,
+                          ),
+                          child: Text(
+                            'UPCOMING (${individualDashboardController
+                                .jsonPartyOgranisationDataUpcomming.length})',
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                color: Colors.white,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        individualDashboardController
+                            .jsonPartyOgranisationDataUpcomming.isEmpty
+                            ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'No Party Available',
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    // Deep purple color for the text
+                                    fontFamily: 'Poppins', // Custom font
+                                  ),
+                                ),
+                                Text(
+                                  'Check back later for updates.',
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey,
+                                    // Lighter purple color for the text
+                                    fontFamily: 'Raleway', // Custom font
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                            : Container(
+                          margin: EdgeInsets.only(
+                            top: Get.width * 0.05,
+                            left: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.05,
+                            bottom: Get.width * 0.05,
+                          ),
+                          height: Get.width * 0.65,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: individualDashboardController
+                                .jsonPartyOgranisationDataUpcomming.length,
+                            itemBuilder: (context, index) {
+                              return PartyCard(
+                                party: individualDashboardController
+                                    .jsonPartyOgranisationDataUpcomming[
+                                index],
+                                onBack: ()=>individualDashboardController.getDataForDashboard(),
+                                partyType: 'upcoming',
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery
                               .of(context)
                               .size
-                              .width * 0.05,
-                          bottom: Get.width * 0.05,
+                              .height * 0.1,
                         ),
-                        height: Get.width * 0.65,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: individualDashboardController
-                              .jsonPartyOgranisationDataUpcomming.length,
-                          itemBuilder: (context, index) {
-                            return PartyCard(
-                              party: individualDashboardController
-                                  .jsonPartyOgranisationDataUpcomming[
-                              index],
-                              onBack: ()=>individualDashboardController.getDataForDashboard(),
-                              partyType: 'upcoming',
-                            );
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.1,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         }),
       ),
