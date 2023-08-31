@@ -351,6 +351,24 @@ class IndividualProfileController extends GetxController {
           dobController.text = dob.value;
           privacyOnlineStatus.value = response['privacy_online']??'';
           notification.value = response['notification']??'';
+          GetStorage().write("my_user_id", username.value.toString());
+          // get status for privacy and notification
+
+          if (privacyOnlineStatus.value
+              .toString() ==
+              'No') {
+            GetStorage().write("privacy_online_status", true);
+          } else {
+            GetStorage().write("privacy_online_status", false);
+          }
+         // print("privacy_online_status   ${GetStorage().read("privacy_online_status")}  ${privacyOnlineStatus.value}");
+          if (notification.value == 'off') {
+            GetStorage().write("online_notification_status", false);
+          } else {
+            GetStorage().write("online_notification_status", true);
+          }
+
+        //  print("online_notification_status   ${GetStorage().read("online_notification_status")}   ${notification.value}");
 
          log('descStatusApproval ::: ${descStatusApproval.value}');
           apiService.isLoading.value = false;

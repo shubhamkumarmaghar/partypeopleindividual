@@ -188,7 +188,7 @@ class BlockedReportedUserItem extends StatelessWidget {
           ],
         ),
         onTap: (){
-          BlockUnblock.showBlockedAlertDialog(context,data.individualId??'', 'Unblock');
+          Alertdialogs.showBlockedAlertDialog(context,data.individualId??'', 'Unblock');
 
         },);
 

@@ -5,16 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:lottie/lottie.dart';
 
 import '../api_helper_service.dart';
 import '../login/views/login_screen.dart';
-class BlockUnblock {
+class Alertdialogs {
 static  void showBlockedAlertDialog(BuildContext context,String user_id, String status,
       ) {
     AwesomeDialog(
       context: context,
       dialogType: DialogType.info,
       animType: AnimType.BOTTOMSLIDE,
+     // body: Lottie.network('https://assets-v2.lottiefiles.com/a/8f22f7ac-1171-11ee-97a9-4fee365785e2/SWHrZKp2ss.json'),
       title: '$status this user?',
       desc: 'Are you sure you want to $status this user ?',
       titleTextStyle: TextStyle(fontSize: 22, color: Colors.black),
@@ -26,7 +29,7 @@ static  void showBlockedAlertDialog(BuildContext context,String user_id, String 
       },
       btnCancelText: "Cancel",
       btnCancelOnPress: () {
-        Navigator.pop(context);
+       // Navigator.pop(context);
       },
     ).show();
   }
@@ -61,5 +64,32 @@ static  void showLogoutAlertDialog(BuildContext context
     },
   ).show();
 }
+/*
+showDialogBox() {
+  {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.info,
+      animType: AnimType.BOTTOMSLIDE,
+      // body: Lottie.network('https://assets-v2.lottiefiles.com/a/8f22f7ac-1171-11ee-97a9-4fee365785e2/SWHrZKp2ss.json'),
+      title: 'No Connection',
+      desc: 'Please check your internet connectivity',
+      titleTextStyle: TextStyle(fontSize: 22, color: Colors.black),
+      descTextStyle: TextStyle(fontSize: 18, color: Colors.black54),
+      btnOkText: "Ok",
+      btnOkOnPress: () async {
+        Navigator.pop(context, 'Cancel');
+        setState(() => isAlertSet = false);
+        isDeviceConnected =
+        await InternetConnectionChecker().hasConnection;
+        if (!isDeviceConnected && isAlertSet == false) {
+          showDialogBox();
+          setState(() => isAlertSet = true);
+        }
+      },
+
+    ).show();
+  }
+}*/
 
 }

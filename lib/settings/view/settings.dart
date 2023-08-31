@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -210,7 +212,7 @@ class _SettingsState extends State<Settings> {
                                     fontFamily: 'Poppins'),
                               ),
                                 Text(
-                                  "Your will not receive notification when it turn on ",
+                                  "Your will not receive notification when it turn Off ",
                                   maxLines: 3,
                                   style: TextStyle(
                                       fontSize: 9,
@@ -225,6 +227,7 @@ class _SettingsState extends State<Settings> {
                             Switch(
                               value: isnotificationSwitched,
                               onChanged: (value) {
+                                log("changed $isnotificationSwitched    $value");
                                 settingController.updateNotificationStatus(value);
                                 GetStorage().write(
                                     "online_notification_status", value);

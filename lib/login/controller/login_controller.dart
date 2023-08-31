@@ -26,9 +26,13 @@ class LoginController extends GetxController {
   String generateErrorMessage(
       bool isChecked, String mobileNumber, String username) {
     String errorMessage = '';
-    if (username.isEmpty) {
+    if (username.isEmpty  ) {
       errorMessage += 'Username is required.\n';
     }
+
+  /*  if (username.length != 8  ) {
+      errorMessage += 'username should be 8 words.\n';
+    }*/
     if (mobileNumber.isEmpty || mobileNumber.length != 10) {
       errorMessage += 'Mobile number should be 10 digits and is required.\n';
     }

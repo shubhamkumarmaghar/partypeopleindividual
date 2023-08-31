@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:adobe_xd/gradient_xd_transform.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/individual_subscription/controller/subscription_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -12,7 +15,9 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import '../model/SubscriptionModel.dart';
 
 class SubscriptionView extends StatefulWidget {
-  const SubscriptionView({super.key});
+  String subText ;
+  String iconText;
+  SubscriptionView({required this.subText , required this.iconText});
 
   @override
   State<SubscriptionView> createState() => _SubscriptionViewState();
@@ -144,6 +149,19 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                       ),
                     ),
                     SizedBox(height: 30,),
+                    Neumorphic(style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle(),
+                        shape: NeumorphicShape.concave),child: Lottie.network(widget.iconText,width: Get.width*0.2,height: Get.width*0.2)),
+                    SizedBox(height: 30,),
+                    Text(
+                      widget.subText,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                    ),
+                    SizedBox(height: 30,),
                     CarouselSlider(
                       items: [
                         GestureDetector(
@@ -233,7 +251,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                       ],
                       //Slider Container properties
                       options: CarouselOptions(
-                        height: Get.height * 0.7,
+                        height: Get.height * 0.5,
                         enlargeCenterPage: true,
                         enlargeFactor: 0.3,
                         autoPlay: true,
@@ -247,6 +265,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                     SizedBox(
                       height: 20,
                     ),
+
                     /*
 
               SizedBox(height: 20,),
@@ -302,30 +321,28 @@ class _SubscriptionViewState extends State<SubscriptionView> {
         child: Container(
           margin: EdgeInsets.all(6.0),
           width: Get.width * .8,
-          height: Get.height * 0.68,
+          height: Get.height * 0.48,
           decoration: BoxDecoration(
+
               borderRadius: BorderRadius.circular(20.0),
             // boxShadow: [BoxShadow(color: Colors.white,blurRadius: 2,spreadRadius: 2,offset:Offset.fromDirection(1.0),blurStyle:BlurStyle.inner  )],
-                color: Colors.white
-           /*    gradient: RadialGradient(
-              center: Alignment(1, -0.45),
-          radius: 0.9,
-          colors: [
-           Color(0xff7e160a),
-            Color(0xff2e0303),
-           //
-          ],
-          stops: [0.0, 1],
-          transform: GradientXDTransform(
-            0.0,
-            -1.0,
-            1.23,
-            0.0,
-            -0.115,
-            1.0,
-            Alignment(0.0, 0.0),
-          ),
-        ),*/
+                color: Colors.white,
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.red.shade300,
+                    Colors.red.shade200,
+                    Colors.red.shade100,
+                    Colors.white,
+                    Colors.white,
+                    Colors.white,
+                    Colors.white,
+                    Colors.white,
+                    Colors.white,
+                  ]
+
+    ),
 
                   ),
 
@@ -349,40 +366,38 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                     child: Text(
                   subscriptionData?.name ?? '',
                   style: TextStyle(
-                      fontSize: 35,
+                      fontSize: 25,
                       color: Colors.blue,
                       fontWeight: FontWeight.w700),
                 )),
                 Center(
-                  child: CircleAvatar(radius: 50,
-                      backgroundColor: Color(0xff7e160a),
+                  child: CircleAvatar(radius: 40,
+                      backgroundColor: Colors.red.shade400,
                       child: FittedBox(
                         child: Container(
                           margin: EdgeInsets.all(10),
                           child: Text(
                     '₹${subscriptionData?.amount}',
                     style: TextStyle(
-                            fontSize: 28,
+                            fontSize: 24,
                             color: Colors.white,
                             fontWeight: FontWeight.w700),
                   ),
                         ),
                       )),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+               
                 FittedBox(
                   child: Container(
                       // color: Colors.red.shade900,
                       margin: EdgeInsets.all(15),
                       alignment: Alignment.centerLeft,
-                      width: Get.width * 0.75,
-                      height: Get.width * 0.55,
+                      width: Get.width * 0.65,
+                      height: Get.width * 0.45,
                       child: Text(subscriptionData?.description ?? "",
                           maxLines: 8,
                           style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Colors.grey.shade500,
                               fontWeight: FontWeight.w600))),
                 ),
@@ -411,7 +426,12 @@ class _SubscriptionViewState extends State<SubscriptionView> {
   }
 
   void  selectPlanBottom({required BuildContext context , required String amount , required String name}){
-     showModalBottomSheet(context: context, builder: (context)
+     showModalBottomSheet(context: context,backgroundColor: Colors.red.shade100, shape: RoundedRectangleBorder(
+       borderRadius: BorderRadius.vertical(
+         top: Radius.circular(20),
+       ),
+     ),builder: (context)
+
     {
       return Container(
         height: Get.height*0.2,

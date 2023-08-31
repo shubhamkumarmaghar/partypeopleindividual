@@ -28,6 +28,15 @@ class IndividualDashboardController extends GetxController {
   RxList<Party> jsonPartyOrganisationDataTomm = <Party>[].obs;
   RxList<Party> jsonPartyOgranisationDataUpcomming = <Party>[].obs;
   RxList<Party> jsonPartyPopularData = <Party>[].obs;
+  RxBool showAnimatedHeart=false.obs;
+
+  void animateHeart()async{
+    showAnimatedHeart = true.obs;
+    log('sdksj');
+    await Future.delayed(Duration(seconds: 5));
+    showAnimatedHeart=false.obs;
+    update();
+  }
 
 // an observable isLoading state
 

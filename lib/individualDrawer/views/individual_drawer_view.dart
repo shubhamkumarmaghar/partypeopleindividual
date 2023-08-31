@@ -130,7 +130,7 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     title: 'Logout',
                     icon: Icons.exit_to_app,
                     onTap: () {
-                      BlockUnblock.showLogoutAlertDialog(context);
+                      Alertdialogs.showLogoutAlertDialog(context);
                     },
                   ),
                 ]),

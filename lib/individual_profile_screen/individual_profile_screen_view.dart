@@ -17,6 +17,8 @@ import 'package:partypeopleindividual/widgets/custom_loading_indicator.dart';
 import 'package:partypeopleindividual/widgets/individual_amenities.dart';
 
 import '../edit_individual_profile/edit_individual_profile.dart';
+import '../widgets/active_city_select.dart';
+import '../widgets/calculate_age.dart';
 
 class IndividualProfileScreenView extends StatefulWidget {
   const IndividualProfileScreenView({super.key});
@@ -152,7 +154,7 @@ class _IndividualProfileScreenViewState
                                 Blur(blur: 5.0,
                                   child:
                                   Container(
-                                    height: 300,
+                                    height: Get.height*0.35,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       image: DecorationImage(
@@ -173,7 +175,7 @@ class _IndividualProfileScreenViewState
                                     ),
                                   ),
                                 ):Container(
-                        height: 300,
+                        height: Get.height*0.35,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           image: DecorationImage(
@@ -203,13 +205,13 @@ class _IndividualProfileScreenViewState
                                     },
                                       child:  Container(
                                       decoration: const BoxDecoration(
-                                       /* boxShadow: [
+                                        boxShadow: [
                                           BoxShadow(
                                             blurRadius: 10,
                                             color: Colors.transparent,
                                             spreadRadius: 5,
                                           ),
-                                        ],*/
+                                        ],
                                         shape: BoxShape.circle,
                                       ),
                                       child:
@@ -218,6 +220,7 @@ class _IndividualProfileScreenViewState
                                         blur :2.5,
                                         child: CircleAvatar(
                                           radius: 55,
+                                          backgroundColor: Colors.transparent,
                                           backgroundImage: _profileImage != null
                                               ? FileImage(_profileImage!)
                                               : (individualProfileController
@@ -310,8 +313,8 @@ class _IndividualProfileScreenViewState
                             Row(
                               children: [
                                 Expanded(
-                                  child: CustomTextview(
-                                      individualProfileController.dob.value.capitalizeFirst.toString(),
+                                  child: CustomTextview(CalculateAge.calAge(individualProfileController.dob.value??"")
+                                      ,
                                       Icons.calendar_month),
                                   /*  CustomDateField(
                         validate: true,
@@ -390,11 +393,45 @@ class _IndividualProfileScreenViewState
                     onStateChanged: (onCountryChanged) {},
                     onCityChanged: (onCityChanged) {}),
                 */
-
+                            Container(
+                              padding: EdgeInsets.only(top: 10.0,),
+                              margin: EdgeInsets.all(15),
+                              // adjust padding as needed
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Preferred Location",textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  SizedBox(height: Get.height*0.01,),
+                                  Text(
+                                    "* Preferred Location is the location where you want to explore parties & party mates. *",textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal,fontStyle: FontStyle.italic,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextview(
+                                  individualProfileController.activeCity.value,
+                                  Icons.location_city_sharp,),
+                            ),
+                          ],
+                        ),
                             const SizedBox(
                               height: 10,
                             ),
-                            const Padding(
+                          /*  const Padding(
                               padding: EdgeInsets.symmetric(vertical: 14.0),
                               // adjust padding as needed
                               child: Text(
@@ -405,7 +442,7 @@ class _IndividualProfileScreenViewState
                                   color: Colors.black,
                                 ),
                               ),
-                            ),
+                            ),*/
 
                             _categoryLists.isEmpty
                                 ? Padding(

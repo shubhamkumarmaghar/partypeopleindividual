@@ -1,10 +1,12 @@
 
 import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../api_helper_service.dart';
 import '../../chatScreen/views/chat_screen_view.dart';
@@ -62,8 +64,8 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                   children: <Widget>[
 
                     //Cover Photo
-                    Container(
-                      height: 300,
+                   /* Container(
+                      height: Get.height*0.35,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
                           //topLeft: Radius.circular(100),
@@ -82,8 +84,37 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                   '${controller.peopleProfileData.data?.coverPhoto}'),
                         ),
                       ),
-                    ),
-                    // Profile Photo
+                    ),*/
+            Container(
+            height: Get.height*0.35,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),),
+              child: CachedNetworkImage(
+                placeholder: (context, url) =>
+                    Shimmer.fromColors(
+                  baseColor: Colors.grey.shade200,
+                  highlightColor: Colors.grey.shade400,
+                  period: const Duration(milliseconds: 1500),
+                  child: Container(
+                    height: Get.height*0.35,
+
+                    color: Color(0xff7AB02A),
+                  ),
+                ),
+                imageUrl: controller
+                    .peopleProfileData.data?.coverPhoto ==
+                    null
+                    ?
+                'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
+                    :
+                '${controller.peopleProfileData.data?.coverPhoto}',
+                width: Get.width,
+                fit: BoxFit.cover,
+              ),),
+                // Profile Photo
                     Positioned(
                       bottom: 10,
                       child:
@@ -104,6 +135,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                         ),
                         child: CircleAvatar(
                             radius: 55,
+                            backgroundColor: Colors.transparent,
                             backgroundImage: data.profilePic != null
                                 ? NetworkImage('${data.profilePic}')
                                 : NetworkImage(
@@ -133,7 +165,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                           GestureDetector(
                             onTap: () {
                               //  peopleProfileController.apiService.DoBlockUnblockPeople('${data?.userId}', 'Block');
-                              BlockUnblock.showBlockedAlertDialog(
+                              Alertdialogs.showBlockedAlertDialog(
                                   context, '${data.userId}', 'Block');
                             },
                             child: iconButtonNeumorphic(icon: Icons.block,color: Colors.red),

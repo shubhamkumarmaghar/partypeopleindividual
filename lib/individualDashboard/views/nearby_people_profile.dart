@@ -11,6 +11,7 @@ import 'package:partypeopleindividual/individual_subscription/view/subscription_
 import 'package:sizer/sizer.dart';
 
 import '../../chatScreen/views/chat_screen_view.dart';
+import '../controllers/individual_dashboard_controller.dart';
 
 class NearByPeopleProfile extends StatefulWidget {
   final String imageURL;
@@ -44,57 +45,10 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
     ///
     print("$isLiked");
     if(approvalStatus =='1') {
-      if(newUser == '1') {
-        if (widget.likeStatus == '1') {
-          return isLiked;
-        } else {
-          isLiked = widget.likeStatus == '1' ? false : true;
-          final response = await http.post(
-            Uri.parse(
-                'https://app.partypeople.in/v1/account/individual_user_like'),
-            headers: <String, String>{
-              'x-access-token': '${GetStorage().read('token')}',
-            },
-            body: <String, String>{
-              'user_like_status': isLiked == true ? "yes" : "No",
-              'user_like_id': widget.id
-            },
-          );
-
-          if (response.statusCode == 200) {
-            // If the server returns a 200 OK response,
-            // then parse the JSON.
-            Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-            print(jsonResponse);
-            if (jsonResponse['status'] == 1 &&
-                jsonResponse['message'] == ('User liked successfully')) {
-              print('User like save successfully');
-              isLiked = false;
-              widget.likeStatus = '1';
-              setState(() {});
-            } else if (jsonResponse['status'] == 1 &&
-                jsonResponse['message'] == ('User unliked successfully')) {
-              print('User unlike successfully');
-              isLiked = true;
-              widget.likeStatus = '1';
-            } else {
-              print('Failed to like/ unlike ');
-              isLiked = true;
-              widget.likeStatus = '0';
-            }
-          } else {
-            // If the server did not return a 200 OK response,
-            // then throw an exception.
-            throw Exception('Failed to like/unlike');
-            return isLiked = false;
-          }
-        }
-      }
-      else {
-        if(newUser =='No'){
           if (widget.likeStatus == '1') {
             return isLiked;
-          } else {
+          }
+          else {
             isLiked = widget.likeStatus == '1' ? false : true;
             final response = await http.post(
               Uri.parse(
@@ -118,6 +72,8 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                 print('User like save successfully');
                 isLiked = false;
                 widget.likeStatus = '1';
+                Get.find<IndividualDashboardController>().animateHeart();
+                Get.find<IndividualDashboardController>().update();
                 setState(() {});
               } else if (jsonResponse['status'] == 1 &&
                   jsonResponse['message'] == ('User unliked successfully')) {
@@ -133,15 +89,9 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
               // If the server did not return a 200 OK response,
               // then throw an exception.
               throw Exception('Failed to like/unlike');
-              return isLiked = false;
             }
           }
         }
-        else {
-          Get.to(() => SubscriptionView());
-        }
-      }
-    }
     else {
       Get.snackbar('Sorry!',
           'Your account is not approved , please wait until it got approved');
@@ -179,13 +129,13 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                             width: Get.width * 0.005,
                             color: const Color(0xFFe3661d),
                           ),
-
                           borderRadius:
                               BorderRadius.circular(100.sp), //<-- SEE HERE
                         ),
                         child: Padding(
                           padding: EdgeInsets.all(Get.width * 0.001),
                           child: CircleAvatar(
+                            backgroundColor: Colors.transparent,
                             backgroundImage: NetworkImage(widget.imageURL),
                           ),
                         ),

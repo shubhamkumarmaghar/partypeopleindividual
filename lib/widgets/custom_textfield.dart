@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -7,7 +8,7 @@ class CustomTextField extends StatefulWidget {
   final int? maxLines;
   final bool validate;
   final String? initialValue; // New parameter
-
+  final int? maxLength;
   final bool obscureText;
   var suffixIcon;
   final Function(String)? onChanged;
@@ -22,6 +23,7 @@ class CustomTextField extends StatefulWidget {
     required this.obscureText,
     required this.icon,
     this.onChanged,
+    this.maxLength,
     this.initialValue, // Include new parameter in the constructor
   });
 
@@ -144,7 +146,7 @@ class _CustomTextFieldState extends State<CustomTextField>
             child: TextField(
               controller: _textController,
               // Use the controller
-
+               maxLength: widget.maxLength,
               maxLines: widget.maxLines,
               keyboardType: widget.textInput,
               style: const TextStyle(color: Colors.black),

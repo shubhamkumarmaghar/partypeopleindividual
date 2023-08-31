@@ -71,6 +71,7 @@ class _PartyCardState extends State<PartyCard>
   }
 
   Future<void> wishlistParty(String id) async {
+    
     final response = await http.post(
       Uri.parse('https://app.partypeople.in/v1/party/add_to_wish_list_party'),
       headers: <String, String>{
@@ -117,6 +118,8 @@ class _PartyCardState extends State<PartyCard>
       print(jsonResponse);
       if (jsonResponse['status'] == 1) {
         print('Party like save successfully');
+        Get.find<IndividualDashboardController>().animateHeart();
+        Get.find<IndividualDashboardController>().update();
       } else {
         print('Failed to like Party ');
       }

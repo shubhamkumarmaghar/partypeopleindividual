@@ -335,7 +335,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         icon: Icons.person)),
                               ],
                             ),
-                            Blur(blur: individualProfileController.descStatusApproval.value =='0' ?2.5 :0,
+                            individualProfileController.descStatusApproval.value =='0' ? Blur(blur: 2.5 ,
                               child: CustomTextField(
                                   validate: true,
                                   hintText: 'Bio',
@@ -347,7 +347,17 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                     individualProfileController.bio.value = value;
                                   },
                                   maxLines: 3),
-                            ),
+                            ): CustomTextField(
+                                validate: true,
+                                hintText: 'Bio',
+                                obscureText: false,
+                                initialValue:
+                                individualProfileController.bio.value,
+                                icon: Icons.description,
+                                onChanged: (value) {
+                                  individualProfileController.bio.value = value;
+                                },
+                                maxLines: 3),
 
 
                             Row(
@@ -381,6 +391,33 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                 onCountryChanged: (onCountryChanged) {},
                                 onStateChanged: (onCountryChanged) {},
                                 onCityChanged: (onCityChanged) {}),
+
+                             Container(
+                              padding: EdgeInsets.only(top: 10.0,),
+                              margin: EdgeInsets.all(15),
+                              // adjust padding as needed
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Preferred Location",textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  SizedBox(height: Get.height*0.01,),
+                                  Text(
+                                    "* Preferred Location is the location where you want to explore parties & party mates. *",textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal,fontStyle: FontStyle.italic,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                             Row(
                               children: [
                                 Expanded(
@@ -390,18 +427,6 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                             ),
                             const SizedBox(
                               height: 10,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 14.0),
-                              // adjust padding as needed
-                              child: Text(
-                                "Update Amenities",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
                             ),
 
                             _categoryLists.isEmpty

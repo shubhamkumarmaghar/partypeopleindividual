@@ -86,35 +86,6 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                 iconSize: 16.sp,
               ),
 
-              // previous we are sending last msg from here but now on closed method is used
-              /*Container(
-                child:
-
-
-                StreamBuilder(
-                  stream: controller.getLastMessage(controller.getUserModel),
-                  builder: (context,snapshot) {
-                    Message? _message ;
-                    final data = snapshot.data?.docs;
-                    final list =
-                        data?.map((e) => Message.fromJson(e.data())).toList() ?? [];
-                    if (list.isNotEmpty) _message = list[0];
-                    return IconButton(
-                      padding: EdgeInsets.symmetric(horizontal: 18.sp),
-                      alignment: Alignment.centerLeft,
-                      enableFeedback: true,
-                      icon: Icon(Icons.arrow_back_ios),
-                      onPressed: () {
-                        String? lastMessage = _message?.msg;
-                        GetStorage().write('last_message', lastMessage.toString()??"");
-                        Get.back();
-                      },
-                      iconSize: 16.sp,
-                    );
-                  }
-                ),
-              ),
-              */
               centerTitle: false,
               titleSpacing: 0.0,
               title: Row(
@@ -333,11 +304,10 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                               }
                               else{
                                 Get.to(
-                                    SubscriptionView()
+                                    SubscriptionView(subText: 'For Initiate chat or reply ',iconText: 'https://assets-v2.lottiefiles.com/a/5e232bde-1182-11ee-b778-8f3af2eeaa9d/4xBFTBXlHa.json',)
                                 );
                               }
                             }
-
                           }
                           else {
                             if (_textController.text.isNotEmpty) {

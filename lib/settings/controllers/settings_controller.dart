@@ -97,7 +97,7 @@ void onInit(){
 
     // Request body
     Map<String, dynamic> body = {
-      'notification_status': status == true ? "off" : "on",
+      'notification_status': status == true ? "on" : "off",
     };
 
     try {

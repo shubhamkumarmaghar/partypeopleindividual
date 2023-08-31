@@ -443,10 +443,42 @@ class ChatScreenController  extends GetxController{
         .collection(
         'chats/${getConversationID(chatUser?.data?.username ?? '')}/messages/');
 
-    await ref.doc(time).set(message.toJson()).then((value) =>
-        sendPushNotification(chatUser!, type == Type.text ? msg : 'image',
-            chatUser.data?.username));
-    await player.play(AssetSource('sound/sent.wav'));
+    await ref.doc(time).set(message.toJson()).then((value) async{
+      await player.play(AssetSource('sound/sent.wav'));
+      try {
+        await Future.delayed(Duration(seconds: 1),);
+        await firestore
+            .collection('chats/${getConversationID('${chatUser?.data?.username}')}/messages/')
+            .doc(time)
+            .get().then((value) async {
+          Message? _message;
+          log('$value');
+          final data = Message.fromJson(value.data()!);
+
+        /*  final list =
+              data.map((e) => Message.fromJson(e.data())).toList() ?? [];
+          if (list.isNotEmpty) _message = list[0];
+          String? lastMessage = _message?.msg;*/
+          log('last message and read status ${data.msg}  ${data.read}');
+
+         ///
+          if(data.read=='')
+            {
+              await sendPushNotification(chatUser!, type == Type.text ? msg : 'image',
+                  chatUser.data?.username);
+            }
+        });
+      }
+      catch(e)
+      {
+        log('error message $e');
+      }
+
+
+    }
+    );
+
+
   }
 
 
@@ -468,18 +500,7 @@ class ChatScreenController  extends GetxController{
        else{
          log('another user is not seen message yet');
        }
-      // await player.play(AssetSource('sound/Gun_Sound.mp3'));
-      /* firestore
-          .collection('chats')
-          .doc('${getConversationID(message.fromId)}')
-          .get().then((DocumentSnapshot snapshot) {
-            if(snapshot.exists) {
 
-            }
-            else{
-              log("another user not seen message yet");
-            }
-      }); */
      }
      catch(e)
     {
