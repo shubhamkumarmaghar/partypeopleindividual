@@ -117,16 +117,14 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                   height: 20,
                 ),
                 Stack(children: [
-                  widget.party.imageStatus == '1'
-                    ?
-               Card(elevation: 5,
+                  if (widget.party.imageStatus == '1') Card(elevation: 5,
                     margin: EdgeInsets.only(bottom: 25),
                     shape: RoundedRectangleBorder(
                       borderRadius:
                       BorderRadius.circular(15.0),),
                     child:  Container(
                     //backgroundColor: Colors.grey.shade100,
-                    height: 250,
+                    height: Get.height*0.295,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       image:DecorationImage( image: NetworkImage(widget.party.coverPhoto),fit: BoxFit.cover ),
@@ -158,15 +156,14 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                       },
                     ), */
                     ),
-                )
-                    : Card(elevation: 5,
+                ) else Card(elevation: 5,
                       margin: EdgeInsets.only(bottom: 25),
                   shape: RoundedRectangleBorder(
                       borderRadius:
                       BorderRadius.circular(15.0),),
                   child: Container(
                     padding: EdgeInsets.zero,
-                    height: 250,
+                    height: Get.height*0.295,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       image:DecorationImage( image: NetworkImage(widget.party.coverPhoto),fit: BoxFit.cover ),
@@ -316,14 +313,16 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                 )
                     : Container(),
                 */
-                widget.party.papularStatus == '1'
+               /* widget.party.papularStatus == '1'
                     ? CustomListTile(
                   icon: Icons.calendar_month_outlined,
                   title: "Popular Party Dates",
                   subtitle:
                   "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(widget.party.prStartDate))}",
                   sub: true,)
-                    : CustomListTile(
+                    :
+                */
+                CustomListTile(
                   icon: Icons.calendar_month,
                   title: "${widget.party.prStartDate != null ? DateFormat('d MMMM, y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.startDate) * 1000)) : ''} ",
                   subtitle:

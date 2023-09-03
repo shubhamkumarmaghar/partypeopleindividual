@@ -71,7 +71,7 @@ class _PartyCardState extends State<PartyCard>
   }
 
   Future<void> wishlistParty(String id) async {
-    
+
     final response = await http.post(
       Uri.parse('https://app.partypeople.in/v1/party/add_to_wish_list_party'),
       headers: <String, String>{
@@ -240,7 +240,7 @@ class _PartyCardState extends State<PartyCard>
                             horizontal: 10.sp,
                             vertical: 5.sp,
                           ),
-                          height: Get.width * 0.35,
+                          height: Get.width * 0.355,
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.8),
                             borderRadius: BorderRadius.circular(10.sp),
@@ -253,7 +253,7 @@ class _PartyCardState extends State<PartyCard>
                                 child: Row(
                                   children: [
                                     Text(
-                                      widget.party.title!.capitalizeFirst!,
+                                      widget.party.title.capitalizeFirst!,
                                       style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 12.sp,
@@ -271,31 +271,33 @@ class _PartyCardState extends State<PartyCard>
                                   ],
                                 ),
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Icon(Icons.visibility,
-                                      size: 16, color: Colors.red),
-                                  Text(
-                                    "${widget.party.view} Views",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Icon(Icons.thumb_up,
-                                      size: 16, color: Colors.red),
-                                  Text(
-                                    "${widget.party.like} Likes",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Icon(Icons.people, color: Colors.red),
-                                  SizedBox(width: 5.sp),
-                                  Text(
-                                    "${widget.party.ongoing} Going",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ],
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Icon(Icons.visibility,
+                                        size: 16, color: Colors.red),
+                                    Text(
+                                      "${widget.party.view} Views",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Icon(Icons.thumb_up,
+                                        size: 16, color: Colors.red),
+                                    Text(
+                                      "${widget.party.like} Likes",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Icon(Icons.people, color: Colors.red),
+                                    SizedBox(width: 5.sp),
+                                    Text(
+                                      "${widget.party.ongoing} Going",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ],
+                                ),
                               ),
                               widget.partyType == 'upcoming'
                                   ? Column(
@@ -367,10 +369,9 @@ class _PartyCardState extends State<PartyCard>
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        DateFormat('MMMM d, yyyy ').format(
+                                        DateFormat('d MMMM, yyyy').format(
                                               DateTime
-                                                  .parse(widget
-                                                        .party.prStartDate) ,
+                                                  .fromMillisecondsSinceEpoch(int.parse(widget.party.startDate) * 1000) ,
                                             ) +
                                             '  ${widget.party.startTime}',
                                         style: TextStyle(

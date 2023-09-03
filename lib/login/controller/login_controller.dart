@@ -30,9 +30,9 @@ class LoginController extends GetxController {
       errorMessage += 'Username is required.\n';
     }
 
-  /*  if (username.length != 8  ) {
+    if (username.length != 8  ) {
       errorMessage += 'username should be 8 words.\n';
-    }*/
+    }
     if (mobileNumber.isEmpty || mobileNumber.length != 10) {
       errorMessage += 'Mobile number should be 10 digits and is required.\n';
     }

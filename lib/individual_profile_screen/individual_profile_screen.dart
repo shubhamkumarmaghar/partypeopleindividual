@@ -273,10 +273,10 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
                                 hintText: 'Bio',
                                 obscureText: false,
                                 initialValue:
-                                    individualProfileController.bio.value,
+                                    individualProfileController.description.value,
                                 icon: Icons.description,
                                 onChanged: (value) {
-                                  individualProfileController.bio.value = value;
+                                  individualProfileController.description.value = value;
                                 },
                                 maxLines: 3),
 

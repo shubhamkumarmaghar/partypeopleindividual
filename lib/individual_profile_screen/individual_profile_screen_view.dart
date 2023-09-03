@@ -150,7 +150,7 @@ class _IndividualProfileScreenViewState
                               alignment: Alignment.center,
                               children: <Widget>[
                                 //Cover Photo
-                                individualProfileController.descStatusApproval.value =='0' ?
+                                individualProfileController.photoStatusApproval.value =='0' ?
                                 Blur(blur: 5.0,
                                   child:
                                   Container(
@@ -215,7 +215,7 @@ class _IndividualProfileScreenViewState
                                         shape: BoxShape.circle,
                                       ),
                                       child:
-                                      individualProfileController.descStatusApproval.value =='0' ?
+                                      individualProfileController.photoStatusApproval.value =='0' ?
                                       Blur(
                                         blur :2.5,
                                         child: CircleAvatar(
@@ -306,7 +306,7 @@ class _IndividualProfileScreenViewState
                             ),
                         Blur(blur: individualProfileController.descStatusApproval.value =='0' ?2.5 :0,
                               child: CustomTextFieldview(
-                                  individualProfileController.bio.value.capitalizeFirst.toString(),
+                                  individualProfileController.description.value.capitalizeFirst.toString(),
                                   Icons.description),
                             ),
 

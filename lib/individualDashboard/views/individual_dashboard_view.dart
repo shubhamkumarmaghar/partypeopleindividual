@@ -613,9 +613,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                       party: individualDashboardController
                                           .jsonPartyPopularData[index],
 
-                                      onBack: () =>
-                                          individualDashboardController
-                                              .getDataForDashboard(),
+                                      onBack: () =>(){},
+                                         /* individualDashboardController
+                                              .getDataForDashboard(),*/
                                       partyType: 'popular');
                                 },
                               ),
@@ -686,9 +686,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                         .jsonPartyOrganisationDataToday[
                                     index],
 
-                                    onBack: () =>
-                                        individualDashboardController
-                                            .getDataForDashboard(),
+                                    onBack: () =>(){},
+                                       /* individualDashboardController
+                                            .getDataForDashboard(),*/
                                     partyType: 'today',
                                   );
                                 },
@@ -759,9 +759,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                     party: individualDashboardController
                                         .jsonPartyOrganisationDataTomm[index],
 
-                                    onBack: () =>
-                                        individualDashboardController
-                                            .getDataForDashboard(),
+                                    onBack: () =>(){},
+                                        /*individualDashboardController
+                                            .getDataForDashboard(),*/
                                     partyType: 'tommorow',
                                   );
                                 },
@@ -833,9 +833,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                     party: individualDashboardController
                                         .jsonPartyOgranisationDataUpcomming[
                                     index],
-                                    onBack: () =>
-                                        individualDashboardController
-                                            .getDataForDashboard(),
+                                    onBack: () =>(){},
+                                        /*individualDashboardController
+                                            .getDataForDashboard(),*/
                                     partyType: 'upcoming',
                                   );
                                 },

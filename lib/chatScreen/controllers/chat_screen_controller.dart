@@ -30,6 +30,7 @@ class ChatScreenController  extends GetxController{
   @override
   void onInit(){
     super.onInit();
+
     userId = Get.arguments ??'0' ;
     myUsername= GetStorage().read('my_user_id');
     if(userId=='0'){

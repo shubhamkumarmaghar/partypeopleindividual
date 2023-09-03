@@ -168,7 +168,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                 //Cover Photo
                                 GestureDetector(
                                   onTap: () => _updatePhoto('cover'),
-                                  child: individualProfileController.descStatusApproval.value =='0' ? Blur( blur: 2.5,
+                                  child: individualProfileController.photoStatusApproval.value =='0' ? Blur( blur: 2.5,
                                     child: Container(
                                       height: 300,
                                       decoration: BoxDecoration(
@@ -233,7 +233,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         ],
                                         shape: BoxShape.circle,
                                       ),
-                                      child: individualProfileController.descStatusApproval.value =='0' ?Blur( blur: 2.5,
+                                      child: individualProfileController.photoStatusApproval.value =='0' ?Blur( blur: 2.5,
                                         child:
                                         CircleAvatar(
                                           radius: 55,
@@ -341,10 +341,10 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                   hintText: 'Bio',
                                   obscureText: false,
                                   initialValue:
-                                  individualProfileController.bio.value,
+                                  individualProfileController.description.value,
                                   icon: Icons.description,
                                   onChanged: (value) {
-                                    individualProfileController.bio.value = value;
+                                    individualProfileController.description.value = value;
                                   },
                                   maxLines: 3),
                             ): CustomTextField(
@@ -352,10 +352,10 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                 hintText: 'Bio',
                                 obscureText: false,
                                 initialValue:
-                                individualProfileController.bio.value,
+                                individualProfileController.description.value,
                                 icon: Icons.description,
                                 onChanged: (value) {
-                                  individualProfileController.bio.value = value;
+                                  individualProfileController.description.value = value;
                                 },
                                 maxLines: 3),
 

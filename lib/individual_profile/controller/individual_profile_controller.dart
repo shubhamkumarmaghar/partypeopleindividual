@@ -19,6 +19,7 @@ class IndividualProfileController extends GetxController {
   RxString firstname = ''.obs;
   RxString lastname = ''.obs;
   RxString bio = ''.obs;
+  RxString description = ''.obs;
   RxString dob = ''.obs;
   RxString pincode = ''.obs;
   RxString organization_id = ''.obs;
@@ -32,6 +33,7 @@ class IndividualProfileController extends GetxController {
   RxString privacyOnlineStatus = ''.obs;
   RxString notification = ''.obs;
   RxString descStatusApproval = ''.obs;
+  RxString photoStatusApproval = ''.obs;
 
 
 
@@ -67,8 +69,8 @@ class IndividualProfileController extends GetxController {
       return;
     }
 
-    if (bio.value.isEmpty) {
-      Get.snackbar('Bio Error', 'Bio should not be empty');
+    if (description.value.isEmpty) {
+      Get.snackbar('Description Error', 'Description should not be empty');
       return;
     }
 
@@ -124,7 +126,8 @@ class IndividualProfileController extends GetxController {
         'cover_photo': coverPhotoURL.value.toString(),
         'profile_photo': profilePhotoURL.value.toString(),
         'name': firstname.value.toString() + ' ' + lastname.value.toString(),
-        'bio': bio.value.toString(),
+        'bio': description.value.toString(),
+        'description':description.value.toString(),
         'dob': dob.value.toString(),
         'pincode': pincode.value.toString(),
         'occupation': occupation.value.toString(),
@@ -163,7 +166,7 @@ class IndividualProfileController extends GetxController {
       return;
     }
 
-    if (bio.value.isEmpty) {
+    if (description.value.isEmpty) {
       Get.snackbar('Bio Error', 'Bio should not be empty');
       return;
     }
@@ -202,10 +205,10 @@ class IndividualProfileController extends GetxController {
       return;
     }
 
-    if (activeCity.value.isEmpty) {
+   /* if (activeCity.value.isEmpty) {
       Get.snackbar('Location Error', 'Active City should not be empty');
       return;
-    }
+    }*/
     if (city.value.isEmpty) {
       Get.snackbar('Location Error', 'City should not be empty');
       return;
@@ -218,7 +221,8 @@ class IndividualProfileController extends GetxController {
         'cover_photo': coverPhotoURL.value.toString(),
         'profile_photo': profilePhotoURL.value.toString(),
         'name': firstname.value.toString() + ' ' + lastname.value.toString(),
-        'bio': bio.value.toString(),
+        'bio': description.value.toString(),
+        'description': description.value.toString(),
         'dob': dob.value.toString(),
         'pincode': pincode.value.toString(),
         'occupation': occupation.value.toString(),
@@ -330,6 +334,7 @@ class IndividualProfileController extends GetxController {
 
           // Assigning the retrieved data to the respective fields
           bio.value = user['bio'] ?? '';
+          description.value = user['description'];
           dob.value = user['dob'] ?? '';
           pincode.value = user['pincode'] ?? '';
           occupation.value = user['occupation'] ?? '';
@@ -347,6 +352,7 @@ class IndividualProfileController extends GetxController {
           organization_id.value = user['id'] ?? "";
           activeCity.value = user['active_city']??'';
           descStatusApproval.value = user['approval_desciption_status']??'';
+          photoStatusApproval.value = user['profile_pic_approval_status']??'';
           // Set dobController's text to the 'dob' value
           dobController.text = dob.value;
           privacyOnlineStatus.value = response['privacy_online']??'';
@@ -381,6 +387,7 @@ class IndividualProfileController extends GetxController {
           firstname.value = '';
           lastname.value = '';
           bio.value = '';
+          description.value = '';
           dob.value = '';
           pincode.value = '';
           occupation.value = '';
@@ -388,6 +395,8 @@ class IndividualProfileController extends GetxController {
           country.value = '';
           state.value = '';
           gender.value = '';
+          photoStatusApproval.value ='';
+          descStatusApproval.value ='';
           city.value = '';
           profilePhotoURL.value = '';
           coverPhotoURL.value = '';

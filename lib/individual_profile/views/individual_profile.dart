@@ -230,7 +230,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                           obscureText: false,
                           icon: Icons.description,
                           onChanged: (value) {
-                            individualProfileController.bio.value = value;
+                            individualProfileController.description.value = value;
                           },
                           maxLines: 3),
 
