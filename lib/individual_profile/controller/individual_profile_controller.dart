@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 
 import '../../centralize_api.dart';
@@ -125,7 +126,7 @@ class IndividualProfileController extends GetxController {
       userData = {
         'cover_photo': coverPhotoURL.value.toString(),
         'profile_photo': profilePhotoURL.value.toString(),
-        'name': firstname.value.toString() + ' ' + lastname.value.toString(),
+        'name': firstname.value.capitalize.toString() + ' ' + lastname.value.capitalizeFirst.toString(),
         'bio': description.value.toString(),
         'description':description.value.toString(),
         'dob': dob.value.toString(),
@@ -354,7 +355,11 @@ class IndividualProfileController extends GetxController {
           descStatusApproval.value = user['approval_desciption_status']??'';
           photoStatusApproval.value = user['profile_pic_approval_status']??'';
           // Set dobController's text to the 'dob' value
+          DateTime date =  DateTime.parse('${dob.value}');
+          log('date $date');
+          dob.value = DateFormat('dd/MM/yyyy').format(date);
           dobController.text = dob.value;
+         // dobController.text = dob.value;
           privacyOnlineStatus.value = response['privacy_online']??'';
           notification.value = response['notification']??'';
           GetStorage().write("my_user_id", username.value.toString());

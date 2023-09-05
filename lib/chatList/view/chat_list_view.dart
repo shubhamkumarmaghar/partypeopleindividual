@@ -84,6 +84,7 @@ class _ChatListState extends State<ChatList> {
                           Get.to(() => ChatScreenView(id: data.id.toString()),
                               arguments: data.id)?.
                           then((value) async {
+                            await Future.delayed(Duration(seconds: 2));
                             await controller.getChatList();
                           });
                         }
@@ -104,12 +105,21 @@ class _ChatListState extends State<ChatList> {
                                     data.username??''),
                                 builder: (context, snapshot) {
                                   final msgdata = snapshot.data?.docs??[];
-                                  final list =
-                                      msgdata.map((e) =>
-                                          Message.fromJson(e.data()))
-                                          .toList() ?? [];
-                                  if (list.isNotEmpty) {
-                                    _message = list[0];
+                                  List list = [];
+                                  if(msgdata.isNotEmpty) {
+                                    list =
+                                        msgdata.map((e) =>
+                                            Message.fromJson(e.data()))
+                                            .toList() ?? [];
+                                    if (list.isNotEmpty) {
+                                      _message = list[0];
+                                      log('${_message?.msg}');
+                                    }
+                                  }
+                                  else{
+                                    _message= Message(toId: '', msg: '', read: '', type: Type.text, fromId: '', sent: '', fcmToken: '');
+                                     //list.clear();
+                                    //_message?.msg = 'No msg Found';
                                   }
                                   return Row(
                                     children: [

@@ -34,7 +34,7 @@ class _ShowSubmitMessageState extends State<ShowSubmitMessage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff1A204B),
+      backgroundColor: const Color(0xFF5a0404),
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

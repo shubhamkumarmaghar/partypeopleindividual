@@ -94,7 +94,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
   @override
   void initState() {
     super.initState();
-
+    individualProfileController.getAllCities();
     _fetchData();
   }
 
@@ -265,7 +265,32 @@ class _IndividualProfileState extends State<IndividualProfile> {
                           onCountryChanged: (onCountryChanged) {},
                           onStateChanged: (onCountryChanged) {},
                           onCityChanged: (onCityChanged) {}),
-
+                      Container(
+                        padding: EdgeInsets.only(top: 10.0,),
+                        margin: EdgeInsets.all(15),
+                        // adjust padding as needed
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Preferred Location",textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            SizedBox(height: Get.height*0.01,),
+                            Text(
+                              "* Preferred Location is the location where you want to explore parties & party mates. *",textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.normal,fontStyle: FontStyle.italic,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       Row(
                         children: [
                           Expanded(

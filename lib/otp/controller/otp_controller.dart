@@ -89,7 +89,7 @@ class OTPController extends GetxController {
       if (jsonDecode(response.body)['message'] == 'Organization Data Found.') {
         GetStorage().write('loggedIn', '1');
         isLoading.value = false;
-        Get.offAll(IndividualDashboardView());
+       Get.offAll(IndividualDashboardView());
       } else {
         isLoading.value = false;
         Get.offAll(const IndividualProfile());

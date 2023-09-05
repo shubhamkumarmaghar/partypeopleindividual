@@ -242,7 +242,7 @@ class ProfileContainer extends StatelessWidget {
                   child: Row(
                     children: [
                       Blur(
-                          blur: type == '3'
+                          blur: type == '3'|| type =='1'
                               ? newUser == '0'
                                   ? plan == 'No'
                                       ? 0
@@ -308,7 +308,7 @@ class ProfileContainer extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Blur(
-                            blur: type == '3'
+                            blur: type == '3' || type == '1'
                                 ? newUser == '0'
                                     ? plan == 'No'
                                         ? 0
@@ -367,7 +367,7 @@ class ProfileContainer extends StatelessWidget {
 
   int getCondition() {
     int value = 0;
-    if (type == '3') {
+    if (type == '3' || type == '1') {
       if (newUser == '0') {
         if (plan == 'Yes') {
           value = 0;

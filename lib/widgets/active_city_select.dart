@@ -54,17 +54,25 @@ class _ActiveCitySelectState extends State<ActiveCitySelect> {
               ),
             ),
             onChanged: (String? newValue) async{
-              String response = await individualProfileController.apiService.updateActiveCity(individualProfileController.organization_id.value, newValue.toString());
-            if(response == '1'){
-              dropdownValue = newValue;
-              individualProfileController.activeCity.value = dropdownValue!;
-              setState(() {
+              String response;
+              if(newValue =='Delhi')
+             {  response = await individualProfileController.apiService.updateActiveCity(individualProfileController.organization_id.value, newValue.toString());
+             if(response == '1'){
+               dropdownValue = newValue;
+               individualProfileController.activeCity.value = dropdownValue!;
+               setState(() {
 
-              });
-            }
-            else{
-              Get.snackbar('Opps!', 'Failed to update Active City');
-            }
+               });
+             }
+             else{
+             Get.snackbar('Opps!', 'Failed to update Active City');
+             }
+             }
+              else{
+                Get.snackbar('Sorry!!!!', 'Coming Soon ');
+              }
+
+
 
             },
             items: individualProfileController.activeCities.value

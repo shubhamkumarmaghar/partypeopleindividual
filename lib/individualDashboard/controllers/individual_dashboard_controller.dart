@@ -30,10 +30,11 @@ class IndividualDashboardController extends GetxController {
   RxList<Party> jsonPartyPopularData = <Party>[].obs;
   RxBool showAnimatedHeart=false.obs;
 
+
   void animateHeart()async{
     showAnimatedHeart = true.obs;
     log('sdksj');
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 4));
     showAnimatedHeart=false.obs;
     update();
   }

@@ -223,7 +223,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                           '1') {
                         Get.to(ChatList());
                       } else {
-                        log('approval sdvfdb ${individualDashboardController.approvalStatus}');
+
                         Get.snackbar('Sorry!',
                             'Your account is not approved , please wait until it got approved');
                       }

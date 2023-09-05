@@ -33,9 +33,11 @@ class NearByPeopleProfile extends StatefulWidget {
 
   @override
   State<NearByPeopleProfile> createState() => _NearByPeopleProfileState();
+
 }
 
 class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
+  IndividualDashboardController controller = Get.find<IndividualDashboardController>();
  String approvalStatus =GetStorage().read('approval_status')??'0';
   String newUser = GetStorage().read('newUser')??'0';
   String plan = GetStorage().read('plan_plan_expiry')??'Yes';
@@ -72,9 +74,11 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                 print('User like save successfully');
                 isLiked = false;
                 widget.likeStatus = '1';
-                Get.find<IndividualDashboardController>().animateHeart();
-                Get.find<IndividualDashboardController>().update();
-                setState(() {});
+                setState(() {}
+                );
+                 controller.animateHeart();
+                controller.update();
+
               } else if (jsonResponse['status'] == 1 &&
                   jsonResponse['message'] == ('User unliked successfully')) {
                 print('User unlike successfully');
@@ -96,6 +100,7 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
       Get.snackbar('Sorry!',
           'Your account is not approved , please wait until it got approved');
     }
+
     return isLiked;
   }
 

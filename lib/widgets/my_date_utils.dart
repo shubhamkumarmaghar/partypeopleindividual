@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class MyDateUtil {
@@ -31,6 +33,7 @@ class MyDateUtil {
       {required BuildContext context,
         required String time,
         bool showYear = false}) {
+  try {
     final DateTime sent = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
     final DateTime now = DateTime.now();
 
@@ -43,6 +46,12 @@ class MyDateUtil {
     return showYear
         ? '${sent.day} ${_getMonth(sent)} ${sent.year}'
         : '${sent.day} ${_getMonth(sent)}';
+  }
+  catch(e)
+    {
+      log('$e');
+      return '';
+    }
   }
 
   //get formatted last active time of user in chat screen

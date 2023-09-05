@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -37,18 +39,29 @@ class _CustomDateFieldState extends State<CustomDateField> {
     );
     if (picked != null) {
       setState(() {
-
         _selectedDate = picked;
         widget.controller.text =
             DateFormat('dd/MM/yyyy').format(_selectedDate!);
         individualProfileController.dob.value = widget.controller.text;
       });
     }
+    else{
+      DateTime date =  DateTime.parse('${widget.controller.text}');
+          log('date $date');
+      widget.controller.text = DateFormat('dd/MM/yyyy').format(date);
+      log('new date $date');
+
+    }
   }
+
 
 
   @override
   Widget build(BuildContext context) {
+    //DateTime date =  DateTime.parse('${widget.controller.text}');
+   // log('date $date');
+  //  widget.controller.text = DateFormat('dd/MM/yyyy').format(date);
+   // log('new date $date');
     return Neumorphic(
       margin: const EdgeInsets.all(12.0),
       style: NeumorphicStyle(

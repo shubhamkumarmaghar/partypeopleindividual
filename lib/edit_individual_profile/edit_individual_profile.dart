@@ -26,6 +26,7 @@ import 'package:blur/blur.dart';
 import '../../widgets/dob_dropdown.dart';
 import '../../widgets/gender_dropdown_selecter.dart';
 import '../widgets/active_city_select.dart';
+import '../widgets/custom_textview_profile.dart';
 
 class EditIndividualProfile extends StatefulWidget {
   const EditIndividualProfile({super.key});
@@ -270,10 +271,40 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                 ),
                                 // Edit Button for Profile Photo
                                 Positioned(
+                                  bottom: 10,
+                                  right:Get.width*.39,
+                                  child: GestureDetector(
+                                    onTap: () => _updatePhoto('profile'),
+                                    child: Container(
+                                      width: 20,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                            Colors.black.withOpacity(0.2),
+                                            spreadRadius: 2,
+                                            blurRadius: 5,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: const Icon(
+                                        Icons.edit,
+                                        color: Colors.black,
+                                        size: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                Positioned(
                                   bottom: 20,
                                   right: 20,
                                   child: GestureDetector(
-                                    onTap: () => _updatePhoto('profile'),
+                                    onTap: () => _updatePhoto('cover'),
                                     child: Container(
                                       width: 40,
                                       height: 40,
@@ -298,6 +329,8 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                     ),
                                   ),
                                 ),
+
+
                               ],
                             ),
 
@@ -371,8 +404,11 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         .dobController,
                                   ),
                                 ),
-                                const Expanded(
-                                  child: GenderSelect(),
+                                 Expanded(
+                                  child: GestureDetector(onTap: (){
+                                    Get.snackbar('Sorry', 'You Can not change gender');
+                                  },child: CustomProfileTextView(text: individualProfileController.gender.value, icon: Icons.people_outline,)),
+                                  //GenderSelect(),
                                 ),
                               ],
                             ),

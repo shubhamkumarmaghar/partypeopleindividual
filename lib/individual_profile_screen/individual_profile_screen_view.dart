@@ -19,6 +19,7 @@ import 'package:partypeopleindividual/widgets/individual_amenities.dart';
 import '../edit_individual_profile/edit_individual_profile.dart';
 import '../widgets/active_city_select.dart';
 import '../widgets/calculate_age.dart';
+import '../widgets/custom_textview_profile.dart';
 
 class IndividualProfileScreenView extends StatefulWidget {
   const IndividualProfileScreenView({super.key});
@@ -291,16 +292,16 @@ class _IndividualProfileScreenViewState
                             Row(
                               children: [
                                 Expanded(
-                                  child: CustomTextview(
+                                  child: CustomProfileTextView(text:
                                       individualProfileController
                                           .firstname.value,
-                                      Icons.person),
+                                     icon:  Icons.person),
                                 ),
                                 Expanded(
-                                  child: CustomTextview(
+                                  child: CustomProfileTextView(text:
                                       individualProfileController
                                           .lastname.value.capitalizeFirst.toString(),
-                                      Icons.person),
+                                      icon: Icons.person),
                                 ),
                               ],
                             ),
@@ -313,9 +314,9 @@ class _IndividualProfileScreenViewState
                             Row(
                               children: [
                                 Expanded(
-                                  child: CustomTextview(CalculateAge.calAge(individualProfileController.dob.value??"")
+                                  child: CustomProfileTextView(text: CalculateAge.calAge(individualProfileController.dob.value??"")
                                       ,
-                                      Icons.calendar_month),
+                                     icon: Icons.calendar_month),
                                   /*  CustomDateField(
                         validate: true,
                         hintText: 'Date of Birth',
@@ -325,9 +326,9 @@ class _IndividualProfileScreenViewState
                       ), */
                                 ),
                                 Expanded(
-                                  child: CustomTextview(
-                                      individualProfileController.gender.value,
-                                      Icons.calendar_month),
+                                  child: CustomProfileTextView(
+                                     text:  individualProfileController.gender.value,
+                                     icon:  Icons.calendar_month),
 
                                   //GenderSelect(),
                                 ),
@@ -336,17 +337,17 @@ class _IndividualProfileScreenViewState
                             Row(
                               children: [
                                 Expanded(
-                                  child: CustomTextview(
-                                      individualProfileController
+                                  child: CustomProfileTextView(
+                                     text:  individualProfileController
                                           .qualification.value,
-                                      Icons.description_outlined),
+                                      icon: Icons.description_outlined),
                                   //QualificationWidget(),
                                 ),
                                 Expanded(
-                                  child: CustomTextview(
-                                      individualProfileController
+                                  child: CustomProfileTextView(
+                                     text:  individualProfileController
                                           .occupation.value,
-                                      Icons.work),
+                                   icon:    Icons.work),
 
                                   //OccupationWidget(),
                                 ),
@@ -356,15 +357,15 @@ class _IndividualProfileScreenViewState
                             Row(
                               children: [
                                 Expanded(
-                                  child: CustomTextview(
-                                      individualProfileController.country.value,
-                                      Icons.location_on),
+                                  child: CustomProfileTextView(
+                                    text:   individualProfileController.country.value,
+                                   icon:    Icons.location_on),
                                   //QualificationWidget(),
                                 ),
                                 Expanded(
-                                  child: CustomTextview(
-                                      individualProfileController.state.value,
-                                      Icons.location_on),
+                                  child: CustomProfileTextView(
+                                   text:    individualProfileController.state.value,
+                                     icon:  Icons.location_on),
 
                                   //OccupationWidget(),
                                 ),
@@ -373,15 +374,15 @@ class _IndividualProfileScreenViewState
                             Row(
                               children: [
                                 Expanded(
-                                  child: CustomTextview(
-                                      individualProfileController.city.value,
-                                      Icons.location_city),
+                                  child: CustomProfileTextView(
+                                    text:   individualProfileController.city.value,
+                                     icon:  Icons.location_city),
                                   //QualificationWidget(),
                                 ),
                                 Expanded(
-                                  child: CustomTextview(
-                                      individualProfileController.pincode.value,
-                                      Icons.pin_drop),
+                                  child: CustomProfileTextView(
+                                     text:  individualProfileController.pincode.value,
+                                    icon:   Icons.pin_drop),
 
                                   //OccupationWidget(),
                                 ),
@@ -422,9 +423,9 @@ class _IndividualProfileScreenViewState
                         Row(
                           children: [
                             Expanded(
-                              child: CustomTextview(
-                                  individualProfileController.activeCity.value,
-                                  Icons.location_city_sharp,),
+                              child: CustomProfileTextView(
+                                 text:  individualProfileController.activeCity.value,
+                                  icon: Icons.location_city_sharp,),
                             ),
                           ],
                         ),
@@ -568,42 +569,6 @@ class _IndividualProfileScreenViewState
                     ),
             ),
     );
-  }
-
-  Widget CustomTextview(String text, IconData icon) {
-    return Neumorphic(
-        margin: const EdgeInsets.all(12.0),
-        padding: EdgeInsets.all(12.0),
-        style: NeumorphicStyle(
-          intensity: 0.8,
-          surfaceIntensity: 0.25,
-          depth: 8,
-          shape: NeumorphicShape.flat,
-          lightSource: LightSource.topLeft,
-          color: Colors.grey.shade100, // Very light grey for a softer look
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.grey),
-            SizedBox(
-              width: Get.width * 0.03,
-            ),
-            Container(
-              width: Get.width*.28,
-              height: Get.height*0.02,
-              alignment: Alignment.centerLeft,
-              child: FittedBox(
-                child: NeumorphicText(text,
-                    style: NeumorphicStyle(
-                      color: Colors.black54,
-                    ),
-                    textStyle: NeumorphicTextStyle(
-                      fontSize: 14,
-                    )),
-              ),
-            ),
-          ],
-        ));
   }
 
   Widget CustomTextFieldview(String text, IconData icon) {
