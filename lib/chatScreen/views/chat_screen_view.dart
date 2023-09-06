@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import '../../individual_profile_screen/profilephotoview.dart';
 import '../../individual_subscription/view/subscription_view.dart';
+import '../../widgets/block_unblock.dart';
 import '../../widgets/my_date_utils.dart';
 import '../controllers/chat_screen_controller.dart';
 import '../model/chat_model.dart';
@@ -183,10 +184,62 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                   onPressed: () {},
                   icon: Icon(Icons.call),
                 ),*/
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.more_vert),
+                  PopupMenuButton<int>(
+                    itemBuilder: (context) => [
+                      // popupmenu item 1
+                      PopupMenuItem(
+                        value: 1,
+                        // row has two child icon and text.
+                        child: GestureDetector(
+                          onTap: (){
+                            Alertdialogs.showBlockedAlertDialog(context, '${controller.getUserModel?.data?.id}', 'Block');
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.block,color: Colors.grey),
+                              SizedBox(
+                                // sized box with width 10
+                                width: 10,
+                              ),
+                              Text("   Block   ",style: TextStyle(color: Colors.grey),)
+                            ],
+                          ),
+                        ),
+                      ),
+                      // popupmenu item 2
+                      PopupMenuItem(
+                        value: 2,
+                        // row has two child icon and text
+                        child: Row(
+                          children: [
+                            Icon(Icons.chrome_reader_mode,color: Colors.grey,),
+                            SizedBox(
+                              // sized box with width 10
+                              width: 10,
+                            ),
+                            Text("About",style: TextStyle(color: Colors.grey))
+                          ],
+                        ),
+                      ),
+                    ],
+                    offset: Offset(0, 100),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(8.0),
+                        bottomRight: Radius.circular(8.0),
+                        topLeft: Radius.circular(8.0),
+                        topRight: Radius.circular(8.0),
+                      ),
+                    ),
+                    color: Colors.white,
+                    elevation: 5,
                   ),
+                /*  IconButton(
+                    onPressed: () {
+
+                    },
+                    icon: Icon(Icons.more_vert),
+                  ),*/
                 ],
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(
