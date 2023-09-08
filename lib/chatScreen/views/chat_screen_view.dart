@@ -45,7 +45,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
   void dispose() {
     log("before last message");
     chatScreenController.getLastMessageString(
-        username: indiUsername, id: widget.id.toString());
+        usernameID: indiUsername+widget.id.toString(), id: widget.id.toString());
     log("after last message");
     super.dispose();
   }
@@ -196,12 +196,12 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                           },
                           child: Row(
                             children: [
-                              Icon(Icons.block,color: Colors.grey),
+                              Icon(Icons.block,color: Colors.black),
                               SizedBox(
                                 // sized box with width 10
                                 width: 10,
                               ),
-                              Text("   Block   ",style: TextStyle(color: Colors.grey),)
+                              Text("   Block   ",style: TextStyle(color: Colors.black),)
                             ],
                           ),
                         ),
@@ -210,15 +210,20 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                       PopupMenuItem(
                         value: 2,
                         // row has two child icon and text
-                        child: Row(
-                          children: [
-                            Icon(Icons.chrome_reader_mode,color: Colors.grey,),
-                            SizedBox(
-                              // sized box with width 10
-                              width: 10,
-                            ),
-                            Text("About",style: TextStyle(color: Colors.grey))
-                          ],
+                        child: GestureDetector(
+                          onTap: (){
+                          controller.deleteAllMessage('${controller.getUserModel?.data?.username}${controller.getUserModel?.data?.id}');
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.chrome_reader_mode,color: Colors.black,),
+                              SizedBox(
+                                // sized box with width 10
+                                width: 10,
+                              ),
+                              Text("   Delete All chat",style: TextStyle(color: Colors.black))
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -280,28 +285,70 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                     physics: const BouncingScrollPhysics(),
                                     itemBuilder: (context, index) {
                                       if (listmessage[index].fromId ==
-                                          controller.myUsername) {
+                                          controller.myUsername+controller.myUserId) {
                                         me = true;
                                         log('me ::::::::::: $me');
                                       }
                                       var data = listmessage[index];
-                                      data.toId == controller.myUsername;
+                                      //data.toId == controller.myUsername+controller.myUserId;
                                       var time =
                                           '${DateFormat('d MMMM y ,hh:mm').format(DateTime.fromMillisecondsSinceEpoch(int.parse(data.sent)))}';
-                                      return MessageContainer(
-                                        message: listmessage[index],
-                                        text: listmessage[index].msg,
-                                        isMe:
-                                            data.fromId == controller.myUsername
-                                                ? true
-                                                : false,
-                                        time: data.sent,
-                                        pic: controller.getUserModel?.data
-                                                ?.profilePicture ??
-                                            '',
-                                        updateReadMessage: () =>
-                                            controller.updateMessageReadStatus(
-                                                listmessage[index]),
+                                      return GestureDetector(
+                                        onLongPress:(){
+                                          FocusScope.of(context).requestFocus(FocusNode());
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return SimpleDialog(
+                                              shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(16.0),
+                                              bottomRight: Radius.circular(16.0),
+                                              topLeft: Radius.circular(16.0),
+                                              topRight: Radius.circular(16.0),
+                                              ),
+                                              ),
+                                              backgroundColor: Color(0xff7e160a),
+                                              elevation: 5,
+                                               // title:Center(child: const Text('Delete Message',style: TextStyle(color: Colors.black),)),
+                                                children: <Widget>[
+                                                  SimpleDialogOption(
+                                                    onPressed: () async{
+                                                      await controller.deleteMessage(listmessage[index]);
+                                                      Navigator.pop(context);
+                                                      },
+                                                    child:Center(child: const Text('Delete',style: TextStyle(fontSize: 18))),
+                                                  ),
+                                                  /*  SimpleDialogOption(
+              onPressed: () { },
+              child: const Text('Option 2'),
+            ),*/
+                                                ],
+                                              );
+                                            },
+                                        );
+
+
+
+                                        } ,
+                                        child:  listmessage[index].fromDeleteStatus != controller.myUsername+controller.myUserId ?
+                                        MessageContainer(
+                                          message: listmessage[index],
+                                          text: listmessage[index].msg,
+                                          isMe:
+                                              data.fromId == controller.myUsername+controller.myUserId
+                                                  ? true
+                                                  : false,
+                                          time: data.sent,
+                                          pic: controller.getUserModel?.data
+                                                  ?.profilePicture ??
+                                              '',
+                                          updateReadMessage: () =>
+                                              controller.updateMessageReadStatus(
+                                                  listmessage[index]),
+                                         // myChatId: controller.myUsername+controller.myUserId,
+                                         // deletemsg:()=> controller.deleteMessage(listmessage[index]),
+                                        ):Container(),
                                       );
                                     });
                               } else {
@@ -404,7 +451,8 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                   ));
                                 }
                               }
-                            } else {
+                            }
+                            else {
                               if (_textController.text.isNotEmpty) {
                                 if (listmessage.isEmpty) {
                                   if (controller.userId != '0') {
@@ -458,7 +506,10 @@ class MessageContainer extends StatelessWidget {
       required this.time,
       required this.message,
       required this.pic,
-      required this.updateReadMessage});
+      required this.updateReadMessage,
+      //required this.myChatId,
+    //  required this.deletemsg
+   });
 
   Message? message;
   String text;
@@ -466,6 +517,8 @@ class MessageContainer extends StatelessWidget {
   String time;
   String pic;
   Function updateReadMessage;
+ // String myChatId;
+//  Function deletemsg;
 
   @override
   Widget build(BuildContext context) {
@@ -473,7 +526,8 @@ class MessageContainer extends StatelessWidget {
     if (readStatus == true) {
       updateReadMessage();
     }
-    return Padding(
+    //return message?.fromDeleteStatus != myChatId ?
+   return Padding(
         padding: EdgeInsets.only(left: 10.sp, top: 8, bottom: 8, right: 10),
         child: isMe == true
             ?
@@ -619,6 +673,6 @@ class MessageContainer extends StatelessWidget {
                         ),
                       ]),
                 ],
-              ));
+              )) ;
   }
 }

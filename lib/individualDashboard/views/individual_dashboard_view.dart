@@ -527,6 +527,10 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                         individualDashboardController
                                             .usersList[index]
                                             .profilePicture,
+                                        setHeart: (val) {
+                                          individualDashboardController
+                                              .usersList[index].likeStatus = val;
+                                        },
                                         name: individualDashboardController
                                             .usersList[index].username,
                                         id: individualDashboardController
@@ -856,7 +860,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                           child:individualDashboardController.showAnimatedHeart.value? Align(
                             alignment: Alignment.center,
                             child: Lottie.network(
-                                'https://assets-v2.lottiefiles.com/a/3073e56e-1175-11ee-911b-eb7a8cb4524d/VyuILSK8xC.json'),
+                               // 'https://assets-v2.lottiefiles.com/a/3073e56e-1175-11ee-911b-eb7a8cb4524d/VyuILSK8xC.json'
+                              'https://assets-v2.lottiefiles.com/a/c543ac62-1150-11ee-953b-235b9373fc03/85XdRr7LQN.json'
+                            ),
                           ):Container());
                     },),
 

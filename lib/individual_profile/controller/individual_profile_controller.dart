@@ -17,6 +17,7 @@ class IndividualProfileController extends GetxController {
   RxString coverPhotoURL = ''.obs;
   RxString profilePhotoURL = ''.obs;
   RxString username = ''.obs;
+  RxString userId = ''.obs;
   RxString firstname = ''.obs;
   RxString lastname = ''.obs;
   RxString bio = ''.obs;
@@ -344,6 +345,7 @@ class IndividualProfileController extends GetxController {
           state.value = user['state'] ?? '';
           GetStorage().write('state', state.value);
           username.value = response['user_name'];
+          userId.value = user['user_id'];
           gender.value = user['gender'] ?? '';
           getPrefiledData = user['org_amenitie_id']?.split(',');
           print("indi amen :=> $getPrefiledData");
@@ -362,7 +364,8 @@ class IndividualProfileController extends GetxController {
          // dobController.text = dob.value;
           privacyOnlineStatus.value = response['privacy_online']??'';
           notification.value = response['notification']??'';
-          GetStorage().write("my_user_id", username.value.toString());
+          GetStorage().write("my_username", username.value.toString());
+          GetStorage().write("my_user_id", userId.value.toString());
           // get status for privacy and notification
 
           if (privacyOnlineStatus.value

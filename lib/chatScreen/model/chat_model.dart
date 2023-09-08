@@ -6,6 +6,8 @@ class Message {
     required this.type,
     required this.fromId,
     required this.sent,
+    required this.toDeleteStatus,
+    required this.fromDeleteStatus,
     required this.fcmToken,
   });
 
@@ -14,6 +16,8 @@ class Message {
   late final String read;
   late final String fromId;
   late final String sent;
+  late final String toDeleteStatus;
+  late final String fromDeleteStatus;
   late final Type type;
   late final String fcmToken;
 
@@ -24,6 +28,8 @@ class Message {
     type = json['type'].toString() == Type.image.name ? Type.image : Type.text;
     fromId = json['fromId'].toString();
     sent = json['sent'].toString();
+    toDeleteStatus = json['toDeleteStatus'];
+    fromDeleteStatus = json['fromDeleteStatus'];
     fcmToken = json['sent'].toString();
   }
 
@@ -35,6 +41,8 @@ class Message {
     data['type'] = type.name;
     data['fromId'] = fromId;
     data['sent'] = sent;
+    data['fromDeleteStatus'] = fromDeleteStatus;
+    data['toDeleteStatus'] = toDeleteStatus;
     data['fcm_token'] = fcmToken;
     return data;
   }

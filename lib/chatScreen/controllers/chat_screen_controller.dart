@@ -24,6 +24,7 @@ class ChatScreenController  extends GetxController{
   var isApiLoading = false;
   String? userId ='';
   String myUsername ="";
+  String myUserId = '';
   List<ChatUserListModel>  chatList = [];
   AudioPlayer player = AudioPlayer();
 
@@ -32,7 +33,8 @@ class ChatScreenController  extends GetxController{
     super.onInit();
 
     userId = Get.arguments ??'0' ;
-    myUsername= GetStorage().read('my_user_id');
+    myUsername= GetStorage().read('my_username');
+    myUserId = GetStorage().read('my_user_id');
     if(userId=='0'){
       getChatList();
     }
@@ -90,7 +92,9 @@ class ChatScreenController  extends GetxController{
   // get chatList
 
   Future<void> getChatList() async {
+    log('here-------');
     try {
+      chatList.clear();
       isApiLoading = true;
       http.Response response = await http.post(
         Uri.parse('https://app.partypeople.in/v1/chat/get_chat_user_list_data'),
@@ -407,15 +411,16 @@ class ChatScreenController  extends GetxController{
   // chats (collection) --> conversation_id (doc) --> messages (collection) --> message (doc)
 
   // useful for getting conversation id
-  String getConversationID(String id) => myUsername.hashCode <= id.hashCode
-  ? '${myUsername}_$id'
-      : '${id}_${myUsername}';
+  String getConversationID(String id) => '$myUsername$myUserId'.hashCode <= id.hashCode
+  ? '${myUsername+myUserId}_$id'
+      : '${id}_${myUsername+myUserId}';
 
   // for getting all messages of a specific conversation from firestore database
    Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
   GetUserModel? user) {
+     log('dbfg   ${user?.data?.username}${user?.data?.id}');
   return firestore
-      .collection('chats/${getConversationID(user?.data?.username??'')}/messages/')
+      .collection('chats/${getConversationID('${user?.data?.username}${user?.data?.id}'??'')}/messages/')
       .orderBy('sent', descending: true)
       .snapshots();
   }
@@ -431,25 +436,30 @@ class ChatScreenController  extends GetxController{
         .millisecondsSinceEpoch
         .toString();
 
+    String toIdd = '${chatUser?.data?.username}${chatUser?.data?.id}';
+    String fromIdd = myUsername+myUserId;
     //message to send
     final Message message = Message(
-        toId: chatUser?.data?.username ?? "",
+       // toId: chatUser?.data?.username ?? "",
+       toId: toIdd,
         msg: msg,
         read: '',
         type: type,
-        fromId: GetStorage().read("my_user_id"),
+        fromId: fromIdd,
         sent: time,
+        fromDeleteStatus: '0',
+        toDeleteStatus: '0',
         fcmToken: chatUser?.data?.deviceToken ?? '');
     final ref = firestore
         .collection(
-        'chats/${getConversationID(chatUser?.data?.username ?? '')}/messages/');
+        'chats/${getConversationID(toIdd?? '')}/messages/');
 
     await ref.doc(time).set(message.toJson()).then((value) async{
       await player.play(AssetSource('sound/sent.wav'));
       try {
         await Future.delayed(Duration(seconds: 1),);
         await firestore
-            .collection('chats/${getConversationID('${chatUser?.data?.username}')}/messages/')
+            .collection('chats/${getConversationID(toIdd)}/messages/')
             .doc(time)
             .get().then((value) async {
           Message? _message;
@@ -485,8 +495,9 @@ class ChatScreenController  extends GetxController{
 
   //update read status of message
   Future<void> updateMessageReadStatus(Message message) async {
+
      try {
-       if(message.fromId != myUsername) {
+       if(message.fromId != myUsername+myUserId) {
          firestore
              .collection(
              'chats/${getConversationID(message.fromId)}/messages/')
@@ -513,7 +524,7 @@ class ChatScreenController  extends GetxController{
   //get only last message of a specific chat
    Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
       // GetUserModel? user
-       String username
+       String usernameID
        ) {
 
 /*  return firestore
@@ -522,17 +533,17 @@ class ChatScreenController  extends GetxController{
       .limit(1)
       .snapshots();*/
   return firestore
-      .collection('chats/${getConversationID(username)}/messages/')
+      .collection('chats/${getConversationID(usernameID)}/messages/')
       .orderBy('sent', descending: true)
       .limit(1)
       .snapshots();
   }
 
   Future<void> getLastMessageString(
-      {required String username ,required String id}) async {
+      {required String usernameID ,required String id}) async {
     try {
       await firestore
-          .collection('chats/${getConversationID(username)}/messages/')
+          .collection('chats/${getConversationID(usernameID)}/messages/')
           .orderBy('sent', descending: true)
           .limit(1).get().then((value) async {
         Message? _message;
@@ -542,7 +553,7 @@ class ChatScreenController  extends GetxController{
         if (list.isNotEmpty) _message = list[0];
         String? lastMessage = _message?.msg;
         log('last message $lastMessage');
-        await APIService.lastMessage(id, lastMessage!);
+        await APIService.lastMessage(id, lastMessage! ,'${_message?.sent}');
       });
     }
     catch(e)
@@ -554,7 +565,7 @@ class ChatScreenController  extends GetxController{
 
   //send chat image
 
-   Future<void> sendChatImage(GetUserModel? chatUser, File file) async {
+   /*Future<void> sendChatImage(GetUserModel? chatUser, File file) async {
   //getting image file extension
   final ext = file.path.split('.').last;
 
@@ -573,22 +584,109 @@ class ChatScreenController  extends GetxController{
   final imageUrl = await ref.getDownloadURL();
   await sendMessage(chatUser, imageUrl, Type.image);
   }
-
+*/
 
 
   //delete message
 
   Future<void> deleteMessage(Message message) async {
-  await firestore
-      .collection('chats/${getConversationID(message.toId)}/messages/')
-      .doc(message.sent)
-      .delete();
+    if(message.fromDeleteStatus == '0')
+      {
+        if(message.toId == myUsername+myUserId )
+          {
+            await firestore
+                .collection('chats/${getConversationID(message.fromId)}/messages/')
+                .doc(message.sent)
+                .update({'fromDeleteStatus': myUsername + myUserId});
+          }
+        else {
+          await firestore
+              .collection('chats/${getConversationID(message.toId)}/messages/')
+              .doc(message.sent)
+              .update({'fromDeleteStatus': myUsername + myUserId});
+        }
+      }
+    else {
+      if (message.toId == myUsername + myUserId) {
+        await firestore
+            .collection('chats/${getConversationID(message.fromId)}/messages/')
+            .doc(message.sent)
+            .delete();
+      }
+      else{
+        await firestore
+            .collection('chats/${getConversationID(message.toId)}/messages/')
+            .doc(message.sent)
+            .delete();
+      }
+    }
 
   if (message.type == Type.image) {
   await storage.refFromURL(message.msg).delete();
   }
   }
 
+  Future<void> deleteAllMessage(String usernameID) async {
+    try {
+      log('gvkhk ');
+      await firestore
+          .collection('chats/${getConversationID(usernameID)}/messages/')
+          .orderBy('sent', descending: true)
+          .get().then((value) async {
+        Message? _message;
+        final data = value.docs;
+        final list =
+            data.map((e) => Message.fromJson(e.data())).toList() ?? [];
+        list.forEach((element) async {
+          log('gvkhk ${element.msg}');
+
+           if(element.fromDeleteStatus == '0')
+    {
+      if(element.toId == myUsername+myUserId )
+      {
+        await firestore
+            .collection('chats/${getConversationID(element.fromId)}/messages/')
+            .doc(element.sent)
+            .update({'fromDeleteStatus': myUsername + myUserId});
+      }
+      else {
+        await firestore
+            .collection('chats/${getConversationID(element.toId)}/messages/')
+            .doc(element.sent)
+            .update({'fromDeleteStatus': myUsername + myUserId});
+      }
+    }
+    else {
+      if (element.toId == myUsername + myUserId) {
+        await firestore
+            .collection('chats/${getConversationID(element.fromId)}/messages/')
+            .doc(element.sent)
+            .delete();
+      }
+      else{
+        await firestore
+            .collection('chats/${getConversationID(element.toId)}/messages/')
+            .doc(element.sent)
+            .delete();
+      }
+    }
+
+    if (element.type == Type.image) {
+      await storage.refFromURL(element.msg).delete();
+    }
+
+        });
+       // if (list.isNotEmpty) _message = list[0];
+      //  String? lastMessage = _message?.msg;
+      //  log('last message $lastMessage');
+      });
+    }
+    catch(e)
+    {
+      log('error message $e');
+    }
+
+  }
   //update message
 
   Future<void> updateMessage(Message message, String updatedMsg) async {
@@ -603,8 +701,6 @@ class ChatScreenController  extends GetxController{
 
   @override
   void onClose() async{
-
-
     super.onClose();
   }
   }

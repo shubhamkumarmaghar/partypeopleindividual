@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 class CustomProfileTextView extends StatelessWidget {
-  String text;IconData icon;
-  CustomProfileTextView({required this.text , required this.icon});
+  String text;IconData icon;  Color color;
+  CustomProfileTextView({required this.text , required this.icon ,  this.color =const Color(0xFFB71C1C)});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class CustomProfileTextView extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: Colors.grey),
+            Icon(icon, color: color),
             SizedBox(
               width: Get.width * 0.03,
             ),
@@ -33,7 +33,7 @@ class CustomProfileTextView extends StatelessWidget {
               child: FittedBox(
                 child: NeumorphicText(text,
                     style: NeumorphicStyle(
-                      color: Colors.black54,
+                      color: Colors.black,
                     ),
                     textStyle: NeumorphicTextStyle(
                       fontSize: 14,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:blur/blur.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,7 @@ import 'package:partypeopleindividual/individual_profile_screen/profilephotoview
 import 'package:partypeopleindividual/widgets/custom_loading_indicator.dart';
 
 import 'package:partypeopleindividual/widgets/individual_amenities.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../edit_individual_profile/edit_individual_profile.dart';
 import '../widgets/active_city_select.dart';
@@ -151,60 +153,65 @@ class _IndividualProfileScreenViewState
                               alignment: Alignment.center,
                               children: <Widget>[
                                 //Cover Photo
-                                individualProfileController.photoStatusApproval.value =='0' ?
-                                Blur(blur: 5.0,
-                                  child:
-                                  Container(
-                                    height: Get.height*0.35,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      image: DecorationImage(
+                                individualProfileController
+                                            .photoStatusApproval.value ==
+                                        '0'
+                                    ? Blur(
+                                        blur: 5.0,
+                                        child: Container(
+                                          height: Get.height * 0.35,
+
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+
+                                            image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: individualProfileController
+                                                            .coverPhotoURL
+                                                            .value
+                                                            .isNotEmpty
+                                                        ? NetworkImage(
+                                                            individualProfileController
+                                                                .coverPhotoURL
+                                                                .value)
+                                                        : const AssetImage(
+                                                                'assets/images/default-cover-4.jpg')
+                                                            as ImageProvider<
+                                                                Object>),
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        height: Get.height * 0.35,
+                                        child: CachedNetworkImage(
+                                          placeholder: (context, url) => Shimmer.fromColors(
+                                            baseColor: Colors.grey.shade200,
+                                            highlightColor: Colors.grey.shade400,
+                                            period: const Duration(milliseconds: 1500),
+                                            child: Container(
+                                              height: Get.height * 0.35,
+                                              color: Color(0xff7AB02A),
+                                            ),
+                                          ),
+                                          imageUrl:  individualProfileController
+                                              .coverPhotoURL.value,
+                                          width: Get.width,
                                           fit: BoxFit.cover,
-                                          image: _coverImage != null
-                                              ? FileImage(_coverImage!)
-                                              : individualProfileController
-                                                      .coverPhotoURL
-                                                      .value
-                                                      .isNotEmpty
-                                                  ? NetworkImage(
-                                                      individualProfileController
-                                                          .coverPhotoURL
-                                                          .value)
-                                                  : const AssetImage(
-                                                          'assets/images/default-cover-4.jpg')
-                                                      as ImageProvider<Object>),
-                                    ),
-                                  ),
-                                ):Container(
-                        height: Get.height*0.35,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: _coverImage != null
-                                  ? FileImage(_coverImage!)
-                                  : individualProfileController
-                                  .coverPhotoURL
-                                  .value
-                                  .isNotEmpty
-                                  ? NetworkImage(
-                                  individualProfileController
-                                      .coverPhotoURL
-                                      .value)
-                                  : const AssetImage(
-                                  'assets/images/default-cover-4.jpg')
-                              as ImageProvider<Object>),
-                        ),
-                      ),
+                                        ),
+
+                                      ),
                                 // Profile Photo
                                 Positioned(
-                                    bottom: 10,
-                                    child:
-                                    GestureDetector(onTap: (){Get.to(()=>
-                                        ProfilePhotoView(profileUrl:individualProfileController.profilePhotoURL.value ,)
-                                    );
+                                  bottom: 10,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Get.to(() => ProfilePhotoView(
+                                            profileUrl:
+                                                individualProfileController
+                                                    .profilePhotoURL.value,
+                                          ));
                                     },
-                                      child:  Container(
+                                    child: Container(
                                       decoration: const BoxDecoration(
                                         boxShadow: [
                                           BoxShadow(
@@ -215,41 +222,78 @@ class _IndividualProfileScreenViewState
                                         ],
                                         shape: BoxShape.circle,
                                       ),
-                                      child:
-                                      individualProfileController.photoStatusApproval.value =='0' ?
-                                      Blur(
-                                        blur :2.5,
-                                        child: CircleAvatar(
-                                          radius: 55,
-                                          backgroundColor: Colors.transparent,
-                                          backgroundImage: _profileImage != null
-                                              ? FileImage(_profileImage!)
-                                              : (individualProfileController
-                                                          .profilePhotoURL
-                                                          .value
-                                                          .isNotEmpty
-                                                      ? NetworkImage(
-                                                          individualProfileController
-                                                              .profilePhotoURL.value)
-                                                      : const AssetImage(
-                                                          'assets/images/man.png'))
-                                                  as ImageProvider<Object>?,
+                                      child: individualProfileController
+                                                  .photoStatusApproval.value ==
+                                              '0'
+                                          ? Blur(
+                                              blur: 2.5,
+                                              child: CircleAvatar(
+                                                radius: 55,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                backgroundImage: _profileImage !=
+                                                        null
+                                                    ? FileImage(_profileImage!)
+                                                    : (individualProfileController
+                                                                .profilePhotoURL
+                                                                .value
+                                                                .isNotEmpty
+                                                            ? NetworkImage(
+                                                                individualProfileController
+                                                                    .profilePhotoURL
+                                                                    .value)
+                                                            : const AssetImage(
+                                                                'assets/images/man.png'))
+                                                        as ImageProvider<
+                                                            Object>?,
+                                              ),
+                                            )
+                                          : Container(
+                                        height: Get.height * 0.11,
+                                        width:  Get.height * 0.11,
+                                            child: ClipRRect(
+
+                                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                                        child: CachedNetworkImage(
+                                            placeholder: (context, url) => Shimmer.fromColors(
+                                              baseColor: Colors.grey.shade200,
+                                              highlightColor: Colors.grey.shade400,
+                                              period: const Duration(milliseconds: 1500),
+                                              child: Container(
+                                                height: Get.height * 0.35,
+                                                color: Color(0xff7AB02A),
+                                              ),
+                                            ),
+                                            imageUrl: individualProfileController
+                                                .profilePhotoURL
+                                                .value
+                                                .isEmpty
+                                                ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
+                                                : individualProfileController
+                                                .profilePhotoURL
+                                                .value,
+                                            width: Get.width,
+                                            fit: BoxFit.cover,
                                         ),
-                                      ):   CircleAvatar(
-                                        radius: 55,
-                                        backgroundImage: _profileImage != null
-                                            ? FileImage(_profileImage!)
-                                            : (individualProfileController
-                                            .profilePhotoURL
-                                            .value
-                                            .isNotEmpty
-                                            ? NetworkImage(
-                                            individualProfileController
-                                                .profilePhotoURL.value)
-                                            : const AssetImage(
-                                            'assets/images/man.png'))
-                                        as ImageProvider<Object>?,
                                       ),
+                                          )
+
+
+
+                                      // CircleAvatar(
+                                      //         radius: 55,
+                                      //         backgroundImage:(individualProfileController
+                                      //                         .profilePhotoURL
+                                      //                         .value
+                                      //                         .isNotEmpty
+                                      //                     ? NetworkImage(
+                                      //                         individualProfileController
+                                      //                             .profilePhotoURL
+                                      //                             .value)
+                                      //                     : const AssetImage(
+                                      //                         'assets/images/man.png'))
+                                      //                 as ImageProvider<Object>?,
+                                      //       ),
                                     ),
                                   ),
                                 ),
@@ -292,31 +336,45 @@ class _IndividualProfileScreenViewState
                             Row(
                               children: [
                                 Expanded(
-                                  child: CustomProfileTextView(text:
-                                      individualProfileController
-                                          .firstname.value,
-                                     icon:  Icons.person),
+                                  child: CustomProfileTextView(
+                                      text: individualProfileController
+                                          .firstname.value.capitalizeFirst.toString(),
+                                      icon: Icons.person),
                                 ),
                                 Expanded(
-                                  child: CustomProfileTextView(text:
-                                      individualProfileController
-                                          .lastname.value.capitalizeFirst.toString(),
+                                  child: CustomProfileTextView(
+                                      text: individualProfileController
+                                          .lastname.value.capitalizeFirst
+                                          .toString(),
                                       icon: Icons.person),
                                 ),
                               ],
                             ),
-                        Blur(blur: individualProfileController.descStatusApproval.value =='0' ?2.5 :0,
+                            individualProfileController
+                                .descStatusApproval.value ==
+                                '0'
+                                ? Blur(
+                              blur:  2.5,
                               child: CustomTextFieldview(
-                                  individualProfileController.description.value.capitalizeFirst.toString(),
+                                  individualProfileController
+                                      .description.value.capitalizeFirst
+                                      .toString(),
                                   Icons.description),
-                            ),
+                            ):CustomTextFieldview(
+                                individualProfileController
+                                    .description.value.capitalizeFirst
+                                    .toString(),
+                                Icons.description),
 
                             Row(
                               children: [
                                 Expanded(
-                                  child: CustomProfileTextView(text: CalculateAge.calAge(individualProfileController.dob.value??"")
-                                      ,
-                                     icon: Icons.calendar_month),
+                                  child: CustomProfileTextView(
+                                      text: CalculateAge.calAge(
+                                          individualProfileController
+                                                  .dob.value ??
+                                              ""),
+                                      icon: Icons.calendar_month),
                                   /*  CustomDateField(
                         validate: true,
                         hintText: 'Date of Birth',
@@ -327,8 +385,9 @@ class _IndividualProfileScreenViewState
                                 ),
                                 Expanded(
                                   child: CustomProfileTextView(
-                                     text:  individualProfileController.gender.value,
-                                     icon:  Icons.calendar_month),
+                                      text: individualProfileController
+                                          .gender.value,
+                                      icon: Icons.calendar_month),
 
                                   //GenderSelect(),
                                 ),
@@ -338,16 +397,16 @@ class _IndividualProfileScreenViewState
                               children: [
                                 Expanded(
                                   child: CustomProfileTextView(
-                                     text:  individualProfileController
+                                      text: individualProfileController
                                           .qualification.value,
                                       icon: Icons.description_outlined),
                                   //QualificationWidget(),
                                 ),
                                 Expanded(
                                   child: CustomProfileTextView(
-                                     text:  individualProfileController
+                                      text: individualProfileController
                                           .occupation.value,
-                                   icon:    Icons.work),
+                                      icon: Icons.work),
 
                                   //OccupationWidget(),
                                 ),
@@ -358,14 +417,16 @@ class _IndividualProfileScreenViewState
                               children: [
                                 Expanded(
                                   child: CustomProfileTextView(
-                                    text:   individualProfileController.country.value,
-                                   icon:    Icons.location_on),
+                                      text: individualProfileController
+                                          .country.value,
+                                      icon: Icons.location_on),
                                   //QualificationWidget(),
                                 ),
                                 Expanded(
                                   child: CustomProfileTextView(
-                                   text:    individualProfileController.state.value,
-                                     icon:  Icons.location_on),
+                                      text: individualProfileController
+                                          .state.value,
+                                      icon: Icons.location_on),
 
                                   //OccupationWidget(),
                                 ),
@@ -375,14 +436,16 @@ class _IndividualProfileScreenViewState
                               children: [
                                 Expanded(
                                   child: CustomProfileTextView(
-                                    text:   individualProfileController.city.value,
-                                     icon:  Icons.location_city),
+                                      text: individualProfileController
+                                          .city.value,
+                                      icon: Icons.location_city),
                                   //QualificationWidget(),
                                 ),
                                 Expanded(
                                   child: CustomProfileTextView(
-                                     text:  individualProfileController.pincode.value,
-                                    icon:   Icons.pin_drop),
+                                      text: individualProfileController
+                                          .pincode.value,
+                                      icon: Icons.pin_drop),
 
                                   //OccupationWidget(),
                                 ),
@@ -395,44 +458,54 @@ class _IndividualProfileScreenViewState
                     onCityChanged: (onCityChanged) {}),
                 */
                             Container(
-                              padding: EdgeInsets.only(top: 10.0,),
+                              padding: EdgeInsets.only(
+                                top: 10.0,
+                              ),
                               margin: EdgeInsets.all(15),
                               // adjust padding as needed
-                              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Preferred Location",textAlign: TextAlign.start,
+                                    "Preferred Location",
+                                    textAlign: TextAlign.start,
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black,
                                     ),
                                   ),
-                                  SizedBox(height: Get.height*0.01,),
+                                  SizedBox(
+                                    height: Get.height * 0.01,
+                                  ),
                                   Text(
-                                    "* Preferred Location is the location where you want to explore parties & party mates. *",textAlign: TextAlign.start,
+                                    "* Preferred Location is the location where you want to explore parties & party mates. *",
+                                    textAlign: TextAlign.start,
                                     style: TextStyle(
                                       fontSize: 12,
-                                      fontWeight: FontWeight.normal,fontStyle: FontStyle.italic,
+                                      fontWeight: FontWeight.normal,
+                                      fontStyle: FontStyle.italic,
                                       color: Colors.black,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CustomProfileTextView(
-                                 text:  individualProfileController.activeCity.value,
-                                  icon: Icons.location_city_sharp,),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomProfileTextView(
+                                    text: individualProfileController
+                                        .activeCity.value,
+                                    icon: Icons.location_city_sharp,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
                             const SizedBox(
                               height: 10,
                             ),
-                          /*  const Padding(
+                            /*  const Padding(
                               padding: EdgeInsets.symmetric(vertical: 14.0),
                               // adjust padding as needed
                               child: Text(
@@ -501,16 +574,16 @@ class _IndividualProfileScreenViewState
                                                     spacing: 6.0,
                                                     runSpacing: 6.0,
                                                     children: categoryList
-                                                        . amenities
+                                                        .amenities
                                                         .map((amenity) {
                                                       return GestureDetector(
                                                         /*  onTap: () =>
                                           _selectAmenity(
                                               amenity),
                                       */
-                                                        child:amenity.selected
+                                                        child: amenity.selected
                                                             ? Chip(
-                                                          /*avatar: CircleAvatar(
+                                                                /*avatar: CircleAvatar(
                                           backgroundColor:
                                           amenity.selected
                                               ? Colors.red[
@@ -518,21 +591,26 @@ class _IndividualProfileScreenViewState
                                               : Colors.grey[
                                           700],
                                         ), */
-                                                          label: Text(
-                                                            amenity.name,
-                                                            style:
-                                                                const TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 14,
-                                                            ),
-                                                          ),
-                                                          backgroundColor:
-                                                              amenity.selected
-                                                                  ? Colors.red
-                                                                  : Colors.grey[
-                                                                      400],
-                                                        ):Container(),
+                                                                label: Text(
+                                                                  amenity.name,
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        14,
+                                                                  ),
+                                                                ),
+                                                                backgroundColor:
+                                                                    amenity.selected
+                                                                        ? Colors
+                                                                            .red
+                                                                        : Colors
+                                                                            .grey[400],
+                                                              )
+                                                            : Visibility(visible: false,
+                                                            child: Container()
+                                                        ),
                                                       );
                                                     }).toList(),
                                                   ),
@@ -588,7 +666,7 @@ class _IndividualProfileScreenViewState
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, color: Colors.grey),
+              Icon(icon, color: Colors.red.shade900),
               SizedBox(
                 width: Get.width * 0.03,
               ),
@@ -597,7 +675,7 @@ class _IndividualProfileScreenViewState
                 child: Text(
                   text,
                   maxLines: 5,
-                  style: TextStyle(color: Colors.black54, fontSize: 16),
+                  style: TextStyle(color: Colors.black, fontSize: 16),
                 ),
               ),
             ],

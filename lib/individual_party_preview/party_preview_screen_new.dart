@@ -245,13 +245,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                 Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CustomTextIcon(icon: CupertinoIcons.heart, IconText: "${widget.party.like} Likes"),
-                      GestureDetector(onTap: (){
-                        setState(() {
+                     CustomTextIcon(icon: CupertinoIcons.eye, IconText: "${widget.party.view} Views"),
 
-                        });
-                        _controllerBottomCenter.play();
-
-                      },child: CustomTextIcon(icon: CupertinoIcons.eye, IconText: "${widget.party.view} Views")),
                       CustomTextIcon(icon: CupertinoIcons.person_3, IconText: "${widget.party.ongoing} Going"),
                     ]),
                 const SizedBox(

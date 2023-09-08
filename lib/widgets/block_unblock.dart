@@ -9,6 +9,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:lottie/lottie.dart';
 
 import '../api_helper_service.dart';
+import '../individualDashboard/controllers/individual_dashboard_controller.dart';
 import '../login/views/login_screen.dart';
 class Alertdialogs {
 static  void showBlockedAlertDialog(BuildContext context,String user_id, String status,
@@ -17,7 +18,6 @@ static  void showBlockedAlertDialog(BuildContext context,String user_id, String 
       context: context,
       dialogType: DialogType.info,
       animType: AnimType.BOTTOMSLIDE,
-     // body: Lottie.network('https://assets-v2.lottiefiles.com/a/8f22f7ac-1171-11ee-97a9-4fee365785e2/SWHrZKp2ss.json'),
       title: '$status this user?',
       desc: 'Are you sure you want to $status this user ?',
       titleTextStyle: TextStyle(fontSize: 22, color: Colors.black),
@@ -25,7 +25,7 @@ static  void showBlockedAlertDialog(BuildContext context,String user_id, String 
       btnOkText: "$status",
       btnOkOnPress: () {
         APIService api = APIService();
-        api.DoBlockUnblockPeople(user_id ?? '', status);
+        api.doBlockUnblockPeople(user_id ?? '', status);
       },
       btnCancelText: "Cancel",
       btnCancelOnPress: () {
@@ -55,7 +55,7 @@ static  void showLogoutAlertDialog(BuildContext context
       GetStorage().remove('newUser');
       GetStorage().remove('plan_plan_expiry');
       GetStorage().remove('approval_status');
-
+      Get.find<IndividualDashboardController>().timer.cancel();
       Get.offAll(LoginScreen());
     },
     btnCancelText: "Cancel",
@@ -91,5 +91,31 @@ showDialogBox() {
     ).show();
   }
 }*/
+
+
+  static  Future<void> showDeleteAlertDialog(BuildContext context,String user_id, String status,Function onDelete,Function onDeleteAllChat
+      ) async {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.info,
+      animType: AnimType.BOTTOMSLIDE,
+      title: '$status this user?',
+      desc: 'Are you sure you want to $status this user ?',
+      titleTextStyle: TextStyle(fontSize: 22, color: Colors.black),
+      descTextStyle: TextStyle(fontSize: 18, color: Colors.black54),
+      btnOkText: "$status",
+      btnOkOnPress: () {
+        APIService api = APIService();
+        api.deleteChatPeople(user_id ?? '');
+
+        //onDeleteAllChat();
+        onDelete();
+      },
+      btnCancelText: "Cancel",
+      btnCancelOnPress: () {
+        // Navigator.pop(context);
+      },
+    ).show();
+  }
 
 }

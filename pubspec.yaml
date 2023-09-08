@@ -73,6 +73,7 @@ dependencies:
   liquid_pull_to_refresh: ^3.0.1
   connectivity_plus: ^4.0.2
   internet_connection_checker: ^1.0.0+1
+  dropdown_button2: ^2.1.4
 
 
 dev_dependencies:

@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:partypeopleindividual/login/views/login_screen.dart';
 import 'package:partypeopleindividual/otp/model/otp_model.dart';
 
@@ -196,7 +198,7 @@ class APIService extends GetxController {
   }
 
 /// do block/unblock people
-  Future<void> DoBlockUnblockPeople(String id,String status) async {
+  Future<void> doBlockUnblockPeople(String id,String status) async {
     try {
       http.Response response = await http.post(
           Uri.parse(API.blockUnblockApi),
@@ -232,8 +234,36 @@ class APIService extends GetxController {
     update();
   }
 
-/// on going parties
+  /// do block/unblock people
+  Future<void> deleteChatPeople(String id) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse(API.deleteChatPeopleApi),
+          headers: {
+            'x-access-token': '${GetStorage().read('token')}',
+          },
+          body: {
+            'individual_user_id': id,
+          });
 
+      print("response of delete data ${response.body}");
+
+      if (jsonDecode(response.body)['status'] == 1 ) {
+        print("User blocked successfully");
+        Get.snackbar('Deleted' , 'You have successfully Deleted person ',);
+      }
+      else {
+        print("User Unblocked failed ${response.body}");
+        Get.snackbar('Opps!!!' , 'Process failed ',);
+      }
+    } on Exception catch (e) {
+      print('Exception in blocked data ${e}');
+    }
+    update();
+  }
+
+
+/// on going parties
   static Future<bool> ongoingParty(String id) async {
     final response = await http.post(
       Uri.parse('https://app.partypeople.in/v1/party/party_ongoing'),
@@ -269,8 +299,6 @@ class APIService extends GetxController {
 
 
   /// all indiviusal people like
-
-
   static Future<int> likePeople(String id , bool status) async {
     final response = await http.post(
       Uri.parse('https://app.partypeople.in/v1/account/individual_user_like'),
@@ -312,7 +340,12 @@ class APIService extends GetxController {
     }
   }
 
-  static Future<void> lastMessage(String id , String message) async {
+  static Future<void> lastMessage(String id , String message,  String time) async {
+    DateTime dateTime =  DateTime.fromMillisecondsSinceEpoch(int.parse(time) );
+
+    String time1 = dateTime.toString();
+    print('bhhb'+time1);
+    // log('${time1}');
     final response = await http.post(
       Uri.parse('https://app.partypeople.in/v1/chat/update_chat_message'),
       headers: <String, String>{
@@ -321,7 +354,8 @@ class APIService extends GetxController {
 
       body: <String, String>{
         'individual_user_id': id,
-        'message': message
+        'message': message,
+        'datetime' :time1
       },
     );
 

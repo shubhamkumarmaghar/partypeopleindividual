@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:like_button/like_button.dart';
 import 'package:partypeopleindividual/individual_subscription/view/subscription_view.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../chatScreen/views/chat_screen_view.dart';
@@ -18,11 +20,13 @@ class NearByPeopleProfile extends StatefulWidget {
   final String name;
   final String id;
   String likeStatus;
+  Function(String)? setHeart;
   final String onlineStatus;
   final String privacyStatus;
 
   NearByPeopleProfile({
     super.key,
+    this.setHeart,
     required this.name,
     required this.imageURL,
     required this.id,
@@ -72,12 +76,20 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
               if (jsonResponse['status'] == 1 &&
                   jsonResponse['message'] == ('User liked successfully')) {
                 print('User like save successfully');
-                isLiked = false;
-                widget.likeStatus = '1';
-                setState(() {}
+               // isLiked = false;
+                //widget.likeStatus = '1';
+                controller.animateHeart();
+                setState(() {
+                  isLiked = false;
+                  widget.likeStatus = '1';
+                }
                 );
-                 controller.animateHeart();
-                controller.update();
+                if(widget.setHeart != null){
+                  widget.setHeart!('1');
+                }
+
+
+              //  controller.update();
 
               } else if (jsonResponse['status'] == 1 &&
                   jsonResponse['message'] == ('User unliked successfully')) {
@@ -139,10 +151,34 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                         ),
                         child: Padding(
                           padding: EdgeInsets.all(Get.width * 0.001),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            backgroundImage: NetworkImage(widget.imageURL),
-                          ),
+                          child: Container(
+                            height: Get.height * 0.11,
+                            width:  Get.height * 0.11,
+                            child: ClipRRect(
+
+                              borderRadius: BorderRadius.all(Radius.circular(50)),
+                              child: CachedNetworkImage(
+                                placeholder: (context, url) => Shimmer.fromColors(
+                                  baseColor: Colors.grey.shade200,
+                                  highlightColor: Colors.grey.shade400,
+                                  period: const Duration(milliseconds: 1500),
+                                  child: Container(
+                                    height: Get.height * 0.35,
+                                    color: Color(0xff7AB02A),
+                                  ),
+                                ),
+                                imageUrl: widget.imageURL,
+                                width: Get.width,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )
+
+
+                          // CircleAvatar(
+                          //   backgroundColor: Colors.transparent,
+                          //   backgroundImage: NetworkImage(widget.imageURL),
+                          // ),
                         ),
                       ),
                       SizedBox(

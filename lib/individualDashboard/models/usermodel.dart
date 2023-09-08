@@ -6,7 +6,7 @@ class UserModel {
   final String phone;
   final String profilePicture;
   final String onlineStatus;
-  final String likeStatus;
+   String likeStatus;
   final dynamic gender;
   final String privacyOnline;
 

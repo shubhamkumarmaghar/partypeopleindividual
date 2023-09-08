@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
@@ -29,6 +30,9 @@ class SelectState extends StatefulWidget {
 }
 
 class _SelectStateState extends State<SelectState> {
+  final TextEditingController countryEditingController = TextEditingController();
+  final TextEditingController stateEditingController = TextEditingController();
+  final TextEditingController cityEditingController = TextEditingController();
   IndividualProfileController individualProfileController =
       Get.put(IndividualProfileController());
   List<String> _cities = ["Choose City"];
@@ -169,7 +173,7 @@ class _SelectStateState extends State<SelectState> {
       _selectedState = "Choose State";
       _states = ["Choose State"];
       _selectedCountry = value;
-      individualProfileController.country.value = value!;
+      individualProfileController.country.value = value;
       this.widget.onCountryChanged(value);
       getState();
     });
@@ -181,7 +185,7 @@ class _SelectStateState extends State<SelectState> {
       _selectedCity = "Choose City";
       _cities = ["Choose City"];
       _selectedState = value;
-      individualProfileController.state.value = value!;
+      individualProfileController.state.value = value;
 
       this.widget.onStateChanged(value);
       getCity();
@@ -193,7 +197,7 @@ class _SelectStateState extends State<SelectState> {
     setState(() {
       _selectedCity = value;
       this.widget.onCityChanged(value);
-      individualProfileController.city.value = value!;
+      individualProfileController.city.value = value;
     });
   }
 
@@ -221,11 +225,19 @@ class _SelectStateState extends State<SelectState> {
                       child: DropdownButtonHideUnderline(
                         child: ButtonTheme(
                           alignedDropdown: true,
-                          child: DropdownButton<String>(
+                          child: DropdownButton2<String>(
                             isExpanded: true,
                             value: _selectedCountry,
-                            icon: const Icon(Icons.arrow_drop_down),
-                            iconSize: 20,
+                            //icon: const Icon(Icons.arrow_drop_down),
+                           // iconSize: 20,
+                            buttonStyleData:  ButtonStyleData(
+                              padding: EdgeInsets.only(left: 16,right: 5),
+                              height: Get.height*0.055,
+                              width: Get.width*0.04,
+                            ),
+                            dropdownStyleData:  DropdownStyleData(
+                              maxHeight: Get.height*0.5,
+                            ),
                             hint: const Text('Select Country',
                                 style: TextStyle(color: Colors.grey)),
                             items: _country.map((String dropDownStringItem) {
@@ -242,6 +254,45 @@ class _SelectStateState extends State<SelectState> {
                               );
                             }).toList(),
                             onChanged: (value) => _onSelectedCountry(value!),
+                            dropdownSearchData: DropdownSearchData(
+                              searchController: countryEditingController,
+                              searchInnerWidgetHeight: 50,
+                              searchInnerWidget: Container(
+                                height: 50,
+                                padding: const EdgeInsets.only(
+                                  top: 8,
+                                  bottom: 4,
+                                  right: 8,
+                                  left: 8,
+                                ),
+                                child: TextFormField(
+                                  expands: true,
+                                  maxLines: null,
+                                  style: TextStyle(color: Colors.black),
+                                  controller: countryEditingController,
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 8,
+                                    ),
+                                    hintText: 'Search for an item...',
+                                    hintStyle: const TextStyle(fontSize: 12),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              searchMatchFn: (item, searchValue) {
+                                return item.value.toString().contains(searchValue);
+                              },
+                            ),
+                            onMenuStateChange: (isOpen) {
+                              if (!isOpen) {
+                                countryEditingController.clear();
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -267,11 +318,19 @@ class _SelectStateState extends State<SelectState> {
                       child: DropdownButtonHideUnderline(
                         child: ButtonTheme(
                           alignedDropdown: true,
-                          child: DropdownButton<String>(
+                          child: DropdownButton2<String>(
                             isExpanded: true,
                             value: _selectedState,
-                            icon: const Icon(Icons.arrow_drop_down),
-                            iconSize: 20,
+                           // icon: const Icon(Icons.arrow_drop_down),
+                            //iconSize: 20,
+                            buttonStyleData:  ButtonStyleData(
+                              padding: EdgeInsets.only(left: 16,right: 5),
+                              height: Get.height*0.055,
+                              width: Get.width*0.04,
+                            ),
+                            dropdownStyleData:  DropdownStyleData(
+                              maxHeight: Get.height*0.5,
+                            ),
                             hint: const Text('Select State',
                                 style: TextStyle(color: Colors.grey)),
                             items: _states.map((String dropDownStringItem) {
@@ -288,6 +347,45 @@ class _SelectStateState extends State<SelectState> {
                               );
                             }).toList(),
                             onChanged: (value) => _onSelectedState(value!),
+                            dropdownSearchData: DropdownSearchData(
+                              searchController: stateEditingController,
+                              searchInnerWidgetHeight: 50,
+                              searchInnerWidget: Container(
+                                height: 50,
+                                padding: const EdgeInsets.only(
+                                  top: 8,
+                                  bottom: 4,
+                                  right: 8,
+                                  left: 8,
+                                ),
+                                child: TextFormField(
+                                  expands: true,
+                                  maxLines: null,
+                                  style: TextStyle(color: Colors.black),
+                                  controller: stateEditingController,
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 8,
+                                    ),
+                                    hintText: 'Search for an item...',
+                                    hintStyle: const TextStyle(fontSize: 12),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              searchMatchFn: (item, searchValue) {
+                                return item.value.toString().contains(searchValue);
+                              },
+                            ),
+                            onMenuStateChange: (isOpen) {
+                              if (!isOpen) {
+                                stateEditingController.clear();
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -317,11 +415,19 @@ class _SelectStateState extends State<SelectState> {
                       child: DropdownButtonHideUnderline(
                         child: ButtonTheme(
                           alignedDropdown: true,
-                          child: DropdownButton<String>(
+                          child: DropdownButton2<String>(
                             isExpanded: true,
                             value: _selectedCity,
-                            icon: const Icon(Icons.arrow_drop_down),
-                            iconSize: 20,
+                          //  icon: const Icon(Icons.arrow_drop_down),
+                            //iconSize: 20,
+                            buttonStyleData:  ButtonStyleData(
+                              padding: EdgeInsets.only(left: 16,right: 5),
+                              height: Get.height*0.055,
+                              width: Get.width*0.04,
+                            ),
+                            dropdownStyleData:  DropdownStyleData(
+                              maxHeight: Get.height*0.5,
+                            ),
                             hint: const Text('Select City',
                                 style: TextStyle(color: Colors.grey)),
                             items: _cities.map((String dropDownStringItem) {
@@ -337,6 +443,44 @@ class _SelectStateState extends State<SelectState> {
                               );
                             }).toList(),
                             onChanged: (value) => _onSelectedCity(value!),
+                            dropdownSearchData: DropdownSearchData(
+                              searchController: cityEditingController,
+                              searchInnerWidgetHeight: 50,
+                              searchInnerWidget: Container(
+                                height: 50,
+                                padding: const EdgeInsets.only(
+                                  top: 8,
+                                  bottom: 4,
+                                  right: 8,
+                                  left: 8,
+                                ),
+                                child: TextFormField(style: TextStyle(color: Colors.black),
+                                  expands: true,
+                                  maxLines: null,
+                                  controller: cityEditingController,
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 8,
+                                    ),
+                                    hintText: 'Search for an item...',
+                                    hintStyle: const TextStyle(fontSize: 12),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              searchMatchFn: (item, searchValue) {
+                                return item.value.toString().contains(searchValue);
+                              },
+                            ),
+                            onMenuStateChange: (isOpen) {
+                              if (!isOpen) {
+                                cityEditingController.clear();
+                              }
+                            },
                           ),
                         ),
                       ),

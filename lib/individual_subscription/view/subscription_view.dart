@@ -1,9 +1,11 @@
 import 'dart:core';
+import 'dart:developer';
 
 import 'package:adobe_xd/gradient_xd_transform.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -24,7 +26,7 @@ class SubscriptionView extends StatefulWidget {
 }
 
 class _SubscriptionViewState extends State<SubscriptionView> {
-
+  static MethodChannel _channel = MethodChannel('easebuzz');
  SubscriptionController subController = Get.put(SubscriptionController());
   Razorpay _razorpay = Razorpay();
 
@@ -331,15 +333,34 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.red.shade300,
-                    Colors.red.shade200,
-                    Colors.red.shade100,
-                    Colors.white,
-                    Colors.white,
-                    Colors.white,
-                    Colors.white,
-                    Colors.white,
-                    Colors.white,
+                /*    Color(0xfff2d5f7),
+                    Color(0xffe6acef),
+                    Color(0xffd982e6),
+                    Color(0xffcd59de),
+                    Color(0xffc02fd6),*/
+
+                  /*  Color(0xffd1dce6),
+                    Color(0xffa2bace),
+                    Color(0xff7497b5),
+                    Color(0xff45759d),
+                    Color(0xff175284),
+*/
+                    Color(0xffee216c),
+                    Color(0xffee216c),
+                    Color(0xffee216c),
+                    Color(0xfff14d89),
+                    Color(0xfff57aa7),
+                    Color(0xfff8a6c4),
+                    Color(0xfffcd3e2),
+                   // Colors.red.shade800,
+                    //Colors.red.shade700,
+                    //Colors.red.shade500,
+                   // Colors.red.shade400,
+                   // Colors.red.shade300,
+                   // Colors.black45,
+                    //Colors.black54,
+                 //   Colors.black87,
+                   // Colors.black,
                   ]
 
     ),
@@ -398,7 +419,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                           maxLines: 8,
                           style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey.shade500,
+                              color: Colors.black54,
                               fontWeight: FontWeight.w600))),
                 ),
               ]),
@@ -449,10 +470,10 @@ class _SubscriptionViewState extends State<SubscriptionView> {
             ]),
           Spacer(),
             GestureDetector(
-              onTap: (){
+              onTap: () async {
                 {
                   Navigator.pop(context);
-                  var options = {
+                var options = {
                     'key': 'rzp_test_qiTDenaoeqV1Zr',
                     // Replace with your Razorpay API key
                     'amount': (int.parse(amount)) * 100,
@@ -473,6 +494,23 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                   } catch (e) {
                     print(e.toString());
                   }
+
+
+/*
+                    String access_key = "555a2b009214573bd833feca997244f1721ac69d7f2b09685911bc943dcf5201";
+                    String pay_mode = "test";
+                    Object parameters =
+                    {
+                      "access_key":access_key,
+                      "pay_mode":pay_mode,
+                    //  "amount": (double.parse(amount)),
+                    };
+                    final payment_response = await _channel.invokeMethod("payWithEasebuzz", parameters);
+                  String result = payment_response['result'];
+
+                    /* payment_response is the HashMap containing the response of the payment.
+You can parse it accordingly to handle response */
+*/
                 };
               },
               child: Container(

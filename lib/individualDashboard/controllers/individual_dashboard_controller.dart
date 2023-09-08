@@ -61,7 +61,7 @@ class IndividualDashboardController extends GetxController {
       buttonState = true;
     }
   }
-
+ late Timer timer;
   @override
   void onInit() {
     // TODO: implement onInit
@@ -69,7 +69,7 @@ class IndividualDashboardController extends GetxController {
 
     getDataForDashboard();
 
-    Timer.periodic(Duration(seconds: 5), (timer) {
+   timer= Timer.periodic(Duration(seconds: 5), (timer) {
       getOnlineStatus();
       //getDataForDashboard();
     });

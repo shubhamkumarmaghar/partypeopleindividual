@@ -23,4 +23,6 @@ class API {
   static const String individualPeoplesNearby = '$baseUrl/home/near_by_users';
 
   static const String blockUnblockApi = '$baseUrl/account/individual_user_block';
+
+  static const String deleteChatPeopleApi = '$baseUrl/chat/delete_chat';
 }
