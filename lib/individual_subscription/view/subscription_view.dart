@@ -14,6 +14,7 @@ import 'package:partypeopleindividual/individual_subscription/controller/subscri
 import 'package:sizer/sizer.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
+import '../../widgets/webView.dart';
 import '../model/SubscriptionModel.dart';
 
 class SubscriptionView extends StatefulWidget {
@@ -100,7 +101,8 @@ class _SubscriptionViewState extends State<SubscriptionView> {
       body: GetBuilder<SubscriptionController>(
           init: SubscriptionController(),
           builder: (controller) {
-            return controller.isLoading == false ? Container(
+            if (controller.isLoading == false) {
+              return Container(
               decoration: const BoxDecoration(
                 gradient: RadialGradient(
                   center: Alignment(1, -0.45),
@@ -154,24 +156,28 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                     Neumorphic(style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle(),
                         shape: NeumorphicShape.concave),child: Lottie.network(widget.iconText,width: Get.width*0.2,height: Get.width*0.2)),
                     SizedBox(height: 30,),
-                    Text(
-                      widget.subText,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                    ),
+                       Text(
+                        widget.subText,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                      ),
+
                     SizedBox(height: 30,),
                     CarouselSlider(
                       items: [
                         GestureDetector(
                           onTap: () async{
+                            selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData![0].name , amount:controller.subscriptionModel.subsData![0].amount );
+
+                            /*
                             String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData![0].id);
                            if(value =='1')
                             selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData![0].name , amount:controller.subscriptionModel.subsData![0].amount );
-                           },
+                          */ },
                           child: subscriptionPlansView(
                               subscriptionData:
                                   controller.subscriptionModel.subsData[0]),
@@ -304,8 +310,9 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                       ),
                     ), */
                   ]),
-            ) :
-            Container(width: Get.width,height: Get.height,
+            );
+            } else {
+              return Container(width: Get.width,height: Get.height,
               color: Colors.white,
               child: Center(
                 child: CupertinoActivityIndicator(
@@ -313,6 +320,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                 ),
               ),
             );
+            }
           }),
     );
   }
@@ -473,7 +481,18 @@ class _SubscriptionViewState extends State<SubscriptionView> {
               onTap: () async {
                 {
                   Navigator.pop(context);
-                var options = {
+                  Get.to(WebViewContainer(url:'https://app.partypeople.in/easebuzz/easebuzz.php?api_name=initiate_payment'
+                      '&amount=${double.parse(amount)}'
+                      '&phone=8839053305'
+                      '&email=rajputm939@gmail.com'
+                      '&firstname=$name'
+                      '&country=india'
+                      '&state=MadhyPradesh'
+                      '&city=harda'
+                      '&order_id=1'
+                      '&zipcode=461441',));
+
+               /* var options = {
                     'key': 'rzp_test_qiTDenaoeqV1Zr',
                     // Replace with your Razorpay API key
                     'amount': (int.parse(amount)) * 100,
@@ -494,8 +513,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                   } catch (e) {
                     print(e.toString());
                   }
-
-
+                  */
 /*
                     String access_key = "555a2b009214573bd833feca997244f1721ac69d7f2b09685911bc943dcf5201";
                     String pay_mode = "test";

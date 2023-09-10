@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../individual_transction_report/view/transction_screen.dart';
 import '../../settings/view/settings.dart';
 import '../../widgets/block_unblock.dart';
+import '../../widgets/payment_response_view.dart';
 
 class IndividualDrawerView extends StatefulWidget {
   IndividualDrawerView({
@@ -79,6 +80,12 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 child: ListView(children: [
+
+                  CustomOptionWidget(
+                    title: 'Edit Profile',
+                    icon: Icons.edit,
+                    onTap: () => Get.to(  PaymentResponseView(isSuccess: '1',orderId: 'Payment is Successful.',)),
+                  ),
                   CustomOptionWidget(
                     title: 'Edit Profile',
                     icon: Icons.edit,
