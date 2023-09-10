@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:partypeopleindividual/login/views/login_screen.dart';
 import 'package:partypeopleindividual/otp/model/otp_model.dart';
 
@@ -234,8 +231,8 @@ class APIService extends GetxController {
     update();
   }
 
-  /// do block/unblock people
-  Future<void> deleteChatPeople(String id) async {
+  /// delete chat  people
+  Future<void> deleteChatPeople(String id,Function onDelete) async {
     try {
       http.Response response = await http.post(
           Uri.parse(API.deleteChatPeopleApi),
@@ -249,17 +246,17 @@ class APIService extends GetxController {
       print("response of delete data ${response.body}");
 
       if (jsonDecode(response.body)['status'] == 1 ) {
+        onDelete();
         print("User blocked successfully");
         Get.snackbar('Deleted' , 'You have successfully Deleted person ',);
       }
       else {
-        print("User Unblocked failed ${response.body}");
+        print("people from chatList delete failed ${response.body}");
         Get.snackbar('Opps!!!' , 'Process failed ',);
       }
     } on Exception catch (e) {
-      print('Exception in blocked data ${e}');
+      print('Exception in chatList  delete data ${e}');
     }
-    update();
   }
 
 

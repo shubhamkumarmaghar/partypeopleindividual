@@ -12,6 +12,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
+import 'package:partypeopleindividual/widgets/pop_up_dialogs.dart';
 
 import '../../api_helper_service.dart';
 import '../../chatList/model/user_chat_list.dart';
@@ -627,6 +628,8 @@ class ChatScreenController  extends GetxController{
   }
 
   Future<void> deleteAllMessage(String usernameID) async {
+    showLoaderDialog();
+
     try {
       log('gvkhk ');
       await firestore
@@ -640,7 +643,7 @@ class ChatScreenController  extends GetxController{
         list.forEach((element) async {
           log('gvkhk ${element.msg}');
 
-           if(element.fromDeleteStatus == '0')
+           if(element.fromDeleteStatus == '0' || element.fromDeleteStatus == myUsername+myUserId)
     {
       if(element.toId == myUsername+myUserId )
       {
@@ -656,6 +659,7 @@ class ChatScreenController  extends GetxController{
             .update({'fromDeleteStatus': myUsername + myUserId});
       }
     }
+
     else {
       if (element.toId == myUsername + myUserId) {
         await firestore
@@ -680,10 +684,14 @@ class ChatScreenController  extends GetxController{
       //  String? lastMessage = _message?.msg;
       //  log('last message $lastMessage');
       });
+    Get.back();
+
     }
+
     catch(e)
     {
       log('error message $e');
+      Get.back();
     }
 
   }

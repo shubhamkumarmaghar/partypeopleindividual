@@ -134,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen>
                           CustomTextField(
                             validate: true,
                             hintText: 'Username',
-                           maxLength: 10,
+                          // maxLength: 10,
                             maxLines: 1,
                             obscureText: false,
                             icon: Icons.person,

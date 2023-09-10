@@ -92,7 +92,7 @@ showDialogBox() {
   }
 }*/
 
-
+/// remove people from chat list
   static  Future<void> showDeleteAlertDialog(BuildContext context,String user_id, String status,Function onDelete,Function onDeleteAllChat
       ) async {
     AwesomeDialog(
@@ -106,10 +106,12 @@ showDialogBox() {
       btnOkText: "$status",
       btnOkOnPress: () {
         APIService api = APIService();
-        api.deleteChatPeople(user_id ?? '');
+        api.deleteChatPeople(user_id ?? '',(){
+          //onDeleteAllChat();
+          onDelete();
+        });
 
-        //onDeleteAllChat();
-        onDelete();
+
       },
       btnCancelText: "Cancel",
       btnCancelOnPress: () {
@@ -118,4 +120,25 @@ showDialogBox() {
     ).show();
   }
 
+
+  static  Future<void> DeleteAllChatAlertDialog(BuildContext context,Function onDeleteAllChat
+      ) async {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.info,
+      animType: AnimType.BOTTOMSLIDE,
+      title: 'Delete All Chat?',
+      desc: 'Are you sure you want to Delete All chat ?',
+      titleTextStyle: TextStyle(fontSize: 22, color: Colors.black),
+      descTextStyle: TextStyle(fontSize: 18, color: Colors.black54),
+      btnOkText: "Delete",
+      btnOkOnPress: () {
+          onDeleteAllChat();
+      },
+      btnCancelText: "Cancel",
+      btnCancelOnPress: () {
+        // Navigator.pop(context);
+      },
+    ).show();
+  }
 }

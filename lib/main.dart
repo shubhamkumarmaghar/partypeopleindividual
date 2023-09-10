@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +14,28 @@ import 'package:sizer/sizer.dart';
 
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  return;
+  await Firebase.initializeApp();
+  FlutterLocalNotificationsPlugin pluginInstance =
+  FlutterLocalNotificationsPlugin();
+  var init = const InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/launcher_icon')
+  );
+  pluginInstance.initialize(init);
+  AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
+    'ch_id',
+    'ch_name',
+    importance: Importance.high,
+    priority: Priority.high,
+    playSound: true,
+  );
+  NotificationDetails platformSpec =
+
+  NotificationDetails(android: androidSpec);
+
+  await pluginInstance.show(
+      0, message.data['title'], message.data['body'], platformSpec);
+  log('A background msg just showed ${message.data}');
+  //return;
 }
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,9 +50,14 @@ void main() async {
       android: AndroidInitializationSettings('@mipmap/launcher_icon')
   );
   pluginInstance.initialize(init);
-
   NotificationSettings settings = await messaging.requestPermission();
-
+  AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
+    'ch_id',
+    'ch_name',
+    importance: Importance.high,
+    priority: Priority.high,
+    playSound: true,
+  );
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     print('User granted permission');
   } else {
@@ -38,17 +66,10 @@ void main() async {
   messaging.getToken().then((value) {
     print('Firebase Messaging Token : ${value}');
   });
+
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     print(message.messageType);
     print(message.data);
-    AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
-      'ch_id',
-      'ch_name',
-      importance: Importance.high,
-      priority: Priority.high,
-      playSound: true,
-    );
-
     NotificationDetails platformSpec =
     NotificationDetails(android: androidSpec);
 

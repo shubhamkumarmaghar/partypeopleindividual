@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
+import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
 import '../../individual_profile_screen/profilephotoview.dart';
 import '../../individual_subscription/view/subscription_view.dart';
 import '../../widgets/block_unblock.dart';
@@ -154,28 +155,30 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                     SizedBox(
                       width: 13.sp,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          controller.getUserModel?.data?.username ?? "",
-                          style: TextStyle(
-                              fontSize: 11.sp, fontWeight: FontWeight.w600),
-                        ),
-                        controller.getUserModel?.data?.onlineStatus == 'on'
-                            ? Text(
-                                'Online',
-                                style: TextStyle(
-                                    fontSize: 9.sp,
-                                    fontWeight: FontWeight.w500),
-                              )
-                            : Text(
-                                'Offline',
-                                style: TextStyle(
-                                    fontSize: 9.sp,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                      ],
+                    GestureDetector(onTap: (){Get.to(IndividualPeopleProfile(),arguments:controller.getUserModel?.data?.id );},
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            controller.getUserModel?.data?.username ?? "",
+                            style: TextStyle(
+                                fontSize: 11.sp, fontWeight: FontWeight.w600),
+                          ),
+                          controller.getUserModel?.data?.onlineStatus == 'on'
+                              ? Text(
+                                  'Online',
+                                  style: TextStyle(
+                                      fontSize: 9.sp,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              : Text(
+                                  'Offline',
+                                  style: TextStyle(
+                                      fontSize: 9.sp,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                        ],
+                      ),
                     )
                   ],
                 ),
@@ -191,7 +194,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                         value: 1,
                         // row has two child icon and text.
                         child: GestureDetector(
-                          onTap: (){
+                          onTap: (){ Navigator.pop(context);
                             Alertdialogs.showBlockedAlertDialog(context, '${controller.getUserModel?.data?.id}', 'Block');
                           },
                           child: Row(
@@ -212,7 +215,10 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                         // row has two child icon and text
                         child: GestureDetector(
                           onTap: (){
-                          controller.deleteAllMessage('${controller.getUserModel?.data?.username}${controller.getUserModel?.data?.id}');
+                            Navigator.pop(context);
+                            Alertdialogs.DeleteAllChatAlertDialog(context,(){  controller.deleteAllMessage('${controller.getUserModel?.data?.username}${controller.getUserModel?.data?.id}');
+                            });
+                         // controller.deleteAllMessage('${controller.getUserModel?.data?.username}${controller.getUserModel?.data?.id}');
                           },
                           child: Row(
                             children: [
@@ -412,7 +418,8 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                             if (plan == 'Yes') {
                               if (newUser == '1') {
                                 if (_textController.text.isNotEmpty) {
-                                  if (listmessage.isEmpty) {
+                                  if (controller.getUserModel?.data
+                                      ?.chatUserAvailableStatus == '0') {
                                     if (controller.userId != '0') {
                                       controller.addChatUserToList();
                                     }
@@ -429,7 +436,8 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                               } else {
                                 if (me == true) {
                                   if (_textController.text.isNotEmpty) {
-                                    if (listmessage.isEmpty) {
+                                    if (controller.getUserModel?.data
+                                        ?.chatUserAvailableStatus == '0') {
                                       if (controller.userId != '0') {
                                         controller.addChatUserToList();
                                       }
@@ -454,7 +462,8 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                             }
                             else {
                               if (_textController.text.isNotEmpty) {
-                                if (listmessage.isEmpty) {
+                                if (controller.getUserModel?.data
+                                    ?.chatUserAvailableStatus == '0') {
                                   if (controller.userId != '0') {
                                     controller.addChatUserToList();
                                   }

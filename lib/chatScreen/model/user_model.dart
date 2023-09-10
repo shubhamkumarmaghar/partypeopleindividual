@@ -112,6 +112,7 @@ class Data {
   String? privacyOnline;
   String? notification;
   dynamic onlineTimeExpiry;
+  String? chatUserAvailableStatus;
 
   Data.fromJson(Map<String, dynamic> json){
     id = json['id'];
@@ -157,6 +158,7 @@ class Data {
     privacyOnline = json['privacy_online'];
     notification = json['notification'];
     onlineTimeExpiry = json['online_time_expiry'];
+    chatUserAvailableStatus = json['chat_user_available_status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -204,6 +206,7 @@ class Data {
     _data['privacy_online'] = privacyOnline;
     _data['notification'] = notification;
     _data['online_time_expiry'] = onlineTimeExpiry;
+    _data['chat_user_available_status'] = chatUserAvailableStatus;
     return _data;
   }
 }
