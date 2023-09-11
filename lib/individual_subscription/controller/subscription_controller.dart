@@ -4,12 +4,14 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../individual_profile/controller/individual_profile_controller.dart';
 import '../model/SubscriptionModel.dart';
 import 'package:http/http.dart' as http;
 
 class SubscriptionController extends GetxController{
 
-
+  IndividualProfileController individualProfileController =
+  Get.put(IndividualProfileController());
  SubscriptionModel subscriptionModel = SubscriptionModel(subsData: []);
  List<SubscriptionData> subsList = [];
  int subsOrderId = 0;
@@ -19,6 +21,7 @@ class SubscriptionController extends GetxController{
  void onInit(){
    super.onInit();
    getSubscriptionPlans();
+   individualProfileController.individualProfileData();
  }
  
  Future<void> getSubscriptionPlans() async{
@@ -95,9 +98,9 @@ class SubscriptionController extends GetxController{
    return value ;
  }
 
-  Future<void> updateSubsPaymentStatus({required int subsId,required int paymentStatus,required String paymentResponse,required String paymentId}) async{
+  Future<void> updateSubsPaymentStatus({required String subsId,required String paymentStatus,}) async{
    try {
-     log('$subsId  $paymentStatus $paymentResponse $paymentId');
+     log('$subsId  $paymentStatus ');
      final response = await http.post(Uri.parse(
          'https://app.partypeople.in/v1/subscription/user_subscription_plan_status_update'),
          headers: <String, String>{
@@ -105,8 +108,9 @@ class SubscriptionController extends GetxController{
          },
          body: { 'subscription_purchase_id':subsId?.toString(),
                   'payment_status':paymentStatus?.toString(),
-                  'payment_response':paymentResponse?.toString(),
-                  'payment_id' :paymentId?.toString()}
+                //  'payment_response':paymentResponse?.toString(),
+                 // 'payment_id' :paymentId?.toString()
+                }
      );
      log('STATUS CODE :: ${response.statusCode}');
      if (response.statusCode == 200) {

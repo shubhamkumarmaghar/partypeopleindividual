@@ -81,11 +81,11 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                 height: MediaQuery.of(context).size.height,
                 child: ListView(children: [
 
-                  CustomOptionWidget(
+                 /* CustomOptionWidget(
                     title: 'Edit Profile',
                     icon: Icons.edit,
                     onTap: () => Get.to(  PaymentResponseView(isSuccess: '1',orderId: 'Payment is Successful.',)),
-                  ),
+                  ),*/
                   CustomOptionWidget(
                     title: 'Edit Profile',
                     icon: Icons.edit,

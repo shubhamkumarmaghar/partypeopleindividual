@@ -75,6 +75,7 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   dropdown_button2: ^2.1.4
   webview_flutter: ^4.2.4
+  share_plus: ^7.1.0
 
 
 dev_dependencies:

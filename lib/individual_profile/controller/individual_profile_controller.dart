@@ -16,7 +16,9 @@ import '../../widgets/submit_application.dart';
 class IndividualProfileController extends GetxController {
   RxString coverPhotoURL = ''.obs;
   RxString profilePhotoURL = ''.obs;
+
   RxString username = ''.obs;
+  RxString userMobile = ''.obs;
   RxString userId = ''.obs;
   RxString firstname = ''.obs;
   RxString lastname = ''.obs;
@@ -345,6 +347,7 @@ class IndividualProfileController extends GetxController {
           state.value = user['state'] ?? '';
           GetStorage().write('state', state.value);
           username.value = response['user_name'];
+          userMobile.value = response['user_phone_number'];
           userId.value = user['user_id'];
           gender.value = user['gender'] ?? '';
           getPrefiledData = user['org_amenitie_id']?.split(',');

@@ -27,11 +27,11 @@ class SubscriptionView extends StatefulWidget {
 }
 
 class _SubscriptionViewState extends State<SubscriptionView> {
-  static MethodChannel _channel = MethodChannel('easebuzz');
+//  static MethodChannel _channel = MethodChannel('easebuzz');
  SubscriptionController subController = Get.put(SubscriptionController());
-  Razorpay _razorpay = Razorpay();
+ // Razorpay _razorpay = Razorpay();
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+ /* void _handlePaymentSuccess(PaymentSuccessResponse response) {
     print('Payment Successul ${response.signature} (${response.paymentId})');
     subController.updateSubsPaymentStatus(subsId: subController.subsOrderId, paymentStatus: 1, paymentResponse: response.orderId.toString(), paymentId: response.paymentId.toString(),);
     //SubscriptionController.updateSubsPaymentStatus(subsId: subsId, paymentStatus: paymentStatus, paymentResponse: paymentResponse, paymentId: paymentId)
@@ -56,14 +56,14 @@ class _SubscriptionViewState extends State<SubscriptionView> {
     } catch (e) {
       print('Error in external wallet callback: $e');
     }
-  }
+  }*/
 
   @override
   void initState() {
     super.initState();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  //  _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+  //  _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+  //  _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
 
   }
 
@@ -71,7 +71,8 @@ class _SubscriptionViewState extends State<SubscriptionView> {
   @override
   void dispose() {
     super.dispose();
-    _razorpay.clear();
+
+   // _razorpay.clear();
   }
   @override
   Widget build(BuildContext context) {
@@ -173,11 +174,11 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                           onTap: () async{
                             selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData![0].name , amount:controller.subscriptionModel.subsData![0].amount );
 
-                            /*
+
                             String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData![0].id);
                            if(value =='1')
                             selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData![0].name , amount:controller.subscriptionModel.subsData![0].amount );
-                          */ },
+                           },
                           child: subscriptionPlansView(
                               subscriptionData:
                                   controller.subscriptionModel.subsData[0]),
@@ -482,15 +483,17 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                 {
                   Navigator.pop(context);
                   Get.to(WebViewContainer(url:'https://app.partypeople.in/easebuzz/easebuzz.php?api_name=initiate_payment'
-                      '&amount=${double.parse(amount)}'
-                      '&phone=8839053305'
+                      //'&amount=${double.parse(amount)}'
+                      '&amount=${double.parse('10')}'
+                      '&phone=${subController.individualProfileController.userMobile}'
                       '&email=rajputm939@gmail.com'
-                      '&firstname=$name'
-                      '&country=india'
-                      '&state=MadhyPradesh'
-                      '&city=harda'
-                      '&order_id=1'
-                      '&zipcode=461441',));
+                      '&firstname=${subController.individualProfileController.username}'
+                      '&country=${subController.individualProfileController.country}'
+                      '&state=${subController.individualProfileController.state}'
+                      '&city=${subController.individualProfileController.city}'
+                      '&order_id=${subController.subsOrderId}'
+                      '&zipcode=${subController.individualProfileController.pincode}'
+                      '&usertype=Individual'));
 
                /* var options = {
                     'key': 'rzp_test_qiTDenaoeqV1Zr',
