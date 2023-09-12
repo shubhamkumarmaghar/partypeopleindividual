@@ -79,7 +79,7 @@ class _ActiveCitySelectState extends State<ActiveCitySelect> {
                 .map<DropdownMenuItem<String>>((value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Text(value,style: TextStyle(color: Colors.black ,fontWeight:value.toString() == 'Delhi'?FontWeight.w700:FontWeight.normal )),
               );
             }).toList(),
           ),

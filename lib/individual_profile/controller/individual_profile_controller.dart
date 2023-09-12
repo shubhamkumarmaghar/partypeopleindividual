@@ -21,6 +21,7 @@ class IndividualProfileController extends GetxController {
   RxString userMobile = ''.obs;
   RxString userId = ''.obs;
   RxString firstname = ''.obs;
+  RxString email = ''.obs;
   RxString lastname = ''.obs;
   RxString bio = ''.obs;
   RxString description = ''.obs;
@@ -65,6 +66,14 @@ class IndividualProfileController extends GetxController {
 
     if (firstname.value.isEmpty) {
       Get.snackbar('Name Error', 'First name should not be empty');
+      return;
+    }
+    if (email.value.isEmpty || !email.value.contains('@')) {
+      Get.snackbar('Email Error', 'Email  should not be empty');
+      return;
+    }
+    if ( !email.value.contains('@')) {
+      Get.snackbar('Email Error', 'Please enter valid email ');
       return;
     }
 
@@ -133,6 +142,7 @@ class IndividualProfileController extends GetxController {
         'bio': description.value.toString(),
         'description':description.value.toString(),
         'dob': dob.value.toString(),
+        'email':email.value.toString(),
         'pincode': pincode.value.toString(),
         'occupation': occupation.value.toString(),
         'qualification': qualification.value.toString(),
@@ -174,6 +184,17 @@ class IndividualProfileController extends GetxController {
       Get.snackbar('Bio Error', 'Bio should not be empty');
       return;
     }
+
+    if (email.value.isEmpty || !email.value.contains('@')) {
+      Get.snackbar('Email Error', 'Email  should not be empty');
+      return;
+    }
+
+    if ( !email.value.contains('@')) {
+      Get.snackbar('Email Error', 'Please enter valid email ');
+      return;
+    }
+
 
     if (dob.value.isEmpty) {
       Get.snackbar('DOB Error', 'Date of birth should not be empty');
@@ -225,6 +246,7 @@ class IndividualProfileController extends GetxController {
         'cover_photo': coverPhotoURL.value.toString(),
         'profile_photo': profilePhotoURL.value.toString(),
         'name': firstname.value.toString() + ' ' + lastname.value.toString(),
+        'email':email.value.toString(),
         'bio': description.value.toString(),
         'description': description.value.toString(),
         'dob': dob.value.toString(),
@@ -340,6 +362,7 @@ class IndividualProfileController extends GetxController {
           bio.value = user['bio'] ?? '';
           description.value = user['description'];
           dob.value = user['dob'] ?? '';
+          email.value = user['email'] ?? '';
           pincode.value = user['pincode'] ?? '';
           occupation.value = user['occupation'] ?? '';
           qualification.value = user['qualification'] ?? '';

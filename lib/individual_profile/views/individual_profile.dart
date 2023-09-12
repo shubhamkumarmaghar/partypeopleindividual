@@ -211,7 +211,8 @@ class _IndividualProfileState extends State<IndividualProfile> {
                                     individualProfileController
                                         .firstname.value = value;
                                   },
-                                  icon: Icons.person)),
+                                  icon: Icons.person,
+                                iconColor: Colors.red.shade900,)),
                           Expanded(
                               child: CustomTextField(
                                   validate: true,
@@ -221,7 +222,27 @@ class _IndividualProfileState extends State<IndividualProfile> {
                                     individualProfileController.lastname.value =
                                         value;
                                   },
-                                  icon: Icons.person)),
+                                  icon: Icons.person,
+                                iconColor: Colors.red.shade900,)),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                              child: CustomTextField(
+                                  validate: true,
+                                  hintText: 'Please Enter E-Mail',
+                                  obscureText: false,
+                                  initialValue:
+                                  individualProfileController
+                                      .email.value,
+                                  onChanged: (value) {
+                                    individualProfileController
+                                        .email.value = value;
+                                  },
+                                  icon: Icons.email,
+                                iconColor: Colors.red.shade900,
+                              )),
                         ],
                       ),
                       CustomTextField(
@@ -232,7 +253,9 @@ class _IndividualProfileState extends State<IndividualProfile> {
                           onChanged: (value) {
                             individualProfileController.description.value = value;
                           },
-                          maxLines: 3),
+                          maxLines: 3,
+                        iconColor: Colors.red.shade900,
+                      ),
 
                       Row(
                         children: [

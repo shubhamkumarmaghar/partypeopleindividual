@@ -37,6 +37,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   log('A background msg just showed ${message.data}');
   //return;
 }
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]);

@@ -228,7 +228,7 @@ class ProfileContainer extends StatelessWidget {
                     arguments: data.userId ?? "");
               } else {
                 Get.to(SubscriptionView(
-                  subText: 'Show who liked my profile',
+                  subText: 'Get complete access of visitors list and see who is interested in you ',
                   iconText:
                       'https://assets-v2.lottiefiles.com/a/dade640a-118b-11ee-bbfd-2b667fe34e14/wdWPPO8OuG.json',
                 ));

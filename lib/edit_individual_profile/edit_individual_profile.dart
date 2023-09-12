@@ -167,8 +167,8 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                 GestureDetector(
                                   onTap: () => _updatePhoto('cover'),
                                   child: individualProfileController
-                                              .photoStatusApproval.value ==
-                                          '0'
+                                              .photoStatusApproval.value !=
+                                          '1'
                                       ? Blur(
                                           blur: 2.5,
                                           child: Container(
@@ -238,8 +238,8 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         shape: BoxShape.circle,
                                       ),
                                       child: individualProfileController
-                                                  .photoStatusApproval.value ==
-                                              '0'
+                                                  .photoStatusApproval.value !=
+                                              '1'
                                           ? Blur(
                                               blur: 2.5,
                                               child: CircleAvatar(
@@ -321,7 +321,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                       width: 40,
                                       height: 40,
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
+                                       color:  Colors.grey.shade200,
                                         shape: BoxShape.circle,
                                         boxShadow: [
                                           BoxShadow(
@@ -355,7 +355,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         child: CircleAvatar(
                                           child: Icon(
                                             Icons.arrow_back,
-                                            color: Colors.grey.shade900,
+                                            color: Colors.red.shade900,
                                           ),
                                           backgroundColor: Colors.grey.shade200,
                                         )),
@@ -398,6 +398,23 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         icon: Icons.person)),
                               ],
                             ),
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: CustomTextField(
+                                        validate: true,
+                                        hintText: 'E-Mail',
+                                        obscureText: false,
+                                        initialValue:
+                                        individualProfileController
+                                            .email.value,
+                                        onChanged: (value) {
+                                          individualProfileController
+                                              .email.value = value;
+                                        },
+                                        icon: Icons.email)),
+                              ],
+                            ),
                             individualProfileController
                                         .descStatusApproval.value ==
                                     '0'
@@ -411,6 +428,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                             individualProfileController
                                                 .description.value,
                                         icon: Icons.description,
+                                        iconColor: Colors.red.shade900,
                                         onChanged: (value) {
                                           individualProfileController
                                               .description.value = value;
@@ -451,7 +469,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         text: individualProfileController
                                             .gender.value,
                                         icon: Icons.people_outline,
-                                        color: Colors.grey,
+
                                       )),
                                   //GenderSelect(),
                                 ),
@@ -600,7 +618,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                                           ),
                                                           backgroundColor:
                                                               amenity.selected
-                                                                  ? Colors.red
+                                                                  ? Colors.red.shade900
                                                                   : Colors.grey[
                                                                       400],
                                                         ),

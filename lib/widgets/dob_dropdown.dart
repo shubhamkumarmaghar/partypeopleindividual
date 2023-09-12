@@ -79,7 +79,7 @@ class _CustomDateFieldState extends State<CustomDateField> {
           ),
           Icon(
             widget.icon,
-            color: Colors.grey, // Standard grey for the icons
+            color: Colors.red.shade900, // Standard grey for the icons
           ),
           const SizedBox(width: 12.0),
           Expanded(

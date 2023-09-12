@@ -265,7 +265,12 @@ class _ChatListState extends State<ChatList> {
                                                   SizedBox(
                                                     height: 5,
                                                   ),
-                                                  Row(
+                                                 _message?.fromDeleteStatus!=controller
+                                                     .myUsername +
+                                                     controller
+                                                         .myUserId
+                                                         .toString()?
+                                                 Row(
                                                     children: [
                                                       _message?.fromId ==
                                                               controller
@@ -289,29 +294,32 @@ class _ChatListState extends State<ChatList> {
                                                                   size: 14.sp,
                                                                 )
                                                           : Container(),
-                                                      Text(
-                                                        _message != null
-                                                            ? ' ${_message!.msg}'
-                                                            : "",
-                                                        maxLines: 1,
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: const Color(
-                                                                0xFF434343),
-                                                            fontWeight: _message
-                                                                            ?.fromId ==
-                                                                        controller.myUsername +
-                                                                            controller.myUserId
-                                                                                .toString() ||
-                                                                    _message?.read !=
-                                                                        ''
-                                                                ? FontWeight
-                                                                    .normal
-                                                                : FontWeight
-                                                                    .bold),
+                                                      SizedBox(
+                                                        width: Get.width*0.65,
+                                                        child: Text(
+                                                          _message != null
+                                                              ? ' ${_message!.msg}'
+                                                              : "",
+                                                          maxLines: 1,
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              color: const Color(
+                                                                  0xFF434343),
+                                                              fontWeight: _message
+                                                                              ?.fromId ==
+                                                                          controller.myUsername +
+                                                                              controller.myUserId
+                                                                                  .toString() ||
+                                                                      _message?.read !=
+                                                                          ''
+                                                                  ? FontWeight
+                                                                      .normal
+                                                                  : FontWeight
+                                                                      .bold),
+                                                        ),
                                                       ),
                                                     ],
-                                                  ),
+                                                  ):Container(),
                                                 ],
                                               ),
                                             ],

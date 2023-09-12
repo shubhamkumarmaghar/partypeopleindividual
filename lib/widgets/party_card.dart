@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:math';
 
+import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -33,6 +35,7 @@ class PartyCard extends StatefulWidget {
 
 class _PartyCardState extends State<PartyCard>
     with SingleTickerProviderStateMixin {
+  late ConfettiController _controllerBottomCenter;
   String approvalStatus = GetStorage().read('approval_status')??'0';
   String newUser = GetStorage().read('newUser')??'0';
   String plan = GetStorage().read('plan_plan_expiry')??'Yes';
@@ -48,6 +51,8 @@ class _PartyCardState extends State<PartyCard>
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _colorAnimation =
         ColorTween(begin: Colors.white, end: Colors.red).animate(_controller);
+    _controllerBottomCenter =
+        ConfettiController(duration: const Duration(seconds: 10));
     _sizeAnimation = TweenSequence(
       <TweenSequenceItem<double>>[
         TweenSequenceItem<double>(
@@ -218,6 +223,7 @@ class _PartyCardState extends State<PartyCard>
                 ),
                 child: Stack(
                   children: [
+
                     Container(
                       margin: EdgeInsets.symmetric(
                         horizontal: Get.width * 0.03,
@@ -383,11 +389,13 @@ class _PartyCardState extends State<PartyCard>
                                       ),
                                       GestureDetector(
                                         onTap: () async {
+
                                           var data =
                                               await APIService.ongoingParty(
                                                   widget.party.id);
                                           if (data == true) {
                                             setState(() {});
+                                            _controllerBottomCenter.play();
                                             join = 'Joined';
                                           }
                                         },
@@ -493,6 +501,18 @@ class _PartyCardState extends State<PartyCard>
                                 color: Colors.red.shade900,
                                 onPressed: () {},
                               )),
+                    Align(alignment: Alignment.topCenter,
+                      child: ConfettiWidget(
+                        confettiController: _controllerBottomCenter,
+                        blastDirection: -pi ,
+                        emissionFrequency: 0.01,
+                        numberOfParticles: 20,
+                        maxBlastForce: 100,
+                        minBlastForce: 80,
+                        gravity: 0.3,
+                        blastDirectionality: BlastDirectionality.directional,
+                      ),
+                    )
                   ],
                 ),
               ),

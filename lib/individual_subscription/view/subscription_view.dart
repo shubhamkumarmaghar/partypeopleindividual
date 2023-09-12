@@ -137,8 +137,9 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                           fontSize: 20.sp,
                           fontWeight: FontWeight.w700),
                     ),
+                    SizedBox(height: Get.height * 0.02),
                     Text(
-                      'For People who want to [ see and search parties of other cities ], [Start chat - free for females] .',
+                      widget.subText,
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 12.sp,
@@ -157,24 +158,13 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                     Neumorphic(style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle(),
                         shape: NeumorphicShape.concave),child: Lottie.network(widget.iconText,width: Get.width*0.2,height: Get.width*0.2)),
                     SizedBox(height: 30,),
-                       Text(
-                        widget.subText,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                      ),
+
 
                     SizedBox(height: 30,),
                     CarouselSlider(
                       items: [
                         GestureDetector(
                           onTap: () async{
-                            selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData![0].name , amount:controller.subscriptionModel.subsData![0].amount );
-
-
                             String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData![0].id);
                            if(value =='1')
                             selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData![0].name , amount:controller.subscriptionModel.subsData![0].amount );
@@ -483,16 +473,16 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                 {
                   Navigator.pop(context);
                   Get.to(WebViewContainer(url:'https://app.partypeople.in/easebuzz/easebuzz.php?api_name=initiate_payment'
-                      //'&amount=${double.parse(amount)}'
-                      '&amount=${double.parse('10')}'
-                      '&phone=${subController.individualProfileController.userMobile}'
-                      '&email=rajputm939@gmail.com'
-                      '&firstname=${subController.individualProfileController.username}'
-                      '&country=${subController.individualProfileController.country}'
-                      '&state=${subController.individualProfileController.state}'
-                      '&city=${subController.individualProfileController.city}'
+                      '&amount=${double.parse(amount)}'
+                     // '&amount=${double.parse('10')}'
+                      '&phone=${subController.individualProfileController.userMobile.value}'
+                      '&email=${subController.individualProfileController.email.value}'
+                      '&firstname=${subController.individualProfileController.username.value}'
+                      '&country=${subController.individualProfileController.country.value}'
+                      '&state=${subController.individualProfileController.state.value}'
+                      '&city=${subController.individualProfileController.city.value}'
                       '&order_id=${subController.subsOrderId}'
-                      '&zipcode=${subController.individualProfileController.pincode}'
+                      '&zipcode=${subController.individualProfileController.pincode.value}'
                       '&usertype=Individual'));
 
                /* var options = {

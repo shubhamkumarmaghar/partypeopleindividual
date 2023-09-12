@@ -11,6 +11,7 @@ class CustomTextField extends StatefulWidget {
   final int? maxLength;
   final bool obscureText;
   var suffixIcon;
+  Color iconColor;
   final Function(String)? onChanged;
 
   CustomTextField({
@@ -24,7 +25,8 @@ class CustomTextField extends StatefulWidget {
     required this.icon,
     this.onChanged,
     this.maxLength,
-    this.initialValue, // Include new parameter in the constructor
+    this.initialValue,
+    this.iconColor=Colors.grey,// Include new parameter in the constructor
   });
 
   @override
@@ -161,7 +163,7 @@ class _CustomTextFieldState extends State<CustomTextField>
                 hintText: widget.hintText,
                 prefixIcon: Icon(
                   widget.icon,
-                  color: Colors.grey, // Standard grey for the icons
+                  color: Colors.red.shade900, // Standard grey for the icons
                 ),
                 suffixIcon: widget.suffixIcon,
                 hintStyle: TextStyle(

@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:intl/intl.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:sizer/sizer.dart';
 
@@ -135,9 +136,45 @@ class TransctionReport extends StatelessWidget {
             vertical: 10,horizontal: 10
           ),
           decoration: BoxDecoration(
-            color: data.paymentStatus =='1' ?Colors.red.shade900:Colors.grey.shade500,
+           color: data.paymentStatus =='1' ?Colors.red.shade900:Colors.grey.shade500,
             border: Border.all(color: data.paymentStatus =='1' ?Colors.red.shade900:Colors.grey.shade500),
             borderRadius: BorderRadius.circular(2.w),
+          /*    gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                /*    Color(0xfff2d5f7),
+                    Color(0xffe6acef),
+                    Color(0xffd982e6),
+                    Color(0xffcd59de),
+                    Color(0xffc02fd6),*/
+
+                /*  Color(0xffd1dce6),
+                    Color(0xffa2bace),
+                    Color(0xff7497b5),
+                    Color(0xff45759d),
+                    Color(0xff175284),
+*/
+                Color(0xffee216c),
+                Color(0xffee216c),
+                Color(0xffee216c),
+                Color(0xfff14d89),
+                Color(0xfff57aa7),
+                Color(0xfff8a6c4),
+                Color(0xfffcd3e2),
+                // Colors.red.shade800,
+                //Colors.red.shade700,
+                //Colors.red.shade500,
+                // Colors.red.shade400,
+                // Colors.red.shade300,
+                // Colors.black45,
+                //Colors.black54,
+                //   Colors.black87,
+                // Colors.black,
+              ]
+
+          ),
+*/
           ),
           child: Column(
             children: [
@@ -164,7 +201,7 @@ class TransctionReport extends StatelessWidget {
                                 style: TextStyle(fontSize: 10.sp),
                               ),
                              Text(
-                                ' ${data.planStartDate} ',
+                               dateConvert(data.planStartDate),
                                 style: TextStyle(
                                     fontSize: 11.sp, fontWeight: FontWeight.w500),
                               ),
@@ -179,8 +216,8 @@ class TransctionReport extends StatelessWidget {
                                 'Validity End: ',
                                 style: TextStyle(fontSize: 10.sp),
                               ),
-                              Text(
-                                '${data.planEndDate}',
+                              Text(dateConvert(data.planEndDate)
+                                ,
                                 style: TextStyle(
                                     fontSize: 11.sp, fontWeight: FontWeight.w500),
                               ),
@@ -216,7 +253,7 @@ class TransctionReport extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Row(
+                     /*   Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
@@ -234,21 +271,23 @@ class TransctionReport extends StatelessWidget {
                               width: 2.w,
                             ),
                           ],
-                        ),
+                        ),*/
                        SizedBox(
                           height: 0.5.h,
                         ),
                         Text(
-                          data.amount,
+                          '₹${data.amount}',
                           style: TextStyle(
-                              fontSize: 11.sp,
+                              fontSize: 24,
                               fontWeight: FontWeight.w500,
                               color: data.paymentStatus == '0'
                                   ? Colors.red
                                   : Colors.green),
                         ),
                         Image.network(data.paymentStatus =='0' ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Ffailed.png?alt=media&token=ceec68a2-0ff4-4bd1-9d7c-93f9e3bb07be':
-                        'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fsuccess.png?alt=media&token=67e29649-23fd-4b2d-8961-bffeaeda5495')
+                        'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fsuccess.png?alt=media&token=67e29649-23fd-4b2d-8961-bffeaeda5495',
+                            height: Get.width*0.2,
+                            width: Get.width*0.2,)
                       ],
                     ),
                   ),
@@ -373,6 +412,16 @@ class TransctionReport extends StatelessWidget {
       },);
   }
 
-
+String dateConvert(String date){
+  String dateTime;
+    if(date.isNotEmpty) {
+      DateTime datee = DateTime.parse(date);
+      dateTime = DateFormat('dd-MM-yyyy, h:mm a').format(datee);
+    }
+    else{
+      dateTime='NA';
+    }
+   return dateTime;
+}
 
 }

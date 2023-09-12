@@ -341,9 +341,9 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                             height: 20,
                           ),
                           Text(
-                            "Hobbies",
+                            "Interests",
                             style:
-                                TextStyle(color: Colors.black54, fontSize: 20),
+                                TextStyle(color: Colors.black, fontSize: 22,),
                           ),
                           controller.categoryLists.isEmpty
                               ? Padding(
@@ -425,7 +425,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                                                 ),
                                                               ),
                                                               backgroundColor:
-                                                                  Colors.red,
+                                                                  Colors.red.shade900,
                                                             )
                                                           : Visibility(visible: false,child: Container()),
                                                     );

@@ -154,8 +154,8 @@ class _IndividualProfileScreenViewState
                               children: <Widget>[
                                 //Cover Photo
                                 individualProfileController
-                                            .photoStatusApproval.value ==
-                                        '0'
+                                            .photoStatusApproval.value !=
+                                        '1'
                                     ? Blur(
                                         blur: 5.0,
                                         child: Container(
@@ -223,8 +223,8 @@ class _IndividualProfileScreenViewState
                                         shape: BoxShape.circle,
                                       ),
                                       child: individualProfileController
-                                                  .photoStatusApproval.value ==
-                                              '0'
+                                                  .photoStatusApproval.value !=
+                                              '1'
                                           ? Blur(
                                               blur: 2.5,
                                               child: CircleAvatar(
@@ -604,7 +604,7 @@ class _IndividualProfileScreenViewState
                                                                 backgroundColor:
                                                                     amenity.selected
                                                                         ? Colors
-                                                                            .red
+                                                                            .red.shade900
                                                                         : Colors
                                                                             .grey[400],
                                                               )

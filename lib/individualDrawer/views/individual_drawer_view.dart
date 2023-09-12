@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/edit_individual_profile/edit_individual_profile.dart';
 import 'package:partypeopleindividual/individual_blocked_report/view/blocked_report_screen.dart';
+import 'package:partypeopleindividual/individual_subscription/view/subscription_view.dart';
 import 'package:partypeopleindividual/login/views/login_screen.dart';
 import 'package:partypeopleindividual/visitInfo/views/visit_info_view.dart';
 import 'package:sizer/sizer.dart';
@@ -81,11 +82,11 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                 height: MediaQuery.of(context).size.height,
                 child: ListView(children: [
 
-                 /* CustomOptionWidget(
+                  CustomOptionWidget(
                     title: 'Edit Profile',
                     icon: Icons.edit,
-                    onTap: () => Get.to(  PaymentResponseView(isSuccess: '1',orderId: 'Payment is Successful.',)),
-                  ),*/
+                    onTap: () => Get.to(  SubscriptionView(subText: 'Get Subscription & get Unlimited chats and explore party mates .', iconText: 'https://assets-v2.lottiefiles.com/a/dade640a-118b-11ee-bbfd-2b667fe34e14/wdWPPO8OuG.json')),
+                  ),
                   CustomOptionWidget(
                     title: 'Edit Profile',
                     icon: Icons.edit,
@@ -112,7 +113,7 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     },
                   ),
                   CustomOptionWidget(
-                    title: 'Transction History',
+                    title: 'Transaction History',
                     icon: CupertinoIcons.list_bullet_below_rectangle,
                     onTap: () {
                       Get.to(TransctionReportedUsersView());

@@ -414,27 +414,10 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {
-                            if (plan == 'Yes') {
-                              if (newUser == '1') {
-                                if (_textController.text.isNotEmpty) {
-                                  if (controller.getUserModel?.data
-                                      ?.chatUserAvailableStatus == '0') {
-                                    if (controller.userId != '0') {
-                                      controller.addChatUserToList();
-                                    }
-                                  }
-                                  controller.sendMessage(
-                                      controller.getUserModel,
-                                      _textController.text,
-                                      Type.text);
-                                  _textController.text = '';
-                                } else {
-                                  Get.snackbar(
-                                      'Message', 'Please type here first');
-                                }
-                              } else {
-                                if (me == true) {
+                          onTap: () async{
+                            if(controller.getUserModel?.data?.fromBlockStatus=='0') {
+                              if (plan == 'Yes') {
+                                if (newUser == '1') {
                                   if (_textController.text.isNotEmpty) {
                                     if (controller.getUserModel?.data
                                         ?.chatUserAvailableStatus == '0') {
@@ -442,39 +425,76 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                         controller.addChatUserToList();
                                       }
                                     }
-                                    controller.sendMessage(
+                                    await controller.sendMessage(
                                         controller.getUserModel,
                                         _textController.text,
                                         Type.text);
                                     _textController.text = '';
+                                    await chatScreenController
+                                        .getLastMessageString(
+                                        usernameID: indiUsername +
+                                            widget.id.toString(),
+                                        id: widget.id.toString());
                                   } else {
                                     Get.snackbar(
                                         'Message', 'Please type here first');
                                   }
                                 } else {
-                                  Get.to(SubscriptionView(
-                                    subText: 'For Initiate chat or reply ',
-                                    iconText:
-                                        'https://assets-v2.lottiefiles.com/a/5e232bde-1182-11ee-b778-8f3af2eeaa9d/4xBFTBXlHa.json',
-                                  ));
-                                }
-                              }
-                            }
-                            else {
-                              if (_textController.text.isNotEmpty) {
-                                if (controller.getUserModel?.data
-                                    ?.chatUserAvailableStatus == '0') {
-                                  if (controller.userId != '0') {
-                                    controller.addChatUserToList();
+                                  if (me == true) {
+                                    if (_textController.text.isNotEmpty) {
+                                      if (controller.getUserModel?.data
+                                          ?.chatUserAvailableStatus == '0') {
+                                        if (controller.userId != '0') {
+                                          controller.addChatUserToList();
+                                        }
+                                      }
+                                      await controller.sendMessage(
+                                          controller.getUserModel,
+                                          _textController.text,
+                                          Type.text);
+                                      _textController.text = '';
+                                      await chatScreenController
+                                          .getLastMessageString(
+                                          usernameID: indiUsername +
+                                              widget.id.toString(),
+                                          id: widget.id.toString());
+                                    } else {
+                                      Get.snackbar(
+                                          'Message', 'Please type here first');
+                                    }
+                                  } else {
+                                    Get.to(SubscriptionView(
+                                      subText: 'Get Subscription & get Unlimited chats and explore party mates . ',
+                                      iconText:
+                                      'https://assets-v2.lottiefiles.com/a/5e232bde-1182-11ee-b778-8f3af2eeaa9d/4xBFTBXlHa.json',
+                                    ));
                                   }
                                 }
-                                controller.sendMessage(controller.getUserModel,
-                                    _textController.text, Type.text);
-                                _textController.text = '';
-                              } else {
-                                Get.snackbar(
-                                    'Message', 'Please type here first');
                               }
+                              else {
+                                if (_textController.text.isNotEmpty) {
+                                  if (controller.getUserModel?.data
+                                      ?.chatUserAvailableStatus == '0') {
+                                    if (controller.userId != '0') {
+                                      controller.addChatUserToList();
+                                    }
+                                  }
+                                  await controller.sendMessage(
+                                      controller.getUserModel,
+                                      _textController.text, Type.text);
+                                  _textController.text = '';
+                                  await chatScreenController
+                                      .getLastMessageString(
+                                      usernameID: indiUsername +
+                                          widget.id.toString(),
+                                      id: widget.id.toString());
+                                } else {
+                                  Get.snackbar(
+                                      'Message', 'Please type here first');
+                                }
+                              }
+                            }else{
+                              Get.snackbar('Sorry!!!', 'You are blocked , You can not send message');
                             }
                           },
                           child: Container(
