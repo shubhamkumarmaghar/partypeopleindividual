@@ -55,7 +55,7 @@ class _ShowSubmitMessageState extends State<ShowSubmitMessage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-            const Text(
+         /*   const Text(
               "We have received your application. It will be approved within 24 hours.",
               style: TextStyle(
                 fontSize: 20,
@@ -64,7 +64,7 @@ class _ShowSubmitMessageState extends State<ShowSubmitMessage> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 20),*/
             const Text(
               "If not approved, Please contact us",
               style: TextStyle(

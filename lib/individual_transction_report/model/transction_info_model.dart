@@ -41,6 +41,7 @@ class Data {
     required this.paymentId,
     required this.planExpiredStatus,
     required this.planActiveStatus,
+    required this.orderId
   });
   late final String id;
   late final String subscriptionId;
@@ -56,6 +57,7 @@ class Data {
   late final dynamic paymentId;
   late final String planExpiredStatus;
   late final String planActiveStatus;
+  late final String orderId;
 
   Data.fromJson(Map<String, dynamic> json){
     id = json['id'];
@@ -72,6 +74,7 @@ class Data {
     paymentId = json['payment_id'];
     planExpiredStatus = json['plan_expired_status'];
     planActiveStatus = json['plan_active_status'];
+    orderId = json['order_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -90,6 +93,7 @@ class Data {
     _data['payment_id'] = paymentId;
     _data['plan_expired_status'] = planExpiredStatus;
     _data['plan_active_status'] = planActiveStatus;
+    _data['order_id']= orderId;
     return _data;
   }
 }

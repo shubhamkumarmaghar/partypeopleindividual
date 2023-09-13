@@ -233,7 +233,7 @@ class TransctionReport extends StatelessWidget {
                                 style: TextStyle(fontSize: 10.sp),
                               ),
                               Text(
-                                '${data.paymentId}',
+                                '${data.orderId}',
                                 style: TextStyle(
                                     fontSize: 11.sp, fontWeight: FontWeight.w500),
                               ),
@@ -280,11 +280,11 @@ class TransctionReport extends StatelessWidget {
                           style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w500,
-                              color: data.paymentStatus == '0'
+                              color: data.paymentStatus == '3'
                                   ? Colors.red
                                   : Colors.green),
                         ),
-                        Image.network(data.paymentStatus =='0' ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Ffailed.png?alt=media&token=ceec68a2-0ff4-4bd1-9d7c-93f9e3bb07be':
+                        Image.network(data.paymentStatus =='3' ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Ffailed.png?alt=media&token=ceec68a2-0ff4-4bd1-9d7c-93f9e3bb07be':
                         'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fsuccess.png?alt=media&token=67e29649-23fd-4b2d-8961-bffeaeda5495',
                             height: Get.width*0.2,
                             width: Get.width*0.2,)
@@ -295,14 +295,17 @@ class TransctionReport extends StatelessWidget {
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(child: Row(children: [Text(
-                    'Current Status : ',
-                    style: TextStyle(fontSize: 10.sp,color: Colors.white),
+                  Visibility(
+                    visible:data.paymentStatus !='3' ,
+                    child: Container(child: Row(children: [Text(
+                      'Current Status : ',
+                      style: TextStyle(fontSize: 10.sp,color: Colors.white),
+                    ),
+                      Text( data.planExpiredStatus == 'No' ?'Active' : 'Expired',
+                        style: TextStyle(
+                            fontSize: 11.sp, fontWeight: FontWeight.w500),
+                      ),]),),
                   ),
-                    Text( data.planExpiredStatus == 'No' ?'Active' : 'Expired',
-                      style: TextStyle(
-                          fontSize: 11.sp, fontWeight: FontWeight.w500),
-                    ),]),),
                   Container(
                     child: Row(
                       children: [

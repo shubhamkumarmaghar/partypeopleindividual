@@ -85,7 +85,8 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                   CustomOptionWidget(
                     title: 'Edit Profile',
                     icon: Icons.edit,
-                    onTap: () => Get.to(  SubscriptionView(subText: 'Get Subscription & get Unlimited chats and explore party mates .', iconText: 'https://assets-v2.lottiefiles.com/a/dade640a-118b-11ee-bbfd-2b667fe34e14/wdWPPO8OuG.json')),
+                    onTap: () => Get.to(
+                        PaymentResponseView(amount: '10',isSuccess: '1',orderId: '5jvjfbjbjfkn',)),
                   ),
                   CustomOptionWidget(
                     title: 'Edit Profile',
@@ -129,13 +130,13 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                       );
                     },
                   ),
-                  CustomOptionWidget(
+               /*   CustomOptionWidget(
                     title: 'Frequently Asked Questions',
                     icon: Icons.question_answer,
                     onTap: () {
                       _launchURL('http://partypeople.in');
                     },
-                  ),
+                  ),*/
                   CustomOptionWidget(
                     title: 'Need Any Help?',
                     icon: Icons.help_center,

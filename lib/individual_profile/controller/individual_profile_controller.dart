@@ -373,6 +373,7 @@ class IndividualProfileController extends GetxController {
           userMobile.value = response['user_phone_number'];
           userId.value = user['user_id'];
           gender.value = user['gender'] ?? '';
+          GetStorage().write("myGender", gender.value.toString());
           getPrefiledData = user['org_amenitie_id']?.split(',');
           print("indi amen :=> $getPrefiledData");
           city.value = user['city'] ?? '';

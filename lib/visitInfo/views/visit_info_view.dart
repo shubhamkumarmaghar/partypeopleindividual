@@ -121,7 +121,7 @@ class _VisitInfoViewState extends State<VisitInfoView> {
                               child: ProfileContainer(
                                   dataList:
                                       controller.visiterdataModel.data ?? [],
-                                  type: type))
+                                  type: type,))
                           : loder();
                     },
                   ),
@@ -203,12 +203,13 @@ class ProfileContainer extends StatelessWidget {
   String approvalStatus = GetStorage().read('approval_status');
   String newUser = GetStorage().read('newUser');
   String plan = GetStorage().read('plan_plan_expiry');
+  String gender = GetStorage().read('myGender')??'Male';
 
   ProfileContainer({required this.dataList, required this.type});
 
   List<VisiterInfoData> dataList;
   String type;
-
+  late VisiterInfoData data ;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -217,7 +218,7 @@ class ProfileContainer extends StatelessWidget {
       child: ListView.builder(
         itemCount: dataList.length,
         itemBuilder: (context, index) {
-          VisiterInfoData data = dataList[index];
+           data = dataList[index];
           var dateAndTime = data.date?.split(' ');
           String? time = dateAndTime?[1];
           String? date = dateAndTime?[0];
@@ -242,14 +243,9 @@ class ProfileContainer extends StatelessWidget {
                   child: Row(
                     children: [
                       Blur(
-                          blur: type == '3'|| type =='1'
-                              ? newUser == '0'
-                                  ? plan == 'No'
-                                      ? 0
-                                      : 2.5
-                                  : 2.5
-                              : 0,
-                          child: Stack(
+                          blur:getCondition() == 1 ?0:2.5,
+
+            child: Stack(
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(
@@ -308,13 +304,7 @@ class ProfileContainer extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Blur(
-                            blur: type == '3' || type == '1'
-                                ? newUser == '0'
-                                    ? plan == 'No'
-                                        ? 0
-                                        : 2.5
-                                    : 0
-                                : 0,
+                            blur:getCondition() == 1 ?0:2.5,
                             child: Text(
                               data.username ?? '',
                               style: TextStyle(
@@ -367,19 +357,28 @@ class ProfileContainer extends StatelessWidget {
 
   int getCondition() {
     int value = 0;
-    if (type == '3' || type == '1') {
-      if (newUser == '0') {
-        if (plan == 'Yes') {
-          value = 0;
+
+      if (type == '1' || type == '3') {
+        if(gender =='Male') {
+        if (newUser == '0') {
+          if (plan == 'Yes') {
+            value = 0;
+          } else {
+            value = 1;
+          }
         } else {
           value = 1;
         }
-      } else {
+      }
+      else {
         value = 1;
       }
-    } else {
+    }
+    else{
       value = 1;
     }
+
+
     return value;
   }
 

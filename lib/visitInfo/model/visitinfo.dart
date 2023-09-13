@@ -37,6 +37,7 @@ class VisiterInfoData {
   dynamic profilePicture;
   String? likeunlike;
   String? date;
+  String? gender;
   VisiterInfoData(
       {this.id,
         this.userId,
@@ -45,7 +46,8 @@ class VisiterInfoData {
         this.username,
         this.profilePicture,
       this.likeunlike,
-      this.date});
+      this.date,
+      this.gender});
 
   VisiterInfoData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -56,6 +58,7 @@ class VisiterInfoData {
     profilePicture = json['profile_picture'];
     likeunlike = json["like_unlike"];
     date = json["date"];
+    gender=json['gender'];
   }
 
   Map<String, dynamic> toJson() {
@@ -67,6 +70,7 @@ class VisiterInfoData {
     data['username'] = this.username;
     data['profile_picture'] = this.profilePicture;
     data['date'] = this.date;
+    data['gender']=this.gender;
     return data;
   }
 }

@@ -91,11 +91,15 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
 
               //  controller.update();
 
-              } else if (jsonResponse['status'] == 1 &&
+              }
+              else if (jsonResponse['status'] == 1 &&
                   jsonResponse['message'] == ('User unliked successfully')) {
                 print('User unlike successfully');
                 isLiked = true;
-                widget.likeStatus = '1';
+                widget.likeStatus = '0';
+                setState(() {
+
+                });
               } else {
                 print('Failed to like/ unlike ');
                 isLiked = true;

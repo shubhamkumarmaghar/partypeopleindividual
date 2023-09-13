@@ -68,6 +68,7 @@ class Data {
     required this.privacyOnline,
     required this.notification,
     required this.onlineTimeExpiry,
+    required this.fromBlockStatus
   });
   String? id;
   String? uniqueId;
@@ -113,6 +114,8 @@ class Data {
   String? notification;
   dynamic onlineTimeExpiry;
   String? chatUserAvailableStatus;
+  String? fromBlockStatus;
+  String? gender;
 
   Data.fromJson(Map<String, dynamic> json){
     id = json['id'];
@@ -159,6 +162,8 @@ class Data {
     notification = json['notification'];
     onlineTimeExpiry = json['online_time_expiry'];
     chatUserAvailableStatus = json['chat_user_available_status'];
+    fromBlockStatus=json['from_block_status'];
+    gender = json['gender'];
   }
 
   Map<String, dynamic> toJson() {
@@ -207,6 +212,8 @@ class Data {
     _data['notification'] = notification;
     _data['online_time_expiry'] = onlineTimeExpiry;
     _data['chat_user_available_status'] = chatUserAvailableStatus;
+    _data['from_block_status']=fromBlockStatus;
+    _data['gender']=gender;
     return _data;
   }
 }

@@ -137,6 +137,7 @@ class _PeopleListState extends State<PeopleList> {
                         controller: _textEditingController,
                         onChanged:(value){
                           log('value $value');
+                          if(value.isNotEmpty)
                           _onSearchChanged(value);
                         }  ,
                         style: TextStyle(color: Colors.grey),

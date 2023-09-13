@@ -58,12 +58,12 @@ class _PaymentResponseViewState extends State<PaymentResponseView> {
                 height: _mainHeight,
                 child: Column(
                   children: [
-                    
                     GestureDetector(
                       onTap: () {
                         Get.offAll(() =>IndividualDashboardView());
                       },
-                      child: Container(margin:EdgeInsets.only(left: _mainWidth*0.05,top: _mainWidth*0.1) ,
+                      child: Container(
+                          margin:EdgeInsets.only(left: _mainWidth*0.05,top: _mainWidth*0.1) ,
                           alignment: Alignment.bottomLeft,
                           child: CircleAvatar(
                             child: Icon(
@@ -104,16 +104,17 @@ class _PaymentResponseViewState extends State<PaymentResponseView> {
                         height: _mainHeight * 0.01,
                       ),
                         Text(
-                          'Subscription Payment ${widget.isSuccess == '1' ? 'Successful' : 'Failed'}',
+                          'Subscription Payment ${widget.isSuccess == '1' ? 'Successful' : 'Failed'}',maxLines: 2,
                           style: TextStyle(
-                              fontSize: 22,
+                              fontSize: Get.width*0.055,
                               color: Colors.black,
-                              fontWeight: FontWeight.w500),
+                              fontWeight: FontWeight.w500 ,
+                          ),
                         ),
                         Text(
                           'Order ID : ${widget.orderId}',
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: Get.width*0.05,
                               color: Colors.black,
                               fontWeight: FontWeight.w500),
                         ),
@@ -133,14 +134,14 @@ class _PaymentResponseViewState extends State<PaymentResponseView> {
                         Text(
                           'Amount Paid: ₹${widget.amount}',
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: Get.width*0.05,
                               color: Colors.black,
                               fontWeight: FontWeight.w600),
                         ),
                         Text(
                           'Payed By : EasyBuzz',
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: Get.width*0.05,
                               color: Colors.black,
                               fontWeight: FontWeight.w500),
                         ),
@@ -162,7 +163,7 @@ class _PaymentResponseViewState extends State<PaymentResponseView> {
                             "Preferred Location",
                             textAlign: TextAlign.start,
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: Get.width*0.05,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
@@ -174,7 +175,7 @@ class _PaymentResponseViewState extends State<PaymentResponseView> {
                             "* Preferred Location is the location where you want to explore parties & party mates. *",
                             textAlign: TextAlign.start,
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: Get.width*0.03,
                               fontWeight: FontWeight.normal,
                               fontStyle: FontStyle.italic,
                               color: Colors.black,
@@ -191,12 +192,13 @@ class _PaymentResponseViewState extends State<PaymentResponseView> {
                       ),
                     ):
                     Container(),
-
-                    const SizedBox(
-                      height: 10,
+                     SizedBox(
+                      height: _mainHeight * 0.005,
                     ),
                     ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.red.shade900),
-                        onPressed: () {  Get.offAll(() =>IndividualDashboardView());}, child: Text('Go to HomePage'))
+                        onPressed: () {
+                      Get.offAll(() =>IndividualDashboardView());
+                      }, child: Text('Go to HomePage'))
                   ],
                 ),
               );
