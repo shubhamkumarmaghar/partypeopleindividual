@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:adobe_xd/adobe_xd.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,7 +18,6 @@ import '../../individualDrawer/views/individual_drawer_view.dart';
 import '../../individual_nearby_people_profile/view/individual_people_list.dart';
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
 import '../../individual_profile_screen/individual_profile_screen_view.dart';
-import '../../individual_subscription/view/subscription_view.dart';
 import '../../widgets/party_card.dart';
 import 'nearby_people_profile.dart';
 
@@ -546,6 +543,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                         individualDashboardController
                                             .usersList[index]
                                             .privacyOnline,
+                                        profile_pic_approval_status: individualDashboardController
+                                          .usersList[index]
+                                          .profilePicApproval,
                                       ),
                                     )),
                               ),
@@ -845,9 +845,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                 },
                               ),
                             ),
-                            SizedBox(
+                         /*   SizedBox(
                               height: MediaQuery.of(context).size.height * 0.1,
-                            ),
+                            ),*/
                           ],
                         ),
                       ),
@@ -865,7 +865,6 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                             ),
                           ):Container());
                     },),
-
                   ],
                 );
             }),

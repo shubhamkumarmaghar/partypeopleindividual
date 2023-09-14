@@ -119,7 +119,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                               ),
                               child: Padding(
                                 padding: EdgeInsets.all(Get.width * 0.006),
-                                child: CircleAvatar(
+                                child: CircleAvatar(backgroundColor: Colors.transparent,
                                   // backgroundImage: NetworkImage(imageURL),
                                   backgroundImage: NetworkImage(controller
                                           .getUserModel?.data?.profilePicture ??
@@ -423,7 +423,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                         GestureDetector(
                           onTap: () async{
                             if(controller.getUserModel?.data?.fromBlockStatus=='0') {
-                           if(controller.getUserModel?.data?.gender =='Male'){
+                           if(gender =='Male'){
                              if (plan == 'Yes') {
                              if (newUser == '1') {
                                if (_textController.text.isNotEmpty) {
@@ -532,7 +532,6 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                    'Message', 'Please type here first');
                              }
                            }
-
                             }
                             else{
                               Get.snackbar('Sorry!!!', ' You can not send message to this person');

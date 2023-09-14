@@ -11,9 +11,9 @@ import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
 
 class MainActivity: FlutterActivity() {
-
+/*
     private val CHANNEL = "easebuzz"
-    var channel_result: MethodChannel.Result? = null
+   var channel_result: MethodChannel.Result? = null
     private var start_payment = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +104,6 @@ class MainActivity: FlutterActivity() {
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
-    }
+    }*/
 }
 

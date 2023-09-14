@@ -138,6 +138,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                             ),
                           ),
                           // Profile Photo
+
                           Positioned(
                             bottom: 0,
                             child: GestureDetector(
@@ -164,12 +165,42 @@ class _IndividualProfileState extends State<IndividualProfile> {
                               ),
                             ),
                           ),
+                          Positioned(
+                            bottom: 10,
+                            right: Get.width * .39,
+                            child: GestureDetector(
+                              onTap: () => _updatePhoto('profile'),
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                      Colors.black.withOpacity(0.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(
+                                  Icons.edit,
+                                  color: Colors.black,
+                                  size: 12,
+                                ),
+                              ),
+                            ),
+                          ),
+
                           // Edit Button for Profile Photo
                           Positioned(
                             bottom: 20,
                             right: 20,
                             child: GestureDetector(
-                              onTap: () => _updatePhoto('profile'),
+                              onTap: () => _updatePhoto('cover'),
                               child: Container(
                                 width: 40,
                                 height: 40,

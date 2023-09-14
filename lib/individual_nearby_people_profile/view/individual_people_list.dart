@@ -137,9 +137,9 @@ class _PeopleListState extends State<PeopleList> {
                         controller: _textEditingController,
                         onChanged:(value){
                           log('value $value');
-                          if(value.isNotEmpty|| value==''){
+
                           _onSearchChanged(value);
-                          }
+
                         }  ,
                         style: TextStyle(color: Colors.grey),
                         decoration: InputDecoration(
@@ -190,6 +190,7 @@ class _PeopleListState extends State<PeopleList> {
                             likeStatus: showList[index].likeStatus,
                             onlineStatus: showList[index].onlineStatus,
                             privacyStatus: showList[index].privacyOnline,
+                            profile_pic_approval_status: showList[index].profilePicApproval,
                           ),
                           // personGrid(index: index),
                         );
@@ -281,9 +282,10 @@ class _PeopleListState extends State<PeopleList> {
   }
 
   _onSearchChanged(String query) {
-    if (_debounce?.isActive ?? false)
-      _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 2000), () async{
+    if(query!='') {
+      if (_debounce?.isActive ?? false)
+        _debounce?.cancel();
+      _debounce = Timer(const Duration(milliseconds: 2000), () async {
         final response = await http.post(
           Uri.parse(
               'https://app.partypeople.in/v1/home/users_search'),
@@ -300,7 +302,7 @@ class _PeopleListState extends State<PeopleList> {
           Map<String, dynamic> jsonResponse = jsonDecode(response.body);
           print(jsonResponse);
 
-          if (jsonDecode(response.body)['status'] == 1)  {
+          if (jsonDecode(response.body)['status'] == 1) {
             var usersData = jsonDecode(response.body)['data'] as List;
             showList.clear();
             maleList.clear();
@@ -311,13 +313,15 @@ class _PeopleListState extends State<PeopleList> {
             setState(() {
 
             });
-            log('User data found $query ${jsonDecode(response.body)['data'][0]['id']}');
-           // String id = jsonDecode(response.body)['data'][0]['id'].toString();
+            log('User data found $query ${jsonDecode(
+                response.body)['data'][0]['id']}');
+            // String id = jsonDecode(response.body)['data'][0]['id'].toString();
             //Get.to(IndividualPeopleProfile(),arguments: id);
           }
           else {
             print('data not found');
-            Get.snackbar('Opps!', 'No User Found with this username, try another');
+            Get.snackbar(
+                'Opps!', 'No User Found with this username, try another');
           }
         }
         else {
@@ -325,8 +329,8 @@ class _PeopleListState extends State<PeopleList> {
           // then throw an exception.
           throw Exception('data not found');
         }
-    });
-
+      });
+    }
   }
 }
 

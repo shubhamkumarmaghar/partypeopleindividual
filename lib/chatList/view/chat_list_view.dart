@@ -172,7 +172,7 @@ class _ChatListState extends State<ChatList> {
                                                       child: Padding(
                                                         padding: EdgeInsets.all(
                                                             Get.width * 0.006),
-                                                        child: CircleAvatar(
+                                                        child: CircleAvatar(backgroundColor: Colors.transparent,
                                                           // backgroundImage: NetworkImage(imageURL),
                                                           backgroundImage:
                                                               NetworkImage(data

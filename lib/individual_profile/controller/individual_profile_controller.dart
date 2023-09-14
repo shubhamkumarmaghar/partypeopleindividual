@@ -93,8 +93,7 @@ class IndividualProfileController extends GetxController {
     }
 
     // Check pincode length and pattern
-    if (pincode.value.isEmpty ||
-        pincode.value.length != 6 ||
+    if (pincode.value.isEmpty || pincode.value.length != 6 ||
         !isNumeric(pincode.value)) {
       Get.snackbar('Pincode Error',
           'Pincode should be exactly 6 digits and should not contain non-numeric characters');
@@ -120,7 +119,6 @@ class IndividualProfileController extends GetxController {
       Get.snackbar('Location Error', 'Active City should not be empty');
       return;
     }
-
 
     if (state.value.isEmpty) {
       Get.snackbar('Location Error', 'State should not be empty');

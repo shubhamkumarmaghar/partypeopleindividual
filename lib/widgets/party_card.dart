@@ -389,13 +389,14 @@ class _PartyCardState extends State<PartyCard>
                                       ),
                                       GestureDetector(
                                         onTap: () async {
-
+                                          _controllerBottomCenter.play();
                                           var data =
                                               await APIService.ongoingParty(
                                                   widget.party.id);
+                                          _controllerBottomCenter.play();
                                           if (data == true) {
                                             setState(() {});
-                                            _controllerBottomCenter.play();
+
                                             join = 'Joined';
                                           }
                                         },
@@ -501,16 +502,18 @@ class _PartyCardState extends State<PartyCard>
                                 color: Colors.red.shade900,
                                 onPressed: () {},
                               )),
-                    Align(alignment: Alignment.topCenter,
-                      child: ConfettiWidget(
-                        confettiController: _controllerBottomCenter,
-                        blastDirection: -pi ,
-                        emissionFrequency: 0.01,
-                        numberOfParticles: 20,
-                        maxBlastForce: 100,
-                        minBlastForce: 80,
-                        gravity: 0.3,
-                        blastDirectionality: BlastDirectionality.directional,
+                    Positioned(
+                      child: Align(alignment: Alignment.topCenter,
+                        child: ConfettiWidget(
+                          confettiController: _controllerBottomCenter,
+                          blastDirection: -pi/2 ,
+                          emissionFrequency: 0.01,
+                          numberOfParticles: 20,
+                          maxBlastForce: 100,
+                          minBlastForce: 80,
+                          gravity: 0.3,
+                          blastDirectionality: BlastDirectionality.explosive,
+                        ),
                       ),
                     )
                   ],

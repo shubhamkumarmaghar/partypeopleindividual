@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class NearByPeopleProfile extends StatefulWidget {
   Function(String)? setHeart;
   final String onlineStatus;
   final String privacyStatus;
+  final String profile_pic_approval_status;
 
   NearByPeopleProfile({
     super.key,
@@ -32,7 +34,8 @@ class NearByPeopleProfile extends StatefulWidget {
     required this.id,
     required this.likeStatus,
     required this.onlineStatus,
-    required this.privacyStatus
+    required this.privacyStatus,
+    required this.profile_pic_approval_status,
   });
 
   @override
@@ -159,9 +162,25 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                             height: Get.height * 0.11,
                             width:  Get.height * 0.11,
                             child: ClipRRect(
-
                               borderRadius: BorderRadius.all(Radius.circular(50)),
-                              child: CachedNetworkImage(
+                              child: widget.profile_pic_approval_status != '1' ?
+                              Blur(blur: 2.5,
+                                child:
+                                CachedNetworkImage(
+                                  placeholder: (context, url) => Shimmer.fromColors(
+                                    baseColor: Colors.grey.shade200,
+                                    highlightColor: Colors.grey.shade400,
+                                    period: const Duration(milliseconds: 1500),
+                                    child: Container(
+                                      height: Get.height * 0.35,
+                                      color: Color(0xff7AB02A),
+                                    ),
+                                  ),
+                                  imageUrl: widget.imageURL,
+                                  width: Get.width,
+                                  fit: BoxFit.cover,
+                                ),
+                              ): CachedNetworkImage(
                                 placeholder: (context, url) => Shimmer.fromColors(
                                   baseColor: Colors.grey.shade200,
                                   highlightColor: Colors.grey.shade400,

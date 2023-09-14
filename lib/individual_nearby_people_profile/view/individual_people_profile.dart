@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -82,32 +83,73 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                         ),
                       ),
                     ),*/
-                          Container(
-                            height: Get.height * 0.35,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(20),
-                              ),
-                            ),
-                            child: CachedNetworkImage(
-                              placeholder: (context, url) => Shimmer.fromColors(
-                                baseColor: Colors.grey.shade200,
-                                highlightColor: Colors.grey.shade400,
-                                period: const Duration(milliseconds: 1500),
-                                child: Container(
-                                  height: Get.height * 0.35,
-                                  color: Color(0xff7AB02A),
+                          Blur(
+                            blur: controller.peopleProfileData.data
+                                        ?.profilePicApprovalStatus !=
+                                    '1'
+                                ? 2.5
+                                : 0,
+                            child: Container(
+                              height: Get.height * 0.35,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(20),
                                 ),
                               ),
-                              imageUrl: controller
-                                          .peopleProfileData.data?.coverPhoto ==
-                                      null
-                                  ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
-                                  : '${controller.peopleProfileData.data?.coverPhoto}',
-                              width: Get.width,
-                              fit: BoxFit.cover,
+                              child: CachedNetworkImage(
+                                placeholder: (context, url) =>
+                                    Shimmer.fromColors(
+                                  baseColor: Colors.grey.shade200,
+                                  highlightColor: Colors.grey.shade400,
+                                  period: const Duration(milliseconds: 1500),
+                                  child: Container(
+                                    height: Get.height * 0.35,
+                                    color: Color(0xff7AB02A),
+                                  ),
+                                ),
+                                imageUrl: controller.peopleProfileData.data
+                                            ?.coverPhoto ==
+                                        null
+                                    ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
+                                    : '${controller.peopleProfileData.data?.coverPhoto}',
+                                width: Get.width,
+                                fit: BoxFit.cover,
+                              ),
                             ),
+                            overlay: controller.peopleProfileData.data
+                                        ?.profilePicApprovalStatus !=
+                                    '1'
+                                ? Container()
+                                : Container(
+                                    height: Get.height * 0.35,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(20),
+                                        bottomRight: Radius.circular(20),
+                                      ),
+                                    ),
+                                    child: CachedNetworkImage(
+                                      placeholder: (context, url) =>
+                                          Shimmer.fromColors(
+                                        baseColor: Colors.grey.shade200,
+                                        highlightColor: Colors.grey.shade400,
+                                        period:
+                                            const Duration(milliseconds: 1500),
+                                        child: Container(
+                                          height: Get.height * 0.35,
+                                          color: Color(0xff7AB02A),
+                                        ),
+                                      ),
+                                      imageUrl: controller.peopleProfileData
+                                                  .data?.coverPhoto ==
+                                              null
+                                          ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
+                                          : '${controller.peopleProfileData.data?.coverPhoto}',
+                                      width: Get.width,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                           ),
                           // Profile Photo
                           Positioned(
@@ -119,50 +161,71 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                     ));
                               },
                               child: Container(
-                                height: Get.height * 0.11,
-                                width:  Get.height * 0.11,
-                                decoration: const BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      blurRadius: 10,
-                                      color: Colors.black38,
-                                      spreadRadius: 5,
-                                    ),
-                                  ],
-                                  shape: BoxShape.circle,
-                                ),
-                                child:ClipRRect(
-
-                                 borderRadius: BorderRadius.all(Radius.circular(50)),
-                                  child: CachedNetworkImage(
-                                    placeholder: (context, url) => Shimmer.fromColors(
-                                      baseColor: Colors.grey.shade200,
-                                      highlightColor: Colors.grey.shade400,
-                                      period: const Duration(milliseconds: 1500),
-                                      child: Container(
-                                        height: Get.height * 0.35,
-                                        color: Color(0xff7AB02A),
+                                  height: Get.height * 0.11,
+                                  width: Get.height * 0.11,
+                                  decoration: const BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        blurRadius: 10,
+                                        color: Colors.black38,
+                                        spreadRadius: 5,
                                       ),
-                                    ),
-                                    imageUrl: data.profilePic == null
-                                        ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
-                                        : data.profilePic ??'',
-                                    width: Get.width,
-                                    fit: BoxFit.cover,
+                                    ],
+                                    shape: BoxShape.circle,
                                   ),
-                                )
+                                  child: ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(50)),
+                                    child: data.profilePicApprovalStatus != '1' ?
+                                    Blur(blur:2.5 ,
+                                      child:
+                                      CachedNetworkImage(
+                                        placeholder: (context, url) =>
+                                            Shimmer.fromColors(
+                                          baseColor: Colors.grey.shade200,
+                                          highlightColor: Colors.grey.shade400,
+                                          period: const Duration(
+                                              milliseconds: 1500),
+                                          child: Container(
+                                            height: Get.height * 0.35,
+                                            color: Color(0xff7AB02A),
+                                          ),
+                                        ),
+                                        imageUrl: data.profilePic == null
+                                            ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
+                                            : data.profilePic ?? '',
+                                        width: Get.width,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ) :  CachedNetworkImage(
+                                      placeholder: (context, url) =>
+                                          Shimmer.fromColors(
+                                            baseColor: Colors.grey.shade200,
+                                            highlightColor: Colors.grey.shade400,
+                                            period: const Duration(
+                                                milliseconds: 1500),
+                                            child: Container(
+                                              height: Get.height * 0.35,
+                                              color: Color(0xff7AB02A),
+                                            ),
+                                          ),
+                                      imageUrl: data.profilePic == null
+                                          ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
+                                          : data.profilePic ?? '',
+                                      width: Get.width,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
 
-
-
-                              //   CircleAvatar(
-                              //       radius: 55,
-                              //       backgroundColor: Colors.transparent,
-                              //       backgroundImage: data.profilePic != null
-                              //           ? NetworkImage('${data.profilePic}')
-                              //           : NetworkImage(
-                              //               'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fman.png?alt=media&token=53575bc0-dd6c-404e-b8f3-52eaf8fe0fe4'),
-                              // ),
-                              ),
+                                  //   CircleAvatar(
+                                  //       radius: 55,
+                                  //       backgroundColor: Colors.transparent,
+                                  //       backgroundImage: data.profilePic != null
+                                  //           ? NetworkImage('${data.profilePic}')
+                                  //           : NetworkImage(
+                                  //               'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fman.png?alt=media&token=53575bc0-dd6c-404e-b8f3-52eaf8fe0fe4'),
+                                  // ),
+                                  ),
                             ),
                           ),
                         ],
@@ -191,7 +254,8 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                         context, '${data.userId}', 'Block');
                                   },
                                   child: iconButtonNeumorphic(
-                                      icon: Icons.block, color: Colors.red.shade900),
+                                      icon: Icons.block,
+                                      color: Colors.red.shade900),
                                 ),
                                 GestureDetector(
                                   onTap: () {
@@ -206,7 +270,8 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                 ),
                                 data.likeStatus == 1
                                     ? iconButtonNeumorphic(
-                                        icon: Icons.favorite, color: Colors.red.shade900)
+                                        icon: Icons.favorite,
+                                        color: Colors.red.shade900)
                                     : GestureDetector(
                                         onTap: () async {
                                           data.likeStatus =
@@ -224,68 +289,111 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                           Row(
                             children: [
                               Expanded(
-                                child: CustomProfileTextView(text:
-                                    data.name?.split(' ')[0].capitalizeFirst ??
+                                child: CustomProfileTextView(
+                                    text: data.name
+                                            ?.split(' ')[0]
+                                            .capitalizeFirst ??
                                         "NA",
-                                  icon:   Icons.person),
+                                    icon: Icons.person),
                               ),
                               Expanded(
                                 child: CustomProfileTextView(
-                                    icon:
-                                    Icons.person, text: data.name
-              ?.split(" ")
-              .last
-              .capitalizeFirst ??
-          "NA",),
+                                  icon: Icons.person,
+                                  text: data.name
+                                          ?.split(" ")
+                                          .last
+                                          .capitalizeFirst ??
+                                      "NA",
+                                ),
                               ),
                             ],
                           ),
-                          Container(
-                            height: Get.height * 0.15,
-                            child: Neumorphic(
-                                margin: const EdgeInsets.all(12.0),
-                                padding: EdgeInsets.all(12.0),
-                                style: NeumorphicStyle(
-                                  intensity: 0.8,
-                                  surfaceIntensity: 0.25,
-                                  depth: 8,
-                                  shape: NeumorphicShape.flat,
-                                  lightSource: LightSource.topLeft,
-                                  color: Colors.grey
-                                      .shade100, // Very light grey for a softer look
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Icon(Icons.description_outlined,
-                                        color: Colors.red.shade900),
-                                    SizedBox(
-                                      width: Get.width * 0.03,
-                                    ),
-                                    Container(
-                                      width: Get.width * 0.75,
-                                      child: Text(
-                                        data.bio.toString().capitalizeFirst ??
-                                            "",
-                                        maxLines: 5,
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16),
+
+                          Blur(blur: controller
+                              .peopleProfileData.data?.profilePicApprovalStatus!='1' ?2.5:0,
+                            child: Container(
+                              height: Get.height * 0.15,
+                              child: Neumorphic(
+                                  margin: const EdgeInsets.all(12.0),
+                                  padding: EdgeInsets.all(12.0),
+                                  style: NeumorphicStyle(
+                                    intensity: 0.8,
+                                    surfaceIntensity: 0.25,
+                                    depth: 8,
+                                    shape: NeumorphicShape.flat,
+                                    lightSource: LightSource.topLeft,
+                                    color: Colors.grey
+                                        .shade100, // Very light grey for a softer look
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Icon(Icons.description_outlined,
+                                          color: Colors.red.shade900),
+                                      SizedBox(
+                                        width: Get.width * 0.03,
                                       ),
-                                    ),
-                                  ],
-                                )),
+                                      Container(
+                                        width: Get.width * 0.75,
+                                        child: Text(
+                                          data.bio.toString().capitalizeFirst ??
+                                              "",
+                                          maxLines: 5,
+                                          style: TextStyle(
+                                              color: Colors.black, fontSize: 16),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                            overlay: controller
+                                .peopleProfileData.data?.profilePicApprovalStatus!='1' ? Container():Container(
+                              height: Get.height * 0.15,
+                              child: Neumorphic(
+                                  margin: const EdgeInsets.all(12.0),
+                                  padding: EdgeInsets.all(12.0),
+                                  style: NeumorphicStyle(
+                                    intensity: 0.8,
+                                    surfaceIntensity: 0.25,
+                                    depth: 8,
+                                    shape: NeumorphicShape.flat,
+                                    lightSource: LightSource.topLeft,
+                                    color: Colors.grey
+                                        .shade100, // Very light grey for a softer look
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Icon(Icons.description_outlined,
+                                          color: Colors.red.shade900),
+                                      SizedBox(
+                                        width: Get.width * 0.03,
+                                      ),
+                                      Container(
+                                        width: Get.width * 0.75,
+                                        child: Text(
+                                          data.bio.toString().capitalizeFirst ??
+                                              "",
+                                          maxLines: 5,
+                                          style: TextStyle(
+                                              color: Colors.black, fontSize: 16),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                            ),
                           ),
                           Row(
                             children: [
                               Expanded(
                                 child: CustomProfileTextView(
                                     text: CalculateAge.calAge(data.dob ?? ""),
-                                   icon:  Icons.calendar_month),
+                                    icon: Icons.calendar_month),
                               ),
                               Expanded(
                                 child: CustomProfileTextView(
-                                 text:    data.gender ?? "NA",icon:  Icons.people),
+                                    text: data.gender ?? "NA",
+                                    icon: Icons.people),
                               ),
                             ],
                           ),
@@ -293,12 +401,12 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                             children: [
                               Expanded(
                                 child: CustomProfileTextView(
-                                text:     data.qualification ?? "NA",
-                                  icon:   Icons.description_outlined),
+                                    text: data.qualification ?? "NA",
+                                    icon: Icons.description_outlined),
                               ),
                               Expanded(
                                 child: CustomProfileTextView(
-                                 text:    data.occupation ?? "NA",
+                                    text: data.occupation ?? "NA",
                                     icon: Icons.work),
                               ),
                             ],
@@ -307,13 +415,13 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                             children: [
                               Expanded(
                                 child: CustomProfileTextView(
-                                  text:   data.country ?? "NA",
+                                    text: data.country ?? "NA",
                                     icon: Icons.location_on),
                                 //QualificationWidget(),
                               ),
                               Expanded(
                                 child: CustomProfileTextView(
-                                text:     data.state ?? "NA",
+                                    text: data.state ?? "NA",
                                     icon: Icons.location_on),
 
                                 //OccupationWidget(),
@@ -324,14 +432,14 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                             children: [
                               Expanded(
                                 child: CustomProfileTextView(
-                                   text:  data.city ?? "NA",
+                                    text: data.city ?? "NA",
                                     icon: Icons.location_city),
                                 //QualificationWidget(),
                               ),
                               Expanded(
                                 child: CustomProfileTextView(
-                                 text: data.pincode ?? "NA",
-                                    icon:Icons.pin_drop),
+                                    text: data.pincode ?? "NA",
+                                    icon: Icons.pin_drop),
 
                                 //OccupationWidget(),
                               ),
@@ -342,8 +450,10 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                           ),
                           Text(
                             "Interests",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 22,),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 22,
+                            ),
                           ),
                           controller.categoryLists.isEmpty
                               ? Padding(
@@ -425,9 +535,13 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                                                 ),
                                                               ),
                                                               backgroundColor:
-                                                                  Colors.red.shade900,
+                                                                  Colors.red
+                                                                      .shade900,
                                                             )
-                                                          : Visibility(visible: false,child: Container()),
+                                                          : Visibility(
+                                                              visible: false,
+                                                              child:
+                                                                  Container()),
                                                     );
                                                   }).toList(),
                                                 ),
@@ -543,7 +657,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
     ); */
   }
 
- /* Widget CustomProfileTextView(String text, IconData icon) {
+  /* Widget CustomProfileTextView(String text, IconData icon) {
     return Neumorphic(
         margin: const EdgeInsets.all(12.0),
         padding: EdgeInsets.all(12.0),

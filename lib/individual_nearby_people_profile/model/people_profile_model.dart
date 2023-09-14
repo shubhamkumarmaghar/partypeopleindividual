@@ -44,6 +44,7 @@ class Data {
   String? profilePic;
   dynamic timelinePic;
   String? profilePicApprovalStatus;
+  String? descriptionApprovalStatus;
   String? approvalStatus;
   String? bluetickStatus;
   String? isDeleted;
@@ -103,7 +104,8 @@ class Data {
         this.organizationAmenities,
         this.fullName,
         this.phone,
-      this.likeStatus});
+      this.likeStatus,
+      this.descriptionApprovalStatus});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -143,6 +145,7 @@ class Data {
     status = json['status'];
     displayStatus = json['display_status'];
     likeStatus = json['like_status'];
+    descriptionApprovalStatus = json['approval_desciption_status'];
     if (json['organization_amenities'] != null) {
       organizationAmenities = <OrganizationAmenities>[];
       json['organization_amenities'].forEach((v) {
@@ -176,6 +179,7 @@ class Data {
     data['profile_pic'] = this.profilePic;
     data['timeline_pic'] = this.timelinePic;
     data['profile_pic_approval_status'] = this.profilePicApprovalStatus;
+    data['approval_desciption_status'] = this.descriptionApprovalStatus;
     data['approval_status'] = this.approvalStatus;
     data['bluetick_status'] = this.bluetickStatus;
     data['is_deleted'] = this.isDeleted;

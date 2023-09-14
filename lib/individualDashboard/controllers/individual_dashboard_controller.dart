@@ -33,7 +33,7 @@ class IndividualDashboardController extends GetxController {
 
   void animateHeart()async{
     showAnimatedHeart = true.obs;
-    await Future.delayed(Duration(seconds: 8));
+    await Future.delayed(Duration(seconds: 5));
     showAnimatedHeart=false.obs;
     update();
   }

@@ -27,7 +27,7 @@ class SubscriptionView extends StatefulWidget {
 }
 
 class _SubscriptionViewState extends State<SubscriptionView> {
-//  static MethodChannel _channel = MethodChannel('easebuzz');
+//static MethodChannel _channel = MethodChannel('easebuzz');
  SubscriptionController subController = Get.put(SubscriptionController());
  // Razorpay _razorpay = Razorpay();
 

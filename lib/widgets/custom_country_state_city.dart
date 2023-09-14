@@ -494,6 +494,7 @@ class _SelectStateState extends State<SelectState> {
                 validate: true,
                 hintText: 'PIN Code',
                 obscureText: false,
+                maxLength: 6,
                 initialValue: individualProfileController.pincode.value,
                 icon: Icons.location_on,
                 textInput: TextInputType.number,
