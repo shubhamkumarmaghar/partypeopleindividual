@@ -137,8 +137,9 @@ class _PeopleListState extends State<PeopleList> {
                         controller: _textEditingController,
                         onChanged:(value){
                           log('value $value');
-                          if(value.isNotEmpty)
+                          if(value.isNotEmpty|| value==''){
                           _onSearchChanged(value);
+                          }
                         }  ,
                         style: TextStyle(color: Colors.grey),
                         decoration: InputDecoration(

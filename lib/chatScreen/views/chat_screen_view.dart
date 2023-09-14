@@ -227,7 +227,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                             });
                          // controller.deleteAllMessage('${controller.getUserModel?.data?.username}${controller.getUserModel?.data?.id}');
                           },
-                          child: Row(
+                          child: Container(color:Colors.white,child:Row(
                             children: [
                               Icon(Icons.chrome_reader_mode,color: Colors.black,),
                               SizedBox(
@@ -236,7 +236,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                               ),
                               Text("   Delete All chat",style: TextStyle(color: Colors.black))
                             ],
-                          ),
+                          ),),
                         ),
                       ),
                     ],

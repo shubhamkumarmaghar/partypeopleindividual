@@ -1,11 +1,9 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../centralize_api.dart';
 import '../../widgets/block_unblock.dart';
 import '../controllers/block_info_controller.dart';
 import '../model/blocked_info_model.dart';
@@ -129,11 +127,12 @@ class BlockedReportedUserItem extends StatelessWidget {
         return GestureDetector(child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Padding(
+            Container(
               padding: EdgeInsets.all(15.sp),
-              child: Row(
+              color: Colors.white,
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CircleAvatar(
+                  Row(children:[CircleAvatar(
                     radius: 16.sp,
                     backgroundImage: NetworkImage(data.profilePicture??'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54'),
                     child: Stack(
@@ -150,40 +149,45 @@ class BlockedReportedUserItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(width: 12.sp),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        data.username ??'',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: const Color(0xFF434343),
-                          fontWeight: FontWeight.w700,
+                    SizedBox(width: 12.sp),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data.username ??'',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: const Color(0xFF434343),
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                      Text(
-                        data.date ??'',
-                      style: TextStyle(
-                        fontSize: 8.sp,
-                        color: const Color(0xFF434343),
-                      ),
-                    ),
-                  /*  Text(
+                        Text(
+                          data.date ??'',
+                          style: TextStyle(
+                            fontSize: 8.sp,
+                            color: const Color(0xFF434343),
+                          ),
+                        ),
+                        /*  Text(
                       "profilepic",
                       style: TextStyle(
                           fontSize: 8.sp, color: const Color(0xFFc4c4c4)),
                     ),
                     */
-                    ],
-                  ),
+                      ],
+                    ),
+                  ]),
+                  ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.red.shade900),
+                      onPressed: () {
+                        Alertdialogs.showBlockedAlertDialog(context,data.individualId??'', 'Unblock');
+                      }, child: Text('Unblock'))
                 ],
               ),
             ),
             Container(
               color: const Color(0xFFc4c4c4),
               height: 0.4.sp,
-              width: MediaQuery.of(context).size.width * 0.73,
+              width: MediaQuery.of(context).size.width ,
             ),
           ],
         ),

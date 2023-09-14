@@ -13,6 +13,7 @@ import 'package:sizer/sizer.dart';
 
 
 
+@pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   FlutterLocalNotificationsPlugin pluginInstance =
