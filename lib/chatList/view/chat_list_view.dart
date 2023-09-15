@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/chatScreen/controllers/chat_screen_controller.dart';
 import 'package:sizer/sizer.dart';
 
@@ -111,7 +112,8 @@ class _ChatListState extends State<ChatList> {
                                   });
                                 }
                               },
-                              child: Column(
+                              child:
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
@@ -336,15 +338,28 @@ class _ChatListState extends State<ChatList> {
                   width: MediaQuery.of(context).size.width * 0.73,
                 ),*/
                                 ],
-                              ),
+                              ) ,
                             );
                           },
                         )
-                      : Center(child: CircularProgressIndicator()),
+                      : loder(),
                 ),
               ),
             );
           }),
     );
   }
+
+  Widget loder()
+  {  return Container(
+    height: Get.height,
+    width: Get.width,
+    child: Column(mainAxisAlignment: MainAxisAlignment.center,children: [
+      Lottie.network(
+        'https://assets-v2.lottiefiles.com/a/5e232bde-1182-11ee-b778-8f3af2eeaa9d/4xBFTBXlHa.json',
+        width: 100,height: 100
+      ),
+      Text('No chat data found',style: TextStyle(color: Colors.black,fontSize: 20),)
+    ]),
+  ); }
 }

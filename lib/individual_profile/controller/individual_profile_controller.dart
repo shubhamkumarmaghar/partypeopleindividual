@@ -276,9 +276,9 @@ class IndividualProfileController extends GetxController {
       var response = await apiService.individualProfileCreation(
           userData, '${GetStorage().read('token')}');
       print(response);
-
       if (response['status'] == 1 &&
           response['message'].contains('Successfully')) {
+        GetStorage().write('loggedIn', '1');
         Get.offAll(const ShowSubmitMessage());
       }
       else if(

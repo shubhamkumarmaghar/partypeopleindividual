@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:sizer/sizer.dart';
 
@@ -54,7 +55,9 @@ class BlockedReportedUsersView extends StatelessWidget {
             GetBuilder<BlockReportController>(
               init: BlockReportController(),
               builder: (controller) {
-                return BlockedReportedUserItem(dataList:controller.blockInfoModel.data ??[]);
+                return controller.blockInfoModel.data != null ?
+                BlockedReportedUserItem(dataList:controller.blockInfoModel.data ??[])
+                :loder();
               },),),
            /* Expanded(
               child: ListView.builder(
@@ -105,6 +108,14 @@ class BlockedReportedUsersView extends StatelessWidget {
       ),
     );
   }
+  Widget loder()
+  {return Center(
+      child: Container(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,children: [
+          Lottie.network(
+              'https://assets-v2.lottiefiles.com/a/ebf552bc-1177-11ee-8524-57b09b2cd38d/PaP7jkQFk9.json')
+        ]),
+      )); }
 }
 
 class BlockedReportedUserItem extends StatelessWidget {

@@ -204,15 +204,17 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                           onTap: (){ Navigator.pop(context);
                             Alertdialogs.showBlockedAlertDialog(context, '${controller.getUserModel?.data?.id}', 'Block');
                           },
-                          child: Row(
-                            children: [
-                              Icon(Icons.block,color: Colors.black),
-                              SizedBox(
-                                // sized box with width 10
-                                width: 10,
-                              ),
-                              Text("   Block   ",style: TextStyle(color: Colors.black),)
-                            ],
+                          child: Container(color: Colors.white,
+                            child: Row(
+                              children: [
+                                Icon(Icons.block,color: Colors.black),
+                                SizedBox(
+                                  // sized box with width 10
+                                  width: 10,
+                                ),
+                                Text("   Block   ",style: TextStyle(color: Colors.black),)
+                              ],
+                            ),
                           ),
                         ),
                       ),

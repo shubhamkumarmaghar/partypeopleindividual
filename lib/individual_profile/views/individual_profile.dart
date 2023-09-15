@@ -48,10 +48,8 @@ class _IndividualProfileState extends State<IndividualProfile> {
             'https://app.partypeople.in/v1/party/individual_organization_amenities'),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
         setState(() {
           if (data['status'] == 1) {
             _categories = (data['data'] as List)

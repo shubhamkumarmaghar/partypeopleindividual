@@ -114,7 +114,7 @@ class ChatScreenController  extends GetxController{
         }
         else {
           log('No user data found');
-          isApiLoading = false;
+          isApiLoading = true;
           update();
         }
       }

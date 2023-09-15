@@ -393,10 +393,10 @@ class _PartyCardState extends State<PartyCard>
                                           var data =
                                               await APIService.ongoingParty(
                                                   widget.party.id);
-                                          _controllerBottomCenter.play();
+
                                           if (data == true) {
                                             setState(() {});
-
+                                            _controllerBottomCenter.play();
                                             join = 'Joined';
                                           }
                                         },
