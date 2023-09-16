@@ -1,6 +1,5 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
-import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
 
 class ActiveCitySelect extends StatefulWidget {

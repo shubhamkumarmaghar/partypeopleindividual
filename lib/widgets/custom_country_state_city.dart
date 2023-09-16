@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/services.dart';
@@ -270,6 +271,7 @@ class _SelectStateState extends State<SelectState> {
                                   maxLines: null,
                                   style: TextStyle(color: Colors.black),
                                   controller: countryEditingController,
+                                  keyboardType:TextInputType.text ,
                                   decoration: InputDecoration(
                                     isDense: true,
                                     contentPadding: const EdgeInsets.symmetric(
@@ -285,7 +287,7 @@ class _SelectStateState extends State<SelectState> {
                                 ),
                               ),
                               searchMatchFn: (item, searchValue) {
-                                return item.value.toString().contains(searchValue);
+                                return item.value.toString().toLowerCase().contains('${searchValue.toString().toLowerCase()}');
                               },
                             ),
                             onMenuStateChange: (isOpen) {
@@ -361,6 +363,7 @@ class _SelectStateState extends State<SelectState> {
                                 child: TextFormField(
                                   expands: true,
                                   maxLines: null,
+                                  keyboardType:TextInputType.text ,
                                   style: TextStyle(color: Colors.black),
                                   controller: stateEditingController,
                                   decoration: InputDecoration(
@@ -378,7 +381,7 @@ class _SelectStateState extends State<SelectState> {
                                 ),
                               ),
                               searchMatchFn: (item, searchValue) {
-                                return item.value.toString().contains(searchValue);
+                                return item.value.toString().toLowerCase().contains('${searchValue.toString().toLowerCase()}');
                               },
                             ),
                             onMenuStateChange: (isOpen) {
@@ -458,6 +461,7 @@ class _SelectStateState extends State<SelectState> {
                                   expands: true,
                                   maxLines: null,
                                   controller: cityEditingController,
+                                  keyboardType:TextInputType.text ,
                                   decoration: InputDecoration(
                                     isDense: true,
                                     contentPadding: const EdgeInsets.symmetric(
@@ -473,7 +477,7 @@ class _SelectStateState extends State<SelectState> {
                                 ),
                               ),
                               searchMatchFn: (item, searchValue) {
-                                return item.value.toString().contains(searchValue);
+                                return item.value.toString().toLowerCase().contains('${searchValue.toString().toLowerCase()}');
                               },
                             ),
                             onMenuStateChange: (isOpen) {

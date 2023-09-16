@@ -262,6 +262,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                                   validate: true,
                                   hintText: 'Please Enter E-Mail',
                                   obscureText: false,
+                                  textInput: TextInputType.emailAddress,
                                   initialValue:
                                   individualProfileController
                                       .email.value,

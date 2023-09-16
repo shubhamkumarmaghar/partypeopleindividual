@@ -11,6 +11,7 @@ import 'package:partypeopleindividual/api_helper_service.dart';
 
 import '../../centralize_api.dart';
 import '../../individualDashboard/models/city.dart';
+import '../../widgets/payment_response_view.dart';
 import '../../widgets/submit_application.dart';
 
 class IndividualProfileController extends GetxController {
@@ -136,7 +137,7 @@ class IndividualProfileController extends GetxController {
       userData = {
         'cover_photo': coverPhotoURL.value.toString(),
         'profile_photo': profilePhotoURL.value.toString(),
-        'name': firstname.value.capitalize.toString() + ' ' + lastname.value.capitalizeFirst.toString(),
+        'name': '${firstname.value.capitalize?.trim().toString()}' + ' ' + '${lastname.value.capitalizeFirst?.trim().toString()}',
         'bio': description.value.toString(),
         'description':description.value.toString(),
         'dob': dob.value.toString(),
@@ -243,7 +244,7 @@ class IndividualProfileController extends GetxController {
       userData = {
         'cover_photo': coverPhotoURL.value.toString(),
         'profile_photo': profilePhotoURL.value.toString(),
-        'name': firstname.value.toString() + ' ' + lastname.value.toString(),
+        'name': '${firstname.value.capitalizeFirst?.trim().toString()}' + ' ' + '${lastname.value.capitalizeFirst?.trim.toString()}',
         'email':email.value.toString(),
         'bio': description.value.toString(),
         'description': description.value.toString(),
@@ -279,6 +280,7 @@ class IndividualProfileController extends GetxController {
       if (response['status'] == 1 &&
           response['message'].contains('Successfully')) {
         GetStorage().write('loggedIn', '1');
+        individualProfileController.apiService.updateActiveCity(individualProfileController.organization_id.value,activeCity.value.isNotEmpty ? activeCity.value.toString():"Delhi");
         Get.offAll(const ShowSubmitMessage());
       }
       else if(
@@ -378,7 +380,7 @@ class IndividualProfileController extends GetxController {
           profilePhotoURL.value = user['profile_pic'] ?? '';
           coverPhotoURL.value = user['cover_photo'] ?? '';
           organization_id.value = user['id'] ?? "";
-          activeCity.value = user['active_city']??'';
+          activeCity.value = user['active_city']??'Delhi';
           descStatusApproval.value = user['approval_desciption_status']??'';
           photoStatusApproval.value = user['profile_pic_approval_status']??'';
           // Set dobController's text to the 'dob' value

@@ -508,7 +508,7 @@ class ChatScreenController  extends GetxController{
              .millisecondsSinceEpoch
              .toString()});
          log(' another user read the message');
-       await  player.play(AssetSource('sound/receive.wav'));
+       await  player.play(AssetSource('sound/receive1.mp3'));
        }
        else{
          log('another user is not seen message yet');
