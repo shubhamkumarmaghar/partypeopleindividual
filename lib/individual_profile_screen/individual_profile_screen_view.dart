@@ -216,50 +216,51 @@ class _IndividualProfileScreenViewState
                                         boxShadow: [
                                           BoxShadow(
                                             blurRadius: 10,
-                                            color: Colors.transparent,
+                                            color: Colors.black38,
                                             spreadRadius: 5,
                                           ),
                                         ],
                                         shape: BoxShape.circle,
                                       ),
-                                      child: individualProfileController
-                                                  .photoStatusApproval.value !=
-                                              '1'
-                                          ? Blur(
-                                              blur: 2.5,
-                                              child: CircleAvatar(
-                                                radius: 55,
-                                                backgroundColor:
-                                                    Colors.transparent,
-                                                backgroundImage: _profileImage !=
-                                                        null
-                                                    ? FileImage(_profileImage!)
-                                                    : (individualProfileController
-                                                                .profilePhotoURL
-                                                                .value
-                                                                .isNotEmpty
-                                                            ? NetworkImage(
-                                                                individualProfileController
-                                                                    .profilePhotoURL
-                                                                    .value)
-                                                            : const AssetImage(
-                                                                'assets/images/man.png'))
-                                                        as ImageProvider<
-                                                            Object>?,
-                                              ),
-                                            )
-                                          : Container(
+                                      child:
+                                      Container(
                                         height: Get.height * 0.11,
                                         width:  Get.height * 0.11,
                                             child: ClipRRect(
-
                                         borderRadius: BorderRadius.all(Radius.circular(50)),
-                                        child: CachedNetworkImage(
+                                        child: Blur(blur:individualProfileController
+                                            .photoStatusApproval.value !=
+                                            '1'? 2.5:0,
+                                          child: CachedNetworkImage(
+                                              placeholder: (context, url) => Shimmer.fromColors(
+                                                baseColor: Colors.grey.shade200,
+                                                highlightColor: Colors.grey.shade400,
+                                                period: const Duration(milliseconds: 1500),
+                                                child:  Container(
+                                                  height: Get.height * 0.35,
+                                                  color: Color(0xff7AB02A),
+                                                ),
+                                              ),
+                                              imageUrl: individualProfileController
+                                                  .profilePhotoURL
+                                                  .value
+                                                  .isEmpty
+                                                  ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
+                                                  : individualProfileController
+                                                  .profilePhotoURL
+                                                  .value,
+                                              width: Get.width,
+                                              fit: BoxFit.cover,
+                                          ),
+                                          overlay: individualProfileController
+                                              .photoStatusApproval.value !=
+                                              '1'?Container():
+                                          CachedNetworkImage(
                                             placeholder: (context, url) => Shimmer.fromColors(
                                               baseColor: Colors.grey.shade200,
                                               highlightColor: Colors.grey.shade400,
                                               period: const Duration(milliseconds: 1500),
-                                              child: Container(
+                                              child:  Container(
                                                 height: Get.height * 0.35,
                                                 color: Color(0xff7AB02A),
                                               ),
@@ -274,6 +275,7 @@ class _IndividualProfileScreenViewState
                                                 .value,
                                             width: Get.width,
                                             fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                           )

@@ -231,18 +231,18 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         boxShadow: [
                                           BoxShadow(
                                             blurRadius: 10,
-                                            color: Colors.black38,
+                                            color: Colors.transparent,
                                             spreadRadius: 5,
                                           ),
                                         ],
                                         shape: BoxShape.circle,
                                       ),
-                                      child: individualProfileController
+                                      child: Blur(
+                                              blur: individualProfileController
                                                   .photoStatusApproval.value !=
-                                              '1'
-                                          ? Blur(
-                                              blur: 2.5,
+                                                  '1' ?2.5:0,
                                               child: CircleAvatar(
+                                                backgroundColor: Colors.transparent,
                                                 radius: 55,
                                                 backgroundImage: _profileImage !=
                                                         null
@@ -260,24 +260,27 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                                         as ImageProvider<
                                                             Object>?,
                                               ),
-                                            )
-                                          : CircleAvatar(
-                                              radius: 55,
-                                              backgroundImage: _profileImage !=
-                                                      null
-                                                  ? FileImage(_profileImage!)
-                                                  : (individualProfileController
-                                                              .profilePhotoURL
-                                                              .value
-                                                              .isNotEmpty
-                                                          ? NetworkImage(
-                                                              individualProfileController
-                                                                  .profilePhotoURL
-                                                                  .value)
-                                                          : const AssetImage(
-                                                              'assets/images/man.png'))
-                                                      as ImageProvider<Object>?,
+                                        overlay:individualProfileController
+                                            .photoStatusApproval.value !=
+                                            '1' ?Container():CircleAvatar(
+                                          radius: 55,
+                                          backgroundImage: _profileImage !=
+                                              null
+                                              ? FileImage(_profileImage!)
+                                              : (individualProfileController
+                                              .profilePhotoURL
+                                              .value
+                                              .isNotEmpty
+                                              ? NetworkImage(
+                                              individualProfileController
+                                                  .profilePhotoURL
+                                                  .value)
+                                              : const AssetImage(
+                                              'assets/images/man.png'))
+                                          as ImageProvider<Object>?,
+                                        ) ,
                                             ),
+
                                     ),
                                   ),
                                 ),

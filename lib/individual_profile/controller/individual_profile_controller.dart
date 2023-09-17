@@ -244,7 +244,7 @@ class IndividualProfileController extends GetxController {
       userData = {
         'cover_photo': coverPhotoURL.value.toString(),
         'profile_photo': profilePhotoURL.value.toString(),
-        'name': '${firstname.value.capitalizeFirst?.trim().toString()}' + ' ' + '${lastname.value.capitalizeFirst?.trim.toString()}',
+        'name': '${firstname.value.capitalizeFirst?.trim().toString()}' + ' ' + '${lastname.value.capitalizeFirst?.trim().toString()}',
         'email':email.value.toString(),
         'bio': description.value.toString(),
         'description': description.value.toString(),
