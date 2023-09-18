@@ -231,6 +231,7 @@ class _PeopleListState extends State<PeopleList> {
                 onSelected: (value){
                   controller.setChip(selectedIndex: 0);
                  showList=widget.peopleList;
+                  navigator?.pop();
                  setState(() {
 
                  });
@@ -244,6 +245,7 @@ class _PeopleListState extends State<PeopleList> {
               selected: controller.list[1],
               onSelected: (value){ controller.setChip(selectedIndex: 1);
               showList=maleList;
+              navigator?.pop();
               setState(() {
 
               });
@@ -259,6 +261,7 @@ class _PeopleListState extends State<PeopleList> {
                 onSelected: (value) {
                   controller.setChip(selectedIndex: 2);
                   showList=femaleList;
+                  navigator?.pop();
                   setState(() {
 
                   });

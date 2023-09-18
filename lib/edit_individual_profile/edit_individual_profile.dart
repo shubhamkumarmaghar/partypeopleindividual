@@ -412,6 +412,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         individualProfileController
                                             .email.value,
                                         onChanged: (value) {
+                                          log('abcs ${value}');
                                           individualProfileController
                                               .email.value = value;
                                         },
@@ -433,6 +434,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         icon: Icons.description,
                                         iconColor: Colors.red.shade900,
                                         onChanged: (value) {
+                                          log('abcs ${value}');
                                           individualProfileController
                                               .description.value = value;
                                         },
@@ -445,7 +447,9 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                     initialValue: individualProfileController
                                         .description.value,
                                     icon: Icons.description,
+                                    textInput: TextInputType.multiline,
                                     onChanged: (value) {
+                                      log('abcs ${value}');
                                       individualProfileController
                                           .description.value = value;
                                     },

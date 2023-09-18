@@ -4,16 +4,12 @@ import 'dart:developer';
 import 'package:adobe_xd/gradient_xd_transform.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/individual_subscription/controller/subscription_controller.dart';
 import 'package:sizer/sizer.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
-
+import 'package:html/parser.dart';
 import '../../widgets/webView.dart';
 import '../model/SubscriptionModel.dart';
 
@@ -165,9 +161,9 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                       items: [
                         GestureDetector(
                           onTap: () async{
-                            String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData![0].id);
+                            String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData[0].id);
                            if(value =='1')
-                            selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData![0].name , amount:controller.subscriptionModel.subsData![0].amount );
+                            selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData[0].name , amount:controller.subscriptionModel.subsData[0].amount );
                            },
                           child: subscriptionPlansView(
                               subscriptionData:
@@ -175,9 +171,9 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                         ),
                         GestureDetector(
                           onTap: () async{
-                            String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData![1].id);
+                            String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData[1].id);
                             if(value =='1')
-                              selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData![1].name , amount:controller.subscriptionModel.subsData![1].amount );
+                              selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData[1].name , amount:controller.subscriptionModel.subsData[1].amount );
                           },
                           child: subscriptionPlansView(
                               subscriptionData:
@@ -185,9 +181,9 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                         ),
                         GestureDetector(
                           onTap: () async{
-                            String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData![2].id);
+                            String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData[2].id);
                             if(value =='1')
-                              selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData![2].name , amount:controller.subscriptionModel.subsData![2].amount );
+                              selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData[2].name , amount:controller.subscriptionModel.subsData[2].amount );
                           },
                           child: subscriptionPlansView(
                               subscriptionData:
@@ -317,6 +313,21 @@ class _SubscriptionViewState extends State<SubscriptionView> {
   }
 
   Widget subscriptionPlansView({required SubscriptionData? subscriptionData}) {
+    var document = parse(subscriptionData?.description ?? "");
+    var document1 = parse('''
+<body>
+  <h2>Header 1</h2>
+  <p>Text.</p>
+  <h2>Header 2</h2>
+  More text.
+  <br/>
+</body>''');
+
+    // outerHtml output
+    print('outer html:');
+    print(document1.children[0].text);
+
+    print('');
     return Stack(children: [
       FittedBox(
         child: Container(
@@ -414,12 +425,16 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                       alignment: Alignment.centerLeft,
                       width: Get.width * 0.65,
                       height: Get.width * 0.45,
-                      child: Text(subscriptionData?.description ?? "",
+                      child:
+
+                      Text(document.children[0].text,
                           maxLines: 8,
                           style: TextStyle(
                               fontSize: 14,
                               color: Colors.black54,
-                              fontWeight: FontWeight.w600))),
+                              fontWeight: FontWeight.w600),
+                      )
+                  ),
                 ),
               ]),
         ),
@@ -442,8 +457,12 @@ class _SubscriptionViewState extends State<SubscriptionView> {
           ),
         ),
       ),*/
+
     ]);
+
   }
+
+
 
   void  selectPlanBottom({required BuildContext context , required String amount , required String name}){
      showModalBottomSheet(context: context,backgroundColor: Colors.red.shade100, shape: RoundedRectangleBorder(
