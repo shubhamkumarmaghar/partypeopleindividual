@@ -224,7 +224,6 @@ class _IndividualProfileState extends State<IndividualProfile> {
                           ),
                         ],
                       ),
-
                       ///Other Individual Widget
                       const SizedBox(
                         height: 10,
@@ -236,9 +235,11 @@ class _IndividualProfileState extends State<IndividualProfile> {
                                   validate: true,
                                   hintText: 'First Name',
                                   obscureText: false,
+                                initialValue: individualProfileController
+                                    .firstname.value,
                                   onChanged: (value) {
-                                    individualProfileController
-                                        .firstname.value = value;
+                                      individualProfileController
+                                          .firstname.value = value;
                                   },
                                   icon: Icons.person,
                                 iconColor: Colors.red.shade900,)),
@@ -247,9 +248,10 @@ class _IndividualProfileState extends State<IndividualProfile> {
                                   validate: true,
                                   hintText: 'Last Name',
                                   obscureText: false,
+                                initialValue: individualProfileController.lastname.value,
                                   onChanged: (value) {
-                                    individualProfileController.lastname.value =
-                                        value;
+    individualProfileController.lastname.value =
+    value;
                                   },
                                   icon: Icons.person,
                                 iconColor: Colors.red.shade900,)),
@@ -263,12 +265,11 @@ class _IndividualProfileState extends State<IndividualProfile> {
                                   hintText: 'Please Enter E-Mail',
                                   obscureText: false,
                                   textInput: TextInputType.emailAddress,
-                                  initialValue:
-                                  individualProfileController
-                                      .email.value,
+                                  initialValue: individualProfileController.email.value,
                                   onChanged: (value) {
-                                    individualProfileController
-                                        .email.value = value;
+      individualProfileController
+          .email.value = value;
+
                                   },
                                   icon: Icons.email,
                                 iconColor: Colors.red.shade900,
@@ -280,9 +281,13 @@ class _IndividualProfileState extends State<IndividualProfile> {
                           hintText: 'Bio',
                           obscureText: false,
                           icon: Icons.description,
+                        initialValue: individualProfileController.description.value,
                           onChanged: (value) {
-                            individualProfileController.description.value = value;
-                          },
+                            if(value.isNotEmpty) {
+                              individualProfileController.description.value =
+                                  value;
+                            }
+                            },
                           maxLines: 3,
                         iconColor: Colors.red.shade900,
                       ),

@@ -596,7 +596,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
 
               ],
             ),
-          ),bottomSheet: Container(
+          ),
+        bottomSheet: Container(
             height: 1,
             width: Get.width,
             child: Align(

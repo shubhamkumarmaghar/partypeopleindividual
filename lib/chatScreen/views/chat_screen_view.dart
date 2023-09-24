@@ -1,8 +1,11 @@
 import 'dart:developer';
+import 'package:blur/blur.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
 import '../../individual_profile_screen/profilephotoview.dart';
@@ -102,8 +105,8 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                             onTap: () {
                               Get.to(ProfilePhotoView(
                                 profileUrl: controller
-                                        .getUserModel?.data?.profilePicture ??
-                                    '',
+                                        .getUserModel?.data?.profilePicture ??''
+                                    , approvalStatus:controller.getUserModel?.data?.profilePicApprovalStatus??'' ,
                               ));
                             },
                             child: Container(
@@ -119,11 +122,43 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                               ),
                               child: Padding(
                                 padding: EdgeInsets.all(Get.width * 0.006),
-                                child: CircleAvatar(backgroundColor: Colors.transparent,
-                                  // backgroundImage: NetworkImage(imageURL),
-                                  backgroundImage: NetworkImage(controller
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                                  child: controller.getUserModel?.data?.profilePicApprovalStatus != '1' ?
+                                  Blur(blur: 2.5,
+                                    child:
+                                    CachedNetworkImage(
+                                      placeholder: (context, url) => Shimmer.fromColors(
+                                        baseColor: Colors.grey.shade200,
+                                        highlightColor: Colors.grey.shade400,
+                                        period: const Duration(milliseconds: 1500),
+                                        child: Container(
+                                          height: Get.height * 0.35,
+                                          color: Color(0xff7AB02A),
+                                        ),
+                                      ),
+                                      imageUrl: controller
                                           .getUserModel?.data?.profilePicture ??
-                                      "https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54"),
+                                          '',
+                                      width: Get.width,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ): CachedNetworkImage(
+                                    placeholder: (context, url) => Shimmer.fromColors(
+                                      baseColor: Colors.grey.shade200,
+                                      highlightColor: Colors.grey.shade400,
+                                      period: const Duration(milliseconds: 1500),
+                                      child: Container(
+                                        height: Get.height * 0.35,
+                                        color: Color(0xff7AB02A),
+                                      ),
+                                    ),
+                                    imageUrl: controller
+                                        .getUserModel?.data?.profilePicture ??
+                                        '',
+                                    width: Get.width,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),
@@ -425,7 +460,8 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                         GestureDetector(
                           onTap: () async{
                             if(controller.getUserModel?.data?.fromBlockStatus=='0') {
-                           if(gender =='Male'){
+                           if(gender =='Male')
+                           {
                              if (plan == 'Yes') {
                              if (newUser == '1') {
                                if (_textController.text.isNotEmpty) {
@@ -447,7 +483,8 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                      usernameID: indiUsername +
                                          widget.id.toString(),
                                      id: widget.id.toString());
-                               } else {
+                               }
+                               else {
                                  Get.snackbar(
                                      'Message', 'Please type here first');
                                }

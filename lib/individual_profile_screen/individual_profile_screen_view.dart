@@ -209,6 +209,7 @@ class _IndividualProfileScreenViewState
                                             profileUrl:
                                                 individualProfileController
                                                     .profilePhotoURL.value,
+                                        approvalStatus: '1',
                                           ));
                                     },
                                     child: Container(

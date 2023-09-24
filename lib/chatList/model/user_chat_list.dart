@@ -8,7 +8,8 @@ class ChatUserListModel {
     this.displayName,
     required this.displayStatus,
     required this.type,
-    required this.blockStatus
+    required this.blockStatus,
+    required this.profilePicApprovalStatus,
 
   });
   late final dynamic id;
@@ -22,6 +23,7 @@ class ChatUserListModel {
   late final dynamic lastMessage;
   late final dynamic lastMessageTime;
   late final String blockStatus;
+  late final String profilePicApprovalStatus;
 
 
   ChatUserListModel.fromJson(Map<String, dynamic> json){
@@ -36,7 +38,7 @@ class ChatUserListModel {
     lastMessage = json['message'];
     lastMessageTime = json['update_date'];
     blockStatus = json['block_status'];
-
+    profilePicApprovalStatus = json['profile_pic_approval_status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -52,6 +54,7 @@ class ChatUserListModel {
     _data['message'] = lastMessage;
     _data['update_data'] = lastMessageTime;
     _data['block_status'] = blockStatus;
+    _data['profile_pic_approval_status'] = profilePicApprovalStatus;
     return _data;
   }
 }

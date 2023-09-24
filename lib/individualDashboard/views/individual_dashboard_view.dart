@@ -854,7 +854,8 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                     ),
               ),
                     Obx(() {
-                      return Container(
+                      return
+                        Container(
                           height: Get.height,
                           width: Get.width,
                           child:individualDashboardController.showAnimatedHeart.value? Align(

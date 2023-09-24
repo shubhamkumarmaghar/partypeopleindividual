@@ -68,7 +68,9 @@ class Data {
     required this.privacyOnline,
     required this.notification,
     required this.onlineTimeExpiry,
-    required this.fromBlockStatus
+    required this.fromBlockStatus,
+    required this.profilePicApprovalStatus,
+
   });
   String? id;
   String? uniqueId;
@@ -116,6 +118,7 @@ class Data {
   String? chatUserAvailableStatus;
   String? fromBlockStatus;
   String? gender;
+  String? profilePicApprovalStatus;
 
   Data.fromJson(Map<String, dynamic> json){
     id = json['id'];
@@ -164,6 +167,7 @@ class Data {
     chatUserAvailableStatus = json['chat_user_available_status'];
     fromBlockStatus=json['from_block_status'];
     gender = json['gender'];
+    profilePicApprovalStatus = json['profile_pic_approval_status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -214,6 +218,7 @@ class Data {
     _data['chat_user_available_status'] = chatUserAvailableStatus;
     _data['from_block_status']=fromBlockStatus;
     _data['gender']=gender;
+    _data['profile_pic_approval_status'] = profilePicApprovalStatus;
     return _data;
   }
 }

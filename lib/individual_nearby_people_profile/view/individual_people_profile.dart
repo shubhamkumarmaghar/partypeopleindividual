@@ -158,6 +158,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                               onTap: () {
                                 Get.to(() => ProfilePhotoView(
                                       profileUrl: data.profilePic ?? "",
+                                  approvalStatus: data.profilePicApprovalStatus ?? '',
                                     ));
                               },
                               child: Container(

@@ -4,14 +4,13 @@ import 'dart:developer';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:adobe_xd/gradient_xd_transform.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:like_button/like_button.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../individualDashboard/controllers/individual_dashboard_controller.dart';
 import '../../individualDashboard/models/usermodel.dart';
 import '../../individualDashboard/views/nearby_people_profile.dart';
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
@@ -19,44 +18,43 @@ import '../../individual_nearby_people_profile/view/individual_people_profile.da
 class PeopleList extends StatefulWidget {
   final List<UserModel> peopleList;
 
-   PeopleList({Key? key, required this.peopleList}) : super(key: key);
+  PeopleList({Key? key, required this.peopleList}) : super(key: key);
 
   @override
   State<PeopleList> createState() => _PeopleListState();
 }
 
-class _PeopleListState extends State<PeopleList> {
+class _PeopleListState extends State<PeopleList>
+    with SingleTickerProviderStateMixin {
+  IndividualDashboardController _dashboardController =
+      Get.find<IndividualDashboardController>();
   List<UserModel> maleList = [];
   List<UserModel> femaleList = [];
   List<UserModel> showList = [];
   List<UserModel> otherList = [];
   int choiceIndex = 0;
   Timer? _debounce;
-  TextEditingController? _textEditingController ;
+  TextEditingController? _textEditingController;
 
   void getMaleFemaleList() {
     widget.peopleList.forEach((element) {
       showList = widget.peopleList;
-      if(element.gender=='Male'){
-      maleList.add(element);
-    }
-      else if(element.gender=='Female')
-        {
-          femaleList.add(element);
-        }
-      else{
+      if (element.gender == 'Male') {
+        maleList.add(element);
+      } else if (element.gender == 'Female') {
+        femaleList.add(element);
+      } else {
         otherList.add(element);
-    }
-    }
-  );
+      }
+    });
   }
-@override
-  void initState() {
 
+  @override
+  void initState() {
     super.initState();
     getMaleFemaleList();
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,105 +81,104 @@ class _PeopleListState extends State<PeopleList> {
             ),
           ),
         ),
-        child: CustomScrollView(
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          slivers: [
-            SliverPadding(padding: EdgeInsets.only(top: 10)),
-            SliverToBoxAdapter(
-              child: Container(
-                height: Get.height * 0.1,
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    homePageText("People List", top: 30, color: Colors.white),
-                    GestureDetector(
-                      onTap: () {
-                        bottomMaleFemale(context);
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 35),
-                            child: Image.asset("assets/images/filter.png",
-                                alignment: Alignment.centerLeft),
-                          ),
-                          homePageText("   Filter",
-                              top: 30, color: Colors.white),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(child: // search bar
-            Container(
-              margin: EdgeInsets.only(top: Get.height * 0.02),
-              padding: EdgeInsets.symmetric(
-                horizontal: Get.width * 0.1,
-              ),
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 0.05,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10.sp)),
-                      child: TextField(
-                        controller: _textEditingController,
-                        onChanged:(value){
-                          log('value $value');
-
-                          _onSearchChanged(value);
-
-                        }  ,
-                        style: TextStyle(color: Colors.grey),
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Container(margin: EdgeInsets.only(left: 15),
-                              child: const Icon(
-                                Icons.search,
-                                color: Colors.grey,
+        child: Stack(
+          children: [
+            CustomScrollView(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              slivers: [
+                SliverPadding(padding: EdgeInsets.only(top: 10)),
+                SliverToBoxAdapter(
+                  child: Container(
+                    height: Get.height * 0.1,
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        homePageText("People List",
+                            top: 30, color: Colors.white),
+                        GestureDetector(
+                          onTap: () {
+                            bottomMaleFemale(context);
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 35),
+                                child: Image.asset("assets/images/filter.png",
+                                    alignment: Alignment.centerLeft),
                               ),
-                            ),
-                            hintText: 'Search user by username',
-                            hintStyle: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 11.sp,
-                                fontFamily: 'Poppins')),
-                      ),
+                              homePageText("   Filter",
+                                  top: 30, color: Colors.white),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            ),
-            SliverPadding(padding: EdgeInsets.only(top: 20)),
-            SliverPadding(
-                padding: EdgeInsets.only(left: 1, right: 8, top: 8, bottom: 8),
-                sliver: SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 1.04,
-                  ),
-                  delegate: SliverChildBuilderDelegate(
+                ),
+                SliverToBoxAdapter(
+                  child: // search bar
+                      Container(
+                    margin: EdgeInsets.only(top: Get.height * 0.02),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Get.width * 0.1,
+                    ),
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10.sp)),
+                            child: TextField(
+                              controller: _textEditingController,
+                              onChanged: (value) {
+                                log('value $value');
 
-                      childCount: showList.length,
+                                _onSearchChanged(value);
+                              },
+                              style: TextStyle(color: Colors.grey),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  icon: Container(
+                                    margin: EdgeInsets.only(left: 15),
+                                    child: const Icon(
+                                      Icons.search,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  hintText: 'Search user by username',
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 11.sp,
+                                      fontFamily: 'Poppins')),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverPadding(padding: EdgeInsets.only(top: 20)),
+                SliverPadding(
+                    padding:
+                        EdgeInsets.only(left: 1, right: 8, top: 8, bottom: 8),
+                    sliver: SliverGrid(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                        childAspectRatio: 1.04,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                          childCount: showList.length,
                           (BuildContext context, int index) {
                         return GestureDetector(
                           onTap: () {
-                            Get.to(() =>
-                                IndividualPeopleProfile(
-                                ),
-                            arguments: showList[index].id);
+                            Get.to(() => IndividualPeopleProfile(),
+                                arguments: showList[index].id);
                           },
                           child: NearByPeopleProfile(
                             imageURL: showList[index].profilePicture,
@@ -190,12 +187,30 @@ class _PeopleListState extends State<PeopleList> {
                             likeStatus: showList[index].likeStatus,
                             onlineStatus: showList[index].onlineStatus,
                             privacyStatus: showList[index].privacyOnline,
-                            profile_pic_approval_status: showList[index].profilePicApproval,
+                            profile_pic_approval_status:
+                                showList[index].profilePicApproval,
                           ),
                           // personGrid(index: index),
                         );
                       }),
-                )),
+                    )),
+              ],
+            ),
+            GetBuilder<IndividualDashboardController>(
+              builder: (controller) {
+                return Container(
+                    height: Get.height,
+                    width: Get.width,
+                    child: _dashboardController.showAnimatedHeart.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Lottie.network(
+                                // 'https://assets-v2.lottiefiles.com/a/3073e56e-1175-11ee-911b-eb7a8cb4524d/VyuILSK8xC.json'
+                                'https://assets-v2.lottiefiles.com/a/c543ac62-1150-11ee-953b-235b9373fc03/85XdRr7LQN.json'),
+                          )
+                        : Container());
+              },
+            )
           ],
         ),
       ),
@@ -212,92 +227,94 @@ class _PeopleListState extends State<PeopleList> {
     );
   }
 
-  Future bottomMaleFemale(BuildContext context){
-    return   showModalBottomSheet( context: context, builder: (context)
-    {
-      return GetBuilder<FilterChipController>(
-        init: FilterChipController(),
-        builder: (controller) {
-
-        return Column( mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-
-            iconText(Icons.people_outline, 'All People',    FilterChip(
-                label: Text('All People'),
-                selected: controller.list[0],
-                selectedColor: Colors.red.shade900,
-                backgroundColor: Colors.grey,
-                labelStyle: TextStyle(color: Colors.white),
-                onSelected: (value){
-                  controller.setChip(selectedIndex: 0);
-                 showList=widget.peopleList;
-                  navigator?.pop();
-                 setState(() {
-
-                 });
-                } ),
-            ),
-            iconText(Icons.male, 'Male',  FilterChip(
-              label: Text('Male'),
-              selectedColor: Colors.red.shade900,
-              backgroundColor: Colors.grey,
-              labelStyle: TextStyle(color: Colors.white),
-              selected: controller.list[1],
-              onSelected: (value){ controller.setChip(selectedIndex: 1);
-              showList=maleList;
-              navigator?.pop();
-              setState(() {
-
-              });
-              }
-              ),
-              ),
-            iconText(Icons.female, 'Female', FilterChip(
-                label: Text('Female'),
-                selected: controller.list[2],
-                selectedColor: Colors.red.shade900,
-                backgroundColor: Colors.grey,
-                labelStyle: TextStyle(color: Colors.white),
-                onSelected: (value) {
-                  controller.setChip(selectedIndex: 2);
-                  showList=femaleList;
-                  navigator?.pop();
-                  setState(() {
-
-                  });
-                }),),
-
-
-          ],
-        );
-      },);
-    });
+  Future bottomMaleFemale(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return GetBuilder<FilterChipController>(
+            init: FilterChipController(),
+            builder: (controller) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  iconText(
+                    Icons.people_outline,
+                    'All People',
+                    FilterChip(
+                        label: Text('All People'),
+                        selected: controller.list[0],
+                        selectedColor: Colors.red.shade900,
+                        backgroundColor: Colors.grey,
+                        labelStyle: TextStyle(color: Colors.white),
+                        onSelected: (value) {
+                          controller.setChip(selectedIndex: 0);
+                          showList = widget.peopleList;
+                          navigator?.pop();
+                          setState(() {});
+                        }),
+                  ),
+                  iconText(
+                    Icons.male,
+                    'Male',
+                    FilterChip(
+                        label: Text('Male'),
+                        selectedColor: Colors.red.shade900,
+                        backgroundColor: Colors.grey,
+                        labelStyle: TextStyle(color: Colors.white),
+                        selected: controller.list[1],
+                        onSelected: (value) {
+                          controller.setChip(selectedIndex: 1);
+                          showList = maleList;
+                          navigator?.pop();
+                          setState(() {});
+                        }),
+                  ),
+                  iconText(
+                    Icons.female,
+                    'Female',
+                    FilterChip(
+                        label: Text('Female'),
+                        selected: controller.list[2],
+                        selectedColor: Colors.red.shade900,
+                        backgroundColor: Colors.grey,
+                        labelStyle: TextStyle(color: Colors.white),
+                        onSelected: (value) {
+                          controller.setChip(selectedIndex: 2);
+                          showList = femaleList;
+                          navigator?.pop();
+                          setState(() {});
+                        }),
+                  ),
+                ],
+              );
+            },
+          );
+        });
   }
 
-  Widget iconText(IconData icon , String text , Widget widget ){
-    return Container(margin: EdgeInsets.all(20),
+  Widget iconText(IconData icon, String text, Widget widget) {
+    return Container(
+      margin: EdgeInsets.all(20),
       child: Row(children: [
-      Icon(icon),
-      SizedBox(width: Get.width*0.05,),
-      widget
-    ]),
+        Icon(icon),
+        SizedBox(
+          width: Get.width * 0.05,
+        ),
+        widget
+      ]),
     );
   }
 
   _onSearchChanged(String query) {
-    if(query!='') {
-      if (_debounce?.isActive ?? false)
-        _debounce?.cancel();
+    if (query != '') {
+      if (_debounce?.isActive ?? false) _debounce?.cancel();
       _debounce = Timer(const Duration(milliseconds: 2000), () async {
         final response = await http.post(
-          Uri.parse(
-              'https://app.partypeople.in/v1/home/users_search'),
+          Uri.parse('https://app.partypeople.in/v1/home/users_search'),
           headers: <String, String>{
             'x-access-token': '${GetStorage().read('token')}',
           },
-          body: <String, String>{
-            'keyword': query
-          },
+          body: <String, String>{'keyword': query},
         );
         if (response.statusCode == 200) {
           // If the server returns a 200 OK response,
@@ -313,21 +330,16 @@ class _PeopleListState extends State<PeopleList> {
             otherList.clear();
             showList.addAll(usersData.map((user) => UserModel.fromJson(user)));
             getMaleFemaleList();
-            setState(() {
-
-            });
-            log('User data found $query ${jsonDecode(
-                response.body)['data'][0]['id']}');
+            setState(() {});
+            log('User data found $query ${jsonDecode(response.body)['data'][0]['id']}');
             // String id = jsonDecode(response.body)['data'][0]['id'].toString();
             //Get.to(IndividualPeopleProfile(),arguments: id);
-          }
-          else {
+          } else {
             print('data not found');
             Get.snackbar(
                 'Opps!', 'No User Found with this username, try another');
           }
-        }
-        else {
+        } else {
           // If the server did not return a 200 OK response,
           // then throw an exception.
           throw Exception('data not found');
@@ -338,22 +350,28 @@ class _PeopleListState extends State<PeopleList> {
 }
 
 class MyFilterChip extends StatefulWidget {
-  const MyFilterChip({super.key, required this.onChanged,required this.text, required this.status });
+  const MyFilterChip(
+      {super.key,
+      required this.onChanged,
+      required this.text,
+      required this.status});
 
   final void Function(bool) onChanged;
   final String text;
   final bool status;
+
   @override
   State<MyFilterChip> createState() => MyFilterChipState();
 }
 
 class MyFilterChipState extends State<MyFilterChip> {
   bool _selected = false;
-  void selectedStatus (){
+
+  void selectedStatus() {
     _selected = widget.status;
   }
-  bool get selected => _selected;
 
+  bool get selected => _selected;
 
   @override
   Widget build(BuildContext context) {
@@ -371,14 +389,13 @@ class MyFilterChipState extends State<MyFilterChip> {
     );
   }
 }
-class FilterChipController extends GetxController{
-  List<bool> list = [true,false,false];
 
-  void setChip({required int selectedIndex}){
-    list= list.map((e) => false).toList();
-    list[selectedIndex]=true;
+class FilterChipController extends GetxController {
+  List<bool> list = [true, false, false];
+
+  void setChip({required int selectedIndex}) {
+    list = list.map((e) => false).toList();
+    list[selectedIndex] = true;
     update();
   }
-
-
 }

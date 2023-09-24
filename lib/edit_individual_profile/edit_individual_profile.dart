@@ -722,7 +722,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
         ),
       );
       if (source != null) {
-        final pickedFile = await _picker.pickImage(source: source);
+        final pickedFile = await _picker.pickImage(source: source ,imageQuality:  50);
         if (pickedFile == null) {
           throw Exception('No image file was picked.');
         }

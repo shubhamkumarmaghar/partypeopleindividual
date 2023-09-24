@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -419,9 +418,8 @@ class ChatScreenController  extends GetxController{
   // for getting all messages of a specific conversation from firestore database
    Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
   GetUserModel? user) {
-     log('dbfg   ${user?.data?.username}${user?.data?.id}');
   return firestore
-      .collection('chats/${getConversationID('${user?.data?.username}${user?.data?.id}'??'')}/messages/')
+      .collection('chats/${getConversationID('${user?.data?.username}${user?.data?.id}')}/messages/')
       .orderBy('sent', descending: true)
       .snapshots();
   }
@@ -453,7 +451,7 @@ class ChatScreenController  extends GetxController{
         fcmToken: chatUser?.data?.deviceToken ?? '');
     final ref = firestore
         .collection(
-        'chats/${getConversationID(toIdd?? '')}/messages/');
+        'chats/${getConversationID(toIdd)}/messages/');
 
     await ref.doc(time).set(message.toJson()).then((value) async{
       await player.play(AssetSource('sound/sent.wav'));
@@ -463,7 +461,6 @@ class ChatScreenController  extends GetxController{
             .collection('chats/${getConversationID(toIdd)}/messages/')
             .doc(time)
             .get().then((value) async {
-          Message? _message;
           log('$value');
           final data = Message.fromJson(value.data()!);
 
@@ -550,7 +547,7 @@ class ChatScreenController  extends GetxController{
         Message? _message;
         final data = value.docs;
         final list =
-            data.map((e) => Message.fromJson(e.data())).toList() ?? [];
+            data.map((e) => Message.fromJson(e.data())).toList();
         if (list.isNotEmpty) _message = list[0];
         String? lastMessage = _message?.msg;
         log('last message $lastMessage');
@@ -636,10 +633,9 @@ class ChatScreenController  extends GetxController{
           .collection('chats/${getConversationID(usernameID)}/messages/')
           .orderBy('sent', descending: true)
           .get().then((value) async {
-        Message? _message;
         final data = value.docs;
         final list =
-            data.map((e) => Message.fromJson(e.data())).toList() ?? [];
+            data.map((e) => Message.fromJson(e.data())).toList();
         list.forEach((element) async {
           log('gvkhk ${element.msg}');
 
@@ -704,8 +700,6 @@ class ChatScreenController  extends GetxController{
       .doc(message.sent)
       .update({'msg': updatedMsg});
   }
-
-
 
   @override
   void onClose() async{

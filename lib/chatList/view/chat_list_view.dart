@@ -1,8 +1,11 @@
 import 'dart:developer';
+import 'package:blur/blur.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/chatScreen/controllers/chat_screen_controller.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../chatScreen/model/chat_model.dart';
@@ -174,11 +177,39 @@ class _ChatListState extends State<ChatList> {
                                                       child: Padding(
                                                         padding: EdgeInsets.all(
                                                             Get.width * 0.006),
-                                                        child: CircleAvatar(backgroundColor: Colors.transparent,
-                                                          // backgroundImage: NetworkImage(imageURL),
-                                                          backgroundImage:
-                                                              NetworkImage(data
-                                                                  .profilePic),
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                                                          child: data.profilePicApprovalStatus != '1' ?
+                                                          Blur(blur: 2.5,
+                                                            child:
+                                                            CachedNetworkImage(
+                                                              placeholder: (context, url) => Shimmer.fromColors(
+                                                                baseColor: Colors.grey.shade200,
+                                                                highlightColor: Colors.grey.shade400,
+                                                                period: const Duration(milliseconds: 1500),
+                                                                child: Container(
+                                                                  height: Get.height * 0.35,
+                                                                  color: Color(0xff7AB02A),
+                                                                ),
+                                                              ),
+                                                              imageUrl: data.profilePic,
+                                                              width: Get.width,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ): CachedNetworkImage(
+                                                            placeholder: (context, url) => Shimmer.fromColors(
+                                                              baseColor: Colors.grey.shade200,
+                                                              highlightColor: Colors.grey.shade400,
+                                                              period: const Duration(milliseconds: 1500),
+                                                              child: Container(
+                                                                height: Get.height * 0.35,
+                                                                color: Color(0xff7AB02A),
+                                                              ),
+                                                            ),
+                                                            imageUrl: data.profilePic,
+                                                            width: Get.width,
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),

@@ -12,6 +12,7 @@ import 'package:sizer/sizer.dart';
 import 'package:html/parser.dart';
 import '../../widgets/webView.dart';
 import '../model/SubscriptionModel.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 class SubscriptionView extends StatefulWidget {
   String subText ;
@@ -313,21 +314,24 @@ class _SubscriptionViewState extends State<SubscriptionView> {
   }
 
   Widget subscriptionPlansView({required SubscriptionData? subscriptionData}) {
-    var document = parse(subscriptionData?.description ?? "");
-    var document1 = parse('''
-<body>
-  <h2>Header 1</h2>
-  <p>Text.</p>
-  <h2>Header 2</h2>
-  More text.
-  <br/>
-</body>''');
-
-    // outerHtml output
-    print('outer html:');
-    print(document1.children[0].text);
-
-    print('');
+    var document = parse(subscriptionData?.description ?? "",generateSpans: true);
+    String doc = subscriptionData?.description ?? "";
+    final String htmlcode = """
+     <h1>H1 Title</h1>
+     <h2>H2 Title</h2>
+        <p>A paragraph with <strong>bold</strong> and <u>underline</u> text.</p>
+        <ol>
+          <li>List 1</li>
+          <li>List 2<ul>
+              <li>List 2.1 (nested)</li>
+              <li>List 2.2</li>
+             </ul>
+          </li>
+          <li>Three</li>
+        </ol>
+     <a href="https://www.hellohpc.cdom">Link to HelloHPC.com</a>
+     <img src='https://www.hellohpc.com/wp-content/uploads/2020/05/flutter.png'/>
+    """;
     return Stack(children: [
       FittedBox(
         child: Container(
@@ -421,21 +425,22 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                 FittedBox(
                   child: Container(
                       // color: Colors.red.shade900,
-                      margin: EdgeInsets.all(15),
+                      margin: EdgeInsets.all(5),
                       alignment: Alignment.centerLeft,
                       width: Get.width * 0.65,
                       height: Get.width * 0.45,
                       child:
-
-                      Text(document.children[0].text,
+                      HtmlWidget(doc,textStyle: TextStyle(color: Colors.black),
+                     /* Text(document.children[0].text,
                           maxLines: 8,
                           style: TextStyle(
                               fontSize: 14,
                               color: Colors.black54,
                               fontWeight: FontWeight.w600),
-                      )
+                      )*/
                   ),
                 ),
+                )
               ]),
         ),
       ),

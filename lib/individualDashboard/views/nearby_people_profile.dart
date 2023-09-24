@@ -51,7 +51,7 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     /// send your request here
-    ///
+    controller.animateHeart();
     print("$isLiked");
     if(approvalStatus =='1') {
           if (widget.likeStatus == '1') {
