@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,8 @@ class _VisitInfoViewState extends State<VisitInfoView> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        appBar: AppBar(
+        appBar:
+        AppBar(
           shape: Border(
             bottom: BorderSide(color: const Color(0xFFc4c4c4), width: 1.sp),
           ),
@@ -224,9 +226,10 @@ class ProfileContainer extends StatelessWidget {
           String? date = dateAndTime?[0];
           return GestureDetector(
             onTap: () {
+              log('user id ${data.userId}  ${dataList[index].userId}');
               if (getCondition() == 1) {
                 Get.to(() => IndividualPeopleProfile(),
-                    arguments: data.userId ?? "");
+                    arguments: dataList[index].userId ?? "");
               } else {
                 Get.to(SubscriptionView(
                   subText: 'Get complete access of visitors list and see who is interested in you ',

@@ -1,13 +1,9 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:intl/intl.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:sizer/sizer.dart';
-
-import '../../centralize_api.dart';
-import '../../widgets/block_unblock.dart';
 import '../controllers/transction_info_controller.dart';
 import '../model/transction_info_model.dart';
 
@@ -18,17 +14,38 @@ class TransctionReportedUsersView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar:
+      AppBar(
+        shape: Border(
+          bottom: BorderSide(color: const Color(0xFFc4c4c4), width: 1.sp),
+        ),
+        backgroundColor: Colors.transparent,
+        // Set the background color to transparent
+        leading: IconButton(
+          padding: EdgeInsets.symmetric(horizontal: 18.sp),
+          alignment: Alignment.centerLeft,
+          icon: const Icon(Icons.arrow_back_ios),
+          color: Colors.white,
+          onPressed: () {
+            Get.back();
+          },
+          iconSize: 12.sp,
+        ),
+        titleSpacing: 0,
+        elevation: 0,
         title: Text(
-          'Transction History',
-          style: TextStyle(
-            fontSize: 16.sp,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+          'Transaction History',
+          style: TextStyle(color: Colors.white, fontSize: 12.sp),
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.pink, Colors.red.shade900],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
         ),
-        backgroundColor: Colors.red.shade900,
-        elevation: 0,
       ),
       body: Container(
         width: Get.width,
@@ -59,7 +76,7 @@ class TransctionReportedUsersView extends StatelessWidget {
             GetBuilder<TransctionReportController>(
               init: TransctionReportController(),
               builder: (controller) {
-                return TransctionReport(dataList:controller.transctionModel.data ??[]);
+                return TransactionReport(dataList:controller.transctionModel.data ??[]);
               },),),
            /* Expanded(
               child: ListView.builder(
@@ -112,9 +129,9 @@ class TransctionReportedUsersView extends StatelessWidget {
   }
 }
 
-class TransctionReport extends StatelessWidget {
+class TransactionReport extends StatelessWidget {
   APIService apiService = APIService();
-  TransctionReport({
+  TransactionReport({
     required this.dataList,
     //required this.blockUnblock
   });

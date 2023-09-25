@@ -145,6 +145,18 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     },
                   ),
                   CustomOptionWidget(
+                    title: 'Privacy Policy',
+                    icon: Icons.privacy_tip_outlined,
+                    onTap: () async {
+                      final Uri _url =
+                      Uri.parse("https://partypeople.in/privacy_policy_individual_app");
+
+                      if (!await launchUrl(_url)) {
+                        throw Exception('Could not launch $_url');
+                      }
+                    },
+                  ),
+                  CustomOptionWidget(
                     title: 'Logout',
                     icon: Icons.exit_to_app,
                     onTap: () {

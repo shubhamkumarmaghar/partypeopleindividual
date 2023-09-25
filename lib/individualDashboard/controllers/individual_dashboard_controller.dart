@@ -607,19 +607,15 @@ Future<void> getTomarrowParty() async{
         if (decode['status'] == 1 ) {
           try {
             onlineStatus.value = decode['status'];
-            log("online Status : $onlineStatus  ${decode['plan_plan_expiry']}");
             GetStorage().write('plan_plan_expiry', decode['plan_plan_expiry']);
             String approval_date =  decode['approval_date'];
             chatCount.value = decode['chat_count'];
             notificationCount.value = decode['notification_count']??'0';
-            log('notification count ${notificationCount.value}');
-            log('chatcount ${decode['chat_count']}');
             if(approval_date !='') {
               GetStorage().write('approval_status', '${decode['approval_status']}');
               approvalStatus.value = GetStorage().read('approval_status');
-              log('approval status ${approvalStatus}');
               DateTime approvalTime = DateTime.parse(approval_date);
-              DateTime newApproval_time = approvalTime.add(Duration(days: 2));
+              DateTime newApproval_time = approvalTime.add(Duration(days: 1));
               if (newApproval_time.isAfter(DateTime.now())) {
                 GetStorage().write('newUser', '1');
               }
@@ -629,7 +625,6 @@ Future<void> getTomarrowParty() async{
               log('${approvalTime.toString()}');
             }
             else{
-              log('approval statushvkkhb ${approvalStatus}');
               GetStorage().write('approval_status', '0');
               approvalStatus.value = GetStorage().read('approval_status');
             }

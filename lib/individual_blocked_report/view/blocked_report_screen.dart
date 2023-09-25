@@ -16,18 +16,39 @@ class BlockedReportedUsersView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar:AppBar(
+        shape: Border(
+          bottom: BorderSide(color: const Color(0xFFc4c4c4), width: 1.sp),
+        ),
+        backgroundColor: Colors.transparent,
+        // Set the background color to transparent
+        leading: IconButton(
+          padding: EdgeInsets.symmetric(horizontal: 18.sp),
+          alignment: Alignment.centerLeft,
+          icon: const Icon(Icons.arrow_back_ios),
+          color: Colors.white,
+          onPressed: () {
+            Get.back();
+          },
+          iconSize: 12.sp,
+        ),
+        titleSpacing: 0,
+        elevation: 0,
         title: Text(
-          'Blocked Users',
-          style: TextStyle(
-            fontSize: 16.sp,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+          'Blocked User',
+          style: TextStyle(color: Colors.white, fontSize: 12.sp),
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.pink, Colors.red.shade900],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
         ),
-        backgroundColor: Colors.red.shade900,
-        elevation: 0,
       ),
+
       body: Container(
         color: Colors.white,
         child: Column(
