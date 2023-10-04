@@ -192,7 +192,8 @@ class _VisitInfoViewState extends State<VisitInfoView> {
     );
   }
    Widget loder()
-   {return Center(
+   {
+     return Center(
        child: Container(
          child: Column(children: [
            Lottie.network(
@@ -246,7 +247,7 @@ class ProfileContainer extends StatelessWidget {
                   child: Row(
                     children: [
                       Blur(
-                          blur:getCondition() == 1 ?0:2.5,
+                          blur:getCondition() == 1 ?0:5.0,
 
             child: Stack(
                             children: [
@@ -307,7 +308,7 @@ class ProfileContainer extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Blur(
-                            blur:getCondition() == 1 ?0:2.5,
+                            blur:getCondition() == 1 ?0:5.0,
                             child: Text(
                               data.username ?? '',
                               style: TextStyle(

@@ -10,6 +10,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../api_helper_service.dart';
 import '../../chatScreen/views/chat_screen_view.dart';
+import '../../firebase_custom_event.dart';
 import '../../individual_profile_screen/profilephotoview.dart';
 import '../../individual_subscription/view/subscription_view.dart';
 import '../../widgets/block_unblock.dart';
@@ -260,6 +261,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
+                                    logCustomEvent(eventName: chatInitiateEvent, parameters: {'toUser':data.name ,});
                                     Get.to(ChatScreenView(),
                                         arguments: controller.userId);
                                     //?.then((value) => APIService.lastMessage(controller.userId, GetStorage().read('last_message')));
@@ -310,8 +312,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                             ],
                           ),
 
-                          Blur(blur: controller
-                              .peopleProfileData.data?.profilePicApprovalStatus!='1' ?2.5:0,
+                          Blur(blur: 2.5,
                             child: Container(
                               height: Get.height * 0.15,
                               child: Neumorphic(
@@ -348,7 +349,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                   )),
                             ),
                             overlay: controller
-                                .peopleProfileData.data?.profilePicApprovalStatus!='1' ? Container():Container(
+                                .peopleProfileData.data?.descriptionApprovalStatus!='1' ? Container():Container(
                               height: Get.height * 0.15,
                               child: Neumorphic(
                                   margin: const EdgeInsets.all(12.0),

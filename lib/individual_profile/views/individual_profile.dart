@@ -153,6 +153,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                                   shape: BoxShape.circle,
                                 ),
                                 child: CircleAvatar(
+                                  backgroundColor: Colors.transparent,
                                   radius: 55,
                                   backgroundImage: _profileImage == null
                                       ? const AssetImage(

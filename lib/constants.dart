@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+
 // Constant messages
 const String loginFailedTitle = 'Login Failed';
 const String unexpectedErrorMessage =
@@ -9,3 +11,6 @@ const String loginSuccessMessage =
     'Congratulations! You have successfully logged in.';
 const String organizationUser =
     'Sorry ! you can not login here ';
+
+// for analytics
+late FirebaseAnalytics analytics;

@@ -556,10 +556,11 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                    controller.addChatUserToList();
                                  }
                                }
+                               String msg = _textController.text;
+                               _textController.text = '';
                            await controller.sendMessage(
                                    controller.getUserModel,
-                                   _textController.text, Type.text);
-                               _textController.text = '';
+                                   msg, Type.text);
                                await chatScreenController
                                    .getLastMessageString(
                                    usernameID: indiUsername +

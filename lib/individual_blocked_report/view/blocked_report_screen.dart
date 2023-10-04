@@ -165,6 +165,7 @@ class BlockedReportedUserItem extends StatelessWidget {
               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(children:[CircleAvatar(
+                    backgroundColor: Colors.transparent,
                     radius: 16.sp,
                     backgroundImage: NetworkImage(data.profilePicture??'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54'),
                     child: Stack(
@@ -172,6 +173,7 @@ class BlockedReportedUserItem extends StatelessWidget {
                         Positioned(
                           bottom: 3.sp,
                           child: CircleAvatar(
+                            backgroundColor: Colors.transparent,
                             radius: 6.sp,
                             backgroundImage:
                             const NetworkImage("https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54"),

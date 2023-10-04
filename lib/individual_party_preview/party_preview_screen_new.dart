@@ -117,7 +117,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                   height: 20,
                 ),
                 Stack(children: [
-                  if (widget.party.imageStatus == '1') Card(elevation: 5,
+                  if (widget.party.imageStatus == '1')
+                    Card(elevation: 5,
                     margin: EdgeInsets.only(bottom: 25),
                     shape: RoundedRectangleBorder(
                       borderRadius:
@@ -285,16 +286,36 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                     =>  OrganizationDetaisView(organizationData: widget.party.userId , mobileno: widget.party.phoneNumber,),arguments: widget.party.userId
                     );
                   },
-                  child: Text(
-                    'Organized By : ${widget.party.organization.capitalizeFirst!} ',
+                  child: Row(children: [ Text(
+                    'Organized By : ',
                     textAlign: TextAlign.start,
                     maxLines: 2,
                     style: TextStyle(
                         fontFamily: 'malgun',
-                        fontSize: 12.sp,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600),
+                        fontSize: 14.sp,
+                        color: Colors.red.shade900,
+                        fontWeight: FontWeight.w500),
                   ),
+                    Container(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6),
+                    padding: EdgeInsets.all(5),
+                    decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(12),
+                      color: Colors.orange,),
+                    child:  FittedBox(
+                      child: Row(mainAxisAlignment: MainAxisAlignment.center
+                          ,children: [
+                            SizedBox(width: Get.width*0.003,),
+                            Text(' ${widget.party.organization.capitalizeFirst!} ',style: TextStyle(color: Colors.white,
+                                fontSize: 16),)
+                          ]
+                      ),
+                    ),
+                  ),
+
+                  ],),
+
                 ),
                 const Divider(),
 

@@ -334,7 +334,7 @@ class _PartyCardState extends State<PartyCard>
                                             color: Colors.black87,
                                             fontWeight: FontWeight.bold,
                                           ),
-                                          maxLines: 3,
+                                          maxLines: 2,
                                         ),
                                       ),
                                     ),

@@ -46,36 +46,38 @@ class _SettingsState extends State<Settings> {
     return SafeArea(
       child: Scaffold(
           extendBodyBehindAppBar: true,
-          appBar: AppBar(
+          appBar:
+          AppBar(
+            shape: Border(
+              bottom: BorderSide(color: const Color(0xFFc4c4c4), width: 1.sp),
+            ),
+            backgroundColor: Colors.transparent,
+            // Set the background color to transparent
+            leading: IconButton(
+              padding: EdgeInsets.symmetric(horizontal: 18.sp),
+              alignment: Alignment.centerLeft,
+              icon: const Icon(Icons.arrow_back_ios),
+              color: Colors.white,
+              onPressed: () {
+                Get.back();
+              },
+              iconSize: 12.sp,
+            ),
+            titleSpacing: 0,
+            elevation: 0,
+            title: Text(
+              'Settings',
+              style: TextStyle(color: Colors.white, fontSize: 12.sp),
+            ),
             flexibleSpace: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                  //  Colors.pink,
-                   // Colors.red.shade900
-                    Colors.red.shade800,
-                    Color(0xff7e160a),
-                    Color(0xff2e0303),],
-                //  begin: Alignment.topCenter,
-                 // end: Alignment.bottomCenter,
+                  colors: [Colors.pink,
+                    Colors.red.shade900],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
               ),
-            ),
-            leading: BackButton(
-              onPressed: () => Get.back(),
-            ),
-            backgroundColor: Colors.red.shade900,
-            elevation: 0,
-            title: Text(
-              "Settings",
-              style: TextStyle(
-                fontSize: 13.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            iconTheme: IconThemeData(
-              color: Colors.white,
             ),
           ),
           backgroundColor: Colors.white,
@@ -103,13 +105,8 @@ class _SettingsState extends State<Settings> {
                       child: Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [
-                              //Colors.red.shade400,
-                             // Colors.red.shade800,
-                              Colors.red.shade800,
-                              Color(0xff7e160a),
-                              Color(0xff2e0303),
-                            ],
+                            colors: [Colors.pink,
+                              Colors.red.shade900],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -130,7 +127,7 @@ class _SettingsState extends State<Settings> {
                               crossAxisAlignment: CrossAxisAlignment.start,children: [  Text(
                                 "Online Status",
                                 style: TextStyle(
-                                    fontSize: 13.sp,
+                                    fontSize: 12.sp,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                     fontFamily: 'Poppins'),
@@ -179,13 +176,8 @@ class _SettingsState extends State<Settings> {
                       child: Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [
-                             // Colors.red.shade400,
-                             // Colors.red.shade800,
-                              Colors.red.shade800,
-                              Color(0xff7e160a),
-                              Color(0xff2e0303),
-                            ],
+                            colors: [Colors.pink,
+                              Colors.red.shade900],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -206,7 +198,7 @@ class _SettingsState extends State<Settings> {
                                   Text(
                                 "Notifications",
                                 style: TextStyle(
-                                    fontSize: 13.sp,
+                                    fontSize: 12.sp,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                     fontFamily: 'Poppins'),
@@ -265,13 +257,8 @@ class _SettingsState extends State<Settings> {
                         Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [
-                               // Colors.red.shade400,
-                               // Colors.red.shade800,
-                                Colors.red.shade800,
-                                Color(0xff7e160a),
-                                Color(0xff2e0303),
-                              ],
+                              colors: [Colors.pink,
+                                Colors.red.shade900],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
@@ -290,7 +277,7 @@ class _SettingsState extends State<Settings> {
                                 child: Text(
                                   "Delete My Account",
                                   style: TextStyle(
-                                      fontSize: 13.sp,
+                                      fontSize: 12.sp,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                       fontFamily: 'Poppins'),

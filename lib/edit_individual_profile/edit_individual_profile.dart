@@ -170,7 +170,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                               .photoStatusApproval.value !=
                                           '1'
                                       ? Blur(
-                                          blur: 2.5,
+                                          blur: 5.0,
                                           child: Container(
                                             height: 300,
                                             decoration: BoxDecoration(
@@ -228,7 +228,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                     onTap: () => _updatePhoto('profile'),
                                     child: Container(
                                       decoration: const BoxDecoration(
-                                        boxShadow: [
+                                       boxShadow: [
                                           BoxShadow(
                                             blurRadius: 10,
                                             color: Colors.transparent,
@@ -237,10 +237,14 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         ],
                                         shape: BoxShape.circle,
                                       ),
-                                      child: Blur(
+                                      child:
+                                      individualProfileController
+                                          .photoStatusApproval.value !=
+                                          '1' ?
+                                      Blur(
                                               blur: individualProfileController
                                                   .photoStatusApproval.value !=
-                                                  '1' ?2.5:0,
+                                                  '1' ?5:0,
                                               child: CircleAvatar(
                                                 backgroundColor: Colors.transparent,
                                                 radius: 55,
@@ -260,26 +264,24 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                                         as ImageProvider<
                                                             Object>?,
                                               ),
-                                        overlay:individualProfileController
-                                            .photoStatusApproval.value !=
-                                            '1' ?Container():CircleAvatar(
-                                          radius: 55,
-                                          backgroundImage: _profileImage !=
-                                              null
-                                              ? FileImage(_profileImage!)
-                                              : (individualProfileController
-                                              .profilePhotoURL
-                                              .value
-                                              .isNotEmpty
-                                              ? NetworkImage(
-                                              individualProfileController
-                                                  .profilePhotoURL
-                                                  .value)
-                                              : const AssetImage(
-                                              'assets/images/man.png'))
-                                          as ImageProvider<Object>?,
-                                        ) ,
-                                            ),
+                                            ): CircleAvatar(
+                                        radius: 55,
+                                        backgroundColor: Colors.transparent,
+                                        backgroundImage: _profileImage !=
+                                            null
+                                            ? FileImage(_profileImage!)
+                                            : (individualProfileController
+                                            .profilePhotoURL
+                                            .value
+                                            .isNotEmpty
+                                            ? NetworkImage(
+                                            individualProfileController
+                                                .profilePhotoURL
+                                                .value)
+                                            : const AssetImage(
+                                            'assets/images/man.png'))
+                                        as ImageProvider<Object>?,
+                                      ) ,
 
                                     ),
                                   ),
@@ -412,7 +414,6 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         individualProfileController
                                             .email.value,
                                         onChanged: (value) {
-                                          log('abcs ${value}');
                                           individualProfileController
                                               .email.value = value;
                                         },
@@ -434,7 +435,6 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         icon: Icons.description,
                                         iconColor: Colors.red.shade900,
                                         onChanged: (value) {
-                                          log('abcs ${value}');
                                           individualProfileController
                                               .description.value = value;
                                         },

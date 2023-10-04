@@ -43,13 +43,16 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
             flexibleSpace: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
+             /*     colors: [
                  //   Colors.pink,
                    // Colors.red.shade900
                     Colors.red.shade800,
                     Color(0xff7e160a),
                     Color(0xff2e0303),
-                  ],
+                  ],*/
+
+        colors: [Colors.pink,
+        Colors.red.shade900],
                  // begin: Alignment.topCenter,
                 //  end: Alignment.bottomCenter,
 
@@ -198,9 +201,12 @@ class CustomOptionWidget extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [
                  // Colors.red.shade400,
-                  Colors.red.shade800,
+                /*  Colors.red.shade800,
                   Color(0xff7e160a),
-                  Color(0xff2e0303),
+                  Color(0xff2e0303),*/
+
+    Colors.pink,
+    Colors.red.shade900
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,

@@ -53,6 +53,7 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                           Stack(
                             children: [
                               Container(
+                                height: Get.height*0.295,
                                 child: CachedNetworkImageWidget(
                                   imageUrl: '${data?.timelinePic}',
                                   fit: BoxFit.fill,
@@ -72,7 +73,7 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                   child: Stack(
                                     children: [
                                       CachedNetworkImageWidget(
-                                        imageUrl: '${data?.timelinePic}',
+                                        imageUrl: '${data?.profilePic}',
                                         fit: BoxFit.fill,
                                         height: 100,
                                         width: 100,
@@ -97,7 +98,7 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                   ),
                                 ),
                               ),
-                              if (data?.profilePicApprovalStatus == '1')
+                              if (data?.profilePicApprovalStatus != '1')
                                 BackdropFilter(
                                   filter:
                                       ImageFilter.blur(sigmaX: 5, sigmaY: 5),

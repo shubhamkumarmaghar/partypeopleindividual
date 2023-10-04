@@ -1,21 +1,26 @@
 import 'dart:developer';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:partypeopleindividual/firebase_custom_event.dart';
 import 'package:partypeopleindividual/individualDashboard/bindings/individual_dashboard_binding.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:partypeopleindividual/splash_screen/view/splash_screen.dart';
 import 'package:sizer/sizer.dart';
+import 'constants.dart';
+
 
 
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+
   FlutterLocalNotificationsPlugin pluginInstance =
   FlutterLocalNotificationsPlugin();
   var init = const InitializationSettings(
@@ -43,7 +48,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]);
   await Firebase.initializeApp();
+  analytics = await FirebaseAnalytics.instance;
+  FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
   await GetStorage.init();
+  logCustomEvent(eventName: splash, parameters: {'name':'splash'});
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   FlutterLocalNotificationsPlugin pluginInstance =
@@ -74,12 +82,12 @@ void main() async {
     print(message.data);
     NotificationDetails platformSpec =
     NotificationDetails(android: androidSpec);
-
     await pluginInstance.show(
         0, message.data['title'], message.data['body'], platformSpec);
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
 
   runApp(const MyApp());
 }

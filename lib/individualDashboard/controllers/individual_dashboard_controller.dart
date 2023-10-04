@@ -469,7 +469,7 @@ Future<void> getTomarrowParty() async{
 
   }
 
-  Future<void> getUpcomingParty() async{
+Future<void> getUpcomingParty() async{
     try {
       // Fetch all parties
       /// status': '1' current date parties
@@ -525,7 +525,7 @@ Future<void> getTomarrowParty() async{
 
   }
 
-  Future<void> getPopularParty() async{
+Future<void> getPopularParty() async{
     try {
       // Fetch all parties
       /// status': '1' current date parties
