@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
+import '../../centralize_api.dart';
 import '../model/organization_details_model.dart';
 
 class OrganizationController extends GetxController {
@@ -34,7 +35,7 @@ class OrganizationController extends GetxController {
 
     try {
       http.Response response = await http.post(
-        Uri.parse('https://app.partypeople.in/v1/party/organization_info'),
+        Uri.parse(API.organizationInfo),
         body: {'user_id': userId},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );

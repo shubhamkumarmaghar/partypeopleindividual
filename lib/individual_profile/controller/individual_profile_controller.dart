@@ -3,21 +3,37 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 
 import '../../centralize_api.dart';
 import '../../individualDashboard/models/city.dart';
 import '../../widgets/payment_response_view.dart';
+import '../../widgets/select_photo_optionsScreen.dart';
 import '../../widgets/submit_application.dart';
 
 class IndividualProfileController extends GetxController {
+  List profileImages =[];
+  RxInt profilePhotoSelectNo = 0.obs;
   RxString coverPhotoURL = ''.obs;
   RxString profilePhotoURL = ''.obs;
-
+  RxString profileB = ''.obs;
+  RxString profileE = ''.obs;
+  RxString profileC = ''.obs;
+  RxString profileD = ''.obs;
+  File coverImage = File('');
+  File profileImage = File('');
+  File imageProfile_c =File('');
+  File imageProfile_b = File('');
+  File imageProfile_d = File('');
+  File imageProfile_e = File('');
   RxString username = ''.obs;
   RxString userMobile = ''.obs;
   RxString userId = ''.obs;
@@ -59,12 +75,10 @@ class IndividualProfileController extends GetxController {
       Get.snackbar('Photo Error', 'Cover Photo URL should not be empty');
       return;
     }
-
     if (profilePhotoURL.value.isEmpty) {
       Get.snackbar('Photo Error', 'Profile Photo URL should not be empty');
       return;
     }
-
     if (firstname.value.isEmpty) {
       Get.snackbar('Name Error', 'First name should not be empty');
       return;
@@ -135,8 +149,9 @@ class IndividualProfileController extends GetxController {
     if (!Get.isSnackbarOpen && apiService.isLoading.value == false) {
       // individualAPI
       userData = {
-        'cover_photo': coverPhotoURL.value.toString(),
-        'profile_photo': profilePhotoURL.value.toString(),
+        if(coverPhotoURL.value.isNotEmpty && coverImage.path.isEmpty) 'cover_photo': coverPhotoURL.value.toString(),
+        if(profilePhotoURL.value.isNotEmpty && profileImage.path.isEmpty) 'profile_photo': profilePhotoURL.value.toString(),
+
         'name': '${firstname.value.capitalize?.trim().toString()}' + ' ' + '${lastname.value.capitalizeFirst?.trim().toString()}',
         'bio': description.value.toString(),
         'description':description.value.toString(),
@@ -152,6 +167,7 @@ class IndividualProfileController extends GetxController {
         'state': state.value.toString(),
         'city': city.value.toString(),
       };
+
 
       print(userData);
       individualProfile();
@@ -274,35 +290,72 @@ class IndividualProfileController extends GetxController {
 
   Future<void> individualProfile() async {
     try {
-      var response = await apiService.individualProfileCreation(
+  /*    var response = await apiService.individualProfileCreation(
           userData, '${GetStorage().read('token')}');
-      print(response);
-      if (response['status'] == 1 &&
-          response['message'].contains('Successfully')) {
-        GetStorage().write('loggedIn', '1');
-        individualProfileController.apiService.updateActiveCity(individualProfileController.organization_id.value,activeCity.value.isNotEmpty ? activeCity.value.toString():"Delhi");
-        Get.offAll(const ShowSubmitMessage());
+      print(response);*/
+      var headers = {
+        'x-access-token': '${GetStorage().read('token')}',
+        // 'Cookie': 'ci_session=53748e98d26cf6811eb0a53be37158bf0cbe5b4b'
+      };
+      var request = http.MultipartRequest(
+          'POST', Uri.parse(API.individualProfileCreation));
+
+      if (coverImage.path.isNotEmpty) {
+        final imga = await http.MultipartFile.fromPath(
+          'cover_photo', coverImage.path,);
+        request.files.add(imga);
       }
-      else if(
-      response['status'] == 2 &&
-          response['message'].contains('Organization Already Created.')
-      ){
-        Get.snackbar('Error', 'Organization Already Created.');
-      }else {
-        Get.snackbar('Error', 'Response or response body is null');
+      if (profileImage.path.isNotEmpty) {
+        final imgb = await http.MultipartFile.fromPath(
+          'image_b', profileImage.path,);
+        request.files.add(imgb);
       }
-    } on SocketException {
-     log('Network Error : Please check your internet connection and try again!');
-    } on HttpException {
-  log ('Http Error Could not find the service you were looking for!');
-    } on FormatException {
-      log('Error Bad response format. Please contact support!');
-    } catch (e) {
+
+      request.fields.addAll(userData);
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(await response.stream.bytesToString());
+        //isLoading.value = false;
+
+        if (jsonResponse['status'] == 1 &&
+            jsonResponse['message'].contains('Successfully')) {
+          GetStorage().write('loggedIn', '1');
+          individualProfileController.apiService.updateActiveCity(
+              individualProfileController.organization_id.value,
+              activeCity.value.isNotEmpty
+                  ? activeCity.value.toString()
+                  : "Delhi");
+          Get.offAll(const ShowSubmitMessage());
+        }
+        else if (
+        jsonResponse['status'] == 2 && jsonResponse['message'].contains('Organization Already Created.')
+        )
+        {
+          Get.snackbar('Error', 'Organization Already Created.');
+        } else {
+          Get.snackbar('Error', 'Response or response body is null');
+        }
+      }
+    }
+      on SocketException {
+        log(
+            'Network Error : Please check your internet connection and try again!');
+      }
+      on HttpException {
+        log('Http Error Could not find the service you were looking for!');
+      }
+      on FormatException {
+        log('Error Bad response format. Please contact support!');
+      } catch (e) {
       // If the exact error type isn't matched in the preceding catch clauses
-   /*   Get.snackbar('Unexpected Error',
+      /*   Get.snackbar('Unexpected Error',
           'Something unexpected happened. Try again later!');*/
       print('Unexpected error: $e');
     }
+
   }
 
   Future<void> individualProfileUpdate() async {
@@ -465,6 +518,30 @@ class IndividualProfileController extends GetxController {
       print('Unexpected error: $e');
     }
   }
+  void getProfileImages()
+  {
+    if(coverPhotoURL.value != null || coverPhotoURL.value!=''  ){
+      profileImages.add(coverPhotoURL.value);
+    }
+    if(profilePhotoURL.value != null || profilePhotoURL.value !='' ){
+      profileImages.add(profilePhotoURL.value);
+    }
+    if(profileB.value != null || profileB.value!=''  ){
+      profileImages.add(profileB.value);
+    }
+    if(profileC.value != null || profileC.value !='' ){
+      profileImages.add(profileC.value);
+    }
+    if(profileD.value != null || profileD.value!=''  ){
+      profileImages.add(profileD.value);
+    }
+    if(profileE.value != null || profileE.value !='' ){
+      profileImages.add(profileE.value);
+    }
+    profileImages.forEach((element) {
+      print(element.toString());
+    });
+  }
 
   Future<void> getAllCities() async {
     try {
@@ -496,6 +573,101 @@ class IndividualProfileController extends GetxController {
     } on FormatException {
       log('Format Exception Something went wrong Bad response format');
     }
+  }
+
+  void showSelectPhotoOptionsProfileImages(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+          initialChildSize: 0.28,
+          maxChildSize: 0.4,
+          minChildSize: 0.28,
+          expand: false,
+          builder: (context, scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              child: SelectPhotoOptionsScreen(
+                onTap: _pickAllImageProfile,
+              ),
+            );
+          }),
+    );
+  }
+
+  _pickAllImageProfile(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(
+          source: source, imageQuality: 50);
+      if (image == null) return;
+      File? img = File(image.path);
+      img = await _cropImage(imageFile: img);
+      if (profilePhotoSelectNo == 1) {
+        imageProfile_b = img!;
+        String url = await apiService.uploadImage(type: '1',
+            imgFile: imageProfile_b,
+            id: organization_id.value,
+            imageKey: 'profile_pic_b');
+        if (url.isNotEmpty) {
+          profileB.value = url;
+        }
+      }
+      if (profilePhotoSelectNo == 2) {
+        imageProfile_c = img!;
+
+        String url = await apiService.uploadImage(type: '1',
+            imgFile: imageProfile_c,
+            id: organization_id.value,
+            imageKey: 'profile_pic_c');
+        if (url.isNotEmpty) {
+          profileC.value = url;
+        }
+      }
+      if (profilePhotoSelectNo == 3) {
+        imageProfile_d = img!;
+
+        String url = await apiService.uploadImage(type: '1',
+            imgFile: imageProfile_d,
+            id: organization_id.value,
+            imageKey: 'profile_pic_d');
+        if (url.isNotEmpty) {
+          profileD.value = url;
+        }
+      }
+      if (profilePhotoSelectNo == 4) {
+        imageProfile_e = img!;
+
+        String url = await apiService.uploadImage(type: '1',
+            imgFile: imageProfile_e,
+            id: organization_id.value,
+            imageKey: 'profile_pic_e');
+        if (url.isNotEmpty) {
+          profileE.value = url;
+        }
+      }
+      /* isLoading.value = true;
+      savePhotoToFirebase('${GetStorage().read('token')}', img!, 'profileImage')
+          .then((value) {
+        profile.value = value!;
+      });*/
+
+      Get.back();
+    }
+    on PlatformException {
+      Get.back();
+    }
+  }
+
+  Future<File?> _cropImage({required File imageFile}) async {
+    var croppedImage =
+    await ImageCropper().cropImage(sourcePath: imageFile.path);
+    if (croppedImage == null) return null;
+    return File(croppedImage.path);
   }
 
   @override

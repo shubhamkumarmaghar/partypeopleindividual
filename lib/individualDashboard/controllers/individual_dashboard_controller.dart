@@ -236,16 +236,14 @@ class IndividualDashboardController extends GetxController {
         }
       log('else partycity ${partyCity.value}');
       http.Response response = await http.post(
-        Uri.parse(
-            'https://app.partypeople.in/v1/party/get_all_individual_party'),
+        Uri.parse(API.getAllIndividualParty),
         body: {'status': '0', 'city': partyCity.value, 'filter_type': '2'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
       // Fetch popular parties
       http.Response popularResponse = await http.post(
-        Uri.parse(
-            'https://app.partypeople.in/v1/party/get_all_individual_party'),
+        Uri.parse(API.getAllIndividualParty),
         body: {'status': '0', 'city': partyCity.value, 'filter_type': '1'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
@@ -372,8 +370,7 @@ Future<void> getTodayPary() async{
     }
     log('else partycity ${partyCity.value}');
     http.Response response = await http.post(
-      Uri.parse(
-          'https://app.partypeople.in/v1/party/get_all_individual_party'),
+      Uri.parse(API.getAllIndividualParty),
       body: {'status': '1', 'city': partyCity.value.toLowerCase(), 'filter_type': '2'},
       headers: {'x-access-token': '${GetStorage().read('token')}'},
     );
@@ -428,8 +425,7 @@ Future<void> getTomarrowParty() async{
       }
       log('else tomarrow partycity ${partyCity.value}');
       http.Response response = await http.post(
-        Uri.parse(
-            'https://app.partypeople.in/v1/party/get_all_individual_party'),
+        Uri.parse(API.getAllIndividualParty),
         body: {'status': '2', 'city': partyCity.value.toLowerCase(), 'filter_type': '2'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
@@ -484,8 +480,7 @@ Future<void> getUpcomingParty() async{
       }
       log('else upcoming partycity ${partyCity.value}');
       http.Response response = await http.post(
-        Uri.parse(
-            'https://app.partypeople.in/v1/party/get_all_individual_party'),
+        Uri.parse(API.getAllIndividualParty),
         body: {'status': '3', 'city': partyCity.value.toLowerCase(), 'filter_type': '2'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
@@ -540,8 +535,7 @@ Future<void> getPopularParty() async{
       }
       log('else upcoming partycity ${partyCity.value}');
       http.Response response = await http.post(
-        Uri.parse(
-            'https://app.partypeople.in/v1/party/get_all_individual_party'),
+        Uri.parse(API.getAllIndividualParty),
         body: {'status': '5', 'city': partyCity.value.toLowerCase(), 'filter_type': '1'},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
@@ -601,7 +595,6 @@ Future<void> getPopularParty() async{
 
         },
       );
-
       if (response.statusCode == 200) {
        var decode = jsonDecode(response.body);
         if (decode['status'] == 1 ) {
@@ -615,7 +608,7 @@ Future<void> getPopularParty() async{
               GetStorage().write('approval_status', '${decode['approval_status']}');
               approvalStatus.value = GetStorage().read('approval_status');
               DateTime approvalTime = DateTime.parse(approval_date);
-              DateTime newApproval_time = approvalTime.add(Duration(days: 1));
+              DateTime newApproval_time = approvalTime.add(Duration(hours: 12,));
               if (newApproval_time.isAfter(DateTime.now())) {
                 GetStorage().write('newUser', '1');
               }

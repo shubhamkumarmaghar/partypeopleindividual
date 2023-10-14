@@ -21,6 +21,7 @@ import 'package:partypeopleindividual/widgets/individual_amenities.dart';
 import 'package:partypeopleindividual/widgets/occupation_dropdown_selector.dart';
 import 'package:partypeopleindividual/widgets/qualification_dropdown_widget.dart';
 
+import '../../centralize_api.dart';
 import '../../widgets/active_city_select.dart';
 import '../../widgets/dob_dropdown.dart';
 import '../../widgets/gender_dropdown_selecter.dart';
@@ -33,8 +34,8 @@ class IndividualProfile extends StatefulWidget {
 }
 
 class _IndividualProfileState extends State<IndividualProfile> {
-  File? _coverImage;
-  File? _profileImage;
+  //File? _coverImage;
+ // File? _profileImage;
   final ImagePicker _picker = ImagePicker();
   bool _isLoading = false;
   double _progress = 0;
@@ -44,8 +45,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
   Future<void> _fetchData() async {
     try {
       http.Response response = await http.get(
-        Uri.parse(
-            'https://app.partypeople.in/v1/party/individual_organization_amenities'),
+        Uri.parse(API.individualOrganizationAmenities),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
       if (response.statusCode == 200) {
@@ -126,10 +126,10 @@ class _IndividualProfileState extends State<IndividualProfile> {
                                 color: Colors.white,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: _coverImage == null
+                                  image: individualProfileController.coverImage.path.isEmpty
                                       ? const AssetImage(
                                           'assets/images/default-cover-4.jpg')
-                                      : FileImage(_coverImage!)
+                                      : FileImage(individualProfileController.coverImage)
                                           as ImageProvider<Object>,
                                 ),
                               ),
@@ -155,10 +155,10 @@ class _IndividualProfileState extends State<IndividualProfile> {
                                 child: CircleAvatar(
                                   backgroundColor: Colors.transparent,
                                   radius: 55,
-                                  backgroundImage: _profileImage == null
+                                  backgroundImage: individualProfileController.profileImage.path.isEmpty
                                       ? const AssetImage(
                                           'assets/images/man.png')
-                                      : FileImage(_profileImage!)
+                                      : FileImage(individualProfileController.profileImage)
                                           as ImageProvider<Object>,
                                 ),
                               ),
@@ -570,15 +570,15 @@ class _IndividualProfileState extends State<IndividualProfile> {
         });
 
         try {
-          String? downloadUrl = await _uploadFile(croppedFile!, type);
+          //String? downloadUrl = await _uploadFile(croppedFile!, type);
 
           setState(() {
             if (type == 'cover') {
-              _coverImage = croppedFile;
-              individualProfileController.coverPhotoURL.value = downloadUrl!;
+              individualProfileController.coverImage = croppedFile!;
+             // individualProfileController.coverPhotoURL.value = downloadUrl!;
             } else {
-              _profileImage = croppedFile;
-              individualProfileController.profilePhotoURL.value = downloadUrl!;
+              individualProfileController.coverImage = croppedFile!;
+             // individualProfileController.profilePhotoURL.value = downloadUrl!;
             }
             _isLoading = false;
           });

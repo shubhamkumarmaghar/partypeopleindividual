@@ -6,6 +6,7 @@ import 'package:partypeopleindividual/constants.dart';
 import 'package:partypeopleindividual/otp/model/otp_model.dart';
 import 'package:http/http.dart' as http;
 import '../../api_helper_service.dart';
+import '../../centralize_api.dart';
 import '../../individualDashboard/views/individual_dashboard_view.dart';
 import '../../individual_profile/views/individual_profile.dart';
 import '../../login/views/login_screen.dart';
@@ -80,7 +81,7 @@ class OTPController extends GetxController {
     isLoading.value = true;
     try {
       http.Response response = await http.post(
-          Uri.parse('https://app.partypeople.in/v1/party/organization_details'),
+          Uri.parse(API.individualProfileData),
           headers: {
             'x-access-token': '${GetStorage().read('token')}',
           });

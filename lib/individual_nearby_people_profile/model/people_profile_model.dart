@@ -58,6 +58,10 @@ class Data {
   String? state;
   String? city;
   String? coverPhoto;
+  String? imageB;
+  String? imageC;
+  String? imageD;
+  String? imageE;
   String? status;
   String? displayStatus;
   List<OrganizationAmenities>? organizationAmenities;
@@ -85,6 +89,10 @@ class Data {
         this.orgAmenitieId,
         this.profilePic,
         this.timelinePic,
+        this.imageB,
+        this.imageC,
+        this.imageD,
+        this.imageE,
         this.profilePicApprovalStatus,
         this.approvalStatus,
         this.bluetickStatus,
@@ -142,6 +150,10 @@ class Data {
     state = json['state'];
     city = json['city'];
     coverPhoto = json['cover_photo'];
+    imageB = json['profile_pic_b'];
+    imageC = json['profile_pic_c'];
+    imageD = json['profile_pic_d'];
+    imageE = json['profile_pic_e'];
     status = json['status'];
     displayStatus = json['display_status'];
     likeStatus = json['like_status'];

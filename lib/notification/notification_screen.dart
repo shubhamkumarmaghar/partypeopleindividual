@@ -10,6 +10,8 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
+import '../centralize_api.dart';
+
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
 
@@ -23,8 +25,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   getAllNotification() async {
     http.Response response = await http.post(
-        Uri.parse(
-            'https://app.partypeople.in/v1/notification/get_all_notification'),
+        Uri.parse(API.getAllNotification),
         headers: {"x-access-token": '${GetStorage().read('token')}'});
 
     print(response.body);
@@ -48,8 +49,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   readNotification() async {
     http.Response response = await http.post(
-        Uri.parse(
-            'https://app.partypeople.in/v1/notification/single_notification_read_status_update'),
+        Uri.parse(API.singleNotificationReadStatus),
         headers: {"x-access-token": '${GetStorage().read('token')}'});
 
     print(response.body);

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:math';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ import 'package:sizer/sizer.dart';
 import 'package:confetti/confetti.dart';
 import 'package:shimmer/shimmer.dart';
 import '../api_helper_service.dart';
+import '../centralize_api.dart';
 import '../individualDashboard/models/party_model.dart';
 import '../individual_nearby_people_profile/view/individual_people_profile.dart';
 import '../party_organization_details_view/view/organization_detalis_view.dart';
@@ -38,6 +40,7 @@ class PartyPreviewScreen extends StatefulWidget {
 
 class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
   String join = 'Join';
+  final List partyImages =[];
   List<Category> _categories = [];
   final List<CategoryList> _categoryLists = [];
   List selectedAmenities = [];
@@ -45,7 +48,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
 
   Future<void> _fetchData() async {
     http.Response response = await http.get(
-      Uri.parse('https://app.partypeople.in/v1/party/party_amenities'),
+      Uri.parse(API.partyAmenities),
       headers: {'x-access-token': '${GetStorage().read('token')}'},
     );
     final data = jsonDecode(response.body);
@@ -86,9 +89,27 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
       });
     }
   }
+
+  void getpartyImages()
+  {
+    if(widget.party.coverPhoto !=null){
+      partyImages.add(widget.party.coverPhoto);
+    }
+    if(widget.party.imageB!=null){
+      partyImages.add(widget.party.imageB);
+    }
+    if(widget.party.imageC!=null){
+      partyImages.add(widget.party.imageC);
+    }
+    partyImages.forEach((element) {
+      print(element.toString());
+    });
+  }
   @override
   void initState() {
+    getpartyImages();
     _fetchData();
+
     print(" ${widget.party.toJson()}");
     _controllerBottomCenter =
         ConfettiController(duration: const Duration(seconds: 10));
@@ -117,6 +138,90 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                   height: 20,
                 ),
                 Stack(children: [
+                  if (widget.party.imageStatus == '1')
+                    Card(elevation: 5,
+                      clipBehavior:Clip.hardEdge ,
+                      margin: EdgeInsets.only(bottom: 25),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),),
+                      child:
+                      CarouselSlider(items: partyImages.map((element) =>
+                          customImageSlider(partyPhotos: element, imageStatus: '${widget.party.imageStatus}') ).toList(),
+                        options: CarouselOptions(
+                          height: Get.height * 0.295,
+                          // enlargeCenterPage: true,
+                          autoPlay: true,
+                          //aspectRatio: 16 / 9,
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          enableInfiniteScroll: true,
+                          autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        ),),
+
+                    )
+                  else Card(elevation: 5,
+                    margin: EdgeInsets.only(bottom: 25),
+                    clipBehavior: Clip.hardEdge,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                      BorderRadius.circular(15.0),),
+                    child:  CarouselSlider(
+                      items: partyImages.map((element) =>
+                          customImageSlider(partyPhotos: element, imageStatus: '${widget.party.imageStatus}') ).toList(),
+                      options: CarouselOptions(
+                          height: Get.height * 0.295,
+                          // enlargeCenterPage: true,
+                          autoPlay: true,
+                          //aspectRatio: 16 / 9,
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          enableInfiniteScroll: true,
+                          autoPlayAnimationDuration: Duration(milliseconds: 800),
+                          viewportFraction: 1
+
+                      ),),
+                  ),
+                  Positioned(
+                      top: Get.height*0.27,
+                      right: Get.width*0.06,
+                      child: GestureDetector(onTap: () async {
+
+                        var data = await APIService.ongoingParty(widget.party.id);
+                        if(data ==true)
+                        {
+                          setState(() {
+
+                          });
+                          join='Joined';
+                          _controllerBottomCenter.play();
+                        }
+                        //ongoingParty(widget.party.id);
+
+                      },
+                        child: Container(
+                          width: Get.width*0.2,
+                          height: Get.height*0.04,
+                          padding: EdgeInsets.all(5),
+                          decoration:
+                          BoxDecoration(borderRadius: BorderRadius.circular(12),
+                            color: Colors.orange,),
+                          child:  FittedBox(
+                            child: Row(mainAxisAlignment: MainAxisAlignment.center
+                                ,children: [
+                                  Icon(CupertinoIcons.add_circled,color: Colors.white),
+                                  SizedBox(width: Get.width*0.003,),
+                                  widget.party.ongoingStatus == 0 ?
+                                  Text(join,style: TextStyle(color: Colors.white,
+                                      fontSize: 16),) : Text("Joined",style: TextStyle(color: Colors.white,
+                                      fontSize: 16),)
+                                ]
+                            ),
+                          ),
+                        ),
+                      )),
+
+                ],
+                ),
+
+               /* Stack(children: [
                   if (widget.party.imageStatus == '1')
                     Card(elevation: 5,
                     margin: EdgeInsets.only(bottom: 25),
@@ -239,7 +344,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                       )),
 
 
-                ],),
+                ],),*/
                 const SizedBox(
                   height: 10,
                 ),
@@ -636,6 +741,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
           ),
       );
 
+
   }
   
   Widget CustomTextIcon({required IconData icon , required String IconText})
@@ -664,7 +770,47 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
       ]),
     );
   }
+
+  Widget customImageSlider({
+    required String partyPhotos, required String imageStatus})
+  {
+    return
+      Container(
+        height: Get.height*0.295,
+        decoration: BoxDecoration(
+          // borderRadius: BorderRadius.circular(15),
+          image:DecorationImage( image: NetworkImage(partyPhotos),fit: BoxFit.fill),
+        ),
+        width: Get.width,
+        /* child: Image.network(
+                        widget.party.coverPhoto,
+                        width: Get.width,
+                        height: 250,
+                        fit: BoxFit.cover,
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                      ), */
+      );
+  }
 }
+
 
 class CustomListTile extends StatelessWidget {
   final IconData icon;

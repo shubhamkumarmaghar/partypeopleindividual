@@ -22,11 +22,14 @@ import 'package:partypeopleindividual/widgets/individual_amenities.dart';
 import 'package:partypeopleindividual/widgets/occupation_dropdown_selector.dart';
 import 'package:partypeopleindividual/widgets/qualification_dropdown_widget.dart';
 import 'package:blur/blur.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../widgets/dob_dropdown.dart';
 import '../../widgets/gender_dropdown_selecter.dart';
+import '../centralize_api.dart';
 import '../widgets/active_city_select.dart';
 import '../widgets/custom_textview_profile.dart';
+import 'add_profile_images.dart';
 
 class EditIndividualProfile extends StatefulWidget {
   const EditIndividualProfile({super.key});
@@ -36,8 +39,8 @@ class EditIndividualProfile extends StatefulWidget {
 }
 
 class _EditIndividualProfileState extends State<EditIndividualProfile> {
-  File? _coverImage;
-  File? _profileImage;
+  //File? _coverImage;
+  //File? _profileImage;
   final ImagePicker _picker = ImagePicker();
   bool _isLoading = false;
   double _progress = 0;
@@ -48,7 +51,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
     try {
       http.Response response = await http.get(
         Uri.parse(
-            'https://app.partypeople.in/v1/party/individual_organization_amenities'),
+            API.individualOrganizationAmenities),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -177,8 +180,8 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                               color: Colors.white,
                                               image: DecorationImage(
                                                   fit: BoxFit.cover,
-                                                  image: _coverImage != null
-                                                      ? FileImage(_coverImage!)
+                                                  image: individualProfileController.coverImage.path.isNotEmpty && individualProfileController.coverImage.path !=''
+                                                      ? FileImage(individualProfileController.coverImage)
                                                       : individualProfileController
                                                               .coverPhotoURL
                                                               .value
@@ -200,8 +203,8 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                             color: Colors.white,
                                             image: DecorationImage(
                                                 fit: BoxFit.cover,
-                                                image: _coverImage != null
-                                                    ? FileImage(_coverImage!)
+                                                image: individualProfileController.coverImage.path.isNotEmpty && individualProfileController.coverImage.path != ''
+                                                    ? FileImage(individualProfileController.coverImage)
                                                         as ImageProvider<Object>
                                                     : individualProfileController
                                                             .coverPhotoURL
@@ -248,9 +251,8 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                               child: CircleAvatar(
                                                 backgroundColor: Colors.transparent,
                                                 radius: 55,
-                                                backgroundImage: _profileImage !=
-                                                        null
-                                                    ? FileImage(_profileImage!)
+                                                backgroundImage: individualProfileController.profileImage.path.isEmpty
+                                                    ? FileImage(individualProfileController.profileImage!)
                                                     : (individualProfileController
                                                                 .profilePhotoURL
                                                                 .value
@@ -267,9 +269,8 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                             ): CircleAvatar(
                                         radius: 55,
                                         backgroundColor: Colors.transparent,
-                                        backgroundImage: _profileImage !=
-                                            null
-                                            ? FileImage(_profileImage!)
+                                        backgroundImage:individualProfileController.profileImage.path.isEmpty
+                                            ? FileImage(individualProfileController.profileImage!)
                                             : (individualProfileController
                                             .profilePhotoURL
                                             .value
@@ -370,6 +371,31 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                             ),
 
                             ///Other Individual Widget
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            GestureDetector(
+                              onTap: (){
+                                Get.to( AddImageProfile());
+                              },
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                  width: Get.width*0.25,
+                                  margin: EdgeInsets.only(right: 28),
+                                  alignment: Alignment.center,
+                                  height: Get.width*0.08,
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+                                      color: Colors.orange),
+                                  child: Text('Add Images',
+                                    style: TextStyle(fontSize: 13.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600
+                                    ),),
+                                ),
+                              ),
+                            ),
+
                             const SizedBox(
                               height: 10,
                             ),
@@ -743,23 +769,24 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
           throw Exception('Image cropping failed or was cancelled.');
         }
 
-        setState(() {
+      /*  setState(() {
           _isLoading = true;
         });
-
+*/
         try {
-          String? downloadUrl = await _uploadFile(croppedFile, type);
+         // String downloadUrl = await individualProfileController.apiService.uploadImage(type: '1', id: individualProfileController.organization_id.value, imageKey: 'cover_photo',imgFile: croppedFile);
+          //await _uploadFile(croppedFile, type);
 
-          setState(() {
             if (type == 'cover') {
-              _coverImage = croppedFile;
-              individualProfileController.coverPhotoURL.value = downloadUrl!;
+              individualProfileController.coverImage = croppedFile;
+              String downloadUrl = await individualProfileController.apiService.uploadImage(type: '1', id: individualProfileController.organization_id.value, imageKey: 'cover_photo',imgFile: croppedFile);
+              individualProfileController.coverPhotoURL.value = downloadUrl;
             } else {
-              _profileImage = croppedFile;
-              individualProfileController.profilePhotoURL.value = downloadUrl!;
+              individualProfileController.profileImage = croppedFile;
+              String downloadUrl = await individualProfileController.apiService.uploadImage(type: '1', id: individualProfileController.organization_id.value, imageKey: 'profile_photo',imgFile: croppedFile);
+              individualProfileController.profilePhotoURL.value = downloadUrl;
             }
-            _isLoading = false;
-          });
+            // _isLoading = false;
         } on FirebaseException catch (e) {
           // Handle Firebase specific exceptions
           setState(() {

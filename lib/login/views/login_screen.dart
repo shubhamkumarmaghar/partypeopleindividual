@@ -131,6 +131,9 @@ class _LoginScreenState extends State<LoginScreen>
                       opacity: _fadeAnimation,
                       child: Column(
                         children: <Widget>[
+                          Container(margin:  const EdgeInsets.only(left: 12.0,bottom: 12.0),
+                              alignment: Alignment.centerLeft,child: Text('LogIn or SignUp',
+                                style: TextStyle(color: Colors.grey.shade600,fontSize: 18),)),
                           CustomTextField(
                             validate: true,
                             hintText: 'Username',
@@ -160,7 +163,14 @@ class _LoginScreenState extends State<LoginScreen>
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    //const SizedBox(height: 10),
+                    Container(margin:  const EdgeInsets.only(left: 12.0),
+                      alignment:Alignment.centerLeft,
+                      child: Text('*You will receive OTP on this Number',
+                      style: TextStyle(
+                      color: Colors.grey,
+                        fontSize: 12
+                    ),),),
                     FadeTransition(
                       opacity: _fadeAnimation,
                       child: Row(
@@ -219,19 +229,21 @@ class _LoginScreenState extends State<LoginScreen>
                             color: Colors.grey,
                             radius: 10,
                           ) // Show loading indicator while API call is in progress
-                        : FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: Material(
-                              elevation: 5.0,
-                              borderRadius: BorderRadius.circular(30.0),
-                              color: Colors.red.shade900,
-                              child: CustomButton(
-                                width: Get.width * 0.6,
-                                text: 'LOGIN',
-                                onPressed: loginController.login,
+                        : Center(
+                          child: FadeTransition(
+                              opacity: _fadeAnimation,
+                              child: Material(
+                                elevation: 5.0,
+                                borderRadius: BorderRadius.circular(30.0),
+                                color: Colors.red.shade900,
+                                child: CustomButton(
+                                  width: Get.width * 0.6,
+                                  text: 'LOGIN',
+                                  onPressed: loginController.login,
+                                ),
                               ),
                             ),
-                          ),
+                        ),
                   ],
                 ),
               ),

@@ -23,7 +23,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
  // WishlistController wishlistController = Get.put(WishlistController());
   /*Future<void> getWishlistParty() async {
     final response = await http.post(
-      Uri.parse('https://app.partypeople.in/v1/party/get_wish_list_party'),
+      Uri.parse('API.getWishListParty'),
       headers: <String, String>{
         'x-access-token': GetStorage().read('token'),
       },

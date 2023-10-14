@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
+import '../../centralize_api.dart';
 import '../../login/views/login_screen.dart';
 
 class SettingController extends GetxController{
@@ -13,8 +14,6 @@ void onInit(){
 
   Future<void> updateOnlineStatus(status) async {
     // API endpoint URL
-    String url = 'https://app.partypeople.in/v1/account/update_online_status';
-
     // Request headers
     Map<String, String> headers = {
       'x-access-token': '${GetStorage().read('token')}',
@@ -28,7 +27,7 @@ void onInit(){
     try {
       // Send POST request
       http.Response response = await http.post(
-        Uri.parse(url),
+        Uri.parse(API.updateOnlineStatus),
         headers: headers,
         body: body,
       );
@@ -49,8 +48,6 @@ void onInit(){
   }
 
   Future<void> updatePrivacyStatus(status) async {
-    // API endpoint URL
-    String url = 'https://app.partypeople.in/v1/account/update_privacy_online_status';
 
     // Request headers
     Map<String, String> headers = {
@@ -65,7 +62,7 @@ void onInit(){
     try {
       // Send POST request
       http.Response response = await http.post(
-        Uri.parse(url),
+        Uri.parse(API.updatePrivacyOnlineStatus),
         headers: headers,
         body: body,
       );
@@ -87,8 +84,6 @@ void onInit(){
 
 
   Future<void> updateNotificationStatus(status) async {
-    // API endpoint URL
-    String url = 'https://app.partypeople.in/v1/account/update_notification_status';
 
     // Request headers
     Map<String, String> headers = {
@@ -103,7 +98,7 @@ void onInit(){
     try {
       // Send POST request
       http.Response response = await http.post(
-        Uri.parse(url),
+        Uri.parse(API.updateNotificationStatus),
         headers: headers,
         body: body,
       );
@@ -125,9 +120,6 @@ void onInit(){
   }
 
   Future<void> deleteAccount() async {
-    // API endpoint URL
-    String url = 'https://app.partypeople.in/v1/account/delete_my_account';
-
     // Request headers
     Map<String, String> headers = {
       'x-access-token': '${GetStorage().read('token')}',
@@ -138,7 +130,7 @@ void onInit(){
     try {
       // Send POST request
       http.Response response = await http.post(
-        Uri.parse(url),
+        Uri.parse(API.deleteMyAccount),
         headers: headers,
       );
       print(response.body);

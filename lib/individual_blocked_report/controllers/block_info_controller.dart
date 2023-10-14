@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import '../../api_helper_service.dart';
+import '../../centralize_api.dart';
 import '../model/blocked_info_model.dart';
 
 class BlockReportController extends GetxController {
@@ -25,7 +26,7 @@ class BlockReportController extends GetxController {
  Future<void> getBlockedData() async {
     try {
       http.Response response = await http.post(
-          Uri.parse('https://app.partypeople.in/v1/account/get_individual_block_list'),
+          Uri.parse(API.getBlockList),
           headers: {
             'x-access-token': '${GetStorage().read('token')}',
           });
@@ -59,7 +60,7 @@ class BlockReportController extends GetxController {
  Future<void> DoBlockUnblockPeople(String id,String status) async {
    try {
      http.Response response = await http.post(
-         Uri.parse('https://app.partypeople.in/v1/account/individual_user_block'),
+         Uri.parse(API.blockUnblockApi),
          headers: {
            'x-access-token': '${GetStorage().read('token')}',
          },
@@ -92,7 +93,7 @@ class BlockReportController extends GetxController {
  Future<void> getReportedData() async {
    try {
      http.Response response = await http.post(
-         Uri.parse('https://app.partypeople.in/v1/account/get_individual_view_list'),
+         Uri.parse(API.getIndividualViewList),
          headers: {
            'x-access-token': '${GetStorage().read('token')}',
          });

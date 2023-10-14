@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../centralize_api.dart';
 import '../../individualDashboard/controllers/individual_dashboard_controller.dart';
 import '../../individualDashboard/models/usermodel.dart';
 import '../../individualDashboard/views/nearby_people_profile.dart';
@@ -310,7 +311,7 @@ class _PeopleListState extends State<PeopleList>
       if (_debounce?.isActive ?? false) _debounce?.cancel();
       _debounce = Timer(const Duration(milliseconds: 2000), () async {
         final response = await http.post(
-          Uri.parse('https://app.partypeople.in/v1/home/users_search'),
+          Uri.parse(API.getUserSearch),
           headers: <String, String>{
             'x-access-token': '${GetStorage().read('token')}',
           },

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -170,6 +171,8 @@ class APIService extends GetxController {
     return response;
   }
 
+
+
   ///This method is used to update Individual Profile
   Future individualProfileUpdate(Map<String, String> userData, header) async {
     final response = await _post(API.individualProfileUpdate, userData,
@@ -263,7 +266,7 @@ class APIService extends GetxController {
 /// on going parties
   static Future<bool> ongoingParty(String id) async {
     final response = await http.post(
-      Uri.parse('https://app.partypeople.in/v1/party/party_ongoing'),
+      Uri.parse(API.ongoingParty),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -298,7 +301,7 @@ class APIService extends GetxController {
   /// all indiviusal people like
   static Future<int> likePeople(String id , bool status) async {
     final response = await http.post(
-      Uri.parse('https://app.partypeople.in/v1/account/individual_user_like'),
+      Uri.parse(API.userLike),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -344,7 +347,7 @@ class APIService extends GetxController {
     print('bhhb'+time1);
     // log('${time1}');
     final response = await http.post(
-      Uri.parse('https://app.partypeople.in/v1/chat/update_chat_message'),
+      Uri.parse(API.updateChatMsg),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -380,7 +383,7 @@ class APIService extends GetxController {
 
    Future<String> updateActiveCity(String orgId , String activeCity) async {
     final response = await http.post(
-      Uri.parse('https://app.partypeople.in/v1/account/update_city'),
+      Uri.parse(API.updateActiveCity),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -412,5 +415,58 @@ class APIService extends GetxController {
       throw Exception('Failed to update active city ');
 
     }
+  }
+
+  Future<String> uploadImage({ File? imgFile ,required String type, required String id,required String imageKey}) async {
+    String url='';
+    try {
+      var headers = {'x-access-token': '${GetStorage().read('token')}'};
+      // var dio = Dio();
+      //
+      // final hhh =await http.MultipartFile.fromPath('image_b',imgFile?.path ??File('').path,);
+      // log('dd ${ hhh.filename},${hhh.field}');
+      // var formData = FormData.fromMap({
+      //   'image_b':hhh,
+      //   'type': type,
+      //   'party_id': 232.toString(),
+      //
+      // });
+      // var responseDio = await dio.post(
+      //     API.addImage,
+      //     data: formData,
+      //   options: Options(headers: headers)
+      // );
+      // log('xxxxxx $responseDio');
+      var request = http.MultipartRequest('POST',
+        Uri.parse(API.addImage),);
+
+      request.fields.addAll({
+        'type': type,
+        'organization_id':id.toString(),
+
+      });
+
+      final data = await http.MultipartFile.fromPath(imageKey,imgFile?.path??File('').path,);
+      log('ddddd ${data.contentType} - ${data.field} - ${data.filename}');
+      request.files.addAll([data]);
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+      var response1 = await http.Response.fromStream(response);
+      if (response1.statusCode == 200) {
+        var parsed = jsonDecode(response1.body);
+        log('$parsed');
+        log('${response}  -- ${response1}  -- ${parsed['url']}');
+        url= '${parsed['url']}';
+        //var jsonResponse = await response.stream.bytesToString();
+
+        //  log("response :: $jsonResponse " );
+
+      }
+    }
+    catch(e){
+      log("Error  "+ '${e}');
+    }
+    return url;
   }
 }

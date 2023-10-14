@@ -7,6 +7,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
 
+import '../centralize_api.dart';
+
 class Category {
   String id;
   String name;
@@ -68,7 +70,7 @@ class _AmenitiesPartyScreenState extends State<AmenitiesPartyScreen> {
 
   Future<void> _fetchData() async {
     http.Response response = await http.get(
-      Uri.parse('https://app.partypeople.in/v1/party/party_amenities'),
+      Uri.parse(API.partyAmenities),
       headers: {'x-access-token': '${GetStorage().read('token')}'},
     );
     final data = jsonDecode(response.body);

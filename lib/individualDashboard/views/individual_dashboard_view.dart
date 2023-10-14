@@ -449,8 +449,15 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
+                               /*   Text(
                                     'People Nearby (${individualDashboardController.usersList.length})',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500),
+                                  ),*/
+                                  Text(
+                                    'People Nearby',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 14.sp,

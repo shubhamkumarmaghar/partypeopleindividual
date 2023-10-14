@@ -14,6 +14,7 @@ import 'package:partypeopleindividual/individual_party_preview/party_preview_scr
 import 'package:sizer/sizer.dart';
 import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 
+import '../centralize_api.dart';
 import '../individualDashboard/models/party_model.dart';
 import '../individual_party_preview/party_preview_screen_new.dart';
 
@@ -78,7 +79,7 @@ class _PartyCardState extends State<PartyCard>
   Future<void> wishlistParty(String id) async {
 
     final response = await http.post(
-      Uri.parse('https://app.partypeople.in/v1/party/add_to_wish_list_party'),
+      Uri.parse(API.addToWishList),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -107,7 +108,7 @@ class _PartyCardState extends State<PartyCard>
 
   Future<void> likeParty(String id) async {
     final response = await http.post(
-      Uri.parse('https://app.partypeople.in/v1/party/party_like'),
+      Uri.parse(API.partyLike),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -137,7 +138,7 @@ class _PartyCardState extends State<PartyCard>
 
   Future<void> viewParty(String id) async {
     final response = await http.post(
-      Uri.parse('https://app.partypeople.in/v1/party/party_view'),
+      Uri.parse(API.partyView),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },

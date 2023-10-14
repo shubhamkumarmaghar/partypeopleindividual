@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+
+import '../../centralize_api.dart';
 class WishlistController extends GetxController{
   List allParties = [];
 
@@ -16,7 +18,7 @@ class WishlistController extends GetxController{
   }
   Future<void> getWishlistParty() async {
     final response = await http.post(
-      Uri.parse('https://app.partypeople.in/v1/party/get_wish_list_party'),
+      Uri.parse(API.getWishListParty),
       headers: <String, String>{
         'x-access-token': GetStorage().read('token'),
       },
@@ -45,8 +47,6 @@ class WishlistController extends GetxController{
 
 
   Future<void> deleteWishListParty(partyID) async {
-    // API endpoint URL
-    String url = 'https://app.partypeople.in/v1/party/delete_to_wish_list_party';
 
     // Request headers
     Map<String, String> headers = {
@@ -61,7 +61,7 @@ class WishlistController extends GetxController{
     try {
       // Send POST request
       http.Response response = await http.post(
-        Uri.parse(url),
+        Uri.parse(API.deleteWishListParty),
         headers: headers,
         body: body,
       );

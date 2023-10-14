@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import '../../api_helper_service.dart';
+import '../../centralize_api.dart';
 import '../model/transction_info_model.dart';
 
 class TransctionReportController extends GetxController {
@@ -25,7 +26,7 @@ class TransctionReportController extends GetxController {
  Future<void> getTransactionData() async {
     try {
       http.Response response = await http.post(
-          Uri.parse('https://app.partypeople.in/v1/Subscription/transaction_history'),
+          Uri.parse(API.getTransactionHistory),
           headers: {
             'x-access-token': '${GetStorage().read('token')}',
           });

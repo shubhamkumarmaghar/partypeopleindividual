@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../centralize_api.dart';
 import '../../individual_profile/controller/individual_profile_controller.dart';
 import '../model/SubscriptionModel.dart';
 import 'package:http/http.dart' as http;
@@ -28,7 +29,7 @@ class SubscriptionController extends GetxController{
    try {
      isLoading.value = true;
      final response = await http.post(Uri.parse(
-         'https://app.partypeople.in/v1/subscription/subscription_plan'),
+         API.getSubscriptionPlan),
        headers: <String, String>{
          'x-access-token': '${GetStorage().read('token')}',
        },);
@@ -58,7 +59,7 @@ class SubscriptionController extends GetxController{
    String value ='0';
    try {
      final response = await http.post(Uri.parse(
-         'https://app.partypeople.in/v1/subscription/user_subscriptions_purchase'),
+         API.userSubscriptionPurchase),
        headers: <String, String>{
          'x-access-token': '${GetStorage().read('token')}',
        },
@@ -102,12 +103,12 @@ class SubscriptionController extends GetxController{
    try {
      log('$subsId  $paymentStatus ');
      final response = await http.post(Uri.parse(
-         'https://app.partypeople.in/v1/subscription/user_subscription_plan_status_update'),
+         API.updateSubscriptionStatus),
          headers: <String, String>{
            'x-access-token': '${GetStorage().read('token')}',
          },
-         body: { 'subscription_purchase_id':subsId?.toString(),
-                  'payment_status':paymentStatus?.toString(),
+         body: { 'subscription_purchase_id':subsId.toString(),
+                  'payment_status':paymentStatus.toString(),
                 //  'payment_response':paymentResponse?.toString(),
                  // 'payment_id' :paymentId?.toString()
                 }

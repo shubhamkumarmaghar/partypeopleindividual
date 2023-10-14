@@ -6,6 +6,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:partypeopleindividual/chatList/model/user_chat_list.dart';
 
+import '../../centralize_api.dart';
+
 
 
 class ChatListController extends GetxController{
@@ -26,7 +28,7 @@ class ChatListController extends GetxController{
     try {
       isApiLoading = true;
       http.Response response = await http.post(
-        Uri.parse('https://app.partypeople.in/v1/chat/get_chat_user_list_data'),
+        Uri.parse(API.getChatUserList),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 

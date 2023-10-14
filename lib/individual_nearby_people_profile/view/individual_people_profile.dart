@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -51,9 +52,10 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
       body: GetBuilder<PeopleProfileController>(
         init: PeopleProfileController(),
         builder: (controller) {
+
           var data = controller.peopleProfileData.data;
-          final List<OrganizationAmenities>? amenties =
-              data?.organizationAmenities;
+
+          final List<OrganizationAmenities>? amenties = data?.organizationAmenities;
           return data != null
               ? SingleChildScrollView(
                   child: Container(
@@ -90,8 +92,29 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                     '1'
                                 ? 2.5
                                 : 0,
-                            child: Container(
-                              height: Get.height * 0.35,
+                            child: Card(elevation: 5,
+                              //color: Colors.orange,
+                              clipBehavior:Clip.hardEdge ,
+                              margin: EdgeInsets.only(bottom: 25),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),),
+                              child:
+                              CarouselSlider(items: controller.profileImages.map((element) =>
+                                  customImageSlider(partyPhotos: element, imageStatus: '${controller.peopleProfileData.data?.profilePicApprovalStatus}') ).toList(),
+                                options: CarouselOptions(
+                                    height: Get.height*0.45,
+                                    // enlargeCenterPage: true,
+                                    autoPlay: true,
+                                    //aspectRatio: 16 / 9,
+                                    autoPlayCurve: Curves.fastOutSlowIn,
+                                    enableInfiniteScroll: true,
+                                    autoPlayAnimationDuration: Duration(milliseconds: 800),
+                                    viewportFraction: 1
+                                ),
+                              ),
+                            ),
+                           /* Container(
+                              height: Get.height * 0.4,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(20),
@@ -105,7 +128,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                   highlightColor: Colors.grey.shade400,
                                   period: const Duration(milliseconds: 1500),
                                   child: Container(
-                                    height: Get.height * 0.35,
+                                    height: Get.height * 0.4,
                                     color: Color(0xff7AB02A),
                                   ),
                                 ),
@@ -117,12 +140,34 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                 width: Get.width,
                                 fit: BoxFit.cover,
                               ),
-                            ),
+                            ),*/
                             overlay: controller.peopleProfileData.data
                                         ?.profilePicApprovalStatus !=
                                     '1'
                                 ? Container()
-                                : Container(
+                                :
+                            Card(elevation: 5,
+                              //color: Colors.orange,
+                              clipBehavior:Clip.hardEdge ,
+                              margin: EdgeInsets.only(bottom: 25),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),),
+                              child:
+                              CarouselSlider(items: controller.profileImages.map((element) =>
+                                  customImageSlider(partyPhotos: element, imageStatus: '${controller.peopleProfileData.data?.profilePicApprovalStatus}') ).toList(),
+                                options: CarouselOptions(
+                                    height: Get.height*0.45,
+                                    // enlargeCenterPage: true,
+                                    autoPlay: true,
+                                    //aspectRatio: 16 / 9,
+                                    autoPlayCurve: Curves.fastOutSlowIn,
+                                    enableInfiniteScroll: true,
+                                    autoPlayAnimationDuration: Duration(milliseconds: 800),
+                                    viewportFraction: 1
+                                ),
+                              ),
+                            ),
+                           /* Container(
                                     height: Get.height * 0.35,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.only(
@@ -150,11 +195,11 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                       width: Get.width,
                                       fit: BoxFit.cover,
                                     ),
-                                  ),
+                                  ),*/
                           ),
                           // Profile Photo
                           Positioned(
-                            bottom: 10,
+                            bottom: 40,
                             child: GestureDetector(
                               onTap: () {
                                 Get.to(() => ProfilePhotoView(
@@ -608,6 +653,44 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
         },
       ),
     );
+  }
+
+  Widget customImageSlider({required String partyPhotos, required String imageStatus})
+  {
+    return
+      Container(
+        height: Get.height*0.45,
+        decoration: BoxDecoration(
+          // borderRadius: BorderRadius.circular(15),
+          image:DecorationImage( image: NetworkImage(partyPhotos),fit: BoxFit.cover),
+        ),
+        width: Get.width,
+        /* child: Image.network(
+                        widget.party.coverPhoto,
+                        width: Get.width,
+                        height: 250,
+                        fit: BoxFit.cover,
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                      ), */
+      );
   }
 
   Widget iconButtonNeumorphic({required IconData icon, required Color color}) {

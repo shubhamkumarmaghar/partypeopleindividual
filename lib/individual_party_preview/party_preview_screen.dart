@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
+import '../centralize_api.dart';
 import '../individualDashboard/models/party_model.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/individual_amenities.dart';
@@ -34,7 +35,7 @@ class _PartyPreviewState extends State<PartyPreview> {
 
   Future<void> _fetchData() async {
     http.Response response = await http.get(
-      Uri.parse('https://app.partypeople.in/v1/party/party_amenities'),
+      Uri.parse(API.partyAmenities),
       headers: {'x-access-token': '${GetStorage().read('token')}'},
     );
     final data = jsonDecode(response.body);
@@ -57,7 +58,7 @@ class _PartyPreviewState extends State<PartyPreview> {
 
   Future<void> ongoingParty(String id) async {
     final response = await http.post(
-      Uri.parse('https://app.partypeople.in/v1/party/party_ongoing'),
+      Uri.parse(API.ongoingParty),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },

@@ -14,6 +14,7 @@ import 'package:http/http.dart';
 import 'package:partypeopleindividual/widgets/pop_up_dialogs.dart';
 
 import '../../api_helper_service.dart';
+import '../../centralize_api.dart';
 import '../../chatList/model/user_chat_list.dart';
 import '../model/chat_model.dart';
 import '../model/user_model.dart';
@@ -58,7 +59,7 @@ class ChatScreenController  extends GetxController{
     isApiLoading = true;
     try {
       http.Response response = await http.post(
-        Uri.parse('https://app.partypeople.in/v1/account/get_single_user'),
+        Uri.parse(API.getSingleChatUser),
         body: {'user_id': id},
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
@@ -97,7 +98,7 @@ class ChatScreenController  extends GetxController{
       chatList.clear();
       isApiLoading = true;
       http.Response response = await http.post(
-        Uri.parse('https://app.partypeople.in/v1/chat/get_chat_user_list_data'),
+        Uri.parse(API.getChatUserList),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -131,7 +132,7 @@ class ChatScreenController  extends GetxController{
  Future<void> addChatUserToList() async
  {
    try{
-    http.Response response = await http.post(Uri.parse('https://app.partypeople.in/v1/chat/add_chat'),
+    http.Response response = await http.post(Uri.parse(API.addChatUser),
        body: {'individual_user_id': userId } ,
        headers: {'x-access-token' : '${GetStorage().read('token')}'}
     );

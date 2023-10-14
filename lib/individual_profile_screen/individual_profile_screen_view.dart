@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,7 @@ import 'package:partypeopleindividual/widgets/custom_loading_indicator.dart';
 import 'package:partypeopleindividual/widgets/individual_amenities.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../centralize_api.dart';
 import '../edit_individual_profile/edit_individual_profile.dart';
 import '../widgets/active_city_select.dart';
 import '../widgets/calculate_age.dart';
@@ -45,7 +47,7 @@ class _IndividualProfileScreenViewState
     try {
       http.Response response = await http.get(
         Uri.parse(
-            'https://app.partypeople.in/v1/party/individual_organization_amenities'),
+            API.individualOrganizationAmenities),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -118,6 +120,7 @@ class _IndividualProfileScreenViewState
 
   Future<void> futureInit() async {
     await individualProfileController.individualProfileData();
+    individualProfileController.getProfileImages();
     await _fetchData();
   }
 
@@ -160,10 +163,8 @@ class _IndividualProfileScreenViewState
                                         blur: 5.0,
                                         child: Container(
                                           height: Get.height * 0.35,
-
                                           decoration: BoxDecoration(
                                             color: Colors.white,
-
                                             image: DecorationImage(
                                                 fit: BoxFit.cover,
                                                 image: individualProfileController
@@ -181,7 +182,29 @@ class _IndividualProfileScreenViewState
                                           ),
                                         ),
                                       )
-                                    : Container(
+                                    : Card(elevation: 5,
+                                  //color: Colors.orange,
+                                  clipBehavior:Clip.hardEdge ,
+                                  margin: EdgeInsets.only(bottom: 25),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),),
+                                  child:
+                                  CarouselSlider(items: individualProfileController.profileImages.map((element) =>
+                                      customImageSlider(partyPhotos: element, imageStatus: '${individualProfileController.photoStatusApproval.value}') ).toList(),
+                                    options: CarouselOptions(
+                                        height: Get.height*0.4,
+                                        // enlargeCenterPage: true,
+                                        autoPlay: true,
+                                        //aspectRatio: 16 / 9,
+                                        autoPlayCurve: Curves.fastOutSlowIn,
+                                        enableInfiniteScroll: true,
+                                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                                        viewportFraction: 1
+                                    ),
+                                  ),
+                                ),
+
+                             /*   Container(
                                         height: Get.height * 0.35,
                                         child: CachedNetworkImage(
                                           placeholder: (context, url) => Shimmer.fromColors(
@@ -199,10 +222,11 @@ class _IndividualProfileScreenViewState
                                           fit: BoxFit.cover,
                                         ),
 
-                                      ),
+                                      ),*/
                                 // Profile Photo
                                 Positioned(
-                                  bottom: 10,
+                                  bottom: 30,
+                                  left: 10,
                                   child: GestureDetector(
                                     onTap: () {
                                       Get.to(() => ProfilePhotoView(
@@ -652,6 +676,43 @@ class _IndividualProfileScreenViewState
     );
   }
 
+  Widget customImageSlider({required String partyPhotos, required String imageStatus})
+  {
+    return
+      Container(
+        height: Get.height*0.4,
+        decoration: BoxDecoration(
+          // borderRadius: BorderRadius.circular(15),
+          image:DecorationImage( image: NetworkImage(partyPhotos),fit: BoxFit.cover),
+        ),
+        width: Get.width,
+        /* child: Image.network(
+                        widget.party.coverPhoto,
+                        width: Get.width,
+                        height: 250,
+                        fit: BoxFit.cover,
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                      ), */
+      );
+  }
   Widget CustomTextFieldview(String text, IconData icon) {
     return Container(
       height: Get.height * 0.2,

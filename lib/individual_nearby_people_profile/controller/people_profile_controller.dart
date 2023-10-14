@@ -7,6 +7,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../../api_helper_service.dart';
+import '../../centralize_api.dart';
 import '../../widgets/individual_amenities.dart';
 import '../model/people_profile_model.dart';
 
@@ -20,6 +21,8 @@ class PeopleProfileController extends GetxController {
   List<OrganizationAmenities>? amenties=[];
   List selectedAmenities = [];
   String userId='';
+  List profileImages = [];
+
 
   @override
   void onInit() {
@@ -32,8 +35,7 @@ class PeopleProfileController extends GetxController {
   Future<void> _fetchData() async {
     try {
       http.Response response = await http.get(
-        Uri.parse(
-            'https://app.partypeople.in/v1/party/individual_organization_amenities'),
+        Uri.parse(API.individualOrganizationAmenities),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 
@@ -83,10 +85,11 @@ class PeopleProfileController extends GetxController {
     }
   }
 
+
   Future<void> PeopleViewed(String id) async {
     final response = await http.post(
       Uri.parse(
-          'https://app.partypeople.in/v1/account/get_individual_profile_view'),
+          API.getIndividualProfileView),
       headers: <String, String>{
         'x-access-token': '${GetStorage().read('token')}',
       },
@@ -112,8 +115,27 @@ class PeopleProfileController extends GetxController {
             for(var data1 in amentiesdata){
           }
           peopleProfileData = data;
-
             _fetchData();
+          var peopledata = peopleProfileData.data;
+          if(peopledata?.coverPhoto != null || peopledata?.coverPhoto !=''  ){
+            profileImages.add(peopledata?.coverPhoto);
+          }
+          if(peopledata?.profilePic != null || peopledata?.profilePic !='' ){
+            profileImages.add(peopledata?.profilePic);
+          }
+          profileImages.forEach((element) {log('$element');});
+       /*   if(peopledata?.imageB != null || peopledata?.imageB !=''  ){
+            profileImages.add(peopledata?.imageB);
+          }
+          if(peopledata?.imageC  != null || peopledata?.imageC !='' ){
+            profileImages.add(peopledata?.imageC);
+          }
+          if(peopledata?.imageD  != null || peopledata?.imageD !=''  ){
+            profileImages.add(peopledata?.imageD);
+          }
+          if(peopledata?.imageE  != null || peopledata?.imageE  !='' ){
+            profileImages.add(peopledata?.imageE);
+          }*/
           update();
         }
         else {

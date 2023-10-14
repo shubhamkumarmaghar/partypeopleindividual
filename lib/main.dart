@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:partypeopleindividual/splash_screen/view/splash_screen.dart';
 import 'package:sizer/sizer.dart';
 import 'constants.dart';
+import 'myhttp_overrides.dart';
 
 
 
@@ -46,6 +48,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  HttpOverrides.global =  MyHttpOverrides();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]);
   await Firebase.initializeApp();
   analytics = await FirebaseAnalytics.instance;

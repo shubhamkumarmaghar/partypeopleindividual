@@ -19,6 +19,7 @@ import 'package:partypeopleindividual/widgets/qualification_dropdown_widget.dart
 
 import '../../widgets/dob_dropdown.dart';
 import '../../widgets/gender_dropdown_selecter.dart';
+import '../centralize_api.dart';
 
 class IndividualProfileScreen extends StatefulWidget {
   const IndividualProfileScreen({super.key});
@@ -40,8 +41,7 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
   Future<void> _fetchData() async {
     try {
       http.Response response = await http.get(
-        Uri.parse(
-            'https://app.partypeople.in/v1/party/individual_organization_amenities'),
+        Uri.parse(API.individualOrganizationAmenities),
         headers: {'x-access-token': '${GetStorage().read('token')}'},
       );
 

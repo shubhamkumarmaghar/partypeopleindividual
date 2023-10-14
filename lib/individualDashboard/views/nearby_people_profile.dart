@@ -13,6 +13,7 @@ import 'package:partypeopleindividual/individual_subscription/view/subscription_
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../centralize_api.dart';
 import '../../chatScreen/views/chat_screen_view.dart';
 import '../controllers/individual_dashboard_controller.dart';
 
@@ -61,7 +62,7 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
             isLiked = widget.likeStatus == '1' ? false : true;
             final response = await http.post(
               Uri.parse(
-                  'https://app.partypeople.in/v1/account/individual_user_like'),
+                  API.userLike),
               headers: <String, String>{
                 'x-access-token': '${GetStorage().read('token')}',
               },
