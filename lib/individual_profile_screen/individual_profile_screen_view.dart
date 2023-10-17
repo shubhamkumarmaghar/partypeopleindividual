@@ -22,7 +22,9 @@ import 'package:shimmer/shimmer.dart';
 import '../centralize_api.dart';
 import '../edit_individual_profile/edit_individual_profile.dart';
 import '../widgets/active_city_select.dart';
+import '../widgets/cached_image_placeholder.dart';
 import '../widgets/calculate_age.dart';
+import '../widgets/custom_images_slider.dart';
 import '../widgets/custom_textview_profile.dart';
 
 class IndividualProfileScreenView extends StatefulWidget {
@@ -156,41 +158,17 @@ class _IndividualProfileScreenViewState
                               alignment: Alignment.center,
                               children: <Widget>[
                                 //Cover Photo
-                                individualProfileController
-                                            .photoStatusApproval.value !=
-                                        '1'
-                                    ? Blur(
-                                        blur: 5.0,
-                                        child: Container(
-                                          height: Get.height * 0.35,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            image: DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: individualProfileController
-                                                            .coverPhotoURL
-                                                            .value
-                                                            .isNotEmpty
-                                                        ? NetworkImage(
-                                                            individualProfileController
-                                                                .coverPhotoURL
-                                                                .value)
-                                                        : const AssetImage(
-                                                                'assets/images/default-cover-4.jpg')
-                                                            as ImageProvider<
-                                                                Object>),
-                                          ),
-                                        ),
-                                      )
-                                    : Card(elevation: 5,
+                                Card(elevation: 5,
                                   //color: Colors.orange,
                                   clipBehavior:Clip.hardEdge ,
                                   margin: EdgeInsets.only(bottom: 25),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15.0),),
                                   child:
-                                  CarouselSlider(items: individualProfileController.profileImages.map((element) =>
-                                      customImageSlider(partyPhotos: element, imageStatus: '${individualProfileController.photoStatusApproval.value}') ).toList(),
+                                  CarouselSlider(items:
+                                  individualProfileController.profileImages.map((PartyImageWithstatus element) =>
+                                     CustomImageSlider(partyPhotos: element.image, imageStatus: element.status)
+                                    ).toList(),
                                     options: CarouselOptions(
                                         height: Get.height*0.4,
                                         // enlargeCenterPage: true,
@@ -679,38 +657,47 @@ class _IndividualProfileScreenViewState
   Widget customImageSlider({required String partyPhotos, required String imageStatus})
   {
     return
-      Container(
-        height: Get.height*0.4,
-        decoration: BoxDecoration(
-          // borderRadius: BorderRadius.circular(15),
-          image:DecorationImage( image: NetworkImage(partyPhotos),fit: BoxFit.cover),
+      Blur(blur: 5.0,
+        child: Container(
+          height: Get.height*0.4,
+          decoration: BoxDecoration(
+            // borderRadius: BorderRadius.circular(15),
+           // image:DecorationImage( image: NetworkImage(partyPhotos),fit: BoxFit.cover),
+          ),
+          width: Get.width,
+          child: CachedNetworkImageWidget(
+            imageUrl: partyPhotos,
+            fit: BoxFit.fill,
+            height: Get.height*0.4,
+            width: Get.width,
+            errorWidget: (context, url, error) =>
+            const Icon(Icons.error_outline),
+            placeholder: (context, url) => const Center(
+                child: CupertinoActivityIndicator(
+                    color: Colors.white, radius: 15)),
+          ),
         ),
-        width: Get.width,
-        /* child: Image.network(
-                        widget.party.coverPhoto,
-                        width: Get.width,
-                        height: 250,
-                        fit: BoxFit.cover,
-                        errorBuilder: (BuildContext context, Object exception,
-                            StackTrace? stackTrace) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.black,
-                            ),
-                          );
-                        },
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.black,
-                            ),
-                          );
-                        },
-                      ), */
+        overlay:imageStatus =='1' ?Container(
+          height: Get.height*0.4,
+          decoration: BoxDecoration(
+            // borderRadius: BorderRadius.circular(15),
+           // image:DecorationImage( image: NetworkImage(partyPhotos),fit: BoxFit.cover),
+          ),
+            child: CachedNetworkImageWidget(
+              imageUrl: partyPhotos,
+              fit: BoxFit.fill,
+              height: Get.height*0.4,
+              width: Get.width,
+              errorWidget: (context, url, error) =>
+              const Icon(Icons.error_outline),
+              placeholder: (context, url) => const Center(
+                  child: CupertinoActivityIndicator(
+                      color: Colors.white, radius: 15)),
+            ),
+          width: Get.width,
+        ):Container() ,
+
+
       );
   }
   Widget CustomTextFieldview(String text, IconData icon) {
@@ -745,5 +732,11 @@ class _IndividualProfileScreenViewState
             ],
           )),
     );
+  }
+
+  @override
+  void dispose() {
+    individualProfileController.profileImages.clear();
+    super.dispose();
   }
 }

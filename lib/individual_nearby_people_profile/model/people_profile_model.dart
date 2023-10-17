@@ -44,6 +44,10 @@ class Data {
   String? profilePic;
   dynamic timelinePic;
   String? profilePicApprovalStatus;
+  String? profilePicApprovalStatusE;
+  String? profilePicApprovalStatusB;
+  String? profilePicApprovalStatusC;
+  String? profilePicApprovalStatusD;
   String? descriptionApprovalStatus;
   String? approvalStatus;
   String? bluetickStatus;
@@ -58,10 +62,10 @@ class Data {
   String? state;
   String? city;
   String? coverPhoto;
-  String? imageB;
-  String? imageC;
-  String? imageD;
-  String? imageE;
+  String? profileImageB;
+  String? profileImageC;
+  String? profileImageD;
+  String? profileImageE;
   String? status;
   String? displayStatus;
   List<OrganizationAmenities>? organizationAmenities;
@@ -89,11 +93,15 @@ class Data {
         this.orgAmenitieId,
         this.profilePic,
         this.timelinePic,
-        this.imageB,
-        this.imageC,
-        this.imageD,
-        this.imageE,
+        this.profileImageB,
+        this.profileImageC,
+        this.profileImageD,
+        this.profileImageE,
         this.profilePicApprovalStatus,
+        this.profilePicApprovalStatusB,
+        this.profilePicApprovalStatusC,
+        this.profilePicApprovalStatusD,
+        this.profilePicApprovalStatusE,
         this.approvalStatus,
         this.bluetickStatus,
         this.isDeleted,
@@ -137,6 +145,10 @@ class Data {
     profilePic = json['profile_pic'];
     timelinePic = json['timeline_pic'];
     profilePicApprovalStatus = json['profile_pic_approval_status'];
+    profilePicApprovalStatusB = json['profile_pic_b_status'];
+    profilePicApprovalStatusC = json['profile_pic_c_status'];
+    profilePicApprovalStatusD = json['profile_pic_d_status'];
+    profilePicApprovalStatusE = json['profile_pic_e_status'];
     approvalStatus = json['approval_status'];
     bluetickStatus = json['bluetick_status'];
     isDeleted = json['is_deleted'];
@@ -150,10 +162,10 @@ class Data {
     state = json['state'];
     city = json['city'];
     coverPhoto = json['cover_photo'];
-    imageB = json['profile_pic_b'];
-    imageC = json['profile_pic_c'];
-    imageD = json['profile_pic_d'];
-    imageE = json['profile_pic_e'];
+    profileImageB = json['profile_pic_b'];
+    profileImageC = json['profile_pic_c'];
+    profileImageD = json['profile_pic_d'];
+    profileImageE = json['profile_pic_e'];
     status = json['status'];
     displayStatus = json['display_status'];
     likeStatus = json['like_status'];
@@ -189,9 +201,16 @@ class Data {
     data['rating'] = this.rating;
     data['org_amenitie_id'] = this.orgAmenitieId;
     data['profile_pic'] = this.profilePic;
-    data['timeline_pic'] = this.timelinePic;
+    data['profile_pic_b'] = this.profilePic;
+    data['profile_pic_c'] = this.profilePic;
+    data['profile_pic_d'] = this.profilePic;
+    data['profile_pic_e'] = this.profilePic;
     data['profile_pic_approval_status'] = this.profilePicApprovalStatus;
     data['approval_desciption_status'] = this.descriptionApprovalStatus;
+    data['profile_pic_b_status'] = this.profilePicApprovalStatusB;
+    data['profile_pic_c_status'] = this.profilePicApprovalStatusC;
+    data['profile_pic_d_status'] = this.profilePicApprovalStatusD;
+    data['profile_pic_e_status'] = this.profilePicApprovalStatusE;
     data['approval_status'] = this.approvalStatus;
     data['bluetick_status'] = this.bluetickStatus;
     data['is_deleted'] = this.isDeleted;

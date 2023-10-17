@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -78,7 +79,9 @@ class OTPController extends GetxController {
 
   ///Check weather user has already filled the data or not
   getAPIOverview() async {
+
     isLoading.value = true;
+    log('token:: ${GetStorage().read('token')}');
     try {
       http.Response response = await http.post(
           Uri.parse(API.individualProfileData),

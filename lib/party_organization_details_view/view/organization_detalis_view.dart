@@ -1,6 +1,8 @@
 import 'dart:ffi';
 import 'dart:ui';
 
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
@@ -10,6 +12,7 @@ import 'package:sizer/sizer.dart';
 import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 import 'package:http/http.dart' as http;
 import '../../widgets/cached_image_placeholder.dart';
+import '../../widgets/custom_images_slider.dart';
 import '../controller/organization_controller.dart';
 import '../model/organization_details_model.dart';
 
@@ -52,7 +55,7 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                         children: [
                           Stack(
                             children: [
-                              Container(
+                             /* Container(
                                 height: Get.height*0.295,
                                 child: CachedNetworkImageWidget(
                                   imageUrl: '${data?.timelinePic}',
@@ -65,10 +68,33 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                       child: CupertinoActivityIndicator(
                                           color: Colors.white, radius: 15)),
                                 ),
-                              ),
+                              ),*/
+
+                              if (data?.profilePicApprovalStatus == '1')
+                                Card(elevation: 5,
+                                  //color: Colors.orange,
+                                  clipBehavior:Clip.hardEdge ,
+                                  margin: EdgeInsets.only(bottom: 25),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),),
+                                  child:
+                                  CarouselSlider(items: organizationController.profileImages.map((element) =>
+                                      CustomImageSlider(partyPhotos: element.image, imageStatus: element.status) ).toList(),
+                                    options: CarouselOptions(
+                                        height: Get.height*0.4,
+                                        // enlargeCenterPage: true,
+                                        autoPlay: true,
+                                        //aspectRatio: 16 / 9,
+                                        autoPlayCurve: Curves.fastOutSlowIn,
+                                        enableInfiniteScroll: true,
+                                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                                        viewportFraction: 1
+                                    ),
+                                  ),
+                                ),
                               Positioned(
-                                bottom: 0,
-                                left: Get.width * 0.4,
+                                bottom: Get.width * 0.08,
+                                left: Get.width * 0.02,
                                 child: ClipOval(
                                   child: Stack(
                                     children: [
@@ -117,41 +143,36 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                   const EdgeInsets.symmetric(horizontal: 28.0),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(mainAxisAlignment: MainAxisAlignment.center
-                                  ,children: [Text(
-                                    "${data?.name}",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'malgun',
-                                        fontSize: 18.sp),
-                                  ), data?.bluetickStatus == '1' ? Icon(Icons.verified,color: Colors.blue,):Container()
+                                  Row(mainAxisAlignment: MainAxisAlignment.start
+                                  ,
+                                  children: [
+                                    customIconText(icon: CupertinoIcons.person_alt_circle, text: "${data?.name}"),
+                                      data?.bluetickStatus == '1' ? Icon(Icons.verified,color: Colors.blue,):Container()
 
-                                  ],),
+                                  ],
+                                  ),
 
                                   const SizedBox(
-                                    height: 15,
+                                    height: 10,
                                   ),
                                   Container(
                                     width: Get.width * 0.8,
                                     child: Text(
                                       "${data?.description}".capitalizeFirst!,
-                                      textAlign: TextAlign.center,
+                                      textAlign: TextAlign.start,
                                       maxLines: 4,
                                       style: TextStyle(
                                           color: Colors.black,
-                                          letterSpacing: 1.01,
-                                          fontSize: 14.sp,
-                                          fontFamily: 'malgun',
+                                          letterSpacing: 1,
+                                          fontSize: 13.sp,
                                         fontWeight: FontWeight.w500
                                       ),
                                     ),
                                   ),
                                   const SizedBox(
-                                    height: 15,
+                                    height: 10,
                                   ),
                                   SmoothStarRating(
                                     allowHalfRating: false,
@@ -166,29 +187,14 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                     spacing: .5,
                                   ),
                                   const SizedBox(
-                                    height: 15,
+                                    height: 10,
                                   ),
-                                  Text(
-                                    "${widget.mobileno}",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'malgun'),
-                                  ),
+                                  customIconText(icon: CupertinoIcons.phone_circle, text: "${widget.mobileno}",),
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Text(
-                                    'Branch : ${data?.branch}'
-                                        .toString()
-                                        .capitalizeFirst!,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'malgun'),
-                                  ),
+                                  customIconText(icon: CupertinoIcons.list_dash , text: 'Branch : ${data?.branch.toString().capitalizeFirst}',),
+
                                   const SizedBox(
                                     height: 20,
                                   ),
@@ -198,14 +204,10 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                   const SizedBox(
                                     height: 20,
                                   ),
-                                  Text(
-                                    data?.cityId == '-'
+                                  customIconText(icon: CupertinoIcons.location ,
+                                    text: data?.cityId == '-'
                                         ? ''
                                         : "${data?.cityId}".capitalizeFirst!,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14.sp,
-                                        fontFamily: 'malgun'),
                                   ),
                                   const SizedBox(
                                     height: 20,
@@ -217,8 +219,7 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                           color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'malgun',
+                                          fontWeight: FontWeight.normal,
                                           fontSize: 18),
                                     ),
                                   ),
@@ -272,6 +273,62 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                 : Center(child: CircularProgressIndicator());
           },
         ));
+  }
+
+  Widget customIconText({required IconData icon , required String text}){
+    return Row(children: [
+      Icon(icon,color: Colors.grey,),
+      SizedBox(width: 5,),
+      Text(
+        text
+            .capitalizeFirst!,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.black,
+          // letterSpacing: 1.01,
+          fontSize: 13.sp,
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+    ],);
+  }
+
+  Widget customImageSlider({required String partyPhotos, required String imageStatus})
+  {
+    return
+      Container(
+        height: Get.height*0.4,
+        decoration: BoxDecoration(
+          // borderRadius: BorderRadius.circular(15),
+          image:DecorationImage( image: NetworkImage(partyPhotos),fit: BoxFit.cover),
+        ),
+        width: Get.width,
+        /* child: Image.network(
+                        widget.party.coverPhoto,
+                        width: Get.width,
+                        height: 250,
+                        fit: BoxFit.cover,
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                      ), */
+      );
   }
 }
 
@@ -368,6 +425,8 @@ class _OrganizationProfileButtonState extends State<OrganizationProfileButton>
     _animationController.dispose();
     super.dispose();
   }
+
+
 }
 
 class TitleAnswerWidget extends StatelessWidget {

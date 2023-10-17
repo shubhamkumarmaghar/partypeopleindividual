@@ -539,7 +539,7 @@ class ChatScreenController  extends GetxController{
   }
 
   Future<void> getLastMessageString(
-      {required String usernameID ,required String id}) async {
+      {required String usernameID ,required String id ,int chatCount = 0} ) async {
     try {
       await firestore
           .collection('chats/${getConversationID(usernameID)}/messages/')
@@ -552,7 +552,7 @@ class ChatScreenController  extends GetxController{
         if (list.isNotEmpty) _message = list[0];
         String? lastMessage = _message?.msg;
         log('last message $lastMessage');
-        await APIService.lastMessage(id, lastMessage! ,'${_message?.sent}');
+        await APIService.lastMessage(id, lastMessage! ,'${_message?.sent}',chatCount);
       });
     }
     catch(e)

@@ -25,11 +25,12 @@ class ChatScreenView extends StatefulWidget {
 }
 
 class _ChatScreenViewState extends State<ChatScreenView> {
+  int chatCount = 0;
   ChatScreenController chatScreenController = Get.put(ChatScreenController());
   List<Message> listmessage = [];
   String approvalStatus = GetStorage().read('approval_status') ?? '0';
   String newUser = GetStorage().read('newUser') ?? '0';
-  String plan = GetStorage().read('plan_plan_expiry') ?? 'Yes';
+  String plan_expire = GetStorage().read('plan_plan_expiry') ?? 'Yes';
   String gender = GetStorage().read('myGender')??'Male';
 
   //for handling message text changes
@@ -49,8 +50,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
 
   void dispose() {
     log("before last message");
-    chatScreenController.getLastMessageString(
-        usernameID: indiUsername+widget.id.toString(), id: widget.id.toString());
+    chatScreenController.getLastMessageString(usernameID: indiUsername+widget.id.toString(), id: widget.id.toString(),chatCount: chatCount);
     log("after last message");
     super.dispose();
   }
@@ -62,6 +62,8 @@ class _ChatScreenViewState extends State<ChatScreenView> {
           init: ChatScreenController(),
           builder: (controller) {
             indiUsername = controller.getUserModel?.data?.username ?? "";
+            chatCount = int.parse(controller.getUserModel?.data?.messageCount ??'0');
+            log('cont ${controller.getUserModel?.data?.messageCount}');
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: AppBar(
@@ -462,34 +464,39 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                             if(controller.getUserModel?.data?.fromBlockStatus=='0') {
                            if(gender =='Male')
                            {
-                             if (plan == 'Yes') {
-                             if (newUser == '1') {
+                             if (plan_expire == 'Yes') {
+                             if (newUser == '1' || chatCount <= 4)
+                             {
                                if (_textController.text.isNotEmpty) {
                                  if (controller.getUserModel?.data
                                      ?.chatUserAvailableStatus == '0') {
                                    if (controller.userId != '0') {
                                      controller.addChatUserToList();
                                    }
-                                 }
+                                 } //FocusScope.of(context).requestFocus(FocusNode());
                                 String msg = _textController.text;
                                  _textController.text = '';
                                  await controller.sendMessage(
                                      controller.getUserModel,
                                      msg,
                                      Type.text);
-
+                                 chatCount++;
+                                  log('message_count $chatCount');
                                  await chatScreenController
                                      .getLastMessageString(
                                      usernameID: indiUsername +
                                          widget.id.toString(),
-                                     id: widget.id.toString());
+                                     id: widget.id.toString(),
+                                     chatCount: chatCount
+                                 );
                                }
                                else {
                                  Get.snackbar(
                                      'Message', 'Please type here first');
                                }
-                             } else {
-                               if (me == true) {
+                             }
+                             else {
+                             /*  if (me == true) {
                                  if (_textController.text.isNotEmpty) {
                                    if (controller.getUserModel?.data
                                        ?.chatUserAvailableStatus == '0') {
@@ -513,13 +520,13 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                    Get.snackbar(
                                        'Message', 'Please type here first');
                                  }
-                               } else {
+                               } else {*/
                                  Get.to(SubscriptionView(
                                    subText: 'Get Subscription & get Unlimited chats and explore party mates . ',
                                    iconText:
                                    'https://assets-v2.lottiefiles.com/a/5e232bde-1182-11ee-b778-8f3af2eeaa9d/4xBFTBXlHa.json',
                                  ));
-                               }
+                             //  }
                              }
                            }
                            else {
@@ -532,6 +539,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                }
                                String msg = _textController.text;
                                _textController.text = '';
+                              // FocusScope.of(context).requestFocus(FocusNode());
                                await controller.sendMessage(
                                    controller.getUserModel,
                                   msg, Type.text);
@@ -558,6 +566,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                }
                                String msg = _textController.text;
                                _textController.text = '';
+                              // FocusScope.of(context).requestFocus(FocusNode());
                            await controller.sendMessage(
                                    controller.getUserModel,
                                    msg, Type.text);

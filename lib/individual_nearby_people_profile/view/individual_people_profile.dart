@@ -16,6 +16,7 @@ import '../../individual_profile_screen/profilephotoview.dart';
 import '../../individual_subscription/view/subscription_view.dart';
 import '../../widgets/block_unblock.dart';
 import '../../widgets/calculate_age.dart';
+import '../../widgets/custom_images_slider.dart';
 import '../../widgets/custom_textview_profile.dart';
 import '../controller/people_profile_controller.dart';
 import '../model/people_profile_model.dart';
@@ -86,116 +87,26 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                         ),
                       ),
                     ),*/
-                          Blur(
-                            blur: controller.peopleProfileData.data
-                                        ?.profilePicApprovalStatus !=
-                                    '1'
-                                ? 2.5
-                                : 0,
-                            child: Card(elevation: 5,
-                              //color: Colors.orange,
-                              clipBehavior:Clip.hardEdge ,
-                              margin: EdgeInsets.only(bottom: 25),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),),
-                              child:
-                              CarouselSlider(items: controller.profileImages.map((element) =>
-                                  customImageSlider(partyPhotos: element, imageStatus: '${controller.peopleProfileData.data?.profilePicApprovalStatus}') ).toList(),
-                                options: CarouselOptions(
-                                    height: Get.height*0.45,
-                                    // enlargeCenterPage: true,
-                                    autoPlay: true,
-                                    //aspectRatio: 16 / 9,
-                                    autoPlayCurve: Curves.fastOutSlowIn,
-                                    enableInfiniteScroll: true,
-                                    autoPlayAnimationDuration: Duration(milliseconds: 800),
-                                    viewportFraction: 1
-                                ),
+                          Card(elevation: 5,
+                            //color: Colors.orange,
+                            clipBehavior:Clip.hardEdge ,
+                            margin: EdgeInsets.only(bottom: 25),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),),
+                            child:
+                            CarouselSlider(items: controller.profileImages.map((ProfileImageWithStatus element) =>
+                                CustomImageSlider(partyPhotos: element.image, imageStatus: element.status) ).toList(),
+                              options: CarouselOptions(
+                                  height: Get.height*0.4,
+                                  // enlargeCenterPage: true,
+                                  autoPlay: true,
+                                  //aspectRatio: 16 / 9,
+                                  autoPlayCurve: Curves.fastOutSlowIn,
+                                  enableInfiniteScroll: true,
+                                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                                  viewportFraction: 1
                               ),
                             ),
-                           /* Container(
-                              height: Get.height * 0.4,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(20),
-                                  bottomRight: Radius.circular(20),
-                                ),
-                              ),
-                              child: CachedNetworkImage(
-                                placeholder: (context, url) =>
-                                    Shimmer.fromColors(
-                                  baseColor: Colors.grey.shade200,
-                                  highlightColor: Colors.grey.shade400,
-                                  period: const Duration(milliseconds: 1500),
-                                  child: Container(
-                                    height: Get.height * 0.4,
-                                    color: Color(0xff7AB02A),
-                                  ),
-                                ),
-                                imageUrl: controller.peopleProfileData.data
-                                            ?.coverPhoto ==
-                                        null
-                                    ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
-                                    : '${controller.peopleProfileData.data?.coverPhoto}',
-                                width: Get.width,
-                                fit: BoxFit.cover,
-                              ),
-                            ),*/
-                            overlay: controller.peopleProfileData.data
-                                        ?.profilePicApprovalStatus !=
-                                    '1'
-                                ? Container()
-                                :
-                            Card(elevation: 5,
-                              //color: Colors.orange,
-                              clipBehavior:Clip.hardEdge ,
-                              margin: EdgeInsets.only(bottom: 25),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),),
-                              child:
-                              CarouselSlider(items: controller.profileImages.map((element) =>
-                                  customImageSlider(partyPhotos: element, imageStatus: '${controller.peopleProfileData.data?.profilePicApprovalStatus}') ).toList(),
-                                options: CarouselOptions(
-                                    height: Get.height*0.45,
-                                    // enlargeCenterPage: true,
-                                    autoPlay: true,
-                                    //aspectRatio: 16 / 9,
-                                    autoPlayCurve: Curves.fastOutSlowIn,
-                                    enableInfiniteScroll: true,
-                                    autoPlayAnimationDuration: Duration(milliseconds: 800),
-                                    viewportFraction: 1
-                                ),
-                              ),
-                            ),
-                           /* Container(
-                                    height: Get.height * 0.35,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(20),
-                                        bottomRight: Radius.circular(20),
-                                      ),
-                                    ),
-                                    child: CachedNetworkImage(
-                                      placeholder: (context, url) =>
-                                          Shimmer.fromColors(
-                                        baseColor: Colors.grey.shade200,
-                                        highlightColor: Colors.grey.shade400,
-                                        period:
-                                            const Duration(milliseconds: 1500),
-                                        child: Container(
-                                          height: Get.height * 0.35,
-                                          color: Color(0xff7AB02A),
-                                        ),
-                                      ),
-                                      imageUrl: controller.peopleProfileData
-                                                  .data?.coverPhoto ==
-                                              null
-                                          ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
-                                          : '${controller.peopleProfileData.data?.coverPhoto}',
-                                      width: Get.width,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),*/
                           ),
                           // Profile Photo
                           Positioned(

@@ -577,7 +577,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
               individualProfileController.coverImage = croppedFile!;
              // individualProfileController.coverPhotoURL.value = downloadUrl!;
             } else {
-              individualProfileController.coverImage = croppedFile!;
+              individualProfileController.profileImage = croppedFile!;
              // individualProfileController.profilePhotoURL.value = downloadUrl!;
             }
             _isLoading = false;

@@ -20,7 +20,7 @@ import '../../widgets/select_photo_optionsScreen.dart';
 import '../../widgets/submit_application.dart';
 
 class IndividualProfileController extends GetxController {
-  List profileImages =[];
+  List<PartyImageWithstatus> profileImages =[];
   RxInt profilePhotoSelectNo = 0.obs;
   RxString coverPhotoURL = ''.obs;
   RxString profilePhotoURL = ''.obs;
@@ -56,6 +56,10 @@ class IndividualProfileController extends GetxController {
   RxString notification = ''.obs;
   RxString descStatusApproval = ''.obs;
   RxString photoStatusApproval = ''.obs;
+  RxString photoStatusApproval_e = ''.obs;
+  RxString photoStatusApproval_b = ''.obs;
+  RxString photoStatusApproval_c = ''.obs;
+  RxString photoStatusApproval_d = ''.obs;
 
 
 
@@ -71,11 +75,11 @@ class IndividualProfileController extends GetxController {
 
   // Add this function to your controller.
   void onContinueButtonPressed() {
-    if (coverPhotoURL.value.isEmpty) {
+    if (coverImage.path.isEmpty) {
       Get.snackbar('Photo Error', 'Cover Photo URL should not be empty');
       return;
     }
-    if (profilePhotoURL.value.isEmpty) {
+    if (profileImage.path.isEmpty) {
       Get.snackbar('Photo Error', 'Profile Photo URL should not be empty');
       return;
     }
@@ -151,7 +155,6 @@ class IndividualProfileController extends GetxController {
       userData = {
         if(coverPhotoURL.value.isNotEmpty && coverImage.path.isEmpty) 'cover_photo': coverPhotoURL.value.toString(),
         if(profilePhotoURL.value.isNotEmpty && profileImage.path.isEmpty) 'profile_photo': profilePhotoURL.value.toString(),
-
         'name': '${firstname.value.capitalize?.trim().toString()}' + ' ' + '${lastname.value.capitalizeFirst?.trim().toString()}',
         'bio': description.value.toString(),
         'description':description.value.toString(),
@@ -169,7 +172,7 @@ class IndividualProfileController extends GetxController {
       };
 
 
-      print(userData);
+      print("ghhh${userData}");
       individualProfile();
     }
   }
@@ -299,7 +302,7 @@ class IndividualProfileController extends GetxController {
       };
       var request = http.MultipartRequest(
           'POST', Uri.parse(API.individualProfileCreation));
-
+      request.fields.addAll(userData);
       if (coverImage.path.isNotEmpty) {
         final imga = await http.MultipartFile.fromPath(
           'cover_photo', coverImage.path,);
@@ -307,21 +310,16 @@ class IndividualProfileController extends GetxController {
       }
       if (profileImage.path.isNotEmpty) {
         final imgb = await http.MultipartFile.fromPath(
-          'image_b', profileImage.path,);
+          'profile_photo', profileImage.path,);
         request.files.add(imgb);
       }
-
-      request.fields.addAll(userData);
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
-
-
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(await response.stream.bytesToString());
         //isLoading.value = false;
-
-        if (jsonResponse['status'] == 1 &&
-            jsonResponse['message'].contains('Successfully')) {
+log('hhhhhhhhhhhh $jsonResponse');
+        if (jsonResponse['status'] == 1 && jsonResponse['message'].contains('Successfully')) {
           GetStorage().write('loggedIn', '1');
           individualProfileController.apiService.updateActiveCity(
               individualProfileController.organization_id.value,
@@ -330,9 +328,7 @@ class IndividualProfileController extends GetxController {
                   : "Delhi");
           Get.offAll(const ShowSubmitMessage());
         }
-        else if (
-        jsonResponse['status'] == 2 && jsonResponse['message'].contains('Organization Already Created.')
-        )
+        else if (jsonResponse['status'] == 2 && jsonResponse['message'].contains('Organization Already Created.'))
         {
           Get.snackbar('Error', 'Organization Already Created.');
         } else {
@@ -432,10 +428,18 @@ class IndividualProfileController extends GetxController {
           city.value = user['city'] ?? '';
           profilePhotoURL.value = user['profile_pic'] ?? '';
           coverPhotoURL.value = user['cover_photo'] ?? '';
+          profileB.value = user['profile_pic_b'] ?? '';
+          profileC.value = user['profile_pic_c'] ?? '';
+          profileD.value = user['profile_pic_d'] ?? '';
+          profileE.value = user['profile_pic_e'] ?? '';
           organization_id.value = user['id'] ?? "";
           activeCity.value = user['active_city']??'Delhi';
           descStatusApproval.value = user['approval_desciption_status']??'';
           photoStatusApproval.value = user['profile_pic_approval_status']??'';
+          photoStatusApproval_b.value = user['profile_pic_b_status']??'';
+          photoStatusApproval_c.value = user['profile_pic_c_status']??'';
+          photoStatusApproval_d.value = user['profile_pic_d_status']??'';
+          photoStatusApproval_e.value = user['profile_pic_e_status']??'';
           // Set dobController's text to the 'dob' value
           DateTime date =  DateTime.parse('${dob.value}');
           log('date $date');
@@ -488,6 +492,10 @@ class IndividualProfileController extends GetxController {
           city.value = '';
           profilePhotoURL.value = '';
           coverPhotoURL.value = '';
+          profileB.value ='';
+          profileC.value ='';
+          profileE.value ='';
+          profileB.value ='';
           activeCity.value = '';
           dobController.text = '';
           apiService.isLoading.value = false;
@@ -520,23 +528,29 @@ class IndividualProfileController extends GetxController {
   }
   void getProfileImages()
   {
-    if(coverPhotoURL.value != null || coverPhotoURL.value!=''  ){
-      profileImages.add(coverPhotoURL.value);
+    if( coverPhotoURL.value!='' ){
+      profileImages.add(PartyImageWithstatus(image: coverPhotoURL.value, status: photoStatusApproval.value));
+    //  profileImages.add(coverPhotoURL.value);
     }
-    if(profilePhotoURL.value != null || profilePhotoURL.value !='' ){
-      profileImages.add(profilePhotoURL.value);
+    if(profilePhotoURL.value !='' ){
+      profileImages.add(PartyImageWithstatus(image: profilePhotoURL.value, status: photoStatusApproval.value));
+     // profileImages.add(profilePhotoURL.value);
     }
-    if(profileB.value != null || profileB.value!=''  ){
-      profileImages.add(profileB.value);
+    if( profileB.value!=''){
+      profileImages.add(PartyImageWithstatus(image: profileB.value, status: photoStatusApproval_b.value));
+     // profileImages.add(profileB.value);
     }
-    if(profileC.value != null || profileC.value !='' ){
-      profileImages.add(profileC.value);
+    if( profileC.value !='' ){
+      //profileImages.add(profileC.value);
+      profileImages.add(PartyImageWithstatus(image: profileC.value, status: photoStatusApproval_c.value));
     }
-    if(profileD.value != null || profileD.value!=''  ){
-      profileImages.add(profileD.value);
+    if( profileD.value!=''  ){
+      //profileImages.add(profileD.value);
+      profileImages.add(PartyImageWithstatus(image: profileD.value, status: photoStatusApproval_d.value));
     }
-    if(profileE.value != null || profileE.value !='' ){
-      profileImages.add(profileE.value);
+    if(profileE.value !='' ){
+      //profileImages.add(profileE.value);
+      profileImages.add(PartyImageWithstatus(image: profileE.value, status: photoStatusApproval_e.value));
     }
     profileImages.forEach((element) {
       print(element.toString());
@@ -676,4 +690,10 @@ class IndividualProfileController extends GetxController {
     //activeCity="".obs;
     super.onClose();
   }
+}
+
+class PartyImageWithstatus {
+  String image;
+  String status;
+  PartyImageWithstatus({required this.image,required this.status});
 }

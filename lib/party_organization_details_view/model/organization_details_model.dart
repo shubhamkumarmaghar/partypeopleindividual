@@ -66,6 +66,10 @@ class Data {
      this.profilePic,
      this.timelinePic,
      this.profilePicApprovalStatus,
+     this.profilePicApprovalStatusB,
+     this.profilePicApprovalStatusC,
+     this.profilePicApprovalStatusD,
+     this.profilePicApprovalStatusE,
      this.approvalStatus,
      this.bluetickStatus,
      this.isDeleted,
@@ -102,8 +106,16 @@ class Data {
   late final String? rating;
   late final String? orgAmenitieId;
   late final String? profilePic;
+  late final String? profilePicB;
+  late final String? profilePicC;
+  late final String? profilePicD;
+  late final String? profilePicE;
   late final String? timelinePic;
   late final String? profilePicApprovalStatus;
+  String? profilePicApprovalStatusE;
+  String? profilePicApprovalStatusB;
+  String? profilePicApprovalStatusC;
+  String? profilePicApprovalStatusD;
   late final String? approvalStatus;
   late final String? bluetickStatus;
   late final String? isDeleted;
@@ -141,8 +153,17 @@ class Data {
     rating = json['rating'];
     orgAmenitieId = json['org_amenitie_id'];
     profilePic = json['profile_pic'];
+    profilePicB = json['profile_pic_b'];
+    profilePicC = json['profile_pic_c'];
+    profilePicD = json['profile_pic_d'];
+    profilePicE = json['profile_pic_e'];
     timelinePic = json['timeline_pic'];
     profilePicApprovalStatus = json['profile_pic_approval_status'];
+    profilePicApprovalStatusB = json['profile_pic_b_status'];
+    profilePicApprovalStatusC = json['profile_pic_c_status'];
+    profilePicApprovalStatusD = json['profile_pic_d_status'];
+    profilePicApprovalStatusE = json['profile_pic_e_status'];
+
     approvalStatus = json['approval_status'];
     bluetickStatus = json['bluetick_status'];
     isDeleted = json['is_deleted'];
@@ -181,9 +202,18 @@ class Data {
     _data['ongoing'] = ongoing;
     _data['rating'] = rating;
     _data['org_amenitie_id'] = orgAmenitieId;
+    _data['profile_pic_e'] = profilePicE;
+    _data['profile_pic_d'] = profilePicD;
+    _data['profile_pic_c'] = profilePicC;
+    _data['profile_pic_b'] = profilePicB;
     _data['profile_pic'] = profilePic;
     _data['timeline_pic'] = timelinePic;
     _data['profile_pic_approval_status'] = profilePicApprovalStatus;
+    _data['profile_pic_b_status'] = this.profilePicApprovalStatusB;
+    _data['profile_pic_c_status'] = this.profilePicApprovalStatusC;
+    _data['profile_pic_d_status'] = this.profilePicApprovalStatusD;
+    _data['profile_pic_e_status'] = this.profilePicApprovalStatusE;
+
     _data['approval_status'] = approvalStatus;
     _data['bluetick_status'] = bluetickStatus;
     _data['is_deleted'] = isDeleted;

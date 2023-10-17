@@ -223,7 +223,6 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                           ),
                                         ),
                                 ),
-
                                 // Profile Photo
                                 Positioned(
                                   bottom: 0,
@@ -249,10 +248,10 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                                   .photoStatusApproval.value !=
                                                   '1' ?5:0,
                                               child: CircleAvatar(
-                                                backgroundColor: Colors.transparent,
+                                                //backgroundColor: Colors.transparent,
                                                 radius: 55,
-                                                backgroundImage: individualProfileController.profileImage.path.isEmpty
-                                                    ? FileImage(individualProfileController.profileImage!)
+                                                backgroundImage: individualProfileController.profileImage.path.isNotEmpty
+                                                    ? FileImage(individualProfileController.profileImage)
                                                     : (individualProfileController
                                                                 .profilePhotoURL
                                                                 .value
@@ -269,8 +268,8 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                             ): CircleAvatar(
                                         radius: 55,
                                         backgroundColor: Colors.transparent,
-                                        backgroundImage:individualProfileController.profileImage.path.isEmpty
-                                            ? FileImage(individualProfileController.profileImage!)
+                                        backgroundImage:individualProfileController.profileImage.path.isNotEmpty
+                                            ? FileImage(individualProfileController.profileImage)
                                             : (individualProfileController
                                             .profilePhotoURL
                                             .value
@@ -372,7 +371,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
 
                             ///Other Individual Widget
                             const SizedBox(
-                              height: 10,
+                              height: 20,
                             ),
                             GestureDetector(
                               onTap: (){
@@ -381,17 +380,19 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                               child: Align(
                                 alignment: Alignment.centerRight,
                                 child: Container(
-                                  width: Get.width*0.25,
+                                  width: Get.width*0.35,
                                   margin: EdgeInsets.only(right: 28),
                                   alignment: Alignment.center,
                                   height: Get.width*0.08,
                                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
                                       color: Colors.orange),
-                                  child: Text('Add Images',
-                                    style: TextStyle(fontSize: 13.sp,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600
-                                    ),),
+                                  child: FittedBox(
+                                    child: Text('Add More Images',
+                                      style: TextStyle(fontSize: 11.sp,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600
+                                      ),),
+                                  ),
                                 ),
                               ),
                             ),

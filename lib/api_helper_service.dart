@@ -340,9 +340,9 @@ class APIService extends GetxController {
     }
   }
 
-  static Future<void> lastMessage(String id , String message,  String time) async {
+  static Future<void> lastMessage(String id , String message,  String time , int chatCount) async {
     DateTime dateTime =  DateTime.fromMillisecondsSinceEpoch(int.parse(time) );
-
+log('#   $chatCount');
     String time1 = dateTime.toString();
     print('bhhb'+time1);
     // log('${time1}');
@@ -355,7 +355,8 @@ class APIService extends GetxController {
       body: <String, String>{
         'individual_user_id': id,
         'message': message,
-        'datetime' :time1
+        'datetime' :time1,
+        if(chatCount != 0) 'message_count' : chatCount.toString(),
       },
     );
 

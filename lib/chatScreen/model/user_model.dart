@@ -70,6 +70,7 @@ class Data {
     required this.onlineTimeExpiry,
     required this.fromBlockStatus,
     required this.profilePicApprovalStatus,
+    required this.messageCount,
 
   });
   String? id;
@@ -117,6 +118,7 @@ class Data {
   dynamic onlineTimeExpiry;
   String? chatUserAvailableStatus;
   String? fromBlockStatus;
+  String? messageCount;
   String? gender;
   String? profilePicApprovalStatus;
 
@@ -168,6 +170,7 @@ class Data {
     fromBlockStatus=json['from_block_status'];
     gender = json['gender'];
     profilePicApprovalStatus = json['profile_pic_approval_status'];
+    messageCount = json['message_count'];
   }
 
   Map<String, dynamic> toJson() {
@@ -219,6 +222,7 @@ class Data {
     _data['from_block_status']=fromBlockStatus;
     _data['gender']=gender;
     _data['profile_pic_approval_status'] = profilePicApprovalStatus;
+    _data['message_count'] = messageCount;
     return _data;
   }
 }

@@ -21,7 +21,7 @@ class PeopleProfileController extends GetxController {
   List<OrganizationAmenities>? amenties=[];
   List selectedAmenities = [];
   String userId='';
-  List profileImages = [];
+  List<ProfileImageWithStatus> profileImages = [];
 
 
   @override
@@ -117,25 +117,30 @@ class PeopleProfileController extends GetxController {
           peopleProfileData = data;
             _fetchData();
           var peopledata = peopleProfileData.data;
-          if(peopledata?.coverPhoto != null || peopledata?.coverPhoto !=''  ){
-            profileImages.add(peopledata?.coverPhoto);
+          if( peopledata?.coverPhoto != null  ){
+            profileImages.add(ProfileImageWithStatus(image: '${peopledata?.coverPhoto}', status: '${peopledata?.profilePicApprovalStatus}'));
+            //  profileImages.add(coverPhotoURL.value);
           }
-          if(peopledata?.profilePic != null || peopledata?.profilePic !='' ){
-            profileImages.add(peopledata?.profilePic);
+          if(peopledata?.profilePic != null  ){
+            profileImages.add(ProfileImageWithStatus(image: '${peopledata?.profilePic}', status: '${peopledata?.profilePicApprovalStatus}'));
+            // profileImages.add(profilePhotoURL.value);
           }
-          profileImages.forEach((element) {log('$element');});
-       /*   if(peopledata?.imageB != null || peopledata?.imageB !=''  ){
-            profileImages.add(peopledata?.imageB);
+          if(peopledata?.profileImageB != null ){
+            profileImages.add(ProfileImageWithStatus(image: '${peopledata?.profileImageB}', status: '${peopledata?.profilePicApprovalStatusB}'));
+            // profileImages.add(profileB.value);
           }
-          if(peopledata?.imageC  != null || peopledata?.imageC !='' ){
-            profileImages.add(peopledata?.imageC);
+          if(peopledata?.profileImageC != null){
+            //profileImages.add(profileC.value);
+            profileImages.add(ProfileImageWithStatus(image: '${peopledata?.profileImageC}', status: '${peopledata?.profilePicApprovalStatusC}'));
           }
-          if(peopledata?.imageD  != null || peopledata?.imageD !=''  ){
-            profileImages.add(peopledata?.imageD);
+          if(peopledata?.profileImageD != null   ){
+            //profileImages.add(profileD.value);
+            profileImages.add(ProfileImageWithStatus(image: '${peopledata?.profileImageD}', status: '${peopledata?.profilePicApprovalStatusD}'));
           }
-          if(peopledata?.imageE  != null || peopledata?.imageE  !='' ){
-            profileImages.add(peopledata?.imageE);
-          }*/
+          if(peopledata?.profileImageE != null ){
+            //profileImages.add(profileE.value);
+            profileImages.add(ProfileImageWithStatus(image: '${peopledata?.profileImageE}', status: '${peopledata?.profilePicApprovalStatusE}'));
+          }
           update();
         }
         else {
@@ -150,3 +155,9 @@ class PeopleProfileController extends GetxController {
       update();
     }
   }
+
+class ProfileImageWithStatus {
+  String image;
+  String status;
+  ProfileImageWithStatus({required this.image,required this.status});
+}
