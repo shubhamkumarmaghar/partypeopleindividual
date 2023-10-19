@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:lottie/lottie.dart';
@@ -24,92 +25,12 @@ class _AddImageProfileState extends State<AddImageProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(body:
+    return  Scaffold(backgroundColor: Colors.white,
+      body:
     Container(margin: EdgeInsets.all(10),child:
     Column(
       children: [
-       /* GestureDetector(
-      onTap: () {
-        defaultController.defaultControllerType.value = 0;
-        controller.showSelectPhotoOptionsTimeline(context);
-      },
-      child: Obx(
-            () => Stack(
-          children: [
-            SizedBox(
-              height: Get.height*0.25,
-              width: double.maxFinite,
-              child: controller.timeline.value != ''
-                  ? controller.isLoading.value == true
-                  ? const Center(
-                  child: CupertinoActivityIndicator(
-                    radius: 15,
-                    color: Colors.black,
-                  ))
-                  : Card(shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(15.0),
-                  bottomRight: Radius.circular(15.0),
-                  topLeft: Radius.circular(15.0),
-                  topRight: Radius.circular(15.0),
-                ),),
-                  child: ClipRRect(borderRadius: BorderRadius.circular(15),
-                    child: CachedNetworkImageWidget(
-                        imageUrl:
-                        controller.timeline.value,
-                        width: Get.width,
-                        height: Get.height*0.25,
-                        fit: BoxFit.fill,
-                        errorWidget:
-                            (context, url, error) =>
-                        const Icon(
-                            Icons.error_outline),
-                        placeholder: (context, url) =>
-                        const Center(
-                            child:
-                            CupertinoActivityIndicator(
-                                color:
-                                Colors.black,
-                                radius: 15))),
-                  ))
-                  : Card(
-                child: Lottie.asset(
-                  'assets/127619-photo-click.json',
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: IconButton(
-                onPressed: () {
-                  defaultController
-                      .defaultControllerType.value = 0;
-                  controller
-                      .showSelectPhotoOptionsTimeline(context);
-                },
-                icon: const Icon(
-                  Icons.camera_alt,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            const Positioned(
-              bottom: 10,
-              right: 10,
-              child: SizedBox(
-                  height: 30,
-                  width: 30,
-                  child: Icon(
-                    size: 30,
-                    Icons.camera_alt,
-                    color: Colors.red,
-                  )),
-            ),
-          ],
-        ),
-      ),
-    ),*/
+
         SizedBox(
           height: Get.height*0.05,
         ),
@@ -174,7 +95,34 @@ class _AddImageProfileState extends State<AddImageProfile> {
                     customAddImage(imageFile: controller.imageProfile_e, imageUrl: controller.profileE.value)
             ),),
         ],),
-    ],)),);
+
+        GestureDetector(
+          onTap: (){
+            Fluttertoast.showToast(msg: 'Your images have successfully uploaded ');
+          },
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              width: Get.width*0.35,
+              margin: EdgeInsets.only(right: 28),
+              alignment: Alignment.center,
+              height: Get.width*0.08,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+                  color: Colors.orange),
+              child: FittedBox(
+                child: Text('Upload',
+                  style: TextStyle(fontSize: 11.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600
+                  ),),
+              ),
+            ),
+          ),
+        ),
+    ],
+    ),
+    ),
+    );
   }
 
   customAddImage({required File imageFile ,required String imageUrl }){

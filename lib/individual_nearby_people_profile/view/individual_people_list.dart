@@ -8,13 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sizer/sizer.dart';
-
 import '../../centralize_api.dart';
 import '../../individualDashboard/controllers/individual_dashboard_controller.dart';
 import '../../individualDashboard/models/usermodel.dart';
 import '../../individualDashboard/views/nearby_people_profile.dart';
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
+import '../controller/peopleList_controller.dart';
 
 class PeopleList extends StatefulWidget {
   final List<UserModel> peopleList;
@@ -27,194 +28,262 @@ class PeopleList extends StatefulWidget {
 
 class _PeopleListState extends State<PeopleList>
     with SingleTickerProviderStateMixin {
-  IndividualDashboardController _dashboardController =
-      Get.find<IndividualDashboardController>();
-  List<UserModel> maleList = [];
-  List<UserModel> femaleList = [];
-  List<UserModel> showList = [];
-  List<UserModel> otherList = [];
+  PeopleListController _peopleListController = Get.put(PeopleListController());
+
   int choiceIndex = 0;
   Timer? _debounce;
   TextEditingController? _textEditingController;
 
-  void getMaleFemaleList() {
-    widget.peopleList.forEach((element) {
-      showList = widget.peopleList;
-      if (element.gender == 'Male') {
-        maleList.add(element);
-      } else if (element.gender == 'Female') {
-        femaleList.add(element);
-      } else {
-        otherList.add(element);
-      }
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    getMaleFemaleList();
+    //_peopleListController.getMaleFemaleList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: Get.width,
-        height: Get.height,
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment(1, -0.45),
-            radius: 0.9,
-            colors: [
-              Color(0xffb80b0b),
-              Color(0xff390202),
-            ],
-            stops: [0.0, 1],
-            transform: GradientXDTransform(
-              0.0,
-              -1.0,
-              1.23,
-              0.0,
-              -0.115,
-              1.0,
-              Alignment(0.0, 0.0),
+      body: GetBuilder<PeopleListController>(
+        builder: (controllerPeople) {
+          return Container(
+            width: Get.width,
+            height: Get.height,
+            decoration: const BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment(1, -0.45),
+                radius: 0.9,
+                colors: [
+                  Color(0xffb80b0b),
+                  Color(0xff390202),
+                ],
+                stops: [0.0, 1],
+                transform: GradientXDTransform(
+                  0.0,
+                  -1.0,
+                  1.23,
+                  0.0,
+                  -0.115,
+                  1.0,
+                  Alignment(0.0, 0.0),
+                ),
+              ),
             ),
-          ),
-        ),
-        child: Stack(
-          children: [
-            CustomScrollView(
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              slivers: [
-                SliverPadding(padding: EdgeInsets.only(top: 10)),
-                SliverToBoxAdapter(
-                  child: Container(
-                    height: Get.height * 0.1,
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        homePageText("People List",
-                            top: 30, color: Colors.white),
-                        GestureDetector(
-                          onTap: () {
-                            bottomMaleFemale(context);
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: 35),
-                                child: Image.asset("assets/images/filter.png",
-                                    alignment: Alignment.centerLeft),
-                              ),
-                              homePageText("   Filter",
-                                  top: 30, color: Colors.white),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: // search bar
-                      Container(
-                    margin: EdgeInsets.only(top: Get.height * 0.02),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Get.width * 0.1,
-                    ),
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10.sp)),
-                            child: TextField(
-                              controller: _textEditingController,
-                              onChanged: (value) {
-                                log('value $value');
-
-                                _onSearchChanged(value);
+            child: Stack(
+              children: [
+                CustomScrollView(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  slivers: [
+                    SliverPadding(padding: EdgeInsets.only(top: 10)),
+                    SliverToBoxAdapter(
+                      child: Container(
+                        height: Get.height * 0.1,
+                        margin: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            homePageText("People List",
+                                top: 30, color: Colors.white),
+                            GestureDetector(
+                              onTap: ()async {
+                                log(_peopleListController.paginatedUsersList.length.toString());
+                                await bottomMaleFemale(context);
                               },
-                              style: TextStyle(color: Colors.grey),
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  icon: Container(
-                                    margin: EdgeInsets.only(left: 15),
-                                    child: const Icon(
-                                      Icons.search,
-                                      color: Colors.grey,
-                                    ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 35),
+                                    child: Image.asset("assets/images/filter.png",
+                                        alignment: Alignment.centerLeft),
                                   ),
-                                  hintText: 'Search user by username',
-                                  hintStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 11.sp,
-                                      fontFamily: 'Poppins')),
+                                  homePageText("   Filter",
+                                      top: 30, color: Colors.white),
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                SliverPadding(padding: EdgeInsets.only(top: 20)),
-                SliverPadding(
-                    padding:
-                        EdgeInsets.only(left: 1, right: 8, top: 8, bottom: 8),
-                    sliver: SliverGrid(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 1.04,
                       ),
-                      delegate: SliverChildBuilderDelegate(
-                          childCount: showList.length,
-                          (BuildContext context, int index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Get.to(() => IndividualPeopleProfile(),
-                                arguments: showList[index].id);
-                          },
-                          child: NearByPeopleProfile(
-                            imageURL: showList[index].profilePicture,
-                            name: showList[index].username,
-                            id: showList[index].id,
-                            likeStatus: showList[index].likeStatus,
-                            onlineStatus: showList[index].onlineStatus,
-                            privacyStatus: showList[index].privacyOnline,
-                            profile_pic_approval_status:
-                                showList[index].profilePicApproval,
-                          ),
-                          // personGrid(index: index),
-                        );
-                      }),
-                    )),
+                    ),
+                    SliverToBoxAdapter(
+                      child: // search bar
+                      Container(
+                        margin: EdgeInsets.only(top: Get.height * 0.02),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Get.width * 0.1,
+                        ),
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10.sp)),
+                                child: TextField(
+                                  controller: _textEditingController,
+                                  onChanged: (value) {
+                                    log('value $value');
+
+                                    _onSearchChanged(value);
+                                  },
+                                  style: TextStyle(color: Colors.grey),
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      icon: Container(
+                                        margin: EdgeInsets.only(left: 15),
+                                        child: const Icon(
+                                          Icons.search,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      hintText: 'Search user by username',
+                                      hintStyle: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 11.sp,
+                                          fontFamily: 'Poppins')),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SliverPadding(padding: EdgeInsets.only(top: 20,bottom: 10),
+                      sliver: SliverToBoxAdapter(child: Container(
+                        height: Get.height*0.8,
+                        child: SmartRefresher(
+                            controller: controllerPeople.refreshController,
+                            enablePullDown: true,
+                            enablePullUp: true,
+                            onRefresh: () {
+                              controllerPeople.getPaginatedNearbyPeoples(isRefresh: true);
+                            },
+                            onLoading:  () {
+                              controllerPeople.getPaginatedNearbyPeoples(isRefresh: false);
+                            },
+                            child: GridView.builder(
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10,
+                                childAspectRatio: 1.04,
+                              ),
+                              itemCount: controllerPeople.showList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => IndividualPeopleProfile(),
+                                        arguments: controllerPeople.showList[index].id);
+                                  },
+                                  child: NearByPeopleProfile(
+                                    imageURL: controllerPeople.showList[index].profilePicture,
+                                    name: controllerPeople.showList[index].username,
+                                    id: controllerPeople.showList[index].id,
+                                    likeStatus: controllerPeople.showList[index].likeStatus,
+                                    onlineStatus: controllerPeople.showList[index].onlineStatus,
+                                    privacyStatus: controllerPeople.showList[index].privacyOnline,
+                                    profile_pic_approval_status: controllerPeople.showList[index].profilePicApproval,
+                                  ),
+                                  // personGrid(index: index),
+                                );
+                              },
+                            )
+                        ),
+                      ),),),
+
+                    // SliverPadding(
+                    //     padding:
+                    //         EdgeInsets.only(left: 1, right: 8, top: 8, bottom: 8),
+                    //     sliver: SliverGrid(
+                    //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    //         crossAxisCount: 3,
+                    //         mainAxisSpacing: 10,
+                    //         crossAxisSpacing: 10,
+                    //         childAspectRatio: 1.04,
+                    //       ),
+                    //       delegate: SliverChildBuilderDelegate(
+                    //           childCount: showList.length,
+                    //           (BuildContext context, int index) {
+                    //         return GestureDetector(
+                    //           onTap: () {
+                    //             Get.to(() => IndividualPeopleProfile(),
+                    //                 arguments: showList[index].id);
+                    //           },
+                    //           child: NearByPeopleProfile(
+                    //             imageURL: showList[index].profilePicture,
+                    //             name: showList[index].username,
+                    //             id: showList[index].id,
+                    //             likeStatus: showList[index].likeStatus,
+                    //             onlineStatus: showList[index].onlineStatus,
+                    //             privacyStatus: showList[index].privacyOnline,
+                    //             profile_pic_approval_status:
+                    //                 showList[index].profilePicApproval,
+                    //           ),
+                    //           // personGrid(index: index),
+                    //         );
+                    //       }),
+                    //     )),
+                  ],
+                ),
+                // SmartRefresher(
+                //     controller: _dashboardController.refreshController,
+                //     onRefresh: () {
+                //       _dashboardController.getPaginatedNearbyPeoples(isRefresh: true);
+                //     },
+                //     onLoading:  () {
+                //       _dashboardController.getPaginatedNearbyPeoples(isRefresh: false);
+                //     },
+                //     child: GridView.builder(
+                //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                //         crossAxisCount: 3,
+                //         mainAxisSpacing: 10,
+                //         crossAxisSpacing: 10,
+                //         childAspectRatio: 1.04,
+                //       ),
+                //       itemCount: _dashboardController.paginatedUsersList.length,
+                //       itemBuilder: (BuildContext context, int index) {
+                //         return GestureDetector(
+                //           onTap: () {
+                //             Get.to(() => IndividualPeopleProfile(),
+                //                 arguments: _dashboardController.paginatedUsersList[index].id);
+                //           },
+                //           child: NearByPeopleProfile(
+                //             imageURL: _dashboardController.paginatedUsersList[index].profilePicture,
+                //             name: _dashboardController.paginatedUsersList[index].username,
+                //             id: showList[index].id,
+                //             likeStatus: _dashboardController.paginatedUsersList[index].likeStatus,
+                //             onlineStatus: _dashboardController.paginatedUsersList[index].onlineStatus,
+                //             privacyStatus: _dashboardController.paginatedUsersList[index].privacyOnline,
+                //             profile_pic_approval_status:
+                //             _dashboardController.paginatedUsersList[index].profilePicApproval,
+                //           ),
+                //           // personGrid(index: index),
+                //         );
+                //       },
+                //     )
+                // ),
+                GetBuilder<PeopleListController>(
+                  builder: (controller) {
+                    return Container(
+                        height: Get.height,
+                        width: Get.width,
+                        child: controller.showAnimatedHeart.value
+                            ? Align(
+                          alignment: Alignment.center,
+                          child: Lottie.network(
+                            // 'https://assets-v2.lottiefiles.com/a/3073e56e-1175-11ee-911b-eb7a8cb4524d/VyuILSK8xC.json'
+                              'https://assets-v2.lottiefiles.com/a/c543ac62-1150-11ee-953b-235b9373fc03/85XdRr7LQN.json'),
+                        )
+                            : Container());
+                  },
+                )
               ],
             ),
-            GetBuilder<IndividualDashboardController>(
-              builder: (controller) {
-                return Container(
-                    height: Get.height,
-                    width: Get.width,
-                    child: _dashboardController.showAnimatedHeart.value
-                        ? Align(
-                            alignment: Alignment.center,
-                            child: Lottie.network(
-                                // 'https://assets-v2.lottiefiles.com/a/3073e56e-1175-11ee-911b-eb7a8cb4524d/VyuILSK8xC.json'
-                                'https://assets-v2.lottiefiles.com/a/c543ac62-1150-11ee-953b-235b9373fc03/85XdRr7LQN.json'),
-                          )
-                        : Container());
-              },
-            )
-          ],
-        ),
-      ),
+          );
+        },
+      )
     );
   }
 
@@ -234,7 +303,7 @@ class _PeopleListState extends State<PeopleList>
         builder: (context) {
           return GetBuilder<FilterChipController>(
             init: FilterChipController(),
-            builder: (controller) {
+            builder: (controllerChip) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -243,13 +312,13 @@ class _PeopleListState extends State<PeopleList>
                     'All People',
                     FilterChip(
                         label: Text('All People'),
-                        selected: controller.list[0],
+                        selected: controllerChip.list[0],
                         selectedColor: Colors.red.shade900,
                         backgroundColor: Colors.grey,
                         labelStyle: TextStyle(color: Colors.white),
                         onSelected: (value) {
-                          controller.setChip(selectedIndex: 0);
-                          showList = widget.peopleList;
+                          controllerChip.setChip(selectedIndex: 0);
+                          _peopleListController.showList = _peopleListController.paginatedUsersList;
                           navigator?.pop();
                           setState(() {});
                         }),
@@ -262,10 +331,10 @@ class _PeopleListState extends State<PeopleList>
                         selectedColor: Colors.red.shade900,
                         backgroundColor: Colors.grey,
                         labelStyle: TextStyle(color: Colors.white),
-                        selected: controller.list[1],
+                        selected: controllerChip.list[1],
                         onSelected: (value) {
-                          controller.setChip(selectedIndex: 1);
-                          showList = maleList;
+                          controllerChip.setChip(selectedIndex: 1);
+                          _peopleListController.showList = _peopleListController.maleList;
                           navigator?.pop();
                           setState(() {});
                         }),
@@ -275,13 +344,13 @@ class _PeopleListState extends State<PeopleList>
                     'Female',
                     FilterChip(
                         label: Text('Female'),
-                        selected: controller.list[2],
+                        selected: controllerChip.list[2],
                         selectedColor: Colors.red.shade900,
                         backgroundColor: Colors.grey,
                         labelStyle: TextStyle(color: Colors.white),
                         onSelected: (value) {
-                          controller.setChip(selectedIndex: 2);
-                          showList = femaleList;
+                          controllerChip.setChip(selectedIndex: 2);
+                          _peopleListController.showList = _peopleListController.femaleList;
                           navigator?.pop();
                           setState(() {});
                         }),
@@ -325,12 +394,12 @@ class _PeopleListState extends State<PeopleList>
 
           if (jsonDecode(response.body)['status'] == 1) {
             var usersData = jsonDecode(response.body)['data'] as List;
-            showList.clear();
-            maleList.clear();
-            femaleList.clear();
-            otherList.clear();
-            showList.addAll(usersData.map((user) => UserModel.fromJson(user)));
-            getMaleFemaleList();
+            _peopleListController.showList.clear();
+            _peopleListController.maleList.clear();
+            _peopleListController.femaleList.clear();
+            _peopleListController.otherList.clear();
+            _peopleListController.showList.addAll(usersData.map((user) => UserModel.fromJson(user)));
+            _peopleListController.getMaleFemaleList();
             setState(() {});
             log('User data found $query ${jsonDecode(response.body)['data'][0]['id']}');
             // String id = jsonDecode(response.body)['data'][0]['id'].toString();

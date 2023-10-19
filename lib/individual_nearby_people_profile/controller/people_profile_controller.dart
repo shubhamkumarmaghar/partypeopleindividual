@@ -86,6 +86,7 @@ class PeopleProfileController extends GetxController {
   }
 
 
+
   Future<void> PeopleViewed(String id) async {
     final response = await http.post(
       Uri.parse(

@@ -549,7 +549,11 @@ class ChatScreenController  extends GetxController{
         final data = value.docs;
         final list =
             data.map((e) => Message.fromJson(e.data())).toList();
-        if (list.isNotEmpty) _message = list[0];
+        if (list.isNotEmpty)
+          {_message = list[0];}
+        else{
+          log('last message empty');
+        }
         String? lastMessage = _message?.msg;
         log('last message $lastMessage');
         await APIService.lastMessage(id, lastMessage! ,'${_message?.sent}',chatCount);

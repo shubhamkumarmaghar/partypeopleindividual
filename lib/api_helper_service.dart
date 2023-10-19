@@ -193,7 +193,6 @@ class APIService extends GetxController {
   Future individualNearbyPeoples(Map<String, String> cityid ,header) async {
     final response = await _post(API.individualPeoplesNearby, cityid,
         headers: {'x-access-token': header});
-
     return response;
   }
 

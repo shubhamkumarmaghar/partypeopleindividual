@@ -218,7 +218,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                 GestureDetector(
                                   onTap: () {
                                     logCustomEvent(eventName: chatInitiateEvent, parameters: {'toUser':data.name ,});
-                                    Get.to(ChatScreenView(),
+                                    Get.to(ChatScreenView(id: controller.userId.toString()),
                                         arguments: controller.userId);
                                     //?.then((value) => APIService.lastMessage(controller.userId, GetStorage().read('last_message')));
                                     // Get.to(peopleList());

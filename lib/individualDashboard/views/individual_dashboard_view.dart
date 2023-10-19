@@ -484,8 +484,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                               ),
                             ),
                             individualDashboardController
-                                .noUserFoundController.value ==
-                                'null'
+                                .noUserFoundController.value == 'null'
                                 ? Container(
                               /*    decoration: const BoxDecoration(
                             gradient: LinearGradient(

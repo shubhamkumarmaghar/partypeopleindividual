@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
@@ -41,16 +42,20 @@ class _ChatScreenViewState extends State<ChatScreenView> {
   bool _showEmoji = false, _isUploading = false;
   bool me = false;
   String indiUsername = '';
-
+void getChatUserData() async{
+  await chatScreenController.getChatUserData(id: widget.id.toString());
+  chatCount = int.parse(chatScreenController.getUserModel?.data?.messageCount ??'0');
+  log('conuttt ${chatScreenController.getUserModel?.data?.messageCount}');
+}
   @override
   void initState() {
-    chatScreenController.getChatUserData(id: widget.id.toString());
+    getChatUserData();
     super.initState();
   }
 
   void dispose() {
     log("before last message");
-    chatScreenController.getLastMessageString(usernameID: indiUsername+widget.id.toString(), id: widget.id.toString(),chatCount: chatCount);
+    //chatScreenController.getLastMessageString(usernameID: indiUsername+widget.id.toString(), id: widget.id.toString(),chatCount: chatCount);
     log("after last message");
     super.dispose();
   }
@@ -62,8 +67,6 @@ class _ChatScreenViewState extends State<ChatScreenView> {
           init: ChatScreenController(),
           builder: (controller) {
             indiUsername = controller.getUserModel?.data?.username ?? "";
-            chatCount = int.parse(controller.getUserModel?.data?.messageCount ??'0');
-            log('cont ${controller.getUserModel?.data?.messageCount}');
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: AppBar(
@@ -305,35 +308,37 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                   ),
                 ),
               ),
-              body: Column(
+              body: Stack(children: [
+
+                Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
                     child: StreamBuilder(
                         stream:
-                            controller.getAllMessages(controller.getUserModel),
+                        controller.getAllMessages(controller.getUserModel),
                         builder: (context, snapshot) {
                           switch (snapshot.connectionState) {
-                            //if data is loading
+                          //if data is loading
                             case ConnectionState.waiting:
                             case ConnectionState.none:
                               return const SizedBox();
 
-                            //if some or all data is loaded then show it
+                          //if some or all data is loaded then show it
                             case ConnectionState.active:
                             case ConnectionState.done:
                               final data = snapshot.data?.docs;
                               listmessage = data
-                                      ?.map((e) => Message.fromJson(e.data()))
-                                      .toList() ??
+                                  ?.map((e) => Message.fromJson(e.data()))
+                                  .toList() ??
                                   [];
                               if (listmessage.isNotEmpty) {
                                 return ListView.builder(
                                     reverse: true,
                                     itemCount: listmessage.length,
                                     padding:
-                                        EdgeInsets.only(top: Get.height * .01),
+                                    EdgeInsets.only(top: Get.height * .01),
                                     physics: const BouncingScrollPhysics(),
                                     itemBuilder: (context, index) {
                                       if (listmessage[index].fromId ==
@@ -348,37 +353,37 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                       return GestureDetector(
                                         onLongPress:(){
                                           FocusScope.of(context).requestFocus(FocusNode());
-                                        showDialog(
+                                          showDialog(
                                             context: context,
                                             builder: (context) {
                                               return SimpleDialog(
-                                              shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(16.0),
-                                              bottomRight: Radius.circular(16.0),
-                                              topLeft: Radius.circular(16.0),
-                                              topRight: Radius.circular(16.0),
-                                              ),
-                                              ),
-                                              backgroundColor: Color(0xff7e160a),
-                                              elevation: 5,
-                                               // title:Center(child: const Text('Delete Message',style: TextStyle(color: Colors.black),)),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.only(
+                                                    bottomLeft: Radius.circular(16.0),
+                                                    bottomRight: Radius.circular(16.0),
+                                                    topLeft: Radius.circular(16.0),
+                                                    topRight: Radius.circular(16.0),
+                                                  ),
+                                                ),
+                                                backgroundColor: Color(0xff7e160a),
+                                                elevation: 5,
+                                                // title:Center(child: const Text('Delete Message',style: TextStyle(color: Colors.black),)),
                                                 children: <Widget>[
                                                   SimpleDialogOption(
                                                     onPressed: () async{
                                                       await controller.deleteMessage(listmessage[index]);
                                                       Navigator.pop(context);
-                                                      },
+                                                    },
                                                     child:Center(child: const Text('Delete',style: TextStyle(fontSize: 18))),
                                                   ),
                                                   /*  SimpleDialogOption(
-              onPressed: () { },
-              child: const Text('Option 2'),
+                onPressed: () { },
+                child: const Text('Option 2'),
             ),*/
                                                 ],
                                               );
                                             },
-                                        );
+                                          );
 
 
 
@@ -388,18 +393,18 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                                           message: listmessage[index],
                                           text: listmessage[index].msg,
                                           isMe:
-                                              data.fromId == controller.myUsername+controller.myUserId
-                                                  ? true
-                                                  : false,
+                                          data.fromId == controller.myUsername+controller.myUserId
+                                              ? true
+                                              : false,
                                           time: data.sent,
                                           pic: controller.getUserModel?.data
-                                                  ?.profilePicture ??
+                                              ?.profilePicture ??
                                               '',
                                           updateReadMessage: () =>
                                               controller.updateMessageReadStatus(
                                                   listmessage[index]),
-                                         // myChatId: controller.myUsername+controller.myUserId,
-                                         // deletemsg:()=> controller.deleteMessage(listmessage[index]),
+                                          // myChatId: controller.myUsername+controller.myUserId,
+                                          // deletemsg:()=> controller.deleteMessage(listmessage[index]),
                                         ):Container(),
                                       );
                                     });
@@ -439,10 +444,10 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         /*  IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.add),
-                        color: Color(0xFFf7aa07),
-                      ),*/
+                          onPressed: () {},
+                          icon: Icon(Icons.add),
+                          color: Color(0xFFf7aa07),
+                        ),*/
                         Expanded(
                           child: TextField(
                             onChanged: (value) {},
@@ -462,125 +467,131 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                         GestureDetector(
                           onTap: () async{
                             if(controller.getUserModel?.data?.fromBlockStatus=='0') {
-                           if(gender =='Male')
-                           {
-                             if (plan_expire == 'Yes') {
-                             if (newUser == '1' || chatCount <= 4)
-                             {
-                               if (_textController.text.isNotEmpty) {
-                                 if (controller.getUserModel?.data
-                                     ?.chatUserAvailableStatus == '0') {
-                                   if (controller.userId != '0') {
-                                     controller.addChatUserToList();
-                                   }
-                                 } //FocusScope.of(context).requestFocus(FocusNode());
-                                String msg = _textController.text;
-                                 _textController.text = '';
-                                 await controller.sendMessage(
-                                     controller.getUserModel,
-                                     msg,
-                                     Type.text);
-                                 chatCount++;
-                                  log('message_count $chatCount');
-                                 await chatScreenController
-                                     .getLastMessageString(
-                                     usernameID: indiUsername +
-                                         widget.id.toString(),
-                                     id: widget.id.toString(),
-                                     chatCount: chatCount
-                                 );
-                               }
-                               else {
-                                 Get.snackbar(
-                                     'Message', 'Please type here first');
-                               }
-                             }
-                             else {
-                             /*  if (me == true) {
-                                 if (_textController.text.isNotEmpty) {
-                                   if (controller.getUserModel?.data
-                                       ?.chatUserAvailableStatus == '0') {
-                                     if (controller.userId != '0') {
-                                       controller.addChatUserToList();
+                              if(gender =='Male')
+                              {
+                                if (plan_expire == 'Yes') {
+                                 // if (newUser == '1' || chatCount <= 2)
+                                    if (chatCount <= 2)
+                                  {
+
+                                    if (_textController.text.isNotEmpty) {
+                                      chatCount++;
+                                      log('chat count $chatCount');
+                                      if (controller.getUserModel?.data
+                                          ?.chatUserAvailableStatus == '0') {
+                                        if (controller.userId != '0') {
+                                          controller.addChatUserToList();
+                                        }
+                                      } //FocusScope.of(context).requestFocus(FocusNode());
+                                      String msg = _textController.text;
+                                      _textController.text = '';
+                                      await controller.sendMessage(
+                                          controller.getUserModel,
+                                          msg,
+                                          Type.text);
+
+                                      await chatScreenController
+                                          .getLastMessageString(
+                                          usernameID: indiUsername +
+                                              widget.id.toString(),
+                                          id: widget.id.toString(), chatCount: chatCount
+                                      );
+                                    }
+                                    else {
+                                      Get.snackbar(
+                                          'Message', 'Please type here first');
+                                    }
+                                  }
+                                  else {
+                                    /*  if (me == true) {
+                                   if (_textController.text.isNotEmpty) {
+                                     if (controller.getUserModel?.data
+                                         ?.chatUserAvailableStatus == '0') {
+                                       if (controller.userId != '0') {
+                                         controller.addChatUserToList();
+                                       }
                                      }
+                                     String msg = _textController.text;
+                                     _textController.text = '';
+                                  await controller.sendMessage(
+                                         controller.getUserModel,
+                                         msg,
+                                         Type.text);
+
+                                     await chatScreenController
+                                         .getLastMessageString(
+                                         usernameID: indiUsername +
+                                             widget.id.toString(),
+                                         id: widget.id.toString());
+                                   } else {
+                                     Get.snackbar(
+                                         'Message', 'Please type here first');
                                    }
-                                   String msg = _textController.text;
-                                   _textController.text = '';
-                                await controller.sendMessage(
-                                       controller.getUserModel,
-                                       msg,
-                                       Type.text);
+                                 } else {*/
+                                    Fluttertoast.showToast(
+                                      msg: "You have used your free messages. Please subscribe to get unlimited messages.",toastLength: Toast.LENGTH_LONG
+                                    );
+                                    Get.to(SubscriptionView(
+                                      subText: 'Get Subscription & get Unlimited chats and explore party mates . ',
+                                      iconText:
+                                      'https://assets-v2.lottiefiles.com/a/5e232bde-1182-11ee-b778-8f3af2eeaa9d/4xBFTBXlHa.json',
+                                    ))?.then((value) =>
+                                        chatScreenController.getChatUserData(id: widget.id.toString()));
+                                    //  }
+                                  }
+                                }
+                                else {
+                                  if (_textController.text.isNotEmpty) {
+                                    if (controller.getUserModel?.data
+                                        ?.chatUserAvailableStatus == '0') {
+                                      if (controller.userId != '0') {
+                                        controller.addChatUserToList();
+                                      }
+                                    }
+                                    String msg = _textController.text;
+                                    _textController.text = '';
+                                    // FocusScope.of(context).requestFocus(FocusNode());
+                                    await controller.sendMessage(
+                                        controller.getUserModel,
+                                        msg, Type.text);
 
-                                   await chatScreenController
-                                       .getLastMessageString(
-                                       usernameID: indiUsername +
-                                           widget.id.toString(),
-                                       id: widget.id.toString());
-                                 } else {
-                                   Get.snackbar(
-                                       'Message', 'Please type here first');
-                                 }
-                               } else {*/
-                                 Get.to(SubscriptionView(
-                                   subText: 'Get Subscription & get Unlimited chats and explore party mates . ',
-                                   iconText:
-                                   'https://assets-v2.lottiefiles.com/a/5e232bde-1182-11ee-b778-8f3af2eeaa9d/4xBFTBXlHa.json',
-                                 ));
-                             //  }
-                             }
-                           }
-                           else {
-                             if (_textController.text.isNotEmpty) {
-                               if (controller.getUserModel?.data
-                                   ?.chatUserAvailableStatus == '0') {
-                                 if (controller.userId != '0') {
-                                   controller.addChatUserToList();
-                                 }
-                               }
-                               String msg = _textController.text;
-                               _textController.text = '';
-                              // FocusScope.of(context).requestFocus(FocusNode());
-                               await controller.sendMessage(
-                                   controller.getUserModel,
-                                  msg, Type.text);
-
-                               await chatScreenController
-                                   .getLastMessageString(
-                                   usernameID: indiUsername +
-                                       widget.id.toString(),
-                                   id: widget.id.toString());
-                             }
-                             else {
-                               Get.snackbar(
-                                   'Message', 'Please type here first');
-                             }
-                           }
-                           }
-                           else{
-                             if (_textController.text.isNotEmpty) {
-                               if (controller.getUserModel?.data
-                                   ?.chatUserAvailableStatus == '0') {
-                                 if (controller.userId != '0') {
-                                   controller.addChatUserToList();
-                                 }
-                               }
-                               String msg = _textController.text;
-                               _textController.text = '';
-                              // FocusScope.of(context).requestFocus(FocusNode());
-                           await controller.sendMessage(
-                                   controller.getUserModel,
-                                   msg, Type.text);
-                               await chatScreenController
-                                   .getLastMessageString(
-                                   usernameID: indiUsername +
-                                       widget.id.toString(),
-                                   id: widget.id.toString());
-                             }
-                             else {
-                               Get.snackbar(
-                                   'Message', 'Please type here first');
-                             }
-                           }
+                                    await chatScreenController
+                                        .getLastMessageString(
+                                        usernameID: indiUsername +
+                                            widget.id.toString(),
+                                        id: widget.id.toString());
+                                  }
+                                  else {
+                                    Get.snackbar(
+                                        'Message', 'Please type here first');
+                                  }
+                                }
+                              }
+                              else{
+                                if (_textController.text.isNotEmpty) {
+                                  if (controller.getUserModel?.data
+                                      ?.chatUserAvailableStatus == '0') {
+                                    if (controller.userId != '0') {
+                                      controller.addChatUserToList();
+                                    }
+                                  }
+                                  String msg = _textController.text;
+                                  _textController.text = '';
+                                  // FocusScope.of(context).requestFocus(FocusNode());
+                                  await controller.sendMessage(
+                                      controller.getUserModel,
+                                      msg, Type.text);
+                                  await chatScreenController
+                                      .getLastMessageString(
+                                      usernameID: indiUsername +
+                                          widget.id.toString(),
+                                      id: widget.id.toString());
+                                }
+                                else {
+                                  Get.snackbar(
+                                      'Message', 'Please type here first');
+                                }
+                              }
                             }
                             else{
                               Get.snackbar('Sorry!!!', ' You can not send message to this person');
@@ -590,14 +601,14 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                             width: Get.width * 0.2,
                             color: Colors.transparent,
                             /*  decoration:
-                          BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(16.sp),
-                              bottomLeft: Radius.circular(16.sp),
-                              bottomRight: Radius.circular(16.sp),
-                            ),
-                            color: Color(0xFF3f02ca),
-                          ),*/
+                            BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16.sp),
+                                bottomLeft: Radius.circular(16.sp),
+                                bottomRight: Radius.circular(16.sp),
+                              ),
+                              color: Color(0xFF3f02ca),
+                            ),*/
                             child: Icon(
                               Icons.send,
                               color: Colors.white,
@@ -610,6 +621,17 @@ class _ChatScreenViewState extends State<ChatScreenView> {
                     ),
                   ),
                 ],
+              ),
+                Positioned(child:
+                Container(margin: EdgeInsets.all(10,),
+                    padding: EdgeInsets.all(10,),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+                        color: Colors.orange),
+                    child: Text('*Please do not share any personal and banking information. Meet anyone at your own risk.',textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 10),))
+                ),
+               ],
+             
+                
               ),
             );
           }),

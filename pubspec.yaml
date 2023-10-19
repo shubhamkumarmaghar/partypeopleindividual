@@ -79,6 +79,11 @@ dependencies:
   html: ^0.15.4
   flutter_widget_from_html: ^0.9.1
   firebase_analytics: ^10.5.0
+  pull_to_refresh:
+  in_app_update: ^4.2.2
+  fluttertoast: ^8.2.2
+
+
 
 
 dev_dependencies:
