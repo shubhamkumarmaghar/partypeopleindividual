@@ -42,15 +42,15 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: GetBuilder<OrganizationController>(
-          init: OrganizationController(userId: widget.organizationData),
-          builder: (controller) {
-            data = organizationController.organizationDetailsModel?.data![0];
-            return controller.isApiLoading == false
-                ? SingleChildScrollView(
-                    child: SafeArea(
+    return SafeArea(
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          body: GetBuilder<OrganizationController>(
+            init: OrganizationController(userId: widget.organizationData),
+            builder: (controller) {
+              data = organizationController.organizationDetailsModel?.data![0];
+              return controller.isApiLoading == false
+                  ? SingleChildScrollView(
                       child: Column(
                         children: [
                           Stack(
@@ -76,7 +76,8 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                   clipBehavior:Clip.hardEdge ,
                                   margin: EdgeInsets.only(bottom: 25),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),),
+                                   // borderRadius: BorderRadius.circular(15.0),
+                                  ),
                                   child:
                                   CarouselSlider(items: organizationController.profileImages.map((element) =>
                                       CustomImageSlider(partyPhotos: element.image, imageStatus: element.status) ).toList(),
@@ -134,22 +135,22 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                 ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 15,
-                          ),
+
                           SingleChildScrollView(
                             child: Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 28.0),
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(mainAxisAlignment: MainAxisAlignment.start
                                   ,
-                                  children: [
+                                  children: [   data?.bluetickStatus == '1' ? Icon(Icons.verified,color: Colors.blue,size: 18,):Container(),
+                                    SizedBox(width: 5,),
                                     customIconText(icon: CupertinoIcons.person_alt_circle, text: "${data?.name}"),
-                                      data?.bluetickStatus == '1' ? Icon(Icons.verified,color: Colors.blue,):Container()
+
+
 
                                   ],
                                   ),
@@ -228,7 +229,7 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                   ),
                                   /*   ListView.builder(
                               itemCount : controller.listOfAmenities.length,
-            itemBuilder: (context ,index)
+              itemBuilder: (context ,index)
                           {
 
                             return Chip(label: controller.listOfAmenities[index].)
@@ -268,26 +269,31 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                           ),
                         ],
                       ),
-                    ),
-                  )
-                : Center(child: CircularProgressIndicator());
-          },
-        ));
+                    )
+                  : Center(child: CircularProgressIndicator());
+            },
+          )),
+    );
   }
 
   Widget customIconText({required IconData icon , required String text}){
     return Row(children: [
       Icon(icon,color: Colors.grey,),
       SizedBox(width: 5,),
-      Text(
-        text
-            .capitalizeFirst!,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.black,
-          // letterSpacing: 1.01,
-          fontSize: 13.sp,
-          fontWeight: FontWeight.normal,
+      Container(width: Get.width*0.5,
+        alignment: Alignment.centerLeft,
+        child: Text(
+          text
+              .capitalizeFirst!,
+          maxLines: 2,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            // letterSpacing: 1.01,
+            fontSize: 12.sp,
+
+            fontWeight: FontWeight.normal,
+          ),
         ),
       ),
     ],);

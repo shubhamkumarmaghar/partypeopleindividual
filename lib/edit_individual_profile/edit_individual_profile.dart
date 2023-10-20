@@ -243,12 +243,12 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                       individualProfileController
                                           .photoStatusApproval.value !=
                                           '1' ?
-                                      Blur(
+                                      Blur(borderRadius: BorderRadius.circular(55),
                                               blur: individualProfileController
                                                   .photoStatusApproval.value !=
                                                   '1' ?5:0,
                                               child: CircleAvatar(
-                                                //backgroundColor: Colors.transparent,
+                                                backgroundColor: Colors.transparent,
                                                 radius: 55,
                                                 backgroundImage: individualProfileController.profileImage.path.isNotEmpty
                                                     ? FileImage(individualProfileController.profileImage)
@@ -265,7 +265,8 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                                         as ImageProvider<
                                                             Object>?,
                                               ),
-                                            ): CircleAvatar(
+                                            ):
+                                      CircleAvatar(
                                         radius: 55,
                                         backgroundColor: Colors.transparent,
                                         backgroundImage:individualProfileController.profileImage.path.isNotEmpty
