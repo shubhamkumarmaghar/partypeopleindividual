@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/otp/controller/otp_controller.dart';
@@ -53,10 +56,18 @@ class LoginController extends GetxController {
       return;
     }
 
-    await FirebaseMessaging.instance.getToken().then((token) {
-      print("token is $token");
-      deviceToken.value = token!;
-    });
+    if(Platform.isIOS) {
+      await FirebaseMessaging.instance.getAPNSToken().then((token) {
+        print("token is $token");
+        deviceToken.value = token!;
+      });
+    }
+    else{
+      await FirebaseMessaging.instance.getToken().then((token) {
+        print("token is $token");
+        deviceToken.value = token!;
+      });
+    }
 
     try {
       User? response = await apiService.login(

@@ -48,9 +48,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   HttpOverrides.global =  MyHttpOverrides();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]);
-  await Firebase.initializeApp();
+
   analytics = await FirebaseAnalytics.instance;
   FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
   await GetStorage.init();
@@ -71,20 +72,29 @@ void main() async {
     priority: Priority.high,
     playSound: true,
   );
+
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     print('User granted permission');
   } else {
     print('User declined permission');
   }
-  messaging.getToken().then((value) {
-    print('Firebase Messaging Token : ${value}');
-  });
+
+  if(Platform.isIOS) {
+    final token = await messaging.getAPNSToken();
+    log('token IOS :::: ${token}');
+  }
+  else{
+    await messaging.getToken().then((value) {
+      print('Firebase Messaging Token : ${value}');
+    });
+  }
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     print(message.messageType);
     print(message.data);
     NotificationDetails platformSpec =
-    NotificationDetails(android: androidSpec);
+    NotificationDetails(android: androidSpec,
+    );
     await pluginInstance.show(
         0, message.data['title'], message.data['body'], platformSpec);
   });
