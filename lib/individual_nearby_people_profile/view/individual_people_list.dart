@@ -125,7 +125,6 @@ class _PeopleListState extends State<PeopleList>
                                   controller: _textEditingController,
                                   onChanged: (value) {
                                     log('value $value');
-
                                     _onSearchChanged(value);
                                   },
                                   style: TextStyle(color: Colors.grey),
@@ -158,10 +157,10 @@ class _PeopleListState extends State<PeopleList>
                             enablePullDown: true,
                             enablePullUp: true,
                             onRefresh: () {
-                              controllerPeople.getPaginatedNearbyPeoples(isRefresh: true);
+                              controllerPeople.getPaginatedNearbyPeoples(isRefresh: true ,type: controllerPeople.gender);
                             },
                             onLoading:  () {
-                              controllerPeople.getPaginatedNearbyPeoples(isRefresh: false);
+                              controllerPeople.getPaginatedNearbyPeoples(isRefresh: false,type:controllerPeople.gender);
                             },
                             child: GridView.builder(
                               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -318,7 +317,8 @@ class _PeopleListState extends State<PeopleList>
                         labelStyle: TextStyle(color: Colors.white),
                         onSelected: (value) {
                           controllerChip.setChip(selectedIndex: 0);
-                          _peopleListController.showList = _peopleListController.paginatedUsersList;
+                          _peopleListController.getPaginatedNearbyPeoples(isRefresh: true ,type: 0);
+                         // _peopleListController.showList = _peopleListController.paginatedUsersList;
                           navigator?.pop();
                           setState(() {});
                         }),
@@ -334,7 +334,8 @@ class _PeopleListState extends State<PeopleList>
                         selected: controllerChip.list[1],
                         onSelected: (value) {
                           controllerChip.setChip(selectedIndex: 1);
-                          _peopleListController.showList = _peopleListController.maleList;
+                          _peopleListController.getPaginatedNearbyPeoples(isRefresh: true ,type: 1);
+                        //  _peopleListController.showList = _peopleListController.maleList;
                           navigator?.pop();
                           setState(() {});
                         }),
@@ -350,7 +351,8 @@ class _PeopleListState extends State<PeopleList>
                         labelStyle: TextStyle(color: Colors.white),
                         onSelected: (value) {
                           controllerChip.setChip(selectedIndex: 2);
-                          _peopleListController.showList = _peopleListController.femaleList;
+                          _peopleListController.getPaginatedNearbyPeoples(isRefresh: true ,type: 2);
+                         // _peopleListController.showList = _peopleListController.femaleList;
                           navigator?.pop();
                           setState(() {});
                         }),

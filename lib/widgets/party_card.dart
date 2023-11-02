@@ -224,13 +224,12 @@ class _PartyCardState extends State<PartyCard>
                 ),
                 child: Stack(
                   children: [
-
                     Container(
                       margin: EdgeInsets.symmetric(
                         horizontal: Get.width * 0.03,
                         vertical: Get.width * 0.02,
                       ),
-                      width: MediaQuery.of(context).size.width * 0.82,
+                      width: MediaQuery.of(context).size.width * 0.85,
                       height: MediaQuery.of(context).size.width * 0.65,
                       decoration: BoxDecoration(
                         image: DecorationImage(

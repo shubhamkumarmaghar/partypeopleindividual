@@ -149,9 +149,6 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                   children: [   data?.bluetickStatus == '1' ? Icon(Icons.verified,color: Colors.blue,size: 18,):Container(),
                                     SizedBox(width: 5,),
                                     customIconText(icon: CupertinoIcons.person_alt_circle, text: "${data?.name}"),
-
-
-
                                   ],
                                   ),
 

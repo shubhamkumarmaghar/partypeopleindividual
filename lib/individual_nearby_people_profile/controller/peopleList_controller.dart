@@ -12,6 +12,7 @@ class PeopleListController extends GetxController
   RxString noUserFoundPaginationController = "null".obs;
   int start=0;
   int end=0;
+  int gender = 0;
   APIService apiService = Get.find();
   IndividualProfileController individualProfileController = Get.find();
   final refreshController= RefreshController(initialRefresh: true);
@@ -31,7 +32,11 @@ class PeopleListController extends GetxController
   }
 
   void getMaleFemaleList() {
+    maleList.clear();
+    femaleList.clear();
+    otherList.clear();
   paginatedUsersList.forEach((element) {
+
       if (element.gender == 'Male') {
         maleList.add(element);
       } else if (element.gender == 'Female') {
@@ -43,7 +48,8 @@ class PeopleListController extends GetxController
   }
 
 
-  Future<void> getPaginatedNearbyPeoples({required bool isRefresh}) async {
+  Future<void> getPaginatedNearbyPeoples({required bool isRefresh , required int type}) async {
+    gender=type;
     String state = GetStorage().read('state');
     String city = '';
     if (individualProfileController.activeCity.value.toString().isNotEmpty) {
@@ -56,7 +62,7 @@ class PeopleListController extends GetxController
       end = 15;
       paginatedUsersList.clear();
     }else {
-      start = start + end;
+      start =  end;
       end = end + 15;
     }
     try {
@@ -65,7 +71,9 @@ class PeopleListController extends GetxController
           'city_id': city.toLowerCase(),
           'state': state.toLowerCase(),
           'start':start.toString(),
-          'end':end.toString()
+          'end':end.toString(),
+          if(type==1) 'gender':'male',
+          if(type==2)'gender':'female',
         },
         '${GetStorage().read('token')}',
       );
@@ -74,6 +82,7 @@ class PeopleListController extends GetxController
         var usersData = response['data'] as List;
 
         paginatedUsersList.addAll(usersData.map((user) => UserModel.fromJson(user)));
+        showList.clear();
         showList = [...paginatedUsersList];
         getMaleFemaleList();
 
@@ -124,7 +133,7 @@ class PeopleListController extends GetxController
   }
 
   Future<void> getDataForDashboard() async {
-    await getPaginatedNearbyPeoples(isRefresh: false);
+    await getPaginatedNearbyPeoples(isRefresh: false , type: 0);
     //getMaleFemaleList();
   }
 

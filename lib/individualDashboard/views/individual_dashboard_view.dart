@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:adobe_xd/adobe_xd.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,7 @@ import '../../individualDrawer/views/individual_drawer_view.dart';
 import '../../individual_nearby_people_profile/view/individual_people_list.dart';
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
 import '../../individual_profile_screen/individual_profile_screen_view.dart';
+import '../../join_party_details/view/join_party_details.dart';
 import '../../widgets/party_card.dart';
 import 'nearby_people_profile.dart';
 
@@ -41,7 +43,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
   late StreamSubscription subscription;
   bool isDeviceConnected = false;
   bool isAlertSet = false;
-
+  ScrollController _scrollController1 = ScrollController();
 
   getConnectivity() =>
       subscription = Connectivity().onConnectivityChanged.listen(
@@ -59,10 +61,13 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
      individualDashboardController.getDataForDashboard();
    return await Future.delayed( Duration(milliseconds:200));
   }
+
+
   @override
   void initState() {
     getConnectivity();
      _selectedIndex = 1;
+
      _animationController =
          AnimationController( duration: Duration(milliseconds: 450), vsync: this);
     super.initState();
@@ -112,17 +117,21 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                 Expanded(
                   child: Obx(() {
 
-                    return Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "          " + individualProfileController.username.value,
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                    return GestureDetector(onTap: (){
+                     // Get.to(JoinPartyDetails());
+                    },
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "          " + individualProfileController.username.value,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                     );
                   }),
@@ -614,7 +623,25 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                 bottom: Get.width * 0.05,
                               ),
                               height: Get.width * 0.65,
-                              child: ListView.builder(
+                              child: CarouselSlider(items:
+                              individualDashboardController
+                                  .jsonPartyPopularData.map((element) =>
+                                  PartyCard(party: element, onBack: () =>(){}, partyType: 'popular')
+                              ).toList(),
+                                options: CarouselOptions(
+                                    height: Get.width * 0.65,
+                                    // enlargeCenterPage: true,
+
+                                    autoPlay: true,
+                                    //aspectRatio: 16 / 9,
+                                    autoPlayCurve: Curves.linear,
+                                    enableInfiniteScroll: true,
+                                    autoPlayAnimationDuration: Duration(milliseconds: 800),
+                                    viewportFraction: 1
+                                ),),
+                            /*  ListView.builder(
+                                shrinkWrap: true,
+                                controller:  _scrollController1,
                                 scrollDirection: Axis.horizontal,
                                 itemCount: individualDashboardController
                                     .lengthOfPopularParties.value,
@@ -628,8 +655,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                               .getDataForDashboard(),*/
                                       partyType: 'popular');
                                 },
-                              ),
+                              ),*/
                             ),
+
                             Padding(
                               padding: EdgeInsets.only(
                                 left: MediaQuery.of(context).size.width * 0.05,

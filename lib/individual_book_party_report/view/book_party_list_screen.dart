@@ -4,12 +4,12 @@ import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:intl/intl.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:sizer/sizer.dart';
-import '../controllers/transction_info_controller.dart';
-import '../model/transction_info_model.dart';
+import '../controllers/book_party_list_controller.dart';
+import '../model/book_party_list_model.dart';
 
 
-class TransctionReportedUsersView extends StatelessWidget {
-  const TransctionReportedUsersView({Key? key}) : super(key: key);
+class BookPartyListView extends StatelessWidget {
+  const BookPartyListView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +72,9 @@ class TransctionReportedUsersView extends StatelessWidget {
                 ),
               ),
             ),  */
-            Container(height: Get.height*0.88,child:
-            GetBuilder<TransctionReportController>(
-              init: TransctionReportController(),
+            Container(height: Get.height*0.85,child:
+            GetBuilder<BookPartyListController>(
+              init: BookPartyListController(),
               builder: (controller) {
                 return TransactionReport(dataList:controller.transctionModel.data ??[]);
               },),),
@@ -204,7 +204,7 @@ class TransactionReport extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Subscription Type : ${data.name} ',
+                            'Welcome Party : ${data.name} ',
                             style:
                             TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w400),
                           ),
@@ -214,7 +214,7 @@ class TransactionReport extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                'Validity Start : ',
+                                'Venue Name :     Organization Name',
                                 style: TextStyle(fontSize: 10.sp),
                               ),
                              Text(
@@ -230,7 +230,7 @@ class TransactionReport extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                'Validity End: ',
+                                'Party Time :         01/11/2023 , 10.00 PM',
                                 style: TextStyle(fontSize: 10.sp),
                               ),
                               Text(dateConvert(data.planEndDate)
@@ -246,7 +246,7 @@ class TransactionReport extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                'Transaction ID  :  ',
+                                'Party Address :     137/b , c5 , KeshavPuram , Delhi , 311010',
                                 style: TextStyle(fontSize: 10.sp),
                               ),
                               Text(
