@@ -33,7 +33,6 @@ class IndividualDashboardView extends StatefulWidget {
 
 class _IndividualDashboardViewState extends State<IndividualDashboardView> with SingleTickerProviderStateMixin{
 
-
   IndividualDashboardController individualDashboardController =
   Get.put(IndividualDashboardController());
   IndividualProfileController individualProfileController = Get.find();
@@ -229,7 +228,6 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                           '1') {
                         Get.to(ChatList());
                       } else {
-
                         Get.snackbar('Sorry!',
                             'Your account is not approved , please wait until it got approved');
                       }
@@ -432,7 +430,8 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                       } else {
                                         Get.snackbar('Sorry!', 'Coming Soon');
                                       }
-                                    } else {
+                                    }
+                                    else {
                                       Get.snackbar('Sorry!',
                                           'Your account is not approved , please wait until it got approved');
                                     }

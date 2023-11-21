@@ -121,7 +121,8 @@ class _PeopleListState extends State<PeopleList>
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10.sp)),
-                                child: TextField(
+                                child: TextField(enabled: _peopleListController.individualDashboardController
+                                    .approvalStatus.value != '1' ? false :true,
                                   controller: _textEditingController,
                                   onChanged: (value) {
                                     log('value $value');
@@ -173,8 +174,17 @@ class _PeopleListState extends State<PeopleList>
                               itemBuilder: (BuildContext context, int index) {
                                 return GestureDetector(
                                   onTap: () {
-                                    Get.to(() => IndividualPeopleProfile(),
-                                        arguments: controllerPeople.showList[index].id);
+                                    if (_peopleListController.individualDashboardController
+                                        .approvalStatus.value ==
+                                        '1') {
+                                      Get.to(() => IndividualPeopleProfile(),
+                                          arguments: controllerPeople.showList[index].id);
+                                    }
+                                    else {
+                                      Get.snackbar('Sorry!',
+                                          'Your account is not approved , please wait until it got approved');
+                                    }
+
                                   },
                                   child: NearByPeopleProfile(
                                     imageURL: controllerPeople.showList[index].profilePicture,

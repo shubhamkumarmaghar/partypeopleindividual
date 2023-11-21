@@ -127,7 +127,8 @@ void getChatUserData() async{
                               ),
                               child: Padding(
                                 padding: EdgeInsets.all(Get.width * 0.006),
-                                child: ClipRRect(
+                                child:
+                                ClipRRect(
                                   borderRadius: BorderRadius.all(Radius.circular(50)),
                                   child: controller.getUserModel?.data?.profilePicApprovalStatus != '1' ?
                                   Blur(blur: 2.5,
@@ -399,10 +400,12 @@ void getChatUserData() async{
                                           time: data.sent,
                                           pic: controller.getUserModel?.data
                                               ?.profilePicture ??
-                                              '',
+                                              'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fman.png?alt=media&token=53575bc0-dd6c-404e-b8f3-52eaf8fe0fe4',
+                                          profilePicApprovalStatus: controller.getUserModel?.data?.profilePicApprovalStatus??'1',
                                           updateReadMessage: () =>
                                               controller.updateMessageReadStatus(
                                                   listmessage[index]),
+
                                           // myChatId: controller.myUsername+controller.myUserId,
                                           // deletemsg:()=> controller.deleteMessage(listmessage[index]),
                                         ):Container(),
@@ -647,6 +650,7 @@ class MessageContainer extends StatelessWidget {
       required this.message,
       required this.pic,
       required this.updateReadMessage,
+        required this.profilePicApprovalStatus,
       //required this.myChatId,
     //  required this.deletemsg
    });
@@ -656,6 +660,7 @@ class MessageContainer extends StatelessWidget {
   bool isMe;
   String time;
   String pic;
+  String profilePicApprovalStatus;
   Function updateReadMessage;
  // String myChatId;
 //  Function deletemsg;
@@ -757,10 +762,44 @@ class MessageContainer extends StatelessWidget {
                                     ),*/
                                 child: Padding(
                                   padding: EdgeInsets.all(Get.width * 0.006),
-                                  child: CircleAvatar(
+                                  child:ClipRRect(
+                                    borderRadius: BorderRadius.all(Radius.circular(50)),
+                                    child: profilePicApprovalStatus != '1' ?
+                                    Blur(blur: 2.5,
+                                      child:
+                                      CachedNetworkImage(
+                                        placeholder: (context, url) => Shimmer.fromColors(
+                                          baseColor: Colors.grey.shade200,
+                                          highlightColor: Colors.grey.shade400,
+                                          period: const Duration(milliseconds: 1500),
+                                          child: Container(
+                                            height: Get.height * 0.35,
+                                            color: Color(0xff7AB02A),
+                                          ),
+                                        ),
+                                        imageUrl: pic,
+                                        width: Get.width,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ): CachedNetworkImage(
+                                      placeholder: (context, url) => Shimmer.fromColors(
+                                        baseColor: Colors.grey.shade200,
+                                        highlightColor: Colors.grey.shade400,
+                                        period: const Duration(milliseconds: 1500),
+                                        child: Container(
+                                          height: Get.height * 0.35,
+                                          color: Color(0xff7AB02A),
+                                        ),
+                                      ),
+                                      imageUrl: pic,
+                                      width: Get.width,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                 /* CircleAvatar(
                                     // backgroundImage: NetworkImage(imageURL),
                                     backgroundImage: NetworkImage(pic),
-                                  ),
+                                  ),*/
                                 ),
                               ),
                               SizedBox(

@@ -24,6 +24,7 @@ class APIService extends GetxController {
             'username': username,
             'user_type':'Individual',
             'device_token': deviceToken,
+           // 'type':'1'
 
           });
 
@@ -293,6 +294,52 @@ class APIService extends GetxController {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Failed to update Party onging data');
+    }
+  }
+
+
+  /// on booking party
+  static Future<String> onBookingParty(String id,String noOfPeople) async {
+    String pj_id='';
+    final response = await http.post(
+      Uri.parse(API.onBookingParty),
+      headers: <String, String>{
+        'x-access-token': '${GetStorage().read('token')}',
+      },
+      body: <String, String>{
+        'party_id': id,
+        'no_of_people':noOfPeople
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response,
+      // then parse the JSON.
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
+      if (jsonResponse['status'] == 1) {
+        if(jsonResponse['message'].toString().contains('already') ){
+          Get.snackbar('Welcome',
+              'You have already booked ticket for join party');
+         // pj_id= jsonResponse['pj_id'];
+          return pj_id;
+        }
+        else {
+          print('Party Booking successfully');
+          Get.snackbar('Welcome',
+              'You have successfully booked ticket to join party');
+          pj_id = jsonResponse['pj_id'];
+          return pj_id;
+        }
+      }
+      else {
+        print('Failed to book Party ');
+        return pj_id;
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to book Party ');
     }
   }
 

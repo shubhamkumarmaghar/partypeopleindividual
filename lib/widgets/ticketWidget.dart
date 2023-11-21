@@ -6,13 +6,14 @@ class TicketWidget extends StatefulWidget {
     required this.width,
     required this.height,
     required this.child,
+    required this.pic,
     this.padding,
     this.margin,
     this.color = Colors.white,
     this.isCornerRounded = false,
     this.shadow,
   }) : super(key: key);
-
+  final String pic;
   final double width;
   final double height;
   final Widget child;
@@ -56,7 +57,7 @@ class _TicketWidgetState extends State<TicketWidget> {
         Positioned(
           left: widget.width*0.35,
           child: CircleAvatar(radius: 50,
-              backgroundImage: NetworkImage('https://politics.princeton.edu/sites/default/files/styles/square/public/images/p-5.jpeg?h=87dbaab7&itok=ub6jAL5Q')),
+              backgroundImage: NetworkImage(widget.pic)),
         ),
 
       ], ),
@@ -73,8 +74,10 @@ class TicketClipper extends CustomClipper<Path> {
     path.lineTo(size.width, size.height);
     path.lineTo(size.width, 0.0);
 
-    path.addOval(Rect.fromCircle(center: Offset(0.0, size.height / 2), radius: 20.0));
-    path.addOval(Rect.fromCircle(center: Offset(size.width, size.height / 2), radius: 20.0));
+    path.addOval(
+        Rect.fromCircle(center: Offset(0.0, size.height / 2), radius: 20.0));
+    path.addOval(Rect.fromCircle(
+        center: Offset(size.width, size.height / 2), radius: 20.0));
 
     return path;
   }

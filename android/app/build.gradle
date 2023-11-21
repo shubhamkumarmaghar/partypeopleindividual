@@ -95,6 +95,7 @@ dependencies {
     implementation files('libs/peb-lib-android-x.aar')
     implementation("com.google.firebase:firebase-analytics")
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation 'com.facebook.android:facebook-core:[4,5)'
     implementation 'com.facebook.android:facebook-marketing:[4,5)'
     implementation 'com.facebook.android:facebook-android-sdk:latest.release'
     implementation 'androidx.appcompat:appcompat:1.6.1'

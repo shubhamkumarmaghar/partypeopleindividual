@@ -4,6 +4,7 @@ import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:intl/intl.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:sizer/sizer.dart';
+import '../../join_party_details/view/join_party_details.dart';
 import '../controllers/book_party_list_controller.dart';
 import '../model/book_party_list_model.dart';
 
@@ -34,7 +35,7 @@ class BookPartyListView extends StatelessWidget {
         titleSpacing: 0,
         elevation: 0,
         title: Text(
-          'Transaction History',
+          'Party Booking History',
           style: TextStyle(color: Colors.white, fontSize: 12.sp),
         ),
         flexibleSpace: Container(
@@ -76,7 +77,7 @@ class BookPartyListView extends StatelessWidget {
             GetBuilder<BookPartyListController>(
               init: BookPartyListController(),
               builder: (controller) {
-                return TransactionReport(dataList:controller.transctionModel.data ??[]);
+                return TransactionReport(dataList:controller.partyBookingModel.data ??[]);
               },),),
            /* Expanded(
               child: ListView.builder(
@@ -147,201 +148,148 @@ class TransactionReport extends StatelessWidget {
       itemCount: dataList.length,
       itemBuilder: (context, index) {
         Data data = dataList[index];
-        return  Container(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          margin: EdgeInsets.symmetric(
-            vertical: 10,horizontal: 10
-          ),
-          decoration: BoxDecoration(
-           color: data.paymentStatus =='1' ?Colors.red.shade900:Colors.grey.shade500,
-            border: Border.all(color: data.paymentStatus =='1' ?Colors.red.shade900:Colors.grey.shade500),
-            borderRadius: BorderRadius.circular(2.w),
-          /*    gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                /*    Color(0xfff2d5f7),
-                    Color(0xffe6acef),
-                    Color(0xffd982e6),
-                    Color(0xffcd59de),
-                    Color(0xffc02fd6),*/
+        return  GestureDetector(
+          onTap: (){
+             Get.to(JoinPartyDetails(),arguments: data.pjId);
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            margin: EdgeInsets.symmetric(
+              vertical: 10,horizontal: 10
+            ),
+            decoration: BoxDecoration(
+            // color: data.paymentStatus =='1' ?Colors.red.shade900:Colors.grey.shade500,
+          //    border: Border.all(color: data.paymentStatus =='1' ?Colors.red.shade900:Colors.grey.shade500),
+              borderRadius: BorderRadius.circular(2.w),
+            /*    gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  /*    Color(0xfff2d5f7),
+                      Color(0xffe6acef),
+                      Color(0xffd982e6),
+                      Color(0xffcd59de),
+                      Color(0xffc02fd6),*/
 
-                /*  Color(0xffd1dce6),
-                    Color(0xffa2bace),
-                    Color(0xff7497b5),
-                    Color(0xff45759d),
-                    Color(0xff175284),
+                  /*  Color(0xffd1dce6),
+                      Color(0xffa2bace),
+                      Color(0xff7497b5),
+                      Color(0xff45759d),
+                      Color(0xff175284),
 */
-                Color(0xffee216c),
-                Color(0xffee216c),
-                Color(0xffee216c),
-                Color(0xfff14d89),
-                Color(0xfff57aa7),
-                Color(0xfff8a6c4),
-                Color(0xfffcd3e2),
-                // Colors.red.shade800,
-                //Colors.red.shade700,
-                //Colors.red.shade500,
-                // Colors.red.shade400,
-                // Colors.red.shade300,
-                // Colors.black45,
-                //Colors.black54,
-                //   Colors.black87,
-                // Colors.black,
-              ]
+                  Color(0xffee216c),
+                  Color(0xffee216c),
+                  Color(0xffee216c),
+                  Color(0xfff14d89),
+                  Color(0xfff57aa7),
+                  Color(0xfff8a6c4),
+                  Color(0xfffcd3e2),
+                  // Colors.red.shade800,
+                  //Colors.red.shade700,
+                  //Colors.red.shade500,
+                  // Colors.red.shade400,
+                  // Colors.red.shade300,
+                  // Colors.black45,
+                  //Colors.black54,
+                  //   Colors.black87,
+                  // Colors.black,
+                ]
 
-          ),
+            ),
 */
-          ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: SizedBox(
+            ),
+            child: FittedBox(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  // color: Colors.white,
+                  boxShadow: [
+                    const BoxShadow(
+                      color: Color.fromARGB(255, 110, 19, 9),
+                      blurRadius: 10,
+                      spreadRadius: 3,
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(margin: EdgeInsets.only(left: 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            'Welcome Party : ${data.name} ',
-                            style:
-                            TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w400),
-                          ),
-                          SizedBox(
-                            height: 1.h,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                'Venue Name :     Organization Name',
-                                style: TextStyle(fontSize: 10.sp),
+                          Container(
+                            width: Get.width*0.5,
+                            child: Text(
+                              '${data.title.toString().capitalizeFirst}',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: const Color(0xFF3c0103),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.0.sp,
                               ),
-                             Text(
-                               dateConvert(data.planStartDate),
-                                style: TextStyle(
-                                    fontSize: 11.sp, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          Container(
+                            width: Get.width*0.5,
+                            child: Text(
+                              '${data.organizationName}',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: const Color(0xFF3c0103),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10.0.sp,
                               ),
-                            ],
+                            ),
                           ),
-                          SizedBox(
-                            height: 1.h,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                'Party Time :         01/11/2023 , 10.00 PM',
-                                style: TextStyle(fontSize: 10.sp),
-                              ),
-                              Text(dateConvert(data.planEndDate)
-                                ,
-                                style: TextStyle(
-                                    fontSize: 11.sp, fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 1.h,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                'Party Address :     137/b , c5 , KeshavPuram , Delhi , 311010',
-                                style: TextStyle(fontSize: 10.sp),
-                              ),
-                              Text(
-                                '${data.orderId}',
-                                style: TextStyle(
-                                    fontSize: 11.sp, fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 1.h,
-                          ),
+                          const SizedBox(height: 10.0),
 
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_month,
+                                color: const Color(0xFF3c0103),
+                                size: 13.sp,
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.015,
+                              ),
+                              Text(
+                                "${data.startDate} ${data.startTime}\n${data.endDate} ${data.endTime}",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 9.sp,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 5.0),
                         ],
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 25.w,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                     /*   Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.currency_rupee,
-                              size: 2.5.h,
-                            ),
-                            Flexible(
-                              child: Text(
-                                'Plan',
-                                style: TextStyle(
-                                    fontSize: 14.sp, fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 2.w,
-                            ),
-                          ],
-                        ),*/
-                       SizedBox(
-                          height: 0.5.h,
+                    const SizedBox(width: 10.0),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.25,
+                      height: MediaQuery.of(context).size.height * 0.12,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
                         ),
-                        Text(
-                          '₹${data.amount}',
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w500,
-                              color: data.paymentStatus == '3'
-                                  ? Colors.red
-                                  : Colors.green),
+                        child: Image.network(
+                          '${data.coverPhoto}',
+                          fit: BoxFit.fill,
                         ),
-                        Image.network(data.paymentStatus =='3' ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Ffailed.png?alt=media&token=ceec68a2-0ff4-4bd1-9d7c-93f9e3bb07be':
-                        'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fsuccess.png?alt=media&token=67e29649-23fd-4b2d-8961-bffeaeda5495',
-                            height: Get.width*0.2,
-                            width: Get.width*0.2,)
-                      ],
-                    ),
-                  ),
-                ],
+                      ),
+                    )
+                  ],
+                ),
               ),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Visibility(
-                    visible:data.paymentStatus !='3' ,
-                    child: Container(child: Row(children: [Text(
-                      'Current Status : ',
-                      style: TextStyle(fontSize: 10.sp,color: Colors.white),
-                    ),
-                      Text( data.planExpiredStatus == 'No' ?'Active' : 'Expired',
-                        style: TextStyle(
-                            fontSize: 11.sp, fontWeight: FontWeight.w500),
-                      ),]),),
-                  ),
-                  Container(
-                    child: Row(
-                      children: [
-                        Text(
-                          'Payment Status : ',
-                          style: TextStyle(fontSize: 10.sp),
-                        ),
-                        Text( data.paymentStatus =='1' ? 'Success' :'Failed',
-                          style: TextStyle(
-                              fontSize: 11.sp, fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                ],
-              ),
-
-            ],
+            ),
           ),
         );
        /*   Column(
@@ -443,5 +391,6 @@ String dateConvert(String date){
     }
    return dateTime;
 }
+
 
 }

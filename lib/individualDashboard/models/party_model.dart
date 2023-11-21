@@ -50,6 +50,12 @@ class Party {
   final String pincode;
   String? imageB;
   String? imageC;
+  String? discountType;
+  String?  discountAmount;
+  String?  billMaxAmount;
+  String?  discountDescription;
+
+
 
   Party({
     required this.id,
@@ -103,6 +109,10 @@ class Party {
     required this.pincode,
     this.imageB,
     this.imageC,
+    this.discountDescription,
+    this.discountAmount,
+    this.billMaxAmount,
+    this.discountType
   });
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -156,6 +166,10 @@ class Party {
     data['pincode'] =this.pincode;
     data['image_b'] = this.imageB;
     data['image_c'] = this.imageC;
+    data['discount_type'] = this.discountType;
+    data['discount_amount'] = this.discountAmount;
+    data['bill_amount'] = this.billMaxAmount;
+    data['discount_description'] = this.discountDescription;
 
     if (this.partyAmenities != null) {
       data['party_amenitie'] =
@@ -221,6 +235,11 @@ class Party {
       pincode: json['pincode'],
       imageB : json['image_b'],
       imageC : json['image_c'],
+      discountAmount: json['discount_amount'],
+      discountDescription: json['discount_description'],
+      discountType: json['discount_type'],
+      billMaxAmount: json['bill_amount'],
+
       partyAmenities: partyAmenitieList,
 
     );

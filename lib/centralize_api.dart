@@ -42,6 +42,8 @@ class API {
 
   static const String ongoingParty = '$baseUrl/party/party_ongoing';
 
+  static const String onBookingParty = '$baseUrl/party/user_join_party';
+
   static const String partyLike = '$baseUrl/party/party_like';
 
   static const String partyView = '$baseUrl/party/party_view';
@@ -75,6 +77,8 @@ class API {
   static const String getSubscriptionPlan = '$baseUrl/subscription/subscription_plan';
 
   static const String getTransactionHistory = '$baseUrl/Subscription/transaction_history';
+
+  static const String getPartyBookingHistory = '$baseUrl/party/get_user_join_party';
 
   static const String userSubscriptionPurchase = '$baseUrl/subscription/user_subscriptions_purchase';
 

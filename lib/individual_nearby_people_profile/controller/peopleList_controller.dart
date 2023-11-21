@@ -3,6 +3,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../api_helper_service.dart';
+import '../../individualDashboard/controllers/individual_dashboard_controller.dart';
 import '../../individualDashboard/models/usermodel.dart';
 import '../../individual_profile/controller/individual_profile_controller.dart';
 
@@ -14,7 +15,10 @@ class PeopleListController extends GetxController
   int end=0;
   int gender = 0;
   APIService apiService = Get.find();
+  IndividualDashboardController individualDashboardController =
+  Get.put(IndividualDashboardController());
   IndividualProfileController individualProfileController = Get.find();
+
   final refreshController= RefreshController(initialRefresh: true);
   RxBool showAnimatedHeart = false.obs;
   List<UserModel> maleList = [];
@@ -83,8 +87,12 @@ class PeopleListController extends GetxController
 
         paginatedUsersList.addAll(usersData.map((user) => UserModel.fromJson(user)));
         showList.clear();
+        maleList.clear();
+        femaleList.clear();
+        otherList.clear();
         showList = [...paginatedUsersList];
-        getMaleFemaleList();
+
+        //getMaleFemaleList();
 
         if(usersData.isEmpty){
           start = start-15;

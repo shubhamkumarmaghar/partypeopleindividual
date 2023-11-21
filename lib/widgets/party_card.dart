@@ -343,7 +343,8 @@ class _PartyCardState extends State<PartyCard>
                                     MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Column(
+                                  ratingView(rating: '${widget.party.orgRatings}'),
+                                 /* Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
@@ -370,7 +371,7 @@ class _PartyCardState extends State<PartyCard>
                                         spacing: .5,
                                       ),
                                     ],
-                                  ),
+                                  ),*/
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
@@ -639,7 +640,8 @@ class _PartyCardState extends State<PartyCard>
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                  Column(
+                                 /*
+                               Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
@@ -666,7 +668,8 @@ class _PartyCardState extends State<PartyCard>
                                         spacing: .5,
                                       ),
                                     ],
-                                  ),
+                                  ),*/
+                                  ratingView(rating: '${widget.party.orgRatings}'),
                                 ],
                               ),
                             ),
@@ -701,7 +704,21 @@ class _PartyCardState extends State<PartyCard>
                             },
                           ),
                         ), */
-
+                        Positioned(
+                          top: 8.0,
+                          left: 8.0,
+                          child: Container(
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: Colors.orange,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text(
+                              widget.party.discountType=='1' ? '${widget.party.discountAmount}% off':'Flat ${widget.party.discountAmount} off',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
                         Positioned(
                             top: 8.0,
                             right: 8.0,
@@ -748,5 +765,28 @@ class _PartyCardState extends State<PartyCard>
                   )),
             ),
           );
+  }
+
+  Widget ratingView({required String rating}){
+    return Container(
+      width: Get.width*0.13,
+      padding: EdgeInsets.all(2),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6),color: Colors.green.shade800),
+      child: Row(mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            ' $rating ',
+            style: TextStyle(
+             // fontFamily: 'Poppins',
+              fontSize: 11.sp,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Icon(CupertinoIcons.star_fill,size: 13,color: Colors.white,)
+        ],
+      ),
+    );
   }
 }
