@@ -17,6 +17,7 @@ import 'package:partypeopleindividual/individual_profile_screen/profilephotoview
 import 'package:partypeopleindividual/widgets/custom_loading_indicator.dart';
 
 import 'package:partypeopleindividual/widgets/individual_amenities.dart';
+import 'package:partypeopleindividual/widgets/pop_up_dialogs.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../centralize_api.dart';
@@ -301,6 +302,12 @@ class _IndividualProfileScreenViewState
                                       //       ),
                                     ),
                                   ),
+                                ),
+                                Positioned(
+                                  top: Get.height*0.05,
+                                  left: Get.width*0.03,
+                                  child:
+                                  getBackBarButton(context: context),
                                 ),
                                 // Edit Button for Profile Photo
                                 /*   Positioned(

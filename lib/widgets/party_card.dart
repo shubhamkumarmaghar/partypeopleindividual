@@ -34,12 +34,11 @@ class PartyCard extends StatefulWidget {
   State<PartyCard> createState() => _PartyCardState();
 }
 
-class _PartyCardState extends State<PartyCard>
-    with SingleTickerProviderStateMixin {
+class _PartyCardState extends State<PartyCard> with SingleTickerProviderStateMixin {
   late ConfettiController _controllerBottomCenter;
-  String approvalStatus = GetStorage().read('approval_status')??'0';
-  String newUser = GetStorage().read('newUser')??'0';
-  String plan = GetStorage().read('plan_plan_expiry')??'Yes';
+  String approvalStatus = GetStorage().read('approval_status') ?? '0';
+  String newUser = GetStorage().read('newUser') ?? '0';
+  String plan = GetStorage().read('plan_plan_expiry') ?? 'Yes';
   bool isFavorited = false;
   late AnimationController _controller;
   late Animation _colorAnimation;
@@ -48,12 +47,9 @@ class _PartyCardState extends State<PartyCard>
 
   @override
   void initState() {
-    _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    _colorAnimation =
-        ColorTween(begin: Colors.white, end: Colors.red).animate(_controller);
-    _controllerBottomCenter =
-        ConfettiController(duration: const Duration(seconds: 10));
+    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _colorAnimation = ColorTween(begin: Colors.white, end: Colors.red).animate(_controller);
+    _controllerBottomCenter = ConfettiController(duration: const Duration(seconds: 10));
     _sizeAnimation = TweenSequence(
       <TweenSequenceItem<double>>[
         TweenSequenceItem<double>(
@@ -208,11 +204,9 @@ class _PartyCardState extends State<PartyCard>
             onTap: () {
               viewParty(widget.party.id);
               if (approvalStatus == '1') {
-                Get.to(PartyPreviewScreen(party: widget.party))
-                    ?.then((value) => widget.onBack());
+                Get.to(PartyPreviewScreen(party: widget.party))?.then((value) => widget.onBack());
               } else {
-                Get.snackbar('Sorry!',
-                    'Your account is not approved , please wait until it got approved');
+                Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
               }
             },
             child: Padding(
@@ -280,18 +274,15 @@ class _PartyCardState extends State<PartyCard>
                               ),
                               Expanded(
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
-                                    Icon(Icons.visibility,
-                                        size: 16, color: Colors.red),
+                                    Icon(Icons.visibility, size: 16, color: Colors.red),
                                     Text(
                                       "${widget.party.view} Views",
                                       style: TextStyle(color: Colors.black),
                                     ),
                                     SizedBox(width: 10),
-                                    Icon(Icons.thumb_up,
-                                        size: 16, color: Colors.red),
+                                    Icon(Icons.thumb_up, size: 16, color: Colors.red),
                                     Text(
                                       "${widget.party.like} Likes",
                                       style: TextStyle(color: Colors.black),
@@ -308,8 +299,7 @@ class _PartyCardState extends State<PartyCard>
                               ),
                               widget.partyType == 'upcoming'
                                   ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           "Party Starts",
@@ -327,8 +317,7 @@ class _PartyCardState extends State<PartyCard>
                                       child: Container(
                                         width: Get.width * 0.81,
                                         child: Text(
-                                          widget.party.description
-                                              .capitalizeFirst!,
+                                          widget.party.description.capitalizeFirst!,
                                           style: TextStyle(
                                             fontFamily: 'Poppins',
                                             fontSize: 10.sp,
@@ -340,13 +329,11 @@ class _PartyCardState extends State<PartyCard>
                                       ),
                                     ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "Rating (${widget.party.orgRatings} /5.0)",
@@ -360,8 +347,7 @@ class _PartyCardState extends State<PartyCard>
                                       SmoothStarRating(
                                         allowHalfRating: false,
                                         starCount: 5,
-                                        rating: double.parse(
-                                            widget.party.orgRatings),
+                                        rating: double.parse(widget.party.orgRatings),
                                         size: 18.0,
                                         color: Colors.orange,
                                         borderColor: Colors.orange,
@@ -377,8 +363,8 @@ class _PartyCardState extends State<PartyCard>
                                     children: [
                                       Text(
                                         DateFormat('d MMMM, yyyy').format(
-                                              DateTime
-                                                  .fromMillisecondsSinceEpoch(int.parse(widget.party.startDate) * 1000) ,
+                                              DateTime.fromMillisecondsSinceEpoch(
+                                                  int.parse(widget.party.startDate) * 1000),
                                             ) +
                                             '  ${widget.party.startTime}',
                                         style: TextStyle(
@@ -391,9 +377,7 @@ class _PartyCardState extends State<PartyCard>
                                       GestureDetector(
                                         onTap: () async {
                                           _controllerBottomCenter.play();
-                                          var data =
-                                              await APIService.ongoingParty(
-                                                  widget.party.id);
+                                          var data = await APIService.ongoingParty(widget.party.id);
 
                                           if (data == true) {
                                             setState(() {});
@@ -403,39 +387,25 @@ class _PartyCardState extends State<PartyCard>
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
+                                            borderRadius: BorderRadius.circular(20),
                                             color: Colors.orange,
                                           ),
                                           width: Get.width * 0.2,
                                           height: Get.height * 0.031,
                                           padding: EdgeInsets.all(5),
                                           child: FittedBox(
-                                            child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                      CupertinoIcons
-                                                          .add_circled,
-                                                      color: Colors.white),
-                                                  widget.party.ongoingStatus ==
-                                                          0
-                                                      ? Text(
-                                                          join,
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 16),
-                                                        )
-                                                      : Text(
-                                                          "Joined",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 16),
-                                                        )
-                                                ]),
+                                            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                              Icon(CupertinoIcons.add_circled, color: Colors.white),
+                                              widget.party.ongoingStatus == 0
+                                                  ? Text(
+                                                      join,
+                                                      style: TextStyle(color: Colors.white, fontSize: 16),
+                                                    )
+                                                  : Text(
+                                                      "Joined",
+                                                      style: TextStyle(color: Colors.white, fontSize: 16),
+                                                    )
+                                            ]),
                                           ),
                                         ),
                                       )
@@ -469,13 +439,9 @@ class _PartyCardState extends State<PartyCard>
                         child: widget.party.likeStatus == 0
                             ? IconButton(
                                 icon: Icon(
-                                  isFavorite
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
+                                  isFavorite ? Icons.favorite : Icons.favorite_border,
                                 ),
-                                color: isFavorite
-                                    ? Colors.red.shade900
-                                    : Colors.white,
+                                color: isFavorite ? Colors.red.shade900 : Colors.white,
                                 onPressed: () {
                                   if (approvalStatus == '1') {
                                     setState(() {
@@ -485,16 +451,14 @@ class _PartyCardState extends State<PartyCard>
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          isFavorite
-                                              ? 'Added to Wishlist'
-                                              : 'Removed from Wishlist',
+                                          isFavorite ? 'Added to Wishlist' : 'Removed from Wishlist',
                                         ),
                                         duration: Duration(seconds: 2),
                                       ),
                                     );
-                                  }
-                                  else{
-                                    Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
+                                  } else {
+                                    Get.snackbar(
+                                        'Sorry!', 'Your account is not approved , please wait until it got approved');
                                   }
                                 },
                               )
@@ -504,10 +468,11 @@ class _PartyCardState extends State<PartyCard>
                                 onPressed: () {},
                               )),
                     Positioned(
-                      child: Align(alignment: Alignment.topCenter,
+                      child: Align(
+                        alignment: Alignment.topCenter,
                         child: ConfettiWidget(
                           confettiController: _controllerBottomCenter,
-                          blastDirection: -pi/2 ,
+                          blastDirection: -pi / 2,
                           emissionFrequency: 0.01,
                           numberOfParticles: 20,
                           maxBlastForce: 100,
@@ -527,11 +492,9 @@ class _PartyCardState extends State<PartyCard>
               viewParty(widget.party.id);
               if (approvalStatus == '1') {
                 //  Get.to(PartyPreview(party: widget.party))?.then((value) => widget.onBack());
-                Get.to(PartyPreviewScreen(party: widget.party))
-                    ?.then((value) => widget.onBack());
+                Get.to(PartyPreviewScreen(party: widget.party))?.then((value) => widget.onBack());
               } else {
-                Get.snackbar('Sorry!',
-                    'Your account is not approved , please wait until it got approved');
+                Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
               }
             },
             child: FittedBox(
@@ -562,16 +525,14 @@ class _PartyCardState extends State<PartyCard>
                             alignment: Alignment.bottomCenter,
                             child: Container(
                               width: double.maxFinite,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10.sp, vertical: 5.sp),
+                              padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 5.sp),
                               height: Get.width * 0.35,
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.8),
                                 borderRadius: BorderRadius.circular(10.sp),
                               ),
                               child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   FittedBox(
@@ -598,8 +559,7 @@ class _PartyCardState extends State<PartyCard>
                                   ),
                                   widget.partyType == 'upcoming'
                                       ? Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               "Party Starts",
@@ -611,14 +571,9 @@ class _PartyCardState extends State<PartyCard>
                                               ),
                                             ),
                                             Text(
-                                              DateFormat('EEEE, MMMM d, yyyy')
-                                                      .format(
-                                                    DateTime
-                                                        .fromMillisecondsSinceEpoch(
-                                                            int.parse(widget
-                                                                    .party
-                                                                    .startDate!) *
-                                                                1000),
+                                              DateFormat('EEEE, MMMM d, yyyy').format(
+                                                    DateTime.fromMillisecondsSinceEpoch(
+                                                        int.parse(widget.party.startDate!) * 1000),
                                                   ) +
                                                   '  ${widget.party.startTime}',
                                               style: TextStyle(
@@ -630,8 +585,7 @@ class _PartyCardState extends State<PartyCard>
                                           ],
                                         )
                                       : Text(
-                                          widget.party.description
-                                              .capitalizeFirst!,
+                                          widget.party.description.capitalizeFirst!,
                                           maxLines: 3,
                                           style: TextStyle(
                                             fontFamily: 'Poppins',
@@ -641,8 +595,7 @@ class _PartyCardState extends State<PartyCard>
                                           ),
                                         ),
                                   Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "Rating (${widget.party.orgRatings} /5.0)",
@@ -656,8 +609,7 @@ class _PartyCardState extends State<PartyCard>
                                       SmoothStarRating(
                                         allowHalfRating: false,
                                         starCount: 5,
-                                        rating: double.parse(
-                                            widget.party.orgRatings),
+                                        rating: double.parse(widget.party.orgRatings),
                                         size: 18.0,
                                         color: Colors.orange,
                                         borderColor: Colors.orange,
@@ -709,35 +661,28 @@ class _PartyCardState extends State<PartyCard>
                             child: widget.party.likeStatus == 0
                                 ? IconButton(
                                     icon: Icon(
-                                      isFavorite
-                                          ? Icons.favorite
-                                          : Icons.favorite_border,
+                                      isFavorite ? Icons.favorite : Icons.favorite_border,
                                     ),
-                                    color: isFavorite
-                                        ? Colors.red.shade900
-                                        : Colors.white,
+                                    color: isFavorite ? Colors.red.shade900 : Colors.white,
                                     onPressed: () {
-                                      if(approvalStatus =='1'){
-                                      setState(() {
-                                        isFavorite = true;
-                                      });
-                                      wishlistParty(widget.party.id);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            isFavorite
-                                                ? 'Added to Wishlist'
-                                                : 'Removed from Wishlist',
+                                      if (approvalStatus == '1') {
+                                        setState(() {
+                                          isFavorite = true;
+                                        });
+                                        wishlistParty(widget.party.id);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              isFavorite ? 'Added to Wishlist' : 'Removed from Wishlist',
+                                            ),
+                                            duration: Duration(seconds: 2),
                                           ),
-                                          duration: Duration(seconds: 2),
-                                        ),
-                                      );
+                                        );
+                                      } else {
+                                        Get.snackbar('Sorry!',
+                                            'Your account is not approved , please wait until it got approved');
                                       }
-                                      else{
-                                        Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
-                                      }
-                                      },
+                                    },
                                   )
                                 : IconButton(
                                     icon: Icon(Icons.favorite),

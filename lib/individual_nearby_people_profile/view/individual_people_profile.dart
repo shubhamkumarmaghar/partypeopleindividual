@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:partypeopleindividual/widgets/pop_up_dialogs.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../api_helper_service.dart';
@@ -186,6 +187,10 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                   ),
                             ),
                           ),
+                          Positioned(
+                            top: getScreenHeight*0.055,
+                              left: getScreenWidth*0.03,
+                              child: getBackBarButton(context: context)),
                         ],
                       ),
 

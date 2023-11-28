@@ -15,6 +15,7 @@ import '../../individualDashboard/controllers/individual_dashboard_controller.da
 import '../../individualDashboard/models/usermodel.dart';
 import '../../individualDashboard/views/nearby_people_profile.dart';
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
+import '../../widgets/pop_up_dialogs.dart';
 import '../controller/peopleList_controller.dart';
 
 class PeopleList extends StatefulWidget {
@@ -26,14 +27,12 @@ class PeopleList extends StatefulWidget {
   State<PeopleList> createState() => _PeopleListState();
 }
 
-class _PeopleListState extends State<PeopleList>
-    with SingleTickerProviderStateMixin {
+class _PeopleListState extends State<PeopleList> with SingleTickerProviderStateMixin {
   PeopleListController _peopleListController = Get.put(PeopleListController());
 
   int choiceIndex = 0;
   Timer? _debounce;
   TextEditingController? _textEditingController;
-
 
   @override
   void initState() {
@@ -43,12 +42,12 @@ class _PeopleListState extends State<PeopleList>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GetBuilder<PeopleListController>(
-        builder: (controllerPeople) {
-          return Container(
-            width: Get.width,
-            height: Get.height,
+    return Scaffold(body: GetBuilder<PeopleListController>(
+      builder: (controllerPeople) {
+        return GestureDetector(
+          child: Container(
+            width: getScreenWidth,
+            height: getScreenHeight,
             decoration: const BoxDecoration(
               gradient: RadialGradient(
                 center: Alignment(1, -0.45),
@@ -77,29 +76,34 @@ class _PeopleListState extends State<PeopleList>
                     SliverPadding(padding: EdgeInsets.only(top: 10)),
                     SliverToBoxAdapter(
                       child: Container(
-                        height: Get.height * 0.1,
+                        height: getScreenHeight * 0.1,
                         margin: EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            homePageText("People List",
-                                top: 30, color: Colors.white),
-                            GestureDetector(
-                              onTap: ()async {
-                                log(_peopleListController.paginatedUsersList.length.toString());
-                                await bottomMaleFemale(context);
-                              },
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 35),
-                                    child: Image.asset("assets/images/filter.png",
-                                        alignment: Alignment.centerLeft),
-                                  ),
-                                  homePageText("   Filter",
-                                      top: 30, color: Colors.white),
-                                ],
+                            Container(
+                              margin: EdgeInsets.only(top: getScreenHeight * 0.04, left: getScreenWidth * 0.13),
+                              child: Text(
+                                "People List",
+                                style: TextStyle(color: Colors.white, fontSize: 15.sp, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(top: getScreenHeight * 0.04),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  log(_peopleListController.paginatedUsersList.length.toString());
+                                  await bottomMaleFemale(context);
+                                },
+                                child: Row(
+                                  children: [
+                                    Image.asset("assets/images/filter.png", alignment: Alignment.centerLeft),
+                                    Text(
+                                      "   Filter",
+                                      style: TextStyle(color: Colors.white, fontSize: 14.sp),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -108,19 +112,18 @@ class _PeopleListState extends State<PeopleList>
                     ),
                     SliverToBoxAdapter(
                       child: // search bar
-                      Container(
-                        margin: EdgeInsets.only(top: Get.height * 0.02),
+                          Container(
+                        margin: EdgeInsets.only(top: getScreenHeight * 0.02),
                         padding: EdgeInsets.symmetric(
-                          horizontal: Get.width * 0.1,
+                          horizontal: getScreenWidth * 0.1,
                         ),
                         height: MediaQuery.of(context).size.height * 0.05,
                         child: Row(
                           children: [
                             Expanded(
                               child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10.sp)),
+                                decoration:
+                                    BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.sp)),
                                 child: TextField(
                                   controller: _textEditingController,
                                   onChanged: (value) {
@@ -139,10 +142,7 @@ class _PeopleListState extends State<PeopleList>
                                         ),
                                       ),
                                       hintText: 'Search user by username',
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 11.sp,
-                                          fontFamily: 'Poppins')),
+                                      hintStyle: TextStyle(color: Colors.grey, fontSize: 11.sp, fontFamily: 'Poppins')),
                                 ),
                               ),
                             ),
@@ -150,48 +150,51 @@ class _PeopleListState extends State<PeopleList>
                         ),
                       ),
                     ),
-                    SliverPadding(padding: EdgeInsets.only(top: 20,bottom: 10),
-                      sliver: SliverToBoxAdapter(child: Container(
-                        height: Get.height*0.8,
-                        child: SmartRefresher(
-                            controller: controllerPeople.refreshController,
-                            enablePullDown: true,
-                            enablePullUp: true,
-                            onRefresh: () {
-                              controllerPeople.getPaginatedNearbyPeoples(isRefresh: true);
-                            },
-                            onLoading:  () {
-                              controllerPeople.getPaginatedNearbyPeoples(isRefresh: false);
-                            },
-                            child: GridView.builder(
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 10,
-                                crossAxisSpacing: 10,
-                                childAspectRatio: 1.04,
-                              ),
-                              itemCount: controllerPeople.showList.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Get.to(() => IndividualPeopleProfile(),
-                                        arguments: controllerPeople.showList[index].id);
-                                  },
-                                  child: NearByPeopleProfile(
-                                    imageURL: controllerPeople.showList[index].profilePicture,
-                                    name: controllerPeople.showList[index].username,
-                                    id: controllerPeople.showList[index].id,
-                                    likeStatus: controllerPeople.showList[index].likeStatus,
-                                    onlineStatus: controllerPeople.showList[index].onlineStatus,
-                                    privacyStatus: controllerPeople.showList[index].privacyOnline,
-                                    profile_pic_approval_status: controllerPeople.showList[index].profilePicApproval,
-                                  ),
-                                  // personGrid(index: index),
-                                );
+                    SliverPadding(
+                      padding: EdgeInsets.only(top: 20, bottom: 10),
+                      sliver: SliverToBoxAdapter(
+                        child: Container(
+                          height: getScreenHeight * 0.8,
+                          child: SmartRefresher(
+                              controller: controllerPeople.refreshController,
+                              enablePullDown: true,
+                              enablePullUp: true,
+                              onRefresh: () {
+                                controllerPeople.getPaginatedNearbyPeoples(isRefresh: true);
                               },
-                            )
+                              onLoading: () {
+                                controllerPeople.getPaginatedNearbyPeoples(isRefresh: false);
+                              },
+                              child: GridView.builder(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 10,
+                                  crossAxisSpacing: 10,
+                                  childAspectRatio: 1.04,
+                                ),
+                                itemCount: controllerPeople.showList.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Get.to(() => IndividualPeopleProfile(),
+                                          arguments: controllerPeople.showList[index].id);
+                                    },
+                                    child: NearByPeopleProfile(
+                                      imageURL: controllerPeople.showList[index].profilePicture,
+                                      name: controllerPeople.showList[index].username,
+                                      id: controllerPeople.showList[index].id,
+                                      likeStatus: controllerPeople.showList[index].likeStatus,
+                                      onlineStatus: controllerPeople.showList[index].onlineStatus,
+                                      privacyStatus: controllerPeople.showList[index].privacyOnline,
+                                      profile_pic_approval_status: controllerPeople.showList[index].profilePicApproval,
+                                    ),
+                                    // personGrid(index: index),
+                                  );
+                                },
+                              )),
                         ),
-                      ),),),
+                      ),
+                    ),
 
                     // SliverPadding(
                     //     padding:
@@ -267,29 +270,34 @@ class _PeopleListState extends State<PeopleList>
                 GetBuilder<PeopleListController>(
                   builder: (controller) {
                     return Container(
-                        height: Get.height,
-                        width: Get.width,
+                        height: getScreenHeight,
+                        width: getScreenWidth,
                         child: controller.showAnimatedHeart.value
                             ? Align(
-                          alignment: Alignment.center,
-                          child: Lottie.network(
-                            // 'https://assets-v2.lottiefiles.com/a/3073e56e-1175-11ee-911b-eb7a8cb4524d/VyuILSK8xC.json'
-                              'https://assets-v2.lottiefiles.com/a/c543ac62-1150-11ee-953b-235b9373fc03/85XdRr7LQN.json'),
-                        )
+                                alignment: Alignment.center,
+                                child: Lottie.network(
+                                    // 'https://assets-v2.lottiefiles.com/a/3073e56e-1175-11ee-911b-eb7a8cb4524d/VyuILSK8xC.json'
+                                    'https://assets-v2.lottiefiles.com/a/c543ac62-1150-11ee-953b-235b9373fc03/85XdRr7LQN.json'),
+                              )
                             : Container());
                   },
-                )
+                ),
+                Positioned(
+                  top: getScreenHeight * 0.06,
+                  left: getScreenHeight * 0.02,
+                  child: getBackBarButton(context: context),
+                ),
               ],
             ),
-          );
-        },
-      )
-    );
+          ),
+        );
+      },
+    ));
   }
 
-  Widget homePageText(String text, {Color color = Colors.black, int top = 20}) {
+  Widget homePageText(String text, {Color color = Colors.black, double top = 20, double left = 15}) {
     return Container(
-      margin: EdgeInsets.only(top: top.sp),
+      margin: EdgeInsets.only(top: top.sp, left: left.sp),
       child: Text(
         text,
         style: TextStyle(color: color, fontSize: 14.sp, fontFamily: 'Poppins'),
@@ -368,7 +376,7 @@ class _PeopleListState extends State<PeopleList>
       child: Row(children: [
         Icon(icon),
         SizedBox(
-          width: Get.width * 0.05,
+          width: getScreenWidth * 0.05,
         ),
         widget
       ]),
@@ -406,8 +414,7 @@ class _PeopleListState extends State<PeopleList>
             //Get.to(IndividualPeopleProfile(),arguments: id);
           } else {
             print('data not found');
-            Get.snackbar(
-                'Opps!', 'No User Found with this username, try another');
+            Get.snackbar('Opps!', 'No User Found with this username, try another');
           }
         } else {
           // If the server did not return a 200 OK response,
@@ -420,11 +427,7 @@ class _PeopleListState extends State<PeopleList>
 }
 
 class MyFilterChip extends StatefulWidget {
-  const MyFilterChip(
-      {super.key,
-      required this.onChanged,
-      required this.text,
-      required this.status});
+  const MyFilterChip({super.key, required this.onChanged, required this.text, required this.status});
 
   final void Function(bool) onChanged;
   final String text;

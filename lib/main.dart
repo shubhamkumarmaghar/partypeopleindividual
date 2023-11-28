@@ -16,18 +16,12 @@ import 'package:sizer/sizer.dart';
 import 'constants.dart';
 import 'myhttp_overrides.dart';
 
-
-
-
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 
-  FlutterLocalNotificationsPlugin pluginInstance =
-  FlutterLocalNotificationsPlugin();
-  var init = const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon')
-  );
+  FlutterLocalNotificationsPlugin pluginInstance = FlutterLocalNotificationsPlugin();
+  var init = const InitializationSettings(android: AndroidInitializationSettings('@mipmap/launcher_icon'));
   pluginInstance.initialize(init);
   AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
     'ch_id',
@@ -36,12 +30,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     priority: Priority.high,
     playSound: true,
   );
-  NotificationDetails platformSpec =
+  NotificationDetails platformSpec = NotificationDetails(android: androidSpec);
 
-  NotificationDetails(android: androidSpec);
-
-  await pluginInstance.show(
-      0, message.data['title'], message.data['body'], platformSpec);
+  await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec);
   log('A background msg just showed ${message.data}');
   //return;
 }
@@ -49,20 +40,24 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  HttpOverrides.global =  MyHttpOverrides();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]);
+  HttpOverrides.global = MyHttpOverrides();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   analytics = await FirebaseAnalytics.instance;
   FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
   await GetStorage.init();
-  logCustomEvent(eventName: splash, parameters: {'name':'splash'});
+  logCustomEvent(eventName: splash, parameters: {'name': 'splash'});
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  FlutterLocalNotificationsPlugin pluginInstance =
-  FlutterLocalNotificationsPlugin();
-  var init = const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon')
-  );
+  FlutterLocalNotificationsPlugin pluginInstance = FlutterLocalNotificationsPlugin();
+
+  var initializationSettingsIOS = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      onDidReceiveLocalNotification: (int id, String? title, String? body, String? payload) async {});
+  var init = InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/launcher_icon'), iOS: initializationSettingsIOS);
   pluginInstance.initialize(init);
   NotificationSettings settings = await messaging.requestPermission();
   AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
@@ -72,6 +67,8 @@ void main() async {
     priority: Priority.high,
     playSound: true,
   );
+  DarwinNotificationDetails iosSpec =
+      const DarwinNotificationDetails(presentAlert: true, presentSound: true, presentBadge: true);
 
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     print('User granted permission');
@@ -79,11 +76,10 @@ void main() async {
     print('User declined permission');
   }
 
-  if(Platform.isIOS) {
+  if (Platform.isIOS) {
     final token = await messaging.getAPNSToken();
     log('token IOS :::: ${token}');
-  }
-  else{
+  } else {
     await messaging.getToken().then((value) {
       print('Firebase Messaging Token : ${value}');
     });
@@ -92,15 +88,12 @@ void main() async {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     print(message.messageType);
     print(message.data);
-    NotificationDetails platformSpec =
-    NotificationDetails(android: androidSpec,
-    );
-    await pluginInstance.show(
-        0, message.data['title'], message.data['body'], platformSpec);
+    NotificationDetails platformSpec = NotificationDetails(android: androidSpec, iOS: iosSpec);
+
+    await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec);
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
 
   runApp(const MyApp());
 }
@@ -115,7 +108,7 @@ class MyApp extends StatelessWidget {
         initialBinding: IndividualDashboardBinding(),
         debugShowCheckedModeBanner: false,
         title: 'Party People',
-        builder: (context,child){
+        builder: (context, child) {
           return MediaQuery(data: MediaQuery.of(context).copyWith(textScaleFactor: 0.9), child: child ?? Text(''));
         },
         theme: ThemeData.light(useMaterial3: false).copyWith(
@@ -134,9 +127,8 @@ class MyApp extends StatelessWidget {
             ),
             // Add more text styles as needed
           ),
-
         ),
-        home:SplashScreen(),
+        home: SplashScreen(),
         //IndividualDashboardView(),
       );
     });

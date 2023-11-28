@@ -25,7 +25,8 @@ class IndividualDrawerView extends StatefulWidget {
 }
 
 class _IndividualDrawerViewState extends State<IndividualDrawerView> {
-  String approvalStauts = GetStorage().read('approval_status')??'0';
+  String approvalStauts = GetStorage().read('approval_status') ?? '0';
+
   void _launchURL(url) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -43,7 +44,7 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
             flexibleSpace: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-             /*     colors: [
+                  /*     colors: [
                  //   Colors.pink,
                    // Colors.red.shade900
                     Colors.red.shade800,
@@ -51,12 +52,9 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     Color(0xff2e0303),
                   ],*/
 
-        colors: [Colors.pink,
-        Colors.red.shade900],
-                 // begin: Alignment.topCenter,
-                //  end: Alignment.bottomCenter,
-
-
+                  colors: [Colors.pink, Colors.red.shade900],
+                  // begin: Alignment.topCenter,
+                  //  end: Alignment.bottomCenter,
                 ),
               ),
             ),
@@ -100,11 +98,9 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     title: 'Likes and Views',
                     icon: Icons.view_agenda,
                     onTap: () {
-
-                      if(approvalStauts=='1') {
+                      if (approvalStauts == '1') {
                         Get.to(VisitInfoView());
-                      }
-                      else{
+                      } else {
                         Get.snackbar('Sorry!', 'Your account is not approved , please wait until it got approved');
                       }
                     },
@@ -127,13 +123,14 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     title: 'Settings',
                     icon: Icons.settings,
                     onTap: () {
-                      Get.to(Settings(),
+                      Get.to(
+                        Settings(),
                         duration: const Duration(milliseconds: 500),
-                      transition: Transition.leftToRight,
+                        transition: Transition.leftToRight,
                       );
                     },
                   ),
-               /*   CustomOptionWidget(
+                  /*   CustomOptionWidget(
                     title: 'Frequently Asked Questions',
                     icon: Icons.question_answer,
                     onTap: () {
@@ -151,8 +148,7 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     title: 'Privacy Policy',
                     icon: Icons.privacy_tip_outlined,
                     onTap: () async {
-                      final Uri _url =
-                      Uri.parse("https://partypeople.in/privacy_policy_individual_app");
+                      final Uri _url = Uri.parse("https://partypeople.in/privacy_policy_individual_app");
 
                       if (!await launchUrl(_url)) {
                         throw Exception('Could not launch $_url');
@@ -193,20 +189,19 @@ class CustomOptionWidget extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 8.0),
         child: Card(
           elevation: 8.0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
           clipBehavior: Clip.antiAlias,
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                 // Colors.red.shade400,
-                /*  Colors.red.shade800,
+                  // Colors.red.shade400,
+                  /*  Colors.red.shade800,
                   Color(0xff7e160a),
                   Color(0xff2e0303),*/
 
-    Colors.pink,
-    Colors.red.shade900
+                  Colors.pink,
+                  Colors.red.shade900
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -225,10 +220,7 @@ class CustomOptionWidget extends StatelessWidget {
                   child: Text(
                     title,
                     style: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontFamily: 'Poppins'),
+                        fontSize: 13.sp, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Poppins'),
                   ),
                 ),
                 Icon(
@@ -243,6 +235,4 @@ class CustomOptionWidget extends StatelessWidget {
       ),
     );
   }
-
-
 }
