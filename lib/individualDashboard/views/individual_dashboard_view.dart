@@ -221,12 +221,17 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                     _selectedIndex = index;
                     if (_selectedIndex == 2) {
                       //  Get.to(IndividualProfileScreen())?.then((value) =>individualDashboardController.getDataForDashboard());
-                      Get.to(IndividualProfileScreenView());
+                      Get.to(IndividualProfileScreenView(),
+                          duration: const Duration(milliseconds: 300),
+                    transition: Transition.rightToLeft,);
                     }
                     if (_selectedIndex == 0) {
                       if (individualDashboardController.approvalStatus.value ==
                           '1') {
-                        Get.to(ChatList());
+                        Get.to(ChatList(),
+                          duration: const Duration(milliseconds: 300),
+                          transition: Transition.leftToRight,
+                        );
                       } else {
                         Get.snackbar('Sorry!',
                             'Your account is not approved , please wait until it got approved');

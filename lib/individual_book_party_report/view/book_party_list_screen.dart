@@ -77,7 +77,7 @@ class BookPartyListView extends StatelessWidget {
             GetBuilder<BookPartyListController>(
               init: BookPartyListController(),
               builder: (controller) {
-                return TransactionReport(dataList:controller.partyBookingModel.data ??[]);
+                return ticketBookingReport(dataList:controller.partyBookingModel.data ??[]);
               },),),
            /* Expanded(
               child: ListView.builder(
@@ -130,9 +130,9 @@ class BookPartyListView extends StatelessWidget {
   }
 }
 
-class TransactionReport extends StatelessWidget {
+class ticketBookingReport extends StatelessWidget {
   APIService apiService = APIService();
-  TransactionReport({
+  ticketBookingReport({
     required this.dataList,
     //required this.blockUnblock
   });
@@ -258,7 +258,7 @@ class TransactionReport extends StatelessWidget {
                                 width: MediaQuery.of(context).size.width * 0.015,
                               ),
                               Text(
-                                "${data.startDate} ${data.startTime}\n${data.endDate} ${data.endTime}",
+                                "${dateConvert('${data.startDate}')} ${data.startTime}\n${dateConvert('${data.endDate}')} ${data.endTime}",
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: 9.sp,
@@ -292,90 +292,6 @@ class TransactionReport extends StatelessWidget {
             ),
           ),
         );
-       /*   Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(15.sp),
-              child: Row(
-                children: [
-                  Text(
-                     'Transaction Date : ${data.planStartDate}',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: const Color(0xFF434343),
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-
-               /*   CircleAvatar(
-                    radius: 16.sp,
-                   // backgroundImage: NetworkImage(data.profilePicture??'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54'),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          bottom: 3.sp,
-                          child: CircleAvatar(
-                            radius: 6.sp,
-                            backgroundImage:
-                            const NetworkImage("https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/2-2-india-flag-png-clipart.png?alt=media&token=d1268e95-cfa5-4622-9194-1d9d5486bf54"),
-                            //const AssetImage('assets/images/indian_flag.png'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),*/
-               //   SizedBox(width: 12.sp),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  /*    Text(
-                       // data.username ??'',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: const Color(0xFF434343),
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                      //  data.date ??'',
-                      style: TextStyle(
-                        fontSize: 8.sp,
-                        color: const Color(0xFF434343),
-                      ),
-                    ),
-                   Text(
-                      "profilepic",
-                      style: TextStyle(
-                          fontSize: 8.sp, color: const Color(0xFFc4c4c4)),
-                    ),
-                    */
-                    ],
-                  ),
-                ],
-              ),
-
-            ), Text(
-              'Validity : ${data.planStartDate} to ${data.planEndDate}',
-              style: TextStyle(
-                fontSize: 8.sp,
-                color: const Color(0xFF434343),
-              ),
-            ),
-            Text(
-              'Type : ${data.name} ',
-              style: TextStyle(
-                fontSize: 8.sp,
-                color: const Color(0xFF434343),
-              ),
-            ),
-            Container(
-              color: const Color(0xFFc4c4c4),
-              height: 0.4.sp,
-              width: MediaQuery.of(context).size.width * 0.73,
-            ),
-          ],
-        );*/
 
       },);
   }
@@ -384,7 +300,7 @@ String dateConvert(String date){
   String dateTime;
     if(date.isNotEmpty) {
       DateTime datee = DateTime.parse(date);
-      dateTime = DateFormat('dd-MM-yyyy, h:mm a').format(datee);
+      dateTime = DateFormat('dd-MM-yyyy,').format(datee);
     }
     else{
       dateTime='NA';

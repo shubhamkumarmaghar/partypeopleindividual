@@ -327,8 +327,8 @@ class APIService extends GetxController {
         else {
           print('Party Booking successfully');
           Get.snackbar('Welcome',
-              'You have successfully booked ticket to join party');
-          pj_id = jsonResponse['pj_id'];
+              'You have successfully booked ticket to join party , ');
+          pj_id = jsonResponse['pj_id'].toString();
           return pj_id;
         }
       }

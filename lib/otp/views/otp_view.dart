@@ -12,7 +12,7 @@ import 'package:partypeopleindividual/widgets/custom_button.dart';
 class OTPScreen extends StatefulWidget {
   final String enteredNumber;
 
-  OTPScreen({super.key, required this.enteredNumber});
+   OTPScreen({super.key, required this.enteredNumber});
 
   @override
   State<OTPScreen> createState() => _OTPScreenState();

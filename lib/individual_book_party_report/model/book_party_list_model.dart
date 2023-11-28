@@ -86,6 +86,7 @@ class Data {
   String? imageStatus;
   String? approvalStatus;
   String? qr;
+  String? individualName;
 
   Data(
       {this.pjId,
@@ -145,7 +146,9 @@ class Data {
         this.partyAmenitieId,
         this.imageStatus,
         this.approvalStatus,
-      this.qr});
+      this.qr,
+        this.individualName
+      });
 
   Data.fromJson(Map<String, dynamic> json) {
     pjId = json['pj_id'];
@@ -206,6 +209,7 @@ class Data {
     imageStatus = json['image_status'];
     approvalStatus = json['approval_status'];
     qr=json['qr_image'];
+    individualName=json['user_profile_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -268,6 +272,7 @@ class Data {
     data['image_status'] = this.imageStatus;
     data['approval_status'] = this.approvalStatus;
     data['qr_image'] = this.qr;
+    data['user_profile_name']= this.individualName;
     return data;
   }
 }

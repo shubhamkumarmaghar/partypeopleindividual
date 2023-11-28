@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -200,8 +201,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                 Positioned(
                     top: Get.height * 0.27,
                     right: Get.width * 0.06,
-                    child:
-                    GestureDetector(
+                    child:bookNowButton(),
+                  /*  GestureDetector(
                       onTap: () async {
                         var data =
                             await APIService.ongoingParty(widget.party.id);
@@ -210,7 +211,10 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                           join = 'Booked';
                           _controllerBottomCenter.play();
                         }
-                        joinPartyFormDialouge(context: context);
+                        print('ongoing status ${widget.party.ongoingStatus}');
+                        widget.party.ongoingStatus != 1 ?
+                        joinPartyFormDialouge(context: context):
+                        Fluttertoast.showToast( msg: 'You are already booked this offer',);
                       },
                       child: Container(
                         width: Get.width * 0.2,
@@ -243,7 +247,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                               ]),
                         ),
                       ),
-                    )
+                    )*/
                 ),
               ],
             ),
@@ -553,61 +557,30 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                widget.party.discountType =='0' ?CustomListTile(
+                widget.party.discountType =='0' || widget.party.discountAmount == '0'?CustomListTile(
                   icon: Icons.local_offer,
                   title: "Offers",
                   subtitle: widget.party.offers,
                   sub: true,
                 ):
+
                 CustomListTile(
                   icon: Icons.local_offer,
                   title: "Discount ",
-                  subtitle:widget.party.discountType == '1' ? 'get ${widget.party.discountAmount}% Discount upto ${widget.party.billMaxAmount} .' : 'get flat ${widget.party.discountAmount} Discount on minimum ${widget.party.billMaxAmount} .',
+                  subtitle:widget.party.discountType == '1' ? 'Get ${widget.party.discountAmount}% off ${widget.party.billMaxAmount !='0' ? 'upto ₹${widget.party.billMaxAmount}':""} .' : 'Get flat ₹${widget.party.discountAmount} off ${widget.party.billMaxAmount !='0' ? 'on minimum ₹${widget.party.billMaxAmount}':""} .',
                   sub: true,
                 ),
-                GestureDetector(
-                  onTap: () async {
-                    var data =
-                    await APIService.ongoingParty(widget.party.id);
-                    if (data == true) {
-                      setState(() {});
-                      join = 'Booked';
-                      _controllerBottomCenter.play();
-                    }
-                    joinPartyFormDialouge(context: context);
-                  },
-                  child: Container(
-                    width: Get.width * 0.2,
-                    height: Get.height * 0.04,
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.orange,
-                    ),
-                    child: FittedBox(
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: Get.width * 0.003,
-                            ),
-                            widget.party.ongoingStatus == 0
-                                ? Text(
-                              join,
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 16),
-                            )
-                                : Text(
-                              "Booked",
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 16),
-                            )
-                          ]),
-                    ),
-                  ),
-                )
+               bookNowButton()
               ],
             ),
+           widget.party.discountDescription != ""?
+          Text('                  ${widget.party.discountDescription.toString().capitalizeFirst}',
+    style: const TextStyle(
+              fontFamily: 'malgun',
+              fontSize: 14,
+              color: Colors.black87,
+            ) ):Container(),
+
             Container(
               margin: EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
@@ -1028,7 +1001,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
               title: Container(padding:EdgeInsets.all(8),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.red.shade900),
                 child: Text(
-                  'Booking For joining Party',
+                  'Avail this Offer',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
@@ -1061,10 +1034,11 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                        */
                     String pj_id =   await APIService.onBookingParty(
                           widget.party.id, noOfPeople.toString());
-                      setState(() {});
+                    var data= APIService.ongoingParty(widget.party.id);
+                    if(data ==true){
                       join = 'Booked';
-                      _controllerBottomCenter.play();
-                      Navigator.of(context).pop();
+                    }
+                    Navigator.of(context).pop();
                       if(pj_id!=''){
                         Get.to(JoinPartyDetails(),arguments: pj_id);
                       }
@@ -1075,6 +1049,51 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
             );
           });
         });
+  }
+  Widget bookNowButton()
+  {
+    return GestureDetector(
+      onTap: () async {
+        widget.party.ongoingStatus != 1 ?
+       await joinPartyFormDialouge(context: context):
+        Fluttertoast.showToast( msg: 'You are already booked this offer',);
+          setState(() {});
+          join = 'Booked';
+          _controllerBottomCenter.play();
+
+      },
+      child: Container(
+        width: Get.width * 0.2,
+        height: Get.height * 0.04,
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.orange,
+        ),
+        child: FittedBox(
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(CupertinoIcons.add_circled,
+                    color: Colors.white),
+                SizedBox(
+                  width: Get.width * 0.003,
+                ),
+                widget.party.ongoingStatus == 0
+                    ? Text(
+                  join,
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 16),
+                )
+                    : Text(
+                  "Booked",
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 16),
+                )
+              ]),
+        ),
+      ),
+    );
   }
 }
 
@@ -1147,6 +1166,7 @@ class CustomListTile extends StatelessWidget {
                         width: Get.width * 0.5,
                         child: Text(
                           subtitle,
+                          maxLines: 3,
                           style: const TextStyle(
                             fontFamily: 'malgun',
                             fontSize: 14,

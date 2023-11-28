@@ -6,8 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
-
-import '../../individual_book_party_report/model/book_party_list_model.dart';
 import '../../widgets/ticketWidget.dart';
 import '../controller/single_ticket_details_controller.dart';
 
@@ -132,7 +130,7 @@ class _JoinPartyDetailsState extends State<JoinPartyDetails> {
                   ),*/
                   TicketWidget(pic: '${data?.coverPhoto}',
                     width: Get.width * 0.9,
-                    height: Get.height * 0.7,
+                    height: Get.height * 0.72,
                     child:
                     Container(
                       padding: EdgeInsets.only(left: 10, right: 10),
@@ -144,7 +142,7 @@ class _JoinPartyDetailsState extends State<JoinPartyDetails> {
                             SizedBox(height: Get.width * 0.14,),
                             Container(alignment: Alignment.center,
                               child: Text(
-                                '${data?.fullName}', textAlign: TextAlign.center,
+                                '${data?.individualName}', textAlign: TextAlign.center,
                                 maxLines: 2,
                                 style: TextStyle(fontSize: 18,
                                     color: Colors.red.shade300,
@@ -152,7 +150,7 @@ class _JoinPartyDetailsState extends State<JoinPartyDetails> {
                               ),
                             ),
                             SizedBox(
-                              height: 10,
+                              height: Get.width*0.025,
                             ),
                             Center(
                               child: Blur(blur:5.0 ,
@@ -167,32 +165,36 @@ class _JoinPartyDetailsState extends State<JoinPartyDetails> {
                               ),
                             ),
                             SizedBox(
-                              height: 20,
+                              height: Get.width*0.05,
                             ),
                             Container(alignment: Alignment.center,
-                              child: Text('${data?.title}', maxLines: 2,
+                              child: Text('${data?.title.toString().capitalizeFirst}', maxLines: 2,
                                 style: TextStyle(fontSize: 25,
                                     color: Colors.red.shade300,
                                     fontWeight: FontWeight.w600),
                               ),
                             ),
                             SizedBox(
-                              height: 20,
+                              height: Get.width*0.05,
                             ),
-                            customText(text1:'Venue Name :    ',text2:  '${data?.organizationName}',fontSize: 14 ),
+
+                            customText(text1:'Venue Name :    ',text2:  '${data?.organizationName.toString().capitalizeFirst}',fontSize: 14 ),
                             customText(text1:'Party Time :     ',text2: '${dateConvert(
                                 '${data?.startDate}')}  ${data?.startTime.toString()}',fontSize: 14 ),
                             customText(text1:'Party goes count :   ',text2: '${data?.noOfPeople} ',fontSize: 14 ),
-                            customText(text1:'Party Address :     ',text2: '${data?.latitude} ,${data?.longitude} ',fontSize: 14 ,maxLines: 3,),
-                            customText(text1:'Coupon code :     ',text2: '${data?.discountDescription}',fontSize: 14 ),
+                            customText(text1:'Party Address :     ',text2: '${data?.latitude.toString().capitalizeFirst} ,${data?.longitude} ',fontSize: 14 ,maxLines: 3,),
+                            data?.offers.toString().toLowerCase() != "" || data?.discountType=='0' ? customText(text1:'Offer :     ',        text2: '${data?.offers}',fontSize: 14 ):
+                            data?.discountType=='1'? customText(text1:'Offer :     ',        text2: 'Get ${data?.discountAmount}% off  ${data?.billAmount !='0' ? 'upto ₹${data?.billAmount}':""} .',fontSize: 14 ):
+                            customText(text1:'Offer :     ',        text2: 'Get flat ₹${data?.discountAmount} Discount ${data?.billAmount !='0' ? 'on minimum ₹${data?.billAmount}':""} .',fontSize: 14 ),
+                            data?.discountType != '0' || data?.discountDescription !=null || data?.discountDescription !="" ? customText(text1:'               ',text2: '${data?.discountDescription.toString().capitalizeFirst }',fontSize: 14 ,maxLines: 2,):Container(),
                             customText(text1:'Booked On :       ',text2: '${dateConvert('${data?.createdAt}')} ',fontSize: 14 ),
-                            SizedBox(height: 20,),
+
 
                           ]),
                     ),
                     isCornerRounded: true,),
                   SizedBox(
-                    height: Get.width * 0.05,
+                    height: Get.width * 0.025,
                   ),
                   Container(
                     alignment: Alignment.centerLeft,
@@ -200,7 +202,8 @@ class _JoinPartyDetailsState extends State<JoinPartyDetails> {
                     child: Text(
                       "✔ Ticket holder must be 18+ .\n"
                           "✔  Please carry your legal Identity card with you .\n"
-                          "✔ All offers and discounts are posted by party hosts themself . ",
+                          "✔ All offers and discounts are posted by party hosts themself . \n"
+                      "✔ Genrated ticket will be shown in ticket history . ",
                       style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'Poppins',
@@ -475,7 +478,8 @@ class _JoinPartyDetailsState extends State<JoinPartyDetails> {
 
   Widget customText({required String text1 ,required String text2 , Color color =Colors.black ,required double fontSize , int maxLines = 1})
   {
-    return  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return  Row(crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text('$text1  ',style: TextStyle(fontSize: fontSize,
             color: color,

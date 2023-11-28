@@ -69,8 +69,6 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                           color: Colors.white, radius: 15)),
                                 ),
                               ),*/
-
-                              if (data?.profilePicApprovalStatus == '1')
                                 Card(elevation: 5,
                                   //color: Colors.orange,
                                   clipBehavior:Clip.hardEdge ,
@@ -125,14 +123,14 @@ class _OrganizationDetaisViewState extends State<OrganizationDetaisView> {
                                   ),
                                 ),
                               ),
-                              if (data?.profilePicApprovalStatus != '1')
+                             /* if (data?.profilePicApprovalStatus != '1')
                                 BackdropFilter(
                                   filter:
                                       ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                                   child: Container(
                                     color: Colors.grey.withOpacity(0.1),
                                   ),
-                                ),
+                                ),*/
                             ],
                           ),
 
