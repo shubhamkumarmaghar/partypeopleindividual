@@ -111,6 +111,7 @@ class MyApp extends StatelessWidget {
         builder: (context, child) {
           return MediaQuery(data: MediaQuery.of(context).copyWith(textScaleFactor: 0.9), child: child ?? Text(''));
         },
+
         theme: ThemeData.light(useMaterial3: false).copyWith(
           scaffoldBackgroundColor: Colors.red.shade900,
           primaryColor: Colors.red.shade900,

@@ -25,7 +25,7 @@ class _AddImageProfileState extends State<AddImageProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(backgroundColor: Colors.white,
+    return  Scaffold(backgroundColor:  Colors.red.shade50,
       body:
     Container(margin: EdgeInsets.all(10),child:
     Column(
@@ -39,12 +39,12 @@ class _AddImageProfileState extends State<AddImageProfile> {
             GestureDetector(onTap: (){Navigator.pop(context);},
               child: Container(alignment: Alignment.bottomLeft,
                   child: CircleAvatar(child: Icon(Icons.arrow_back,color: Colors.red.shade900,),
-                    backgroundColor: Colors.grey.shade200,)),
+                    backgroundColor: Colors.grey.shade300,)),
             ),
             const SizedBox(
               width: 20,
             ),
-            Text('Add more Images',style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w600),),
+            Text('Add more Images',style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w600,color: Colors.black),),
           ],
         ),
         const SizedBox(
@@ -95,13 +95,13 @@ class _AddImageProfileState extends State<AddImageProfile> {
                     customAddImage(imageFile: controller.imageProfile_e, imageUrl: controller.profileE.value)
             ),),
         ],),
-
+        SizedBox(height: 20,),
         GestureDetector(
           onTap: (){
             Fluttertoast.showToast(msg: 'Your images have successfully uploaded ');
           },
           child: Align(
-            alignment: Alignment.centerRight,
+            alignment: Alignment.center,
             child: Container(
               width: Get.width*0.35,
               margin: EdgeInsets.only(right: 28),
@@ -131,6 +131,7 @@ class _AddImageProfileState extends State<AddImageProfile> {
        // controller.isLoading.value == false
             //?
     Container(
+
           height: Get.height*0.25,
           width: Get.height*0.21,
           child: imageUrl.isNotEmpty && imageFile.path.isEmpty
@@ -151,6 +152,7 @@ class _AddImageProfileState extends State<AddImageProfile> {
                       error) =>
                    Center(
                     child:  Card(
+                       color: Colors.red.shade50,
                       child: Lottie.asset(
                         'assets/images/127619-photo-click.json',
                       ),

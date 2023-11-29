@@ -178,7 +178,8 @@ class _IndividualProfileScreenViewState
                                         autoPlayCurve: Curves.fastOutSlowIn,
                                         enableInfiniteScroll: true,
                                         autoPlayAnimationDuration: Duration(milliseconds: 800),
-                                        viewportFraction: 1
+                                        viewportFraction: 1,
+
                                     ),
                                   ),
                                 ),
@@ -709,7 +710,8 @@ class _IndividualProfileScreenViewState
   }
   Widget CustomTextFieldview(String text, IconData icon) {
     return Container(
-      height: Get.height * 0.2,
+      constraints: BoxConstraints(),
+     // height: Get.height * 0.2,
       child: Neumorphic(
           margin: const EdgeInsets.all(12.0),
           padding: EdgeInsets.all(12.0),
@@ -732,7 +734,7 @@ class _IndividualProfileScreenViewState
                 width: Get.width * 0.75,
                 child: Text(
                   text,
-                  maxLines: 5,
+                  //maxLines: 5,
                   style: TextStyle(color: Colors.black, fontSize: 16),
                 ),
               ),

@@ -72,7 +72,7 @@ class TransctionReportedUsersView extends StatelessWidget {
                 ),
               ),
             ),  */
-            Container(height: Get.height*0.85,child:
+            Container(height: Get.height*0.88,child:
             GetBuilder<TransctionReportController>(
               init: TransctionReportController(),
               builder: (controller) {

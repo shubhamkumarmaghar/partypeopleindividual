@@ -10,6 +10,7 @@ import 'package:partypeopleindividual/visitInfo/views/visit_info_view.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../individual_book_party_report/view/book_party_list_screen.dart';
 import '../../individual_transction_report/view/transction_screen.dart';
 import '../../settings/view/settings.dart';
 import '../../widgets/block_unblock.dart';
@@ -117,6 +118,13 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                     icon: CupertinoIcons.list_bullet_below_rectangle,
                     onTap: () {
                       Get.to(TransctionReportedUsersView());
+                    },
+                  ),
+                  CustomOptionWidget(
+                    title: 'Party Booking History',
+                    icon: CupertinoIcons.list_bullet_below_rectangle,
+                    onTap: () {
+                      Get.to(BookPartyListView());
                     },
                   ),
                   CustomOptionWidget(

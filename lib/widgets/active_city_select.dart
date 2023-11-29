@@ -24,7 +24,8 @@ class _ActiveCitySelectState extends State<ActiveCitySelect> {
 
   @override
   Widget build(BuildContext context) {
-    return Neumorphic(
+    return
+      Neumorphic(
       margin: const EdgeInsets.all(12.0),
       style: NeumorphicStyle(
         intensity: 0.8,

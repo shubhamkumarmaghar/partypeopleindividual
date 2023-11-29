@@ -212,7 +212,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
                             // isHistory: true,
                             // ));
                           },
-                          child: CustomListTile(
+                          child:
+                          CustomListTile(
                             endTime: '${controller.allParties[index]['end_time']}',
                             startTime: '${controller.allParties[index]['start_time']}',
                             endDate: '${controller.allParties[index]['end_date']}',

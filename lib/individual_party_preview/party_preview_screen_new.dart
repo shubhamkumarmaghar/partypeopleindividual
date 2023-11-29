@@ -5,11 +5,11 @@ import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:partypeopleindividual/widgets/pop_up_dialogs.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:sizer/sizer.dart';
 import 'package:confetti/confetti.dart';
@@ -18,6 +18,7 @@ import '../api_helper_service.dart';
 import '../centralize_api.dart';
 import '../individualDashboard/models/party_model.dart';
 import '../individual_nearby_people_profile/view/individual_people_profile.dart';
+import '../join_party_details/view/join_party_details.dart';
 import '../party_organization_details_view/view/organization_detalis_view.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/individual_amenities.dart';
@@ -40,7 +41,9 @@ class PartyPreviewScreen extends StatefulWidget {
 }
 
 class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
-  String join = 'Join';
+  int noOfPeople = 2;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String join = 'Book Now';
   final List partyImages = [];
   List<Category> _categories = [];
   final List<CategoryList> _categoryLists = [];
@@ -55,10 +58,13 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
     final data = jsonDecode(response.body);
     setState(() {
       if (data['status'] == 1) {
-        _categories = (data['data'] as List).map((category) => Category.fromJson(category)).toList();
+        _categories = (data['data'] as List)
+            .map((category) => Category.fromJson(category))
+            .toList();
 
         _categories.forEach((category) {
-          _categoryLists.add(CategoryList(title: category.name, amenities: category.amenities));
+          _categoryLists.add(CategoryList(
+              title: category.name, amenities: category.amenities));
         });
         getSelectedID();
       }
@@ -86,9 +92,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
   }
 
   void getpartyImages() {
-    if (widget.party.coverPhoto != null) {
-      partyImages.add(widget.party.coverPhoto);
-    }
+    partyImages.add(widget.party.coverPhoto);
     if (widget.party.imageB != null) {
       partyImages.add(widget.party.imageB);
     }
@@ -106,7 +110,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
     _fetchData();
 
     print(" ${widget.party.toJson()}");
-    _controllerBottomCenter = ConfettiController(duration: const Duration(seconds: 10));
+    _controllerBottomCenter =
+        ConfettiController(duration: const Duration(seconds: 10));
     super.initState();
   }
 
@@ -122,17 +127,19 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
             const SizedBox(
               height: 10,
             ),
-            Row(
-              children: [
-                getBackBarButton(context: context),
-              SizedBox(width: getScreenWidth*0.25,),
-               Text('Event Preview',style: TextStyle(
-                 color: Colors.red.shade900,
-                 fontSize: 18,
-                 fontWeight: FontWeight.w600
-               ),),
-
-              ],
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                  alignment: Alignment.bottomLeft,
+                  child: CircleAvatar(
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: Colors.red.shade900,
+                    ),
+                    backgroundColor: Colors.grey.shade200,
+                  )),
             ),
             const SizedBox(
               height: 20,
@@ -149,8 +156,9 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                     ),
                     child: CarouselSlider(
                       items: partyImages
-                          .map((element) =>
-                              customImageSlider(partyPhotos: element, imageStatus: '${widget.party.imageStatus}'))
+                          .map((element) => customImageSlider(
+                              partyPhotos: element,
+                              imageStatus: '${widget.party.imageStatus}'))
                           .toList(),
                       options: CarouselOptions(
                         height: Get.height * 0.295,
@@ -160,6 +168,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                         autoPlayCurve: Curves.fastOutSlowIn,
                         enableInfiniteScroll: true,
                         autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        viewportFraction: 1
                       ),
                     ),
                   )
@@ -173,8 +182,9 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                     ),
                     child: CarouselSlider(
                       items: partyImages
-                          .map((element) =>
-                              customImageSlider(partyPhotos: element, imageStatus: '${widget.party.imageStatus}'))
+                          .map((element) => customImageSlider(
+                              partyPhotos: element,
+                              imageStatus: '${widget.party.imageStatus}'))
                           .toList(),
                       options: CarouselOptions(
                           height: Get.height * 0.295,
@@ -183,22 +193,28 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                           //aspectRatio: 16 / 9,
                           autoPlayCurve: Curves.fastOutSlowIn,
                           enableInfiniteScroll: true,
-                          autoPlayAnimationDuration: Duration(milliseconds: 800),
+                          autoPlayAnimationDuration:
+                              Duration(milliseconds: 800),
                           viewportFraction: 1),
                     ),
                   ),
                 Positioned(
                     top: Get.height * 0.27,
                     right: Get.width * 0.06,
-                    child: GestureDetector(
+                    child:bookNowButton(),
+                  /*  GestureDetector(
                       onTap: () async {
-                        var data = await APIService.ongoingParty(widget.party.id);
+                        var data =
+                            await APIService.ongoingParty(widget.party.id);
                         if (data == true) {
                           setState(() {});
-                          join = 'Joined';
+                          join = 'Booked';
                           _controllerBottomCenter.play();
                         }
-                        //ongoingParty(widget.party.id);
+                        print('ongoing status ${widget.party.ongoingStatus}');
+                        widget.party.ongoingStatus != 1 ?
+                        joinPartyFormDialouge(context: context):
+                        Fluttertoast.showToast( msg: 'You are already booked this offer',);
                       },
                       child: Container(
                         width: Get.width * 0.2,
@@ -209,24 +225,30 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                           color: Colors.orange,
                         ),
                         child: FittedBox(
-                          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                            Icon(CupertinoIcons.add_circled, color: Colors.white),
-                            SizedBox(
-                              width: Get.width * 0.003,
-                            ),
-                            widget.party.ongoingStatus == 0
-                                ? Text(
-                                    join,
-                                    style: TextStyle(color: Colors.white, fontSize: 16),
-                                  )
-                                : Text(
-                                    "Joined",
-                                    style: TextStyle(color: Colors.white, fontSize: 16),
-                                  )
-                          ]),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(CupertinoIcons.add_circled,
+                                    color: Colors.white),
+                                SizedBox(
+                                  width: Get.width * 0.003,
+                                ),
+                                widget.party.ongoingStatus == 0
+                                    ? Text(
+                                        join,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 16),
+                                      )
+                                    : Text(
+                                        "Booked",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 16),
+                                      )
+                              ]),
                         ),
                       ),
-                    )),
+                    )*/
+                ),
               ],
             ),
 
@@ -358,9 +380,15 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
               height: 10,
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-              CustomTextIcon(icon: CupertinoIcons.heart, IconText: "${widget.party.like} Likes"),
-              CustomTextIcon(icon: CupertinoIcons.eye, IconText: "${widget.party.view} Views"),
-              CustomTextIcon(icon: CupertinoIcons.person_3, IconText: "${widget.party.ongoing} Going"),
+              CustomTextIcon(
+                  icon: CupertinoIcons.heart,
+                  IconText: "${widget.party.like} Likes"),
+              CustomTextIcon(
+                  icon: CupertinoIcons.eye,
+                  IconText: "${widget.party.view} Views"),
+              CustomTextIcon(
+                  icon: CupertinoIcons.person_3,
+                  IconText: "${widget.party.ongoing} Going"),
             ]),
             const SizedBox(
               height: 25,
@@ -369,7 +397,11 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
               widget.party.title.capitalizeFirst!,
               textAlign: TextAlign.start,
               maxLines: 2,
-              style: TextStyle(fontFamily: 'malgun', fontSize: 28, color: Colors.black87, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  fontFamily: 'malgun',
+                  fontSize: 28,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600),
             ),
             const SizedBox(
               height: 15,
@@ -403,25 +435,32 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                     textAlign: TextAlign.start,
                     maxLines: 2,
                     style: TextStyle(
-                        fontFamily: 'malgun', fontSize: 14.sp, color: Colors.red.shade900, fontWeight: FontWeight.w500),
+                        fontFamily: 'malgun',
+                        fontSize: 14.sp,
+                        color: Colors.red.shade900,
+                        fontWeight: FontWeight.w500),
                   ),
                   Container(
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.6),
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6),
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       color: Colors.orange,
                     ),
                     child: FittedBox(
-                      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                        SizedBox(
-                          width: Get.width * 0.003,
-                        ),
-                        Text(
-                          ' ${widget.party.organization.capitalizeFirst!} ',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        )
-                      ]),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: Get.width * 0.003,
+                            ),
+                            Text(
+                              ' ${widget.party.organization.capitalizeFirst!} ',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                            )
+                          ]),
                     ),
                   ),
                 ],
@@ -452,7 +491,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
               icon: Icons.calendar_month,
               title:
                   "${widget.party.prStartDate != null ? DateFormat('d MMMM, y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.startDate) * 1000)) : ''} ",
-              subtitle: "${widget.party.startTime}  to  ${widget.party.endTime}",
+              subtitle:
+                  "${widget.party.startTime}  to  ${widget.party.endTime}",
               sub: true,
             ),
             CustomListTile(
@@ -484,8 +524,12 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
               */
             CustomListTile(
               icon: Icons.supervised_user_circle_outlined,
-              title: widget.party.gender.replaceAll('[', '').replaceAll(']', ''),
-              subtitle: widget.party.gender.replaceAll('[', '').replaceAll(']', '').capitalizeFirst!,
+              title:
+                  widget.party.gender.replaceAll('[', '').replaceAll(']', ''),
+              subtitle: widget.party.gender
+                  .replaceAll('[', '')
+                  .replaceAll(']', '')
+                  .capitalizeFirst!,
               sub: false,
             ),
             GestureDetector(
@@ -511,12 +555,32 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
               subtitle: widget.party.personLimit,
               sub: true,
             ),
-            CustomListTile(
-              icon: Icons.local_offer,
-              title: "Offers",
-              subtitle: widget.party.offers,
-              sub: true,
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                widget.party.discountType =='0' || widget.party.discountAmount == '0'?CustomListTile(
+                  icon: Icons.local_offer,
+                  title: "Offers",
+                  subtitle: widget.party.offers,
+                  sub: true,
+                ):
+
+                CustomListTile(
+                  icon: Icons.local_offer,
+                  title: "Discount ",
+                  subtitle:widget.party.discountType == '1' ? 'Get ${widget.party.discountAmount}% off ${widget.party.billMaxAmount !='0' ? 'upto ₹${widget.party.billMaxAmount}':""} .' : 'Get flat ₹${widget.party.discountAmount} off ${widget.party.billMaxAmount !='0' ? 'on minimum ₹${widget.party.billMaxAmount}':""} .',
+                  sub: true,
+                ),
+               bookNowButton()
+              ],
             ),
+           widget.party.discountDescription != ""?
+          Text('                  ${widget.party.discountDescription.toString().capitalizeFirst}',
+    style: const TextStyle(
+              fontFamily: 'malgun',
+              fontSize: 14,
+              color: Colors.black87,
+            ) ):Container(),
+
             Container(
               margin: EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
@@ -537,7 +601,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                   Container(
                     padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10), color: Colors.grey.shade200.withOpacity(0.5)),
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.grey.shade200.withOpacity(0.5)),
                     child: Icon(
                       Icons.currency_rupee,
                       color: Colors.red.shade900,
@@ -552,7 +617,10 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                       const Text(
                         'Entry Fees',
                         style: TextStyle(
-                            fontFamily: 'malgun', fontSize: 17, color: Colors.black, fontWeight: FontWeight.w600),
+                            fontFamily: 'malgun',
+                            fontSize: 17,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600),
                       ),
                       Container(
                         padding: const EdgeInsets.only(top: 4, bottom: 5),
@@ -603,36 +671,52 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                                 widget.party.ladies == '0'
                                     ? const Text(
                                         "  - NA",
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600),
                                       )
                                     : Text(
                                         "  - ₹ ${widget.party.ladies}",
-                                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600),
                                       ),
                                 widget.party.couples == '0'
                                     ? const Text(
                                         "  - NA",
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600),
                                       )
                                     : Text(
                                         "  - ₹ ${widget.party.couples}",
-                                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600),
                                       ),
                                 widget.party.stag == '0'
                                     ? const Text(
                                         "  - NA",
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600),
                                       )
                                     : Text(
                                         "  - ₹ ${widget.party.stag}",
-                                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600),
                                       ),
                                 widget.party.others == '0'
                                     ? const Text("  - NA",
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600))
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600))
                                     : Text(
                                         "  - ₹ ${widget.party.others}",
-                                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600),
                                       ),
                               ],
                             ),
@@ -645,13 +729,15 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 28.0, vertical: 0),
               child: Container(
                 alignment: Alignment.topCenter,
                 child: const Text(
                   "Selected Amenities",
                   textAlign: TextAlign.left,
-                  style: TextStyle(color: Colors.black, fontFamily: 'malgun', fontSize: 18),
+                  style: TextStyle(
+                      color: Colors.black, fontFamily: 'malgun', fontSize: 18),
                 ),
               ),
             ),
@@ -699,7 +785,9 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                                                 fontFamily: 'malgun',
                                               ),
                                             ),
-                                            backgroundColor: amenity.selected ? Colors.red.shade900 : Colors.grey[400],
+                                            backgroundColor: amenity.selected
+                                                ? Colors.red.shade900
+                                                : Colors.grey[400],
                                           )
                                         : Container(),
                                   );
@@ -764,12 +852,14 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
     );
   }
 
-  Widget customImageSlider({required String partyPhotos, required String imageStatus}) {
+  Widget customImageSlider(
+      {required String partyPhotos, required String imageStatus}) {
     return Container(
       height: Get.height * 0.295,
       decoration: BoxDecoration(
         // borderRadius: BorderRadius.circular(15),
-        image: DecorationImage(image: NetworkImage(partyPhotos), fit: BoxFit.fill),
+        image:
+            DecorationImage(image: NetworkImage(partyPhotos), fit: BoxFit.fill),
       ),
       width: Get.width,
       /* child: Image.network(
@@ -797,6 +887,212 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                           );
                         },
                       ), */
+    );
+  }
+
+  joinPartyFormDialouge({required BuildContext context}) async {
+    return await showDialog(
+        context: context,
+        builder: (context) {
+          bool isChecked = false;
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(16.0),
+                  bottomRight: Radius.circular(16.0),
+                  topLeft: Radius.circular(16.0),
+                  topRight: Radius.circular(16.0),
+                ),
+              ),
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  /*   TextFormField(
+                        controller: _textEditingController,
+                        validator: (value) {
+                          return value.isNotEmpty ? null : "Enter any text";
+                        },
+                        decoration:
+                        InputDecoration(hintText: "Please Enter Text"),
+                      ),*/
+                  /*   Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Choice Box"),
+                          Checkbox(
+                              value: isChecked,
+                              onChanged: (checked) {
+                                setState(() {
+                                  isChecked = checked;
+                                });
+                              })
+                        ],
+                      )*/
+                  Center(
+                    child: Text(
+                      '${widget.party.title.capitalizeFirst}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.red.shade400,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  SizedBox(
+                    height: Get.width * 0.05,
+                  ),
+                  Text(
+                    'Date : ${widget.party.prStartDate != null ? DateFormat('d MMMM, y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.startDate) * 1000)) : ''} ',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.black87, fontSize: 13.sp),
+                  ),
+                  SizedBox(
+                    height: Get.width * 0.05,
+                  ),
+                  Text(
+                    "Time: ${widget.party.startTime}  to  ${widget.party.endTime}",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.black87, fontSize: 13.sp),
+                  ),
+                  SizedBox(
+                    height: Get.width * 0.05,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'No of People : ',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              noOfPeople--;
+                              setState(
+                                () {},
+                              );
+                            },
+                            child: Icon(CupertinoIcons.minus_circle_fill,
+                                color: Colors.red.shade900),
+                          ),
+                          Text(
+                            '  ${noOfPeople.toString()}  ',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                noOfPeople++;
+                                setState(
+                                  () {},
+                                );
+                              },
+                              child: Icon(CupertinoIcons.plus_circle_fill,
+                                  color: Colors.red.shade900))
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              title: Container(padding:EdgeInsets.all(8),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.red.shade900),
+                child: Text(
+                  'Avail this Offer',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w500,
+                    fontSize: 13.sp
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                Center(
+                  child: InkWell(
+                    child:
+                    Container(
+                       // width: 50,
+                      padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.all(10),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.orange),
+                        child: Text(
+                          '   Book Now   ',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        )),
+                    onTap: () async {
+                      /*  if (_formKey.currentState.validate()) {
+// Do something like updating SharedPreferences or User Settings etc.
+
+                       */
+                    String pj_id =   await APIService.onBookingParty(
+                          widget.party.id, noOfPeople.toString());
+                    var data= APIService.ongoingParty(widget.party.id);
+                    if(data ==true){
+                      join = 'Booked';
+                    }
+                    Navigator.of(context).pop();
+                      if(pj_id!=''){
+                        Get.to(JoinPartyDetails(),arguments: pj_id);
+                      }
+                    },
+                  ),
+                ),
+              ],
+            );
+          });
+        });
+  }
+  Widget bookNowButton()
+  {
+    return GestureDetector(
+      onTap: () async {
+        widget.party.ongoingStatus != 1 ?
+       await joinPartyFormDialouge(context: context):
+        Fluttertoast.showToast( msg: 'You are already booked this offer',);
+          setState(() {});
+          join = 'Booked';
+          _controllerBottomCenter.play();
+
+      },
+      child: Container(
+        width: Get.width * 0.2,
+        height: Get.height * 0.04,
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.orange,
+        ),
+        child: FittedBox(
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(CupertinoIcons.add_circled,
+                    color: Colors.white),
+                SizedBox(
+                  width: Get.width * 0.003,
+                ),
+                widget.party.ongoingStatus == 0
+                    ? Text(
+                  join,
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 16),
+                )
+                    : Text(
+                  "Booked",
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 16),
+                )
+              ]),
+        ),
+      ),
     );
   }
 }
@@ -835,7 +1131,9 @@ class CustomListTile extends StatelessWidget {
         children: [
           Container(
             padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.grey.shade200),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey.shade200),
             child: Icon(
               icon,
               color: Colors.red.shade900,
@@ -850,7 +1148,7 @@ class CustomListTile extends StatelessWidget {
             children: [
               FittedBox(
                 child: Container(
-                  width: Get.width * 0.7,
+                  width: Get.width * 0.5,
                   child: Text(
                     title.capitalizeFirst!,
                     style: const TextStyle(
@@ -865,9 +1163,10 @@ class CustomListTile extends StatelessWidget {
               sub == true
                   ? FittedBox(
                       child: Container(
-                        width: Get.width * 0.7,
+                        width: Get.width * 0.5,
                         child: Text(
                           subtitle,
+                          maxLines: 3,
                           style: const TextStyle(
                             fontFamily: 'malgun',
                             fontSize: 14,
@@ -889,7 +1188,8 @@ class TitleAnswerWidget extends StatelessWidget {
   final String title;
   final String answer;
 
-  const TitleAnswerWidget({super.key, required this.title, required this.answer});
+  const TitleAnswerWidget(
+      {super.key, required this.title, required this.answer});
 
   @override
   Widget build(BuildContext context) {
@@ -934,7 +1234,12 @@ class BoostButton extends StatelessWidget {
   final VoidCallback onPressed;
   final color;
 
-  const BoostButton({Key? key, required this.color, required this.label, required this.onPressed}) : super(key: key);
+  const BoostButton(
+      {Key? key,
+      required this.color,
+      required this.label,
+      required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -984,7 +1289,8 @@ class BoostButton extends StatelessWidget {
     path.moveTo(size.width, halfWidth);
 
     for (double step = 0; step < fullAngle; step += degreesPerStep) {
-      path.lineTo(halfWidth + externalRadius * cos(step), halfWidth + externalRadius * sin(step));
+      path.lineTo(halfWidth + externalRadius * cos(step),
+          halfWidth + externalRadius * sin(step));
       path.lineTo(halfWidth + internalRadius * cos(step + halfDegreesPerStep),
           halfWidth + internalRadius * sin(step + halfDegreesPerStep));
     }

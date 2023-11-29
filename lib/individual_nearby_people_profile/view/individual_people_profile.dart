@@ -275,7 +275,8 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
 
                           Blur(blur: 2.5,
                             child: Container(
-                              height: Get.height * 0.15,
+                              constraints: BoxConstraints(),
+                             // height: Get.height * 0.15,
                               child: Neumorphic(
                                   margin: const EdgeInsets.all(12.0),
                                   padding: EdgeInsets.all(12.0),
@@ -301,7 +302,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                         child: Text(
                                           data.bio.toString().capitalizeFirst ??
                                               "",
-                                          maxLines: 5,
+                                        //  maxLines: 5,
                                           style: TextStyle(
                                               color: Colors.black, fontSize: 16),
                                         ),
@@ -310,8 +311,10 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                   )),
                             ),
                             overlay: controller
-                                .peopleProfileData.data?.descriptionApprovalStatus!='1' ? Container():Container(
-                              height: Get.height * 0.15,
+                                .peopleProfileData.data?.descriptionApprovalStatus!='1' ? Container():
+                            Container(
+                              constraints: BoxConstraints(),
+                             // height: Get.height * 0.15,
                               child: Neumorphic(
                                   margin: const EdgeInsets.all(12.0),
                                   padding: EdgeInsets.all(12.0),
@@ -333,11 +336,12 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                         width: Get.width * 0.03,
                                       ),
                                       Container(
+
                                         width: Get.width * 0.75,
                                         child: Text(
                                           data.bio.toString().capitalizeFirst ??
                                               "",
-                                          maxLines: 5,
+                                         // maxLines: 5,
                                           style: TextStyle(
                                               color: Colors.black, fontSize: 16),
                                         ),
