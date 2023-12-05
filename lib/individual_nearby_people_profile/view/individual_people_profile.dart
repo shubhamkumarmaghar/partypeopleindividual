@@ -4,9 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:neumorphic_ui/neumorphic_ui.dart';
 import 'package:partypeopleindividual/widgets/pop_up_dialogs.dart';
 import 'package:shimmer/shimmer.dart';
 

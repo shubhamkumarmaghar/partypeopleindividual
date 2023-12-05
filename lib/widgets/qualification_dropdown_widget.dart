@@ -1,6 +1,8 @@
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:neumorphic_ui/neumorphic_ui.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
 
 class QualificationWidget extends StatefulWidget {

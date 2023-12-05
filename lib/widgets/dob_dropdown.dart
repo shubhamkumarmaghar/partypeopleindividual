@@ -1,8 +1,8 @@
 import 'dart:developer';
-
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:neumorphic_ui/neumorphic_ui.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
 
 class CustomDateField extends StatefulWidget {

@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
+import 'package:neumorphic_ui/neumorphic_ui.dart';
 
 import '../individual_profile/controller/individual_profile_controller.dart';
 import 'custom_textfield.dart';

@@ -21,8 +21,19 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 
   FlutterLocalNotificationsPlugin pluginInstance = FlutterLocalNotificationsPlugin();
-  var init = const InitializationSettings(android: AndroidInitializationSettings('@mipmap/launcher_icon'));
-  pluginInstance.initialize(init);
+
+  var init = InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/launcher_icon'),
+      iOS: DarwinInitializationSettings(
+        requestSoundPermission: true,
+        requestBadgePermission: true,
+        requestAlertPermission: true,
+      ));
+
+  pluginInstance.initialize(init,onDidReceiveNotificationResponse: (NotificationResponse details) {
+
+  },);
+
   AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
     'ch_id',
     'ch_name',
@@ -30,12 +41,41 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     priority: Priority.high,
     playSound: true,
   );
-  NotificationDetails platformSpec = NotificationDetails(android: androidSpec);
+  const AndroidNotificationChannel androidChannel = AndroidNotificationChannel(
+      'high_importance_channel', // id
+      'High Importance Notifications', // title
+      importance: Importance.high,
+      playSound: true);
+
+  await pluginInstance
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(androidChannel);
+
+  pluginInstance
+      .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+      ?.requestPermissions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  const DarwinNotificationDetails iosNotificationDetails = DarwinNotificationDetails(
+    presentAlert: true,
+    presentBadge: true,
+    presentSound: true,
+    categoryIdentifier: 'plainCategory',
+  );
+  NotificationDetails platformSpec = NotificationDetails(
+    android: androidSpec,
+    iOS: iosNotificationDetails,
+  );
 
   await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec);
   log('A background msg just showed ${message.data}');
   //return;
 }
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,14 +91,30 @@ void main() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   FlutterLocalNotificationsPlugin pluginInstance = FlutterLocalNotificationsPlugin();
 
-  var initializationSettingsIOS = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-      onDidReceiveLocalNotification: (int id, String? title, String? body, String? payload) async {});
+
   var init = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon'), iOS: initializationSettingsIOS);
+      android: AndroidInitializationSettings('@mipmap/launcher_icon'), iOS: DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+  ));
   pluginInstance.initialize(init);
+  const AndroidNotificationChannel androidChannel = AndroidNotificationChannel(
+      'high_importance_channel', // id
+      'High Importance Notifications', // title
+      importance: Importance.high,
+      playSound: true);
+
+  await pluginInstance
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(androidChannel);
+  pluginInstance
+      .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+      ?.requestPermissions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
   NotificationSettings settings = await messaging.requestPermission();
   AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
     'ch_id',
@@ -68,29 +124,15 @@ void main() async {
     playSound: true,
   );
   DarwinNotificationDetails iosSpec =
-      const DarwinNotificationDetails(presentAlert: true, presentSound: true, presentBadge: true);
+      const DarwinNotificationDetails(presentAlert: true, presentSound: true, presentBadge: true,);
 
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    print('User granted permission');
-  } else {
-    print('User declined permission');
-  }
-
-  if (Platform.isIOS) {
-    final token = await messaging.getAPNSToken();
-    log('token IOS :::: ${token}');
-  } else {
-    await messaging.getToken().then((value) {
-      print('Firebase Messaging Token : ${value}');
-    });
-  }
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     print(message.messageType);
     print(message.data);
-    NotificationDetails platformSpec = NotificationDetails(android: androidSpec, iOS: iosSpec);
+    NotificationDetails platformSpec = NotificationDetails(android: androidSpec, iOS: iosSpec,);
 
-    await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec);
+    await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec,);
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
