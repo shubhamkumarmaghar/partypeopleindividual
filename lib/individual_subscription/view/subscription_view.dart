@@ -5,19 +5,23 @@ import 'package:adobe_xd/gradient_xd_transform.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/individual_subscription/controller/subscription_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:html/parser.dart';
+import '../../widgets/custom_textfield.dart';
 import '../../widgets/webView.dart';
 import '../model/SubscriptionModel.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 class SubscriptionView extends StatefulWidget {
-  String subText ;
+  String subText;
+
   String iconText;
-  SubscriptionView({required this.subText , required this.iconText});
+
+  SubscriptionView({required this.subText, required this.iconText});
 
   @override
   State<SubscriptionView> createState() => _SubscriptionViewState();
@@ -25,10 +29,11 @@ class SubscriptionView extends StatefulWidget {
 
 class _SubscriptionViewState extends State<SubscriptionView> {
 //static MethodChannel _channel = MethodChannel('easebuzz');
- SubscriptionController subController = Get.put(SubscriptionController());
- // Razorpay _razorpay = Razorpay();
+  SubscriptionController subController = Get.put(SubscriptionController());
 
- /* void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  // Razorpay _razorpay = Razorpay();
+
+  /* void _handlePaymentSuccess(PaymentSuccessResponse response) {
     print('Payment Successul ${response.signature} (${response.paymentId})');
     subController.updateSubsPaymentStatus(subsId: subController.subsOrderId, paymentStatus: 1, paymentResponse: response.orderId.toString(), paymentId: response.paymentId.toString(),);
     //SubscriptionController.updateSubsPaymentStatus(subsId: subsId, paymentStatus: paymentStatus, paymentResponse: paymentResponse, paymentId: paymentId)
@@ -58,19 +63,19 @@ class _SubscriptionViewState extends State<SubscriptionView> {
   @override
   void initState() {
     super.initState();
-  //  _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-  //  _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-  //  _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
 
+    //  _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    //  _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    //  _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
-
 
   @override
   void dispose() {
     super.dispose();
 
-   // _razorpay.clear();
+    // _razorpay.clear();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,97 +106,126 @@ class _SubscriptionViewState extends State<SubscriptionView> {
           builder: (controller) {
             if (controller.isLoading == false) {
               return Container(
-              decoration: const BoxDecoration(
-                gradient: RadialGradient(
-                  center: Alignment(1, -0.45),
-                  radius: 0.9,
-                  colors: [
-                    Color(0xff7e160a),
-                    Color(0xff2e0303),
-                  ],
-                  stops: [0.0, 1],
-                  transform: GradientXDTransform(
-                    0.0,
-                    -1.0,
-                    1.23,
-                    0.0,
-                    -0.115,
-                    1.0,
-                    Alignment(0.0, 0.0),
+                decoration: const BoxDecoration(
+                  gradient: RadialGradient(
+                    center: Alignment(1, -0.45),
+                    radius: 0.9,
+                    colors: [
+                      Color(0xff7e160a),
+                      Color(0xff2e0303),
+                    ],
+                    stops: [0.0, 1],
+                    transform: GradientXDTransform(
+                      0.0,
+                      -1.0,
+                      1.23,
+                      0.0,
+                      -0.115,
+                      1.0,
+                      Alignment(0.0, 0.0),
+                    ),
                   ),
                 ),
-              ),
-              height: Get.height,
-              width: Get.width,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: Get.height * 0.11),
-                    Text(
-                      'Get Subscription',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(height: Get.height * 0.02),
-                    Text(
-                      widget.subText,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 100),
-                      child: Divider(
-                        thickness: 2.0,
-                        color: Colors.white,
+                height: Get.height,
+                width: Get.width,
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: Get.height * 0.11),
+                      Text(
+                        'Get Subscription',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w700),
                       ),
-                    ),
-                    SizedBox(height: 30,),
-                    Neumorphic(style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle(),
-                        shape: NeumorphicShape.concave),child: Lottie.network(widget.iconText,width: Get.width*0.2,height: Get.width*0.2)),
-                    SizedBox(height: 30,),
-
-
-                    SizedBox(height: 30,),
-                    CarouselSlider(
-                      items: [
-                        GestureDetector(
-                          onTap: () async{
-                            String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData[0].id);
-                           if(value =='1')
-                            selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData[0].name , amount:controller.subscriptionModel.subsData[0].amount );
-                           },
-                          child: subscriptionPlansView(
-                              subscriptionData:
-                                  controller.subscriptionModel.subsData[0]),
+                      SizedBox(height: Get.height * 0.02),
+                      Text(
+                        widget.subText,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 100),
+                        child: Divider(
+                          thickness: 2.0,
+                          color: Colors.white,
                         ),
-                        GestureDetector(
-                          onTap: () async{
-                            String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData[1].id);
-                            if(value =='1')
-                              selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData[1].name , amount:controller.subscriptionModel.subsData[1].amount );
-                          },
-                          child: subscriptionPlansView(
-                              subscriptionData:
-                              controller.subscriptionModel.subsData[1]),
-                        ),
-                        GestureDetector(
-                          onTap: () async{
-                            String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData[2].id);
-                            if(value =='1')
-                              selectPlanBottom(context: context,name:  controller.subscriptionModel.subsData[2].name , amount:controller.subscriptionModel.subsData[2].amount );
-                          },
-                          child: subscriptionPlansView(
-                              subscriptionData:
-                              controller.subscriptionModel.subsData[2]),
-                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Neumorphic(
+                          style: NeumorphicStyle(
+                              boxShape: NeumorphicBoxShape.circle(),
+                              shape: NeumorphicShape.concave),
+                          child: Lottie.network(widget.iconText,
+                              width: Get.width * 0.2, height: Get.width * 0.2)),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      CarouselSlider(
+                        items: [
+                          GestureDetector(
+                            onTap: () async {
+                               String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData[0].id);
+                              if (value == '1')
+                                selectPlanBottom(
+                                    context: context,
+                                    name: controller
+                                        .subscriptionModel.subsData[0].name,
+                                    amount: controller
+                                        .subscriptionModel.subsData[0].amount);
+                            },
+                            child: subscriptionPlansView(
+                                subscriptionData:
+                                    controller.subscriptionModel.subsData[0]),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              String value =
+                                  await controller.subscriptionPurchase(
+                                      subsId: controller
+                                          .subscriptionModel.subsData[1].id);
+                              if (value == '1')
+                                selectPlanBottom(
+                                    context: context,
+                                    name: controller
+                                        .subscriptionModel.subsData[1].name,
+                                    amount: controller
+                                        .subscriptionModel.subsData[1].amount);
+                            },
+                            child: subscriptionPlansView(
+                                subscriptionData:
+                                    controller.subscriptionModel.subsData[1]),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              String value =
+                                  await controller.subscriptionPurchase(
+                                      subsId: controller
+                                          .subscriptionModel.subsData[2].id);
+                              if (value == '1')
+                                selectPlanBottom(
+                                    context: context,
+                                    name: controller
+                                        .subscriptionModel.subsData[2].name,
+                                    amount: controller
+                                        .subscriptionModel.subsData[2].amount);
+                            },
+                            child: subscriptionPlansView(
+                                subscriptionData:
+                                    controller.subscriptionModel.subsData[2]),
+                          ),
 
-                        /*  ListView.builder(itemCount:controller.subscriptionModel.subsData?.length ,
+                          /*  ListView.builder(itemCount:controller.subscriptionModel.subsData?.length ,
                      scrollDirection: Axis.horizontal,
                      itemBuilder: (context , index){
                        data = controller.subscriptionModel.subsData != null ?
@@ -207,8 +241,8 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                        Status: data.status);
                      }
                      ),*/
-                        //1st Image of Slider
-                        /*FittedBox(
+                          //1st Image of Slider
+                          /*FittedBox(
                     child: Container(
                       margin: EdgeInsets.all(6.0),
                       width: Get.width*.8,
@@ -244,25 +278,26 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                       ),
                     ),
                   ),*/
-                      ],
-                      //Slider Container properties
-                      options: CarouselOptions(
-                        height: Get.height * 0.5,
-                        enlargeCenterPage: true,
-                        enlargeFactor: 0.3,
-                        autoPlay: true,
-                        //aspectRatio: 16 / 9,
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                        enableInfiniteScroll: true,
-                        autoPlayAnimationDuration: Duration(milliseconds: 800),
-                        viewportFraction: 0.75,
+                        ],
+                        //Slider Container properties
+                        options: CarouselOptions(
+                          height: Get.height * 0.5,
+                          enlargeCenterPage: true,
+                          enlargeFactor: 0.3,
+                          autoPlay: true,
+                          //aspectRatio: 16 / 9,
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          enableInfiniteScroll: true,
+                          autoPlayAnimationDuration:
+                              Duration(milliseconds: 800),
+                          viewportFraction: 0.75,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
+                      SizedBox(
+                        height: 20,
+                      ),
 
-                    /*
+                      /*
 
               SizedBox(height: 20,),
               Text(
@@ -273,7 +308,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                     fontSize: 16),
               ),*/
 
-                 /*   Container(
+                      /*   Container(
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.all(10),
                       child: Text(
@@ -297,24 +332,27 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                             fontSize: 12),
                       ),
                     ), */
-                  ]),
-            );
+                    ]),
+              );
             } else {
-              return Container(width: Get.width,height: Get.height,
-              color: Colors.white,
-              child: Center(
-                child: CupertinoActivityIndicator(
-                  color: Colors.black,
+              return Container(
+                width: Get.width,
+                height: Get.height,
+                color: Colors.white,
+                child: Center(
+                  child: CupertinoActivityIndicator(
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-            );
+              );
             }
           }),
     );
   }
 
   Widget subscriptionPlansView({required SubscriptionData? subscriptionData}) {
-    var document = parse(subscriptionData?.description ?? "",generateSpans: true);
+    var document =
+        parse(subscriptionData?.description ?? "", generateSpans: true);
     String doc = subscriptionData?.description ?? "";
     final String htmlcode = """
      <h1>H1 Title</h1>
@@ -339,15 +377,14 @@ class _SubscriptionViewState extends State<SubscriptionView> {
           width: Get.width * .8,
           height: Get.height * 0.48,
           decoration: BoxDecoration(
-
-              borderRadius: BorderRadius.circular(20.0),
+            borderRadius: BorderRadius.circular(20.0),
             // boxShadow: [BoxShadow(color: Colors.white,blurRadius: 2,spreadRadius: 2,offset:Offset.fromDirection(1.0),blurStyle:BlurStyle.inner  )],
-                color: Colors.white,
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                /*    Color(0xfff2d5f7),
+            color: Colors.white,
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  /*    Color(0xfff2d5f7),
                     Color(0xffe6acef),
                     Color(0xffd982e6),
                     Color(0xffcd59de),
@@ -359,28 +396,24 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                     Color(0xff45759d),
                     Color(0xff175284),
 */
-                    Color(0xffee216c),
-                    Color(0xffee216c),
-                    Color(0xffee216c),
-                    Color(0xfff14d89),
-                    Color(0xfff57aa7),
-                    Color(0xfff8a6c4),
-                    Color(0xfffcd3e2),
-                   // Colors.red.shade800,
-                    //Colors.red.shade700,
-                    //Colors.red.shade500,
-                   // Colors.red.shade400,
-                   // Colors.red.shade300,
-                   // Colors.black45,
-                    //Colors.black54,
-                 //   Colors.black87,
-                   // Colors.black,
-                  ]
-
-    ),
-
-                  ),
-
+                  Color(0xffee216c),
+                  Color(0xffee216c),
+                  Color(0xffee216c),
+                  Color(0xfff14d89),
+                  Color(0xfff57aa7),
+                  Color(0xfff8a6c4),
+                  Color(0xfffcd3e2),
+                  // Colors.red.shade800,
+                  //Colors.red.shade700,
+                  //Colors.red.shade500,
+                  // Colors.red.shade400,
+                  // Colors.red.shade300,
+                  // Colors.black45,
+                  //Colors.black54,
+                  //   Colors.black87,
+                  // Colors.black,
+                ]),
+          ),
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -406,45 +439,46 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                       fontWeight: FontWeight.w700),
                 )),
                 Center(
-                  child: CircleAvatar(radius: 40,
+                  child: CircleAvatar(
+                      radius: 40,
                       backgroundColor: Colors.red.shade400,
                       child: FittedBox(
                         child: Container(
                           margin: EdgeInsets.all(10),
                           child: Text(
-                    '₹${subscriptionData?.amount}',
-                    style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700),
-                  ),
+                            '₹${subscriptionData?.amount}',
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
+                          ),
                         ),
                       )),
                 ),
-               
                 FittedBox(
                   child: Container(
-                      // color: Colors.red.shade900,
-                      margin: EdgeInsets.all(5),
-                      alignment: Alignment.centerLeft,
-                      width: Get.width * 0.65,
-                      height: Get.width * 0.45,
-                      child:
-                      HtmlWidget(doc,textStyle: TextStyle(color: Colors.black),
-                     /* Text(document.children[0].text,
+                    // color: Colors.red.shade900,
+                    margin: EdgeInsets.all(5),
+                    alignment: Alignment.centerLeft,
+                    width: Get.width * 0.65,
+                    height: Get.width * 0.45,
+                    child: HtmlWidget(
+                      doc,
+                      textStyle: TextStyle(color: Colors.black),
+                      /* Text(document.children[0].text,
                           maxLines: 8,
                           style: TextStyle(
                               fontSize: 14,
                               color: Colors.black54,
                               fontWeight: FontWeight.w600),
                       )*/
+                    ),
                   ),
-                ),
                 )
               ]),
         ),
       ),
-   /*   Positioned(
+      /*   Positioned(
      // top: Get.height*0.001-20,
       bottom: Get.height*.65,
       left: 30,
@@ -462,117 +496,206 @@ class _SubscriptionViewState extends State<SubscriptionView> {
           ),
         ),
       ),*/
-
     ]);
-
   }
 
+  void selectPlanBottom(
+      {required BuildContext context,
+      required String amount,
+      required String name}) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.red.shade100,
 
-
-  void  selectPlanBottom({required BuildContext context , required String amount , required String name}){
-     showModalBottomSheet(context: context,backgroundColor: Colors.red.shade100, shape: RoundedRectangleBorder(
-       borderRadius: BorderRadius.vertical(
-         top: Radius.circular(20),
-       ),
-     ),builder: (context)
-
-    {
-      return Container(
-        height: Get.height*0.2,
-        width: Get.width,
-        decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight:Radius.circular(20) )),
-        margin: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Text('For $name Subscription plan' , style: TextStyle(fontSize: 20 , fontWeight: FontWeight.w600, color: Colors.black),),
-            SizedBox(height: 30,),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
+        //isScrollControlled: true,
+        builder: (context) {
+          return Container(
+            // constraints: BoxConstraints(
+            //     //minHeight: Get.height * 0.10,
+              // maxHeight: Get.height * 0.80),
+             height:Get.height*0.48,
+            width: Get.width,
+            //decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight:Radius.circular(20) )),
+            margin: EdgeInsets.all(20),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
                 children: [
-              Text('Total Amount:' , style: TextStyle(fontSize: 22 , fontWeight: FontWeight.w600, color: Colors.grey),),
-              Text('₹'+amount , style: TextStyle(fontSize: 22 , fontWeight: FontWeight.w600, color: Colors.blue),),
-            ]),
-          Spacer(),
-            GestureDetector(
-              onTap: () async {
-                {
-                  Navigator.pop(context);
-                  Get.to(WebViewContainer(url:'https://app.partypeople.in/easebuzz/easebuzz.php?api_name=initiate_payment'
-                      '&amount=${double.parse(amount)}'
-                     // '&amount=${double.parse('10')}'
-                      '&phone=${subController.individualProfileController.userMobile.value}'
-                      '&email=${subController.individualProfileController.email.value}'
-                      '&firstname=${subController.individualProfileController.username.value}'
-                      '&country=${subController.individualProfileController.country.value}'
-                      '&state=${subController.individualProfileController.state.value}'
-                      '&city=${subController.individualProfileController.city.value}'
-                      '&order_id=${subController.subsOrderId}'
-                      '&zipcode=${subController.individualProfileController.pincode.value}'
-                      '&usertype=Individual'));
+                  Text(
+                    'For $name Subscription plan',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
 
-               /* var options = {
-                    'key': 'rzp_test_qiTDenaoeqV1Zr',
-                    // Replace with your Razorpay API key
-                    'amount': (int.parse(amount)) * 100,
-                    // Amount in paise (e.g., for INR 500.00, use 50000)
-                    'name': 'PARTY PEOPLE ',
-                    'description': 'RAMBER ENTERTAINMENT PVT LTD',
-                    'prefill': {
-                      'contact': 'CUSTOMER_CONTACT_NUMBER',
-                      'email': 'CUSTOMER_EMAIL'
-                    },
-                    'external': {
-                      'wallets': ['paytm'] // Supported wallets
-                    }
-                  };
-
-                  try {
-                    _razorpay.open(options);
-                  } catch (e) {
-                    print(e.toString());
-                  }
-                  */
-/*
-                    String access_key = "555a2b009214573bd833feca997244f1721ac69d7f2b09685911bc943dcf5201";
-                    String pay_mode = "test";
-                    Object parameters =
-                    {
-                      "access_key":access_key,
-                      "pay_mode":pay_mode,
-                    //  "amount": (double.parse(amount)),
+                      Container(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Please fill required details',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black),
+                          ),
+                          CustomTextField(
+                            validate: true,
+                            //maxLength: 10,
+                            hintText: 'Email',
+                            obscureText: false,
+                            icon: Icons.mail,
+                            textInput: TextInputType.emailAddress,
+                            initialValue:
+                            subController
+                                .email.value,
+                            onChanged: (value) {
+                              setState(() {
+                                subController.email.value = value;
+                              });
+                            },
+                          ),
+                          CustomTextField(
+                            validate: true,
+                            maxLength: 10,
+                            hintText: 'Mobile Number',
+                            obscureText: false,
+                            icon: Icons.phone,
+                            initialValue:
+                            subController
+                                .mobileNumber.value,
+                            textInput: TextInputType.number,
+                            onChanged: (value) {
+                              setState(() {
+                                subController.mobileNumber.value =
+                                    value;
+                              });
+                            },
+                          )
+                        ]),
+                  ),
+                  Spacer(),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Total Amount:',
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey),
+                        ),
+                        Text(
+                          '₹' + amount,
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.blue),
+                        ),
+                      ]),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      {
+                        if (subController.mobileNumber.value.isNotEmpty &&
+                            subController.email.value.isNotEmpty) {
+                          Navigator.pop(context);
+                          Get.to(WebViewContainer(
+                              url:
+                                  'https://app.partypeople.in/easebuzz/easebuzz.php?api_name=initiate_payment'
+                                  '&amount=${double.parse(amount)}'
+                                  // '&amount=${double.parse('10')}'
+                                  '&phone=${subController.mobileNumber.value}'
+                                  '&email=${subController.email.value}'
+                                  '&firstname=${subController.individualProfileController.username.value}'
+                                  '&country=${subController.individualProfileController.country.value}'
+                                  '&state=${subController.individualProfileController.state.value}'
+                                  '&city=${subController.individualProfileController.city.value}'
+                                  '&order_id=${subController.subsOrderId}'
+                                  '&zipcode=${subController.individualProfileController.pincode.value}'
+                                  '&usertype=Individual'));
+                        } else {
+                          Fluttertoast.showToast(
+                              msg: 'Please fill Required Fields');
+                        }
+                        /* var options = {
+                      'key': 'rzp_test_qiTDenaoeqV1Zr',
+                      // Replace with your Razorpay API key
+                      'amount': (int.parse(amount)) * 100,
+                      // Amount in paise (e.g., for INR 500.00, use 50000)
+                      'name': 'PARTY PEOPLE ',
+                      'description': 'RAMBER ENTERTAINMENT PVT LTD',
+                      'prefill': {
+                        'contact': 'CUSTOMER_CONTACT_NUMBER',
+                        'email': 'CUSTOMER_EMAIL'
+                      },
+                      'external': {
+                        'wallets': ['paytm'] // Supported wallets
+                      }
                     };
-                    final payment_response = await _channel.invokeMethod("payWithEasebuzz", parameters);
-                  String result = payment_response['result'];
 
-                    /* payment_response is the HashMap containing the response of the payment.
+                    try {
+                      _razorpay.open(options);
+                    } catch (e) {
+                      print(e.toString());
+                    }
+                    */
+/*
+                      String access_key = "555a2b009214573bd833feca997244f1721ac69d7f2b09685911bc943dcf5201";
+                      String pay_mode = "test";
+                      Object parameters =
+                      {
+                        "access_key":access_key,
+                        "pay_mode":pay_mode,
+                      //  "amount": (double.parse(amount)),
+                      };
+                      final payment_response = await _channel.invokeMethod("payWithEasebuzz", parameters);
+                    String result = payment_response['result'];
+
+                      /* payment_response is the HashMap containing the response of the payment.
 You can parse it accordingly to handle response */
 */
-                };
-              },
-              child: Container(
-                margin: EdgeInsets.only(right: Get.width * 0.028),
-                height: MediaQuery.of(context).size.width * 0.12,
-                width: MediaQuery.of(context).size.width * 0.5,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    //color: Colors.amber,
-                 border: Border.all(color: Colors.red.shade900)
-                  //const Color(0xFFffa914),
-                ),
-                child:Text(
-                  'CONTINUE',textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: 'Poppins',
-                      fontSize: 20),
-                ),
-
+                      }
+                      ;
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(right: Get.width * 0.028),
+                      height: MediaQuery.of(context).size.width * 0.12,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          //color: Colors.amber,
+                          border: Border.all(color: Colors.red.shade900)
+                          //const Color(0xFFffa914),
+                          ),
+                      child: Text(
+                        'CONTINUE',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'Poppins',
+                            fontSize: 20),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      );
-    }
-    );
+          );
+        });
   }
 }

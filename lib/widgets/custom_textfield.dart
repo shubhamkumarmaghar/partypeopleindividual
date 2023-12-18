@@ -10,6 +10,7 @@ class CustomTextField extends StatefulWidget {
   final String? initialValue; // New parameter
   final int? maxLength;
   final bool obscureText;
+  final bool enabled;
   var suffixIcon;
   Color iconColor;
   final Function(String)? onChanged;
@@ -26,6 +27,7 @@ class CustomTextField extends StatefulWidget {
     this.onChanged,
     this.maxLength,
     this.initialValue,
+    this.enabled=true,
     this.iconColor=Colors.grey,// Include new parameter in the constructor
   });
 
@@ -149,6 +151,7 @@ class _CustomTextFieldState extends State<CustomTextField>
               controller: _textController,
               // Use the controller
                maxLength: widget.maxLength,
+              enabled: widget.enabled ,
               maxLines: widget.maxLines,
               keyboardType: widget.textInput,
               style: const TextStyle(color: Colors.black),

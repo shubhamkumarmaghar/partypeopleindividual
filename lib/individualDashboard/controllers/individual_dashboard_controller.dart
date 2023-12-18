@@ -18,7 +18,7 @@ import '../models/usermodel.dart';
 
 class IndividualDashboardController extends GetxController {
   var buttonState = true;
-
+  RxBool nearbyvalue = true.obs;
   RxList<IndividualCity> allCityList = RxList();
   IndividualProfileController individualProfileController =
       Get.put(IndividualProfileController());
@@ -96,7 +96,8 @@ class IndividualDashboardController extends GetxController {
     getAllCities();
     getOnlineStatus();
     await individualProfileController.individualProfileData();
-    getAllNearbyPeoples();
+    String type =individualProfileController.gender.value.toString()=='Male'?'2':'1';
+    getAllNearbyPeoples(type: type);
     getPopularParty();
     getTodayPary();
     getTomarrowParty();
@@ -139,21 +140,22 @@ class IndividualDashboardController extends GetxController {
     }
   }
 
-  Future<void> getAllNearbyPeoples() async {
-    String state = GetStorage().read('state');
+  Future<void> getAllNearbyPeoples({String type ='0'}) async {
+    String state = GetStorage().read('state')??'delhi';
     String city = '';
     if (individualProfileController.activeCity.value.toString().isNotEmpty) {
       city = individualProfileController.activeCity.value.toString();
     } else {
       city = 'delhi';
     }
-
     try {
       apiService.isLoading.value = true;
       var response = await apiService.individualNearbyPeoples(
         {'city_id': city.toLowerCase(), 'state': state.toLowerCase(),
           'start':'1',
           'end':'15',
+          if(type=='1') 'gender':'male',
+          if(type=='2')'gender':'female',
         },
         '${GetStorage().read('token')}',
       );
@@ -168,7 +170,6 @@ class IndividualDashboardController extends GetxController {
           response['message'].contains('Not')) {
         noUserFoundController.value = response['message'];
         update();
-
         Get.snackbar('Opps!', 'No User found ');
       } else {
         Get.snackbar('Opps!', 'No User found ');

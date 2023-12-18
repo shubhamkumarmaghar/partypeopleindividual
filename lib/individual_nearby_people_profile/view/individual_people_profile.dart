@@ -347,10 +347,13 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                           ),
                           Row(
                             children: [
-                              Expanded(
-                                child: CustomProfileTextView(
-                                    text: CalculateAge.calAge(data.dob ?? ""),
-                                    icon: Icons.calendar_month),
+                              Visibility(
+                                visible:  ( data.dob?.toString() != null ? data.dob.toString() != '0000-00-00' :false)  ,
+                                child: Expanded(
+                                  child: CustomProfileTextView(
+                                      text: CalculateAge.calAge(data.dob ?? ""),
+                                      icon: Icons.calendar_month),
+                                ),
                               ),
                               Expanded(
                                 child: CustomProfileTextView(
@@ -361,49 +364,66 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                           ),
                           Row(
                             children: [
-                              Expanded(
-                                child: CustomProfileTextView(
-                                    text: data.qualification ?? "NA",
-                                    icon: Icons.description_outlined),
+                              Visibility(
+                                visible:data.qualification?.isNotEmpty ?? false ,
+                                child: Expanded(
+                                  child: CustomProfileTextView(
+                                      text: data.qualification ?? "NA",
+                                      icon: Icons.description_outlined),
+                                ),
                               ),
-                              Expanded(
-                                child: CustomProfileTextView(
-                                    text: data.occupation ?? "NA",
-                                    icon: Icons.work),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomProfileTextView(
-                                    text: data.country ?? "NA",
-                                    icon: Icons.location_on),
-                                //QualificationWidget(),
-                              ),
-                              Expanded(
-                                child: CustomProfileTextView(
-                                    text: data.state ?? "NA",
-                                    icon: Icons.location_on),
-
-                                //OccupationWidget(),
+                              Visibility(
+                                visible:data.occupation?.isNotEmpty ?? false ,
+                                child: Expanded(
+                                  child: CustomProfileTextView(
+                                      text: data.occupation ?? "NA",
+                                      icon: Icons.work),
+                                ),
                               ),
                             ],
                           ),
                           Row(
                             children: [
-                              Expanded(
-                                child: CustomProfileTextView(
-                                    text: data.city ?? "NA",
-                                    icon: Icons.location_city),
-                                //QualificationWidget(),
+                              Visibility(
+                                visible:data.country?.isNotEmpty ?? false ,
+                                child: Expanded(
+                                  child: CustomProfileTextView(
+                                      text: data.country ?? "NA",
+                                      icon: Icons.location_on),
+                                  //QualificationWidget(),
+                                ),
                               ),
-                              Expanded(
-                                child: CustomProfileTextView(
-                                    text: data.pincode ?? "NA",
-                                    icon: Icons.pin_drop),
+                              Visibility(
+                                visible:data.state?.isNotEmpty ?? false ,
+                                child: Expanded(
+                                  child: CustomProfileTextView(
+                                      text: data.state ?? "NA",
+                                      icon: Icons.location_on),
 
-                                //OccupationWidget(),
+                                  //OccupationWidget(),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Visibility(
+                                visible:data.city?.isNotEmpty ?? false ,
+                                child: Expanded(
+                                  child: CustomProfileTextView(
+                                      text: data.city ?? "NA",
+                                      icon: Icons.location_city),
+                                  //QualificationWidget(),
+                                ),
+                              ),
+                              Visibility(
+                                visible:data.pincode?.isNotEmpty ?? false ,
+                                child: Expanded(
+                                  child: CustomProfileTextView(
+                                      text: data.pincode ?? "NA",
+                                      icon: Icons.pin_drop),
+                                  //OccupationWidget(),
+                                ),
                               ),
                             ],
                           ),
@@ -416,7 +436,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                               color: Colors.black,
                               fontSize: 22,
                             ),
-                          ),
+                          ),Obx(() =>
                           controller.categoryLists.isEmpty
                               ? Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -518,7 +538,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                     ),
                                   ],
                                 ),
-
+                                    ),
                           /*  Container(
                       width: Get.width,
                       height: Get.height * 0.2,
@@ -693,32 +713,5 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
         ));
   }
 */
-  String calAge(String birthdate) {
-    try {
-      int age;
-      if (birthdate == '') {
-        return "NA";
-      } else {
-        DateTime birthDate = DateTime.parse(birthdate);
-        DateTime currentDate = DateTime.now();
-        age = currentDate.year - birthDate.year;
-        int month1 = currentDate.month;
-        int month2 = birthDate.month;
-        if (month2 > month1) {
-          age--;
-        } else if (month1 == month2) {
-          int day1 = currentDate.day;
-          int day2 = birthDate.day;
-          if (day2 > day1) {
-            age--;
-          }
-        }
-      }
-      log("$age");
-      return age.toString() + ' Years';
-    } catch (e) {
-      log('${e}');
-      return "NA";
-    }
-  }
+
 }

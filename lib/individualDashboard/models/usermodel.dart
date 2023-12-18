@@ -3,7 +3,7 @@ class UserModel {
   final dynamic fullName;
   final String username;
   final dynamic city;
-  final String phone;
+  final dynamic phone;
   final String profilePicture;
   final String onlineStatus;
    String likeStatus;

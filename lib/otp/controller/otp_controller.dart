@@ -39,14 +39,16 @@ class OTPController extends GetxController {
       OTPVerificationResponse? response =
           await apiService.verifyOTP(otp.value, header.value);
       if(response != null){
-        if (response.data.phone.isEmpty || response.data.token.isEmpty) {
-          Get.snackbar(loginFailedTitle, unexpectedErrorMessage);
+      /*  if (response.data.phone.isEmpty || response.data.token.isEmpty) {
+
         }
-        else if(response.data.type=='Individual' && response.data.phone.isNotEmpty && response.data.token.isNotEmpty){
+        else*/
+       // if(response.data.type=='Individual' && (response.data.phone.isNotEmpty ||response.data.email.isNotEmpty  )&& response.data.token.isNotEmpty){
+         if(response.message == 'OTP verify successfully.'){
           ///Login Successfully
           ///Differentiate User Between Organisation and Individual
           print(
-              "Checking token on successfull otp verification : ${response.data.token}");
+              "Checking token on successfully otp verification : ${response.data.token}");
           // Save token to local storage
           await GetStorage().write('token', response.data.token);
           updateUserType();
@@ -58,6 +60,9 @@ class OTPController extends GetxController {
         {
           Get.snackbar(loginFailedTitle, organizationUser);
           Get.to(LoginScreen());
+        }
+        else{
+          Get.snackbar(loginFailedTitle, unexpectedErrorMessage);
         }
       }
 

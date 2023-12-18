@@ -31,10 +31,35 @@ class _CustomDateFieldState extends State<CustomDateField> {
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
-      context: context,
+
+        context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
+      firstDate: DateTime(1960),
       lastDate: DateTime.now(),
+        builder: (BuildContext context, Widget ?child) {
+          return Theme(
+            data: ThemeData(
+              primarySwatch: Colors.grey,
+              splashColor: Colors.black,
+              textTheme: TextTheme(
+                subtitle1: TextStyle(color: Colors.black),
+                button: TextStyle(color: Colors.black),
+              ),
+              accentColor: Colors.black,
+              colorScheme: ColorScheme.light(
+                  primary: Colors.red.shade900,
+                  primaryVariant: Colors.black,
+                  secondaryVariant: Colors.black,
+                  onSecondary: Colors.black,
+                  onPrimary: Colors.white,
+                  surface: Colors.black,
+                  onSurface: Colors.black,
+                  secondary: Colors.black),
+              dialogBackgroundColor: Colors.white,
+            ),
+            child: child ??Text(""),
+          );
+        },
       initialEntryMode: DatePickerEntryMode.calendarOnly
     );
     if (picked != null) {

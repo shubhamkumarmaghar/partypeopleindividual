@@ -16,6 +16,7 @@ class _OccupationWidgetState extends State<OccupationWidget> {
       Get.put(IndividualProfileController());
 
   final List<String> _occupations = [
+
     'Student',
     'Engineer',
     'Doctor',
@@ -32,6 +33,7 @@ class _OccupationWidgetState extends State<OccupationWidget> {
     'Musician',
     'Artist',
     'Other',
+    '',
     // Add more occupations if required
   ];
 
@@ -40,9 +42,9 @@ class _OccupationWidgetState extends State<OccupationWidget> {
   @override
   void initState() {
     super.initState();
-    _selectedOccupation = individualProfileController.gender.value.isNotEmpty
+    _selectedOccupation = individualProfileController.occupation.value.isNotEmpty
         ? individualProfileController.occupation.value
-        : null;
+        : "";
   }
 
   @override

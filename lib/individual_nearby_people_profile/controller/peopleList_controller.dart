@@ -66,7 +66,7 @@ class PeopleListController extends GetxController
       end = 15;
       paginatedUsersList.clear();
     }else {
-      start =  end;
+      start =  ++end;
       end = end + 15;
     }
     try {

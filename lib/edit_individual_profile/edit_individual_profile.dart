@@ -452,10 +452,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                         icon: Icons.email)),
                               ],
                             ),
-                            individualProfileController
-                                        .descStatusApproval.value ==
-                                    '0'
-                                ? Blur(
+                            Blur(
                                     blur: 2.5,
                                     child: CustomTextField(
                                         validate: true,
@@ -471,22 +468,23 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                               .description.value = value;
                                         },
                                         maxLines: 3),
-                                  )
-                                : CustomTextField(
-                                    validate: true,
-                                    hintText: 'Bio',
-                                    obscureText: false,
-                                    initialValue: individualProfileController
-                                        .description.value,
-                                    icon: Icons.description,
-                                    textInput: TextInputType.multiline,
-                                    onChanged: (value) {
-                                      log('abcs ${value}');
-                                      individualProfileController
-                                          .description.value = value;
-                                    },
-                                    maxLines: 3),
-
+                              overlay:individualProfileController
+                                  .descStatusApproval.value ==
+                                  '0' ? Container() :CustomTextField(
+                                  validate: true,
+                                  hintText: 'Bio',
+                                  obscureText: false,
+                                  initialValue: individualProfileController
+                                      .description.value,
+                                  icon: Icons.description,
+                                  textInput: TextInputType.multiline,
+                                  onChanged: (value) {
+                                    log('abcs ${value}');
+                                    individualProfileController
+                                        .description.value = value;
+                                  },
+                                  maxLines: 3),
+                                  ),
                             Row(
                               children: [
                                 Expanded(

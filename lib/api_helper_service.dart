@@ -17,14 +17,17 @@ class APIService extends GetxController {
   RxBool isLoading = false.obs; // Add
 
   ///This method is used to send otp
-  Future<User> login(String username, String phone, String deviceToken) async {
+  Future<User> login(String username, String phone,String email,String type, String deviceToken) async {
     try {
       final response = await _post(API.login,
-          {'phone': phone,
+            {
+              if(type =='1') 'phone': phone,
+              if(type =='2') 'email': email,
+            //  'phone': phone,
             'username': username,
             'user_type':'Individual',
             'device_token': deviceToken,
-           // 'type':'1'
+            'type':type
 
           });
 

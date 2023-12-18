@@ -4,7 +4,7 @@ class API {
 
   static const String developmentUrl = 'https://65.2.59.129/app/v1';
 
-  static const String baseUrl = productionUrlString;
+  static const String baseUrl = developmentUrl;
 
   static const String login = '$baseUrl/account/login';
 
@@ -101,19 +101,5 @@ class API {
   static const String getLikeList = '$baseUrl/account/get_individual_like_list';
 
   static const String addImage = '$baseUrl/party/add_image';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

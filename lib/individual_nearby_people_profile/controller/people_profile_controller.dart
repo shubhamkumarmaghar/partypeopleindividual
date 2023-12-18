@@ -17,7 +17,7 @@ class PeopleProfileController extends GetxController {
   APIService apiService = Get.find();
   List<OrganizationAmenities> amentiesdata=[];
   List<Category> categories = [];
-  List<CategoryList> categoryLists = [];
+  RxList<CategoryList> categoryLists = RxList();
   List<OrganizationAmenities>? amenties=[];
   List selectedAmenities = [];
   String userId='';

@@ -10,9 +10,10 @@ import 'package:partypeopleindividual/otp/controller/otp_controller.dart';
 import 'package:partypeopleindividual/widgets/custom_button.dart';
 
 class OTPScreen extends StatefulWidget {
-  final String enteredNumber;
+  final String enteredNumberOrEmail;
+  final String type;
 
-   OTPScreen({super.key, required this.enteredNumber});
+   OTPScreen({super.key, required this.enteredNumberOrEmail,required this.type});
 
   @override
   State<OTPScreen> createState() => _OTPScreenState();
@@ -154,13 +155,13 @@ class _OTPScreenState extends State<OTPScreen>
                                           color: Colors.grey.shade700),
                                     ),
                                     TextSpan(
-                                      text: "+91" + widget.enteredNumber,
+                                      text: widget.enteredNumberOrEmail,
                                       style:
                                           const TextStyle(color: Colors.black),
                                     ),
                                     TextSpan(
                                       text:
-                                          ' did you enter the \ncorrect number?',
+                                          ' did you enter the \ncorrect ${widget.type=='1' ? 'Number':'Email'}?',
                                       style: TextStyle(
                                           color: Colors.grey.shade700),
                                     ),

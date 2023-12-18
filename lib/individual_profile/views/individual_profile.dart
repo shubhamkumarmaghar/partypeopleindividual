@@ -114,7 +114,15 @@ class _IndividualProfileState extends State<IndividualProfile> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Stack(
+                      SizedBox(
+                        width: Get.width,
+                        height: Get.height*0.4,
+                        child: Image.asset(
+                          'assets/images/splashscreen.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                   /*   Stack(
                         alignment: Alignment.center,
                         children: <Widget>[
                           //Cover Photo
@@ -224,7 +232,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                             ),
                           ),
                         ],
-                      ),
+                      ),*/
                       ///Other Individual Widget
                       const SizedBox(
                         height: 10,
@@ -258,7 +266,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                                 iconColor: Colors.red.shade900,)),
                         ],
                       ),
-                      Row(
+                  /*    Row(
                         children: [
                           Expanded(
                               child: CustomTextField(
@@ -270,14 +278,14 @@ class _IndividualProfileState extends State<IndividualProfile> {
                                   onChanged: (value) {
       individualProfileController
           .email.value = value;
-
                                   },
                                   icon: Icons.email,
                                 iconColor: Colors.red.shade900,
                               )),
                         ],
                       ),
-                      CustomTextField(
+                  */
+               /*       CustomTextField(
                           validate: true,
                           hintText: 'Bio',
                           obscureText: false,
@@ -292,10 +300,10 @@ class _IndividualProfileState extends State<IndividualProfile> {
                           maxLines: 3,
                         iconColor: Colors.red.shade900,
                       ),
-
+*/
                       Row(
                         children: [
-                          Expanded(
+                        /*  Expanded(
                             child: CustomDateField(
                               validate: true,
                               hintText: 'Date of Birth',
@@ -303,13 +311,13 @@ class _IndividualProfileState extends State<IndividualProfile> {
                               controller:
                                   individualProfileController.dobController,
                             ),
-                          ),
+                          ),*/
                           const Expanded(
                             child: GenderSelect(),
                           ),
                         ],
                       ),
-                      Row(
+                  /*    Row(
                         children: const [
                           Expanded(
                             child: QualificationWidget(),
@@ -323,7 +331,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                       SelectState(
                           onCountryChanged: (onCountryChanged) {},
                           onStateChanged: (onCountryChanged) {},
-                          onCityChanged: (onCityChanged) {}),
+                          onCityChanged: (onCityChanged) {}),*/
                       Container(
                         padding: EdgeInsets.only(top: 10.0,),
                         margin: EdgeInsets.all(15),
@@ -361,7 +369,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                       const SizedBox(
                         height: 10,
                       ),
-                      const Padding(
+                   /*   const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14.0),
                         // adjust padding as needed
                         child: Text(
@@ -461,7 +469,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                                   height: 25,
                                 ),
                               ],
-                            ),
+                            ),*/
                       apiService.isLoading.value == true
                           ? const CupertinoActivityIndicator(
                               color: Colors.grey,

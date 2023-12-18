@@ -22,3 +22,8 @@ Future<void> logFacebookCustomEvent({required String eventName , required Map<St
 const String logInEvent = 'log_in_event';
 const String chatInitiateEvent = 'chat_event';
 const String splash = 'splash';
+const String partyPreview = 'PartyPreview';
+const String bookNow = 'BookNow';
+const String personLike = 'PeopleLike';
+const String partyLike = 'PartyLike';
+const String peopleProfileView = 'PeopleProfileView';
