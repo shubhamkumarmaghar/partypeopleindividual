@@ -55,6 +55,7 @@ static  void showLogoutAlertDialog(BuildContext context
       GetStorage().remove('newUser');
       GetStorage().remove('plan_plan_expiry');
       GetStorage().remove('approval_status');
+      GetStorage().erase();
       Get.find<IndividualDashboardController>().timer.cancel();
       Get.offAll(LoginScreen());
     },

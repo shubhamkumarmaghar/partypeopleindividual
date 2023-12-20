@@ -112,17 +112,18 @@ class _IndividualProfileState extends State<IndividualProfile> {
                   FocusScope.of(context).requestFocus(FocusNode());
                 },
                 child: SingleChildScrollView(
-                  child: Column(
+                  child:
+                  Column(
                     children: [
-                      SizedBox(
+                     /* SizedBox(
                         width: Get.width,
                         height: Get.height*0.4,
                         child: Image.asset(
                           'assets/images/splashscreen.png',
                           fit: BoxFit.cover,
                         ),
-                      ),
-                   /*   Stack(
+                      ),*/
+                     Stack(
                         alignment: Alignment.center,
                         children: <Widget>[
                           //Cover Photo
@@ -232,7 +233,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                             ),
                           ),
                         ],
-                      ),*/
+                      ),
                       ///Other Individual Widget
                       const SizedBox(
                         height: 10,
@@ -285,7 +286,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                         ],
                       ),
                   */
-               /*       CustomTextField(
+                    CustomTextField(
                           validate: true,
                           hintText: 'Bio',
                           obscureText: false,
@@ -300,7 +301,7 @@ class _IndividualProfileState extends State<IndividualProfile> {
                           maxLines: 3,
                         iconColor: Colors.red.shade900,
                       ),
-*/
+
                       Row(
                         children: [
                         /*  Expanded(

@@ -2,16 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/centralize_api.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-
 import '../models/city.dart';
 import '../models/party_model.dart';
 import '../models/usermodel.dart';
@@ -571,7 +567,7 @@ class IndividualDashboardController extends GetxController {
       ///
       /// 'filter_type': '2' == regular parties
       /// 'filter_type': '1' == popular parties
-      if (individualProfileController.city.value.isNotEmpty) {
+      if (individualProfileController.activeCity.value.isNotEmpty) {
         partyCity.value =
             individualProfileController.activeCity.value.toString();
         log('upcoming partycity ${partyCity.value}');

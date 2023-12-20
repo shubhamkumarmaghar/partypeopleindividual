@@ -75,7 +75,7 @@ class IndividualProfileController extends GetxController {
 
   // Add this function to your controller.
   void onContinueButtonPressed() {
-  /*  if (coverImage.path.isEmpty) {
+   if (coverImage.path.isEmpty) {
       Get.snackbar('Photo Error', 'Cover Photo URL should not be empty');
       return;
     }
@@ -87,22 +87,25 @@ class IndividualProfileController extends GetxController {
       Get.snackbar('Name Error', 'First name should not be empty');
       return;
     }
+   if (lastname.value.isEmpty) {
+     Get.snackbar('Name Error', 'Last name should not be empty');
+     return;
+   }
+   if (description.value.isEmpty) {
+     Get.snackbar('Description Error', 'Description should not be empty');
+     return;
+   }
+   if (gender.value.isEmpty) {
+     Get.snackbar('Gender Error', 'Gender should not be empty');
+     return;
+   }
+   /*
     if (email.value.isEmpty || !email.value.contains('@')) {
       Get.snackbar('Email Error', 'Email  should not be empty');
       return;
     }
     if ( !email.value.contains('@')) {
       Get.snackbar('Email Error', 'Please enter valid email ');
-      return;
-    }
-
-    if (lastname.value.isEmpty) {
-      Get.snackbar('Name Error', 'Last name should not be empty');
-      return;
-    }
-
-    if (description.value.isEmpty) {
-      Get.snackbar('Description Error', 'Description should not be empty');
       return;
     }
 
@@ -159,7 +162,7 @@ class IndividualProfileController extends GetxController {
         if(description.value.isNotEmpty)'bio': description.value.toString(),
         if(description.value.isNotEmpty)'description':description.value.toString(),
         if(dob.value.isNotEmpty)'dob':dob.value.toString(),
-        'email':GetStorage().read('email')??"",
+        'email':GetStorage().read('email')??" ",
         if(pincode.value.isNotEmpty)'pincode': pincode.value.toString(),
         if(occupation.value.isNotEmpty)'occupation': occupation.value.toString(),
         if(qualification.value.isNotEmpty)'qualification': qualification.value.toString(),
@@ -314,6 +317,8 @@ class IndividualProfileController extends GetxController {
       }
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
+
+    //  log('abcde ${json.decode(await response.stream.bytesToString())}' );
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(await response.stream.bytesToString());
         //isLoading.value = false;
