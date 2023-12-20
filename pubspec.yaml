@@ -82,6 +82,8 @@ dependencies:
   in_app_update: ^4.2.2
   fluttertoast: ^8.2.2
   neumorphic_ui: ^1.0.1
+  flutter_notification_channel: ^2.0.0
+
 
 
 

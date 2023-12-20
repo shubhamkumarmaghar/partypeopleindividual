@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -14,20 +15,20 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:partypeopleindividual/splash_screen/view/splash_screen.dart';
 import 'package:sizer/sizer.dart';
 import 'constants.dart';
+import 'individualDashboard/views/individual_dashboard_view.dart';
 import 'myhttp_overrides.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-
   FlutterLocalNotificationsPlugin pluginInstance = FlutterLocalNotificationsPlugin();
-
   var init = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/launcher_icon'),
       iOS: DarwinInitializationSettings(
         requestSoundPermission: true,
         requestBadgePermission: true,
         requestAlertPermission: true,
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification,
       ));
 
   pluginInstance.initialize(init,onDidReceiveNotificationResponse: (NotificationResponse details) {
@@ -64,6 +65,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     presentBadge: true,
     presentSound: true,
     categoryIdentifier: 'plainCategory',
+
   );
   NotificationDetails platformSpec = NotificationDetails(
     android: androidSpec,
@@ -73,6 +75,28 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec);
   log('A background msg just showed ${message.data}');
   //return;
+}
+Future onDidReceiveLocalNotification(
+    int id, String? title, String? body, String? payload) async {
+  log('notification ::: $title  $body   $payload');
+  // display a dialog with the notification details, tap ok to go to another page
+  showDialog(
+    context: Get.context!,
+    builder: (BuildContext context) => CupertinoAlertDialog(
+      title: Text(title!),
+      content: Text(body!),
+      actions: [
+        CupertinoDialogAction(
+          isDefaultAction: true,
+          child: Text('Ok'),
+          onPressed: () async {
+            Navigator.of(context, rootNavigator: true).pop();
+           Get.to(IndividualDashboardView());
+          },
+        )
+      ],
+    ),
+  );
 }
 
 
@@ -93,12 +117,14 @@ void main() async {
 
 
   var init = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon'), iOS: DarwinInitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/launcher_icon'),
+      iOS: DarwinInitializationSettings(
     requestAlertPermission: true,
     requestBadgePermission: true,
     requestSoundPermission: true,
+     onDidReceiveLocalNotification:onDidReceiveLocalNotification
   ));
-  pluginInstance.initialize(init);
+  await pluginInstance.initialize(init);
   const AndroidNotificationChannel androidChannel = AndroidNotificationChannel(
       'high_importance_channel', // id
       'High Importance Notifications', // title

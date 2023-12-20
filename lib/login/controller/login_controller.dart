@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -57,7 +58,7 @@ class LoginController extends GetxController {
 
     if(Platform.isIOS) {
       await FirebaseMessaging.instance.getAPNSToken().then((token) {
-        print("token is $token");
+        log("IOS APNS TOKEN ::  $token");
         deviceToken.value = token!;
       });
     }
