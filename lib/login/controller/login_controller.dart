@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/otp/controller/otp_controller.dart';
 
@@ -11,9 +12,10 @@ import '../model/user_model.dart';
 
 class LoginController extends GetxController {
   RxBool isChecked = false.obs;
-
+  String countryType = '1';
   RxString username = ''.obs;
   RxString mobileNumber = ''.obs;
+  RxString email = ''.obs;
   RxString deviceToken = ''.obs;
   APIService apiService = Get.put(APIService());
   OTPController otpController = Get.put(OTPController());
@@ -27,7 +29,7 @@ class LoginController extends GetxController {
 
 // Error Message Helper Function
   String generateErrorMessage(
-      bool isChecked, String mobileNumber, String username) {
+      bool isChecked, String mobileNumber, String username,String email) {
     String errorMessage = '';
     if (username.isEmpty  ) {
       errorMessage += 'Username is required.\n';
@@ -38,9 +40,14 @@ class LoginController extends GetxController {
     if (username.isNumericOnly) {
       errorMessage += 'username should not be numeric value. \n';
     }
+    if(countryType =='1'){
     if (mobileNumber.isEmpty || mobileNumber.length != 10) {
       errorMessage += 'Mobile number should be 10 digits and is required.\n';
-    }
+    }}
+    else{
+      if (email.isEmpty  ) {
+        errorMessage += 'Please enter valid email Id.\n';
+      }}
     if (!isChecked) {
       errorMessage += 'Please accept the terms and conditions.';
     }
@@ -49,7 +56,7 @@ class LoginController extends GetxController {
 
   Future<void> login() async {
     String errorMessage = generateErrorMessage(
-        isChecked.value, mobileNumber.value, username.value);
+        isChecked.value, mobileNumber.value, username.value,email.value);
 
     if (errorMessage.isNotEmpty) {
       Get.snackbar(loginFailedTitle, errorMessage);
@@ -71,15 +78,16 @@ class LoginController extends GetxController {
 
     try {
       User? response = await apiService.login(
-          username.value, mobileNumber.value, deviceToken.value);
+          username.value, mobileNumber.value,email.value,countryType ,deviceToken.value);
 
-      if (response.phone.isEmpty) {
-        Get.snackbar(loginFailedTitle, unexpectedErrorMessage);
-      } else {
+      if (response.phone.isNotEmpty || response.email.isNotEmpty) {
         otpController.header.value = response.token;
+        countryType =='1'? GetStorage().write('mobile', mobileNumber.value):GetStorage().write('email', email.value);
         Get.to(OTPScreen(
-          enteredNumber: mobileNumber.value,
+          enteredNumberOrEmail: countryType =='1' ? mobileNumber.value:email.value,type: countryType,
         ));
+      } else {
+        Get.snackbar(loginFailedTitle, unexpectedErrorMessage);
       }
     } catch (e) {
       Get.snackbar(loginFailedTitle, checkCredentialsMessage);

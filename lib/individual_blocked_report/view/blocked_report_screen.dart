@@ -72,14 +72,16 @@ class BlockedReportedUsersView extends StatelessWidget {
                 ),
               ),
             ),  */
-            Container(height: Get.height*0.4,child:
-            GetBuilder<BlockReportController>(
-              init: BlockReportController(),
-              builder: (controller) {
-                return controller.blockInfoModel.data != null ?
-                BlockedReportedUserItem(dataList:controller.blockInfoModel.data ??[])
-                :loder();
-              },),),
+            SingleChildScrollView(
+              child: Container(height: Get.height*0.8,child:
+              GetBuilder<BlockReportController>(
+                init: BlockReportController(),
+                builder: (controller) {
+                  return controller.blockInfoModel.data != null ?
+                  BlockedReportedUserItem(dataList:controller.blockInfoModel.data ??[])
+                  :loder();
+                },),),
+            ),
            /* Expanded(
               child: ListView.builder(
                 itemCount: 10,

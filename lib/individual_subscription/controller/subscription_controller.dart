@@ -10,7 +10,8 @@ import '../model/SubscriptionModel.dart';
 import 'package:http/http.dart' as http;
 
 class SubscriptionController extends GetxController{
-
+  RxString mobileNumber = ''.obs;
+  RxString email = ''.obs;
   IndividualProfileController individualProfileController =
   Get.put(IndividualProfileController());
  SubscriptionModel subscriptionModel = SubscriptionModel(subsData: []);
@@ -21,10 +22,20 @@ class SubscriptionController extends GetxController{
  @override
  void onInit(){
    super.onInit();
+   getdata();
    getSubscriptionPlans();
-   individualProfileController.individualProfileData();
+  /* individualProfileController.individualProfileData();
+  email.value =
+     individualProfileController.email.value;
+   mobileNumber.value = individualProfileController.userMobile.value;*/
  }
- 
+
+ void getdata ()async{
+   getSubscriptionPlans();
+  await individualProfileController.individualProfileData();
+   email.value = individualProfileController.email.value;
+   mobileNumber.value = individualProfileController.userMobile.value;
+ }
  Future<void> getSubscriptionPlans() async{
    try {
      isLoading.value = true;

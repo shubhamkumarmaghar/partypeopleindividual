@@ -260,7 +260,7 @@ class _IndividualProfileScreenViewState
                                           ),
                                           overlay: individualProfileController
                                               .photoStatusApproval.value !=
-                                              '1'?Container():
+                                              '1'? Container():
                                           CachedNetworkImage(
                                             placeholder: (context, url) => Shimmer.fromColors(
                                               baseColor: Colors.grey.shade200,
@@ -364,39 +364,44 @@ class _IndividualProfileScreenViewState
                                 ),
                               ],
                             ),
-                            individualProfileController
-                                .descStatusApproval.value ==
-                                '0'
-                                ? Blur(
+                             Blur(
                               blur:  2.5,
                               child: CustomTextFieldview(
                                   individualProfileController
                                       .description.value.capitalizeFirst
                                       .toString(),
                                   Icons.description),
-                            ):CustomTextFieldview(
-                                individualProfileController
-                                    .description.value.capitalizeFirst
-                                    .toString(),
-                                Icons.description),
+                              overlay: individualProfileController
+                                  .descStatusApproval.value ==
+                                  '0'
+                                  ? Container():CustomTextFieldview(
+                                  individualProfileController
+                                      .description.value.capitalizeFirst
+                                      .toString(),
+                                  Icons.description)
+                            ),
 
                             Row(
                               children: [
-                                Expanded(
-                                  child: CustomProfileTextView(
-                                      text: CalculateAge.calAge(
-                                          individualProfileController
-                                                  .dob.value ??
-                                              ""),
-                                      icon: Icons.calendar_month),
-                                  /*  CustomDateField(
+                                Visibility(visible: individualProfileController.dob.value !='0000-00-00'?true:false ,
+                                  child: Expanded(
+                                    child: CustomProfileTextView(
+                                        text: CalculateAge.calAge(
+                                            individualProfileController
+                                                    .dob.value ??
+                                                ""),
+                                        icon: Icons.calendar_month),
+
+                                    /*  CustomDateField(
                         validate: true,
                         hintText: 'Date of Birth',
                         icon: Icons.calendar_today,
                         controller: individualProfileController
                             .dobController,
                       ), */
+                                  ),
                                 ),
+
                                 Expanded(
                                   child: CustomProfileTextView(
                                       text: individualProfileController
@@ -407,61 +412,86 @@ class _IndividualProfileScreenViewState
                                 ),
                               ],
                             ),
+
                             Row(
                               children: [
-                                Expanded(
-                                  child: CustomProfileTextView(
-                                      text: individualProfileController
-                                          .qualification.value,
-                                      icon: Icons.description_outlined),
-                                  //QualificationWidget(),
+                                Visibility(
+                                  visible:  individualProfileController
+                                      .occupation.value.isNotEmpty,
+                                  child: Expanded(
+                                    child: CustomProfileTextView(
+                                        text: individualProfileController
+                                            .qualification.value,
+                                        icon: Icons.description_outlined),
+                                    //QualificationWidget(),
+                                  ),
                                 ),
-                                Expanded(
-                                  child: CustomProfileTextView(
-                                      text: individualProfileController
-                                          .occupation.value,
-                                      icon: Icons.work),
+                                Visibility(
+                                  visible:  individualProfileController
+                                      .occupation.value.isNotEmpty,
+                                  child: Expanded(
+                                    child: CustomProfileTextView(
+                                        text: individualProfileController
+                                            .occupation.value,
+                                        icon: Icons.work),
 
-                                  //OccupationWidget(),
+                                    //OccupationWidget(),
+                                  ),
                                 ),
                               ],
                             ),
 
                             Row(
                               children: [
-                                Expanded(
-                                  child: CustomProfileTextView(
-                                      text: individualProfileController
-                                          .country.value,
-                                      icon: Icons.location_on),
-                                  //QualificationWidget(),
+                                Visibility(
+                                  visible:  individualProfileController
+                                      .country.value.isNotEmpty,
+                                  child: Expanded(
+                                    child: CustomProfileTextView(
+                                        text: individualProfileController
+                                            .country.value,
+                                        icon: Icons.location_on),
+                                    //QualificationWidget(),
+                                  ),
                                 ),
-                                Expanded(
-                                  child: CustomProfileTextView(
-                                      text: individualProfileController
-                                          .state.value,
-                                      icon: Icons.location_on),
+                                Visibility(
+                                  visible:  individualProfileController
+                                      .state.value.isNotEmpty,
+                                  child: Expanded(
+                                    child: CustomProfileTextView(
+                                        text: individualProfileController
+                                            .state.value,
+                                        icon: Icons.location_on),
 
-                                  //OccupationWidget(),
+                                    //OccupationWidget(),
+                                  ),
                                 ),
                               ],
                             ),
                             Row(
                               children: [
-                                Expanded(
-                                  child: CustomProfileTextView(
-                                      text: individualProfileController
-                                          .city.value,
-                                      icon: Icons.location_city),
-                                  //QualificationWidget(),
+                                Visibility(
+                                  visible:  individualProfileController
+                                      .city.value.isNotEmpty,
+                                  child: Expanded(
+                                    child: CustomProfileTextView(
+                                        text: individualProfileController
+                                            .city.value,
+                                        icon: Icons.location_city),
+                                    //QualificationWidget(),
+                                  ),
                                 ),
-                                Expanded(
-                                  child: CustomProfileTextView(
-                                      text: individualProfileController
-                                          .pincode.value,
-                                      icon: Icons.pin_drop),
+                                Visibility(
+                                   visible:  individualProfileController
+                                        .pincode.value.isNotEmpty,
+                                  child: Expanded(
+                                    child: CustomProfileTextView(
+                                        text: individualProfileController
+                                            .pincode.value,
+                                        icon: Icons.pin_drop),
 
-                                  //OccupationWidget(),
+                                    //OccupationWidget(),
+                                  ),
                                 ),
                               ],
                             ),

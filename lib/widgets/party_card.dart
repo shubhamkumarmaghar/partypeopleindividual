@@ -11,11 +11,11 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/individualDashboard/controllers/individual_dashboard_controller.dart';
-import 'package:partypeopleindividual/individual_party_preview/party_preview_screen.dart';
+
 import 'package:sizer/sizer.dart';
-import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 
 import '../centralize_api.dart';
+import '../firebase_custom_event.dart';
 import '../individualDashboard/models/party_model.dart';
 import '../individual_party_preview/party_preview_screen_new.dart';
 import '../join_party_details/view/join_party_details.dart';
@@ -48,9 +48,11 @@ class _PartyCardState extends State<PartyCard>
   late Animation _sizeAnimation;
   String join = 'Book Now';
   int noOfPeople = 2;
+  IndividualDashboardController wishlistController = Get.find();
 
   @override
   void initState() {
+    logCustomEvent(eventName: partyPreview, parameters: {'name':'Party preview'});
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _colorAnimation =
@@ -170,7 +172,6 @@ class _PartyCardState extends State<PartyCard>
   }
 
   void handleOnTap(Party party) {
-    IndividualDashboardController wishlistController = Get.find();
 
     if (wishlistController.wishlistedParties.contains(party)) {
       wishlistController.wishlistedParties.remove(party);
@@ -584,7 +585,7 @@ class _PartyCardState extends State<PartyCard>
                                     child: Row(
                                       children: [
                                         Text(
-                                          widget.party.title!.capitalizeFirst!,
+                                          widget.party.title.capitalizeFirst!,
                                           style: TextStyle(
                                             fontFamily: 'Poppins',
                                             fontSize: 12.sp,
@@ -623,7 +624,7 @@ class _PartyCardState extends State<PartyCard>
                                                         .fromMillisecondsSinceEpoch(
                                                             int.parse(widget
                                                                     .party
-                                                                    .startDate!) *
+                                                                    .startDate) *
                                                                 1000),
                                                   ) +
                                                   '  ${widget.party.startTime}',
@@ -763,6 +764,7 @@ class _PartyCardState extends State<PartyCard>
                                         ? Colors.red.shade900
                                         : Colors.white,
                                     onPressed: () {
+                                      logCustomEvent(eventName: partyLike, parameters: {'name':'Party Like'});
                                       if (approvalStatus == '1') {
                                         setState(() {
                                           isFavorite = true;
@@ -970,8 +972,8 @@ class _PartyCardState extends State<PartyCard>
                        */
                       String pj_id =   await APIService.onBookingParty(
                           widget.party.id, noOfPeople.toString());
-                      var data= APIService.ongoingParty(widget.party.id);
-                      if(data ==true){
+                     // var data= APIService.ongoingParty(widget.party.id);
+                      if(pj_id.isNotEmpty){
                         join = 'Booked';
                       }
                       Navigator.of(context).pop();
@@ -991,13 +993,19 @@ class _PartyCardState extends State<PartyCard>
   {
     return GestureDetector(
       onTap: () async {
-        widget.party.ongoingStatus != 1 ?
-        await joinPartyFormDialouge(context: context):
-        Fluttertoast.showToast( msg: 'You are already booked this offer',);
-        setState(() {});
-        join = 'Booked';
-        _controllerBottomCenter.play();
-
+        logCustomEvent(eventName: bookNow, parameters: {'name':'book Now'});
+if(wishlistController.individualProfileController.coverPhotoURL.isNotEmpty && wishlistController.individualProfileController.bio.isNotEmpty) {
+  widget.party.ongoingStatus != 1 ?
+  await joinPartyFormDialouge(context: context) :
+  Fluttertoast.showToast(msg: 'You are already booked this offer',);
+  setState(() {});
+  join = 'Booked';
+  _controllerBottomCenter.play();
+}
+else{
+  Get.snackbar('Sorry',
+      'Upload your profile photo & Bio to access all the features.');
+}
       },
       child: Container(
         decoration: BoxDecoration(

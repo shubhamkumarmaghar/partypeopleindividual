@@ -2,23 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/centralize_api.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-
 import '../models/city.dart';
 import '../models/party_model.dart';
 import '../models/usermodel.dart';
 
 class IndividualDashboardController extends GetxController {
   var buttonState = true;
-
+  RxBool nearbyvalue = true.obs;
   RxList<IndividualCity> allCityList = RxList();
   IndividualProfileController individualProfileController =
       Get.put(IndividualProfileController());
@@ -96,7 +92,8 @@ class IndividualDashboardController extends GetxController {
     getAllCities();
     getOnlineStatus();
     await individualProfileController.individualProfileData();
-    getAllNearbyPeoples();
+    String type =individualProfileController.gender.value.toString()=='Male'?'2':'1';
+    getAllNearbyPeoples(type: type);
     getPopularParty();
     getTodayPary();
     getTomarrowParty();
@@ -139,21 +136,22 @@ class IndividualDashboardController extends GetxController {
     }
   }
 
-  Future<void> getAllNearbyPeoples() async {
-    String state = GetStorage().read('state');
+  Future<void> getAllNearbyPeoples({String type ='0'}) async {
+    String state = GetStorage().read('state')??'delhi';
     String city = '';
     if (individualProfileController.activeCity.value.toString().isNotEmpty) {
       city = individualProfileController.activeCity.value.toString();
     } else {
       city = 'delhi';
     }
-
     try {
       apiService.isLoading.value = true;
       var response = await apiService.individualNearbyPeoples(
         {'city_id': city.toLowerCase(), 'state': state.toLowerCase(),
           'start':'1',
           'end':'15',
+          if(type=='1') 'gender':'male',
+          if(type=='2')'gender':'female',
         },
         '${GetStorage().read('token')}',
       );
@@ -168,7 +166,6 @@ class IndividualDashboardController extends GetxController {
           response['message'].contains('Not')) {
         noUserFoundController.value = response['message'];
         update();
-
         Get.snackbar('Opps!', 'No User found ');
       } else {
         Get.snackbar('Opps!', 'No User found ');
@@ -570,7 +567,7 @@ class IndividualDashboardController extends GetxController {
       ///
       /// 'filter_type': '2' == regular parties
       /// 'filter_type': '1' == popular parties
-      if (individualProfileController.city.value.isNotEmpty) {
+      if (individualProfileController.activeCity.value.isNotEmpty) {
         partyCity.value =
             individualProfileController.activeCity.value.toString();
         log('upcoming partycity ${partyCity.value}');

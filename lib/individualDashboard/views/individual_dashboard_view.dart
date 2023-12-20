@@ -4,7 +4,9 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/individualDashboard/controllers/individual_dashboard_controller.dart';
@@ -15,6 +17,7 @@ import 'package:sizer/sizer.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../chatList/view/chat_list_view.dart';
+import '../../firebase_custom_event.dart';
 import '../../individualDrawer/views/individual_drawer_view.dart';
 import '../../individual_nearby_people_profile/view/individual_people_list.dart';
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
@@ -31,10 +34,10 @@ class IndividualDashboardView extends StatefulWidget {
       _IndividualDashboardViewState();
 }
 
-class _IndividualDashboardViewState extends State<IndividualDashboardView> with SingleTickerProviderStateMixin{
-
+class _IndividualDashboardViewState extends State<IndividualDashboardView>
+    with SingleTickerProviderStateMixin {
   IndividualDashboardController individualDashboardController =
-  Get.put(IndividualDashboardController());
+      Get.put(IndividualDashboardController());
   IndividualProfileController individualProfileController = Get.find();
   int _selectedIndex = 1; // Initial
   late AnimationController _animationController;
@@ -46,7 +49,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
 
   getConnectivity() =>
       subscription = Connectivity().onConnectivityChanged.listen(
-            (ConnectivityResult result) async {
+        (ConnectivityResult result) async {
           isDeviceConnected = await InternetConnectionChecker().hasConnection;
           if (!isDeviceConnected && isAlertSet == false) {
             showNoInternetDialogBox();
@@ -55,32 +58,27 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
         },
       );
 
-
   Future _handleRefresh() async {
-     individualDashboardController.getDataForDashboard();
-   return await Future.delayed( Duration(milliseconds:200));
+    individualDashboardController.getDataForDashboard();
+    return await Future.delayed(Duration(milliseconds: 200));
   }
-
 
   @override
   void initState() {
     getConnectivity();
-     _selectedIndex = 1;
+    _selectedIndex = 1;
 
-     _animationController =
-         AnimationController( duration: Duration(milliseconds: 450), vsync: this);
+    _animationController =
+        AnimationController(duration: Duration(milliseconds: 450), vsync: this);
     super.initState();
-
-
   } // selected index
 
   @override
-  void dispose(){
+  void dispose() {
     subscription.cancel();
     super.dispose();
-
-
   }
+
   @override
   Widget build(BuildContext context) {
     _selectedIndex = 1;
@@ -115,14 +113,15 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                 ),
                 Expanded(
                   child: Obx(() {
-
-                    return GestureDetector(onTap: (){
-                     // Get.to(JoinPartyDetails());
-                    },
+                    return GestureDetector(
+                      onTap: () {
+                        // Get.to(JoinPartyDetails());
+                      },
                       child: Container(
                         alignment: Alignment.center,
                         child: Text(
-                          "          " + individualProfileController.username.value,
+                          "          " +
+                              individualProfileController.username.value,
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 12.sp,
@@ -136,12 +135,13 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                   }),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.sp, vertical: 5.sp),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 15.sp, vertical: 5.sp),
                   child: Row(
                     children: [
                       Obx(() {
                         IndividualDashboardController wishlistController =
-                        Get.find();
+                            Get.find();
                         return GestureDetector(
                           onTap: () {
                             Get.to(const WishlistScreen())?.then((value) =>
@@ -149,9 +149,10 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                     .getDataForDashboard());
                           },
                           child: Icon(Icons.favorite,
-                              color: wishlistController.wishlistedParties.isEmpty
-                                  ? Colors.white
-                                  : Colors.red),
+                              color:
+                                  wishlistController.wishlistedParties.isEmpty
+                                      ? Colors.white
+                                      : Colors.red),
                         );
                       }),
                       const SizedBox(
@@ -159,13 +160,13 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                       ),
                       GestureDetector(
                         onTap: () =>
-                        // _animationController.stop();
-                        Get.to(
+                            // _animationController.stop();
+                            Get.to(
                           const NotificationScreen(),
                           duration: const Duration(milliseconds: 300),
                           transition: Transition.rightToLeft,
                         )?.then((value) => individualDashboardController
-                            .getDataForDashboard()),
+                                .getDataForDashboard()),
                         child: Obx(() {
                           return Stack(
                             children: [
@@ -179,14 +180,14 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                     height: 40,
                                     width: 40,
                                     animate: individualDashboardController
-                                        .notificationCount.value
-                                        .toString() ==
-                                        '0'
+                                                .notificationCount.value
+                                                .toString() ==
+                                            '0'
                                         ? false
                                         : true,
                                     fit: BoxFit.cover
-                                  //fit: BoxFit.cover
-                                ),
+                                    //fit: BoxFit.cover
+                                    ),
                               ),
                               /* individualDashboardController.notificationCount.value.toString() == '0'
                             ? Container()
@@ -221,20 +222,38 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                     _selectedIndex = index;
                     if (_selectedIndex == 2) {
                       //  Get.to(IndividualProfileScreen())?.then((value) =>individualDashboardController.getDataForDashboard());
-                      Get.to(IndividualProfileScreenView(),
-                          duration: const Duration(milliseconds: 300),
-                    transition: Transition.rightToLeft,);
+                      Get.to(
+                        IndividualProfileScreenView(),
+                        duration: const Duration(milliseconds: 300),
+                        transition: Transition.rightToLeft,
+                      );
                     }
                     if (_selectedIndex == 0) {
-                      if (individualDashboardController.approvalStatus.value ==
-                          '1') {
-                        Get.to(ChatList(),
-                          duration: const Duration(milliseconds: 300),
-                          transition: Transition.leftToRight,
-                        );
+                      if (individualDashboardController
+                              .individualProfileController
+                              .coverPhotoURL
+                              .value
+                              .isNotEmpty ||
+                          individualDashboardController
+                              .individualProfileController
+                              .bio
+                              .value
+                              .isNotEmpty) {
+                        if (individualDashboardController
+                                .approvalStatus.value ==
+                            '1') {
+                          Get.to(
+                            ChatList(),
+                            duration: const Duration(milliseconds: 300),
+                            transition: Transition.leftToRight,
+                          );
+                        } else {
+                          Get.snackbar('Sorry!',
+                              'Your account is not approved , please wait until it got approved');
+                        }
                       } else {
-                        Get.snackbar('Sorry!',
-                            'Your account is not approved , please wait until it got approved');
+                        Get.snackbar('Sorry',
+                            'Upload your profile photo & Bio to access all the features.');
                       }
                     }
                   });
@@ -257,68 +276,69 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                           individualDashboardController.chatCount.value == '0'
                               ? Container()
                               : const Positioned(
-                            right: 0,
-                            top: 0,
-                            child: CircleAvatar(
-                              backgroundColor: Colors.orange,
-                              maxRadius: 5,
-                            ),
-                          ),
+                                  right: 0,
+                                  top: 0,
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.orange,
+                                    maxRadius: 5,
+                                  ),
+                                ),
                         ],
                       );
                     }),
-                    textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    textStyle:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     iconSize: 24,
                   ),
                   GButton(
-                    semanticLabel: 'bkk',
                     icon: Icons.home,
                     text: 'Home',
-                    textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    textStyle:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     iconSize: 24,
                   ),
                   GButton(
                     icon: Icons.person,
                     text: 'Profile',
-                    textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    textStyle:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     iconSize: 24,
                   ),
                 ],
               ),
             ),
             body: Obx(() {
-              return  Stack(
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                        gradient: RadialGradient(
-                          center: Alignment(1, -0.45),
-                          radius: 0.9,
-                          colors: [
-                            Color(0xffb80b0b),
-                            Color(0xff390202),
-                          ],
-                          stops: [0.0, 1],
-                          transform: GradientXDTransform(
-                            0.0,
-                            -1.0,
-                            1.23,
-                            0.0,
-                            -0.115,
-                            1.0,
-                            Alignment(0.0, 0.0),
-                          ),
+              return Stack(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: RadialGradient(
+                        center: Alignment(1, -0.45),
+                        radius: 0.9,
+                        colors: [
+                          Color(0xffb80b0b),
+                          Color(0xff390202),
+                        ],
+                        stops: [0.0, 1],
+                        transform: GradientXDTransform(
+                          0.0,
+                          -1.0,
+                          1.23,
+                          0.0,
+                          -0.115,
+                          1.0,
+                          Alignment(0.0, 0.0),
                         ),
                       ),
                     ),
-              // for liquid indicator LiquidPullToRefresh
-              RefreshIndicator(
-              onRefresh: _handleRefresh,
-              color: Colors.transparent,
-             // animSpeedFactor: 5.0,
-             // showChildOpacityTransition: false,
-              child:
-              Container(
+                  ),
+                  // for liquid indicator LiquidPullToRefresh
+                  RefreshIndicator(
+                    onRefresh: _handleRefresh,
+                    color: Colors.transparent,
+                    // animSpeedFactor: 5.0,
+                    // showChildOpacityTransition: false,
+                    child: Container(
                       margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.065),
                       width: double.infinity,
@@ -340,13 +360,13 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
-                                          BorderRadius.circular(10.sp)),
+                                              BorderRadius.circular(10.sp)),
                                       child: TextField(
                                         onTap: () {
                                           Get.to(PeopleList(
                                             peopleList:
-                                            individualDashboardController
-                                                .usersList,
+                                                individualDashboardController
+                                                    .usersList,
                                           ))?.then((value) =>
                                               individualDashboardController
                                                   .getDataForDashboard());
@@ -375,21 +395,33 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                             Container(
                               height: MediaQuery.of(context).size.width * 0.27,
                               margin: EdgeInsets.only(
-                                  top: MediaQuery.of(context).size.height * 0.02,
-                                  left: MediaQuery.of(context).size.width * 0.05),
+                                  top:
+                                      MediaQuery.of(context).size.height * 0.02,
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.05),
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: individualDashboardController
                                     .allCityList.length,
                                 scrollDirection: Axis.horizontal,
-                                itemBuilder: ((context, index) => GestureDetector(
-                                  onTap: () {
-                                    if (individualDashboardController
-                                        .approvalStatus.value ==
-                                        '1') {
-
-                                      // for future use
-                                     /* if (individualDashboardController
+                                itemBuilder: ((context, index) =>
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (individualDashboardController
+                                                .individualProfileController
+                                                .coverPhotoURL
+                                                .value
+                                                .isNotEmpty ||
+                                            individualDashboardController
+                                                .individualProfileController
+                                                .bio
+                                                .value
+                                                .isNotEmpty) {
+                                          if (individualDashboardController
+                                                  .approvalStatus.value ==
+                                              '1') {
+                                            // for future use
+                                            /* if (individualDashboardController
                                           .plan.value ==
                                           'Yes') {
                                         Get.to(SubscriptionView());
@@ -415,54 +447,63 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                         }
                                       } */
 
-                                      if (index == 0) {
-                                        individualDashboardController
-                                            .individualProfileController
-                                            .activeCity
-                                            .value =
-                                            individualDashboardController
-                                                .allCityList[index].name;
-                                        individualDashboardController
-                                            .apiService
-                                            .updateActiveCity(
-                                            individualProfileController
-                                                .organization_id.value,
-                                            individualDashboardController
-                                                .individualProfileController
-                                                .activeCity
-                                                .value);
-                                        Get.snackbar('Delhi', 'You selected delhi');
-                                      } else {
-                                        Get.snackbar('Sorry!', 'Coming Soon');
-                                      }
-                                    }
-                                    else {
-                                      Get.snackbar('Sorry!',
-                                          'Your account is not approved , please wait until it got approved');
-                                    }
-                                    //individualDashboardController.getPartyByDate();
-                                  },
-                                  child: CityCard(
-                                    cityName: individualDashboardController
-                                        .allCityList[index].name,
-                                    imageURL: individualDashboardController
-                                        .allCityList[index].imageUrl,
-                                  ),
-                                )),
+                                            if (index == 0) {
+                                              individualDashboardController
+                                                      .individualProfileController
+                                                      .activeCity
+                                                      .value =
+                                                  individualDashboardController
+                                                      .allCityList[index].name;
+                                              individualDashboardController
+                                                  .apiService
+                                                  .updateActiveCity(
+                                                      individualProfileController
+                                                          .organization_id
+                                                          .value,
+                                                      individualDashboardController
+                                                          .individualProfileController
+                                                          .activeCity
+                                                          .value);
+                                              Get.snackbar('Delhi',
+                                                  'You selected delhi');
+                                            } else {
+                                              Get.snackbar(
+                                                  'Sorry!', 'Coming Soon');
+                                            }
+                                          } else {
+                                            Get.snackbar('Sorry!',
+                                                'Your account is not approved , please wait until it got approved');
+                                          }
+                                        } else {
+                                          Get.snackbar('Sorry',
+                                              'Upload your profile photo & Bio to access all the features.');
+                                          //individualDashboardController.getPartyByDate();
+                                        }
+                                      },
+                                      child: CityCard(
+                                        cityName: individualDashboardController
+                                            .allCityList[index].name,
+                                        imageURL: individualDashboardController
+                                            .allCityList[index].imageUrl,
+                                      ),
+                                    )),
                               ),
                             ),
 
                             // people nearby
                             Padding(
                               padding: EdgeInsets.only(
-                                  left: MediaQuery.of(context).size.width * 0.05,
-                                  right: MediaQuery.of(context).size.width * 0.05,
-                                  bottom:
-                                  MediaQuery.of(context).size.height * 0.01),
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                  bottom: MediaQuery.of(context).size.height *
+                                      0.01),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                               /*   Text(
+                                  /*   Text(
                                     'People Nearby (${individualDashboardController.usersList.length})',
                                     style: TextStyle(
                                         color: Colors.white,
@@ -470,17 +511,82 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                         fontWeight: FontWeight.w500),
                                   ),*/
                                   Text(
-                                    'People Nearby',
+                                    'Nearby',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w500),
                                   ),
+                                  Row(
+                                    children: [
+                                      GestureDetector(
+                                          onTap: () async {
+                                            individualDashboardController
+                                                .usersList
+                                                .clear();
+                                            await individualDashboardController
+                                                .getAllNearbyPeoples(type: "1");
+                                            individualDashboardController
+                                                .update();
+                                            individualDashboardController
+                                                .nearbyvalue.value = false;
+                                          },
+                                          child: Image.asset(
+                                            'assets/images/male_sign.png',
+                                            width: 25,
+                                            height: 25,
+                                          )),
+                                      // SizedBox(width: 20,),
+                                      Obx(
+                                        () => Container(
+                                          height: 40,
+                                          width: 40,
+                                          child: FittedBox(
+                                            fit: BoxFit.contain,
+                                            child: CupertinoSwitch(
+                                                activeColor: Colors.white,
+                                                thumbColor: Colors.red.shade900,
+                                                trackColor: Colors.white,
+                                                value:
+                                                    individualDashboardController
+                                                        .nearbyvalue.value,
+                                                onChanged: (value) {
+                                                  /*  if(individualDashboardController.nearbyvalue.value == true){
+                                              individualDashboardController.nearbyvalue.value = false;
+                                            }
+                                              else{
+                                                individualDashboardController.nearbyvalue.value = true;
+                                              }*/
+                                                  // value = true;
+                                                }),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                          onTap: () async {
+                                            individualDashboardController
+                                                .usersList
+                                                .clear();
+                                            await individualDashboardController
+                                                .getAllNearbyPeoples(type: "2");
+                                            individualDashboardController
+                                                .update();
+                                            individualDashboardController
+                                                .nearbyvalue.value = true;
+                                          },
+                                          child: Image.asset(
+                                            'assets/images/female_sign.png',
+                                            width: 25,
+                                            height: 25,
+                                          )),
+                                    ],
+                                  ),
                                   GestureDetector(
                                     onTap: () {
                                       Get.to(PeopleList(
                                         peopleList:
-                                        individualDashboardController.usersList,
+                                            individualDashboardController
+                                                .usersList,
                                       ))?.then((value) =>
                                           individualDashboardController
                                               .getDataForDashboard());
@@ -497,9 +603,10 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                               ),
                             ),
                             individualDashboardController
-                                .noUserFoundController.value == 'null'
-                                ? Container(
-                              /*    decoration: const BoxDecoration(
+                                        .noUserFoundController.value ==
+                                    'null'
+                                ? Obx(() => Container(
+                                      /*    decoration: const BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
                                 Color.fromARGB(255, 135, 19, 19),
@@ -507,71 +614,97 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                               ],
                             ),
                           ), */
-                              height: MediaQuery.of(context).size.width * 0.3,
-                              padding: EdgeInsets.only(
-                                left:
-                                MediaQuery.of(context).size.width * 0.05,
-                              ),
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: individualDashboardController
-                                    .usersList.length,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: ((context, index) =>
-                                    GestureDetector(
-                                      onTap: () {
-                                        if (individualDashboardController
-                                            .approvalStatus.value ==
-                                            '1') {
-                                          Get.to(
-                                                  () =>
-                                                  IndividualPeopleProfile(),
-                                              arguments:
-                                              individualDashboardController
-                                                  .usersList[index]
-                                                  .id)
-                                              ?.then((value) =>
-                                              individualDashboardController
-                                                  .getDataForDashboard());
-                                        } else {
-                                          Get.snackbar('Sorry!',
-                                              'Your account is not approved , please wait until it got approved');
-                                        }
-                                      },
-                                      child: NearByPeopleProfile(
-                                        imageURL:
-                                        individualDashboardController
-                                            .usersList[index]
-                                            .profilePicture,
-                                        setHeart: (val) {
-                                          individualDashboardController
-                                              .usersList[index].likeStatus = val;
-                                        },
-                                        name: individualDashboardController
-                                            .usersList[index].username,
-                                        id: individualDashboardController
-                                            .usersList[index].id,
-                                        likeStatus:
-                                        individualDashboardController
-                                            .usersList[index].likeStatus,
-                                        onlineStatus:
-                                        individualDashboardController
-                                            .usersList[index]
-                                            .onlineStatus,
-                                        privacyStatus:
-                                        individualDashboardController
-                                            .usersList[index]
-                                            .privacyOnline,
-                                        profile_pic_approval_status: individualDashboardController
-                                          .usersList[index]
-                                          .profilePicApproval,
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              0.3,
+                                      padding: EdgeInsets.only(
+                                        left:
+                                            MediaQuery.of(context).size.width *
+                                                0.05,
                                       ),
-                                    )),
-                              ),
-                            )
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: individualDashboardController
+                                            .usersList.length,
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: ((context, index) =>
+                                            GestureDetector(
+                                              onTap: () {
+                                                if (individualDashboardController
+                                                        .individualProfileController
+                                                        .coverPhotoURL
+                                                        .value
+                                                        .isNotEmpty ||
+                                                    individualDashboardController
+                                                        .individualProfileController
+                                                        .bio
+                                                        .value
+                                                        .isNotEmpty) {
+                                                  if (individualDashboardController
+                                                          .approvalStatus
+                                                          .value ==
+                                                      '1') {
+                                                    logCustomEvent(eventName: peopleProfileView, parameters: {'name':'peopleProfileView'});
+                                                    Get.to(
+                                                            () =>
+                                                                IndividualPeopleProfile(),
+                                                            arguments:
+                                                                individualDashboardController
+                                                                    .usersList[
+                                                                        index]
+                                                                    .id)
+                                                        ?.then((value) =>
+                                                            individualDashboardController
+                                                                .getDataForDashboard());
+                                                  } else {
+                                                    Get.snackbar('Sorry!',
+                                                        'Your account is not approved , please wait until it got approved');
+                                                  }
+                                                }
+                                                else{
+                                                  Get.snackbar('Sorry',
+                                                      'Upload your profile photo & Bio to access all the features.');
+                                                }
+                                              },
+                                              child: NearByPeopleProfile(
+                                                imageURL:
+                                                    individualDashboardController
+                                                        .usersList[index]
+                                                        .profilePicture,
+                                                setHeart: (val) {
+                                                  individualDashboardController
+                                                      .usersList[index]
+                                                      .likeStatus = val;
+                                                },
+                                                name:
+                                                    individualDashboardController
+                                                        .usersList[index]
+                                                        .username,
+                                                id: individualDashboardController
+                                                    .usersList[index].id,
+                                                likeStatus:
+                                                    individualDashboardController
+                                                        .usersList[index]
+                                                        .likeStatus,
+                                                onlineStatus:
+                                                    individualDashboardController
+                                                        .usersList[index]
+                                                        .onlineStatus,
+                                                privacyStatus:
+                                                    individualDashboardController
+                                                        .usersList[index]
+                                                        .privacyOnline,
+                                                profile_pic_approval_status:
+                                                    individualDashboardController
+                                                        .usersList[index]
+                                                        .profilePicApproval,
+                                              ),
+                                            )),
+                                      ),
+                                    ))
                                 : const Center(
-                              child: Text("No Peoples Around You"),
-                            ),
+                                    child: Text("No Peoples Around You"),
+                                  ),
                             Padding(
                               padding: EdgeInsets.only(
                                 left: MediaQuery.of(context).size.width * 0.05,
@@ -586,64 +719,71 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                               ),
                             ),
                             individualDashboardController
-                                .jsonPartyPopularData.isEmpty
+                                    .jsonPartyPopularData.isEmpty
                                 ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      'No Party Available',
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                        // Deep purple color for the text
-                                        fontFamily: 'Poppins', // Custom font
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            'No Party Available',
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                              // Deep purple color for the text
+                                              fontFamily:
+                                                  'Poppins', // Custom font
+                                            ),
+                                          ),
+                                          Text(
+                                            'Check back later for updates.',
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey,
+                                              // Lighter purple color for the text
+                                              fontFamily:
+                                                  'Raleway', // Custom font
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text(
-                                      'Check back later for updates.',
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                        // Lighter purple color for the text
-                                        fontFamily: 'Raleway', // Custom font
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
+                                  )
                                 : Container(
-                              margin: EdgeInsets.only(
-                                top: Get.width * 0.05,
-                                left:
-                                MediaQuery.of(context).size.width * 0.05,
-                                bottom: Get.width * 0.05,
-                              ),
-                              height: Get.width * 0.65,
-                              child: CarouselSlider(items:
-                              individualDashboardController
-                                  .jsonPartyPopularData.map((element) =>
-                                  PartyCard(party: element, onBack: () =>(){}, partyType: 'popular')
-                              ).toList(),
-                                options: CarouselOptions(
+                                    margin: EdgeInsets.only(
+                                      top: Get.width * 0.05,
+                                      left: MediaQuery.of(context).size.width *
+                                          0.05,
+                                      bottom: Get.width * 0.05,
+                                    ),
                                     height: Get.width * 0.65,
-                                    // enlargeCenterPage: true,
+                                    child: CarouselSlider(
+                                      items: individualDashboardController
+                                          .jsonPartyPopularData
+                                          .map((element) => PartyCard(
+                                              party: element,
+                                              onBack: () => () {},
+                                              partyType: 'popular'))
+                                          .toList(),
+                                      options: CarouselOptions(
+                                          height: Get.width * 0.65,
+                                          // enlargeCenterPage: true,
 
-                                    autoPlay: true,
-                                    //aspectRatio: 16 / 9,
-                                    autoPlayCurve: Curves.linear,
-                                    enableInfiniteScroll: true,
-                                    autoPlayAnimationDuration: Duration(milliseconds: 800),
-                                    viewportFraction: 1
-                                ),),
-                            /*  ListView.builder(
+                                          autoPlay: true,
+                                          //aspectRatio: 16 / 9,
+                                          autoPlayCurve: Curves.linear,
+                                          enableInfiniteScroll: true,
+                                          autoPlayAnimationDuration:
+                                              Duration(milliseconds: 800),
+                                          viewportFraction: 1),
+                                    ),
+                                    /*  ListView.builder(
                                 shrinkWrap: true,
                                 controller:  _scrollController1,
                                 scrollDirection: Axis.horizontal,
@@ -660,7 +800,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                                       partyType: 'popular');
                                 },
                               ),*/
-                            ),
+                                  ),
 
                             Padding(
                               padding: EdgeInsets.only(
@@ -677,65 +817,68 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                               ),
                             ),
                             individualDashboardController
-                                .jsonPartyOrganisationDataToday.isEmpty
+                                    .jsonPartyOrganisationDataToday.isEmpty
                                 ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      'No Party Available',
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                        // Deep purple color for the text
-                                        fontFamily: 'Poppins', // Custom font
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            'No Party Available',
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                              // Deep purple color for the text
+                                              fontFamily:
+                                                  'Poppins', // Custom font
+                                            ),
+                                          ),
+                                          Text(
+                                            'Check back later for updates.',
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey,
+                                              // Lighter purple color for the text
+                                              fontFamily:
+                                                  'Raleway', // Custom font
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text(
-                                      'Check back later for updates.',
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                        // Lighter purple color for the text
-                                        fontFamily: 'Raleway', // Custom font
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
+                                  )
                                 : Container(
-                              margin: EdgeInsets.only(
-                                top: Get.width * 0.05,
-                                left:
-                                MediaQuery.of(context).size.width * 0.05,
-                                bottom: Get.width * 0.05,
-                              ),
-                              height: Get.width * 0.65,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: individualDashboardController
-                                    .jsonPartyOrganisationDataToday.length,
-                                itemBuilder: (context, index) {
-                                  return PartyCard(
-                                    party: individualDashboardController
-                                        .jsonPartyOrganisationDataToday[
-                                    index],
-
-                                    onBack: () =>(){},
-                                       /* individualDashboardController
+                                    margin: EdgeInsets.only(
+                                      top: Get.width * 0.05,
+                                      left: MediaQuery.of(context).size.width *
+                                          0.05,
+                                      bottom: Get.width * 0.05,
+                                    ),
+                                    height: Get.width * 0.65,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: individualDashboardController
+                                          .jsonPartyOrganisationDataToday
+                                          .length,
+                                      itemBuilder: (context, index) {
+                                        return PartyCard(
+                                          party: individualDashboardController
+                                                  .jsonPartyOrganisationDataToday[
+                                              index],
+                                          onBack: () => () {},
+                                          /* individualDashboardController
                                             .getDataForDashboard(),*/
-                                    partyType: 'today',
-                                  );
-                                },
-                              ),
-                            ),
+                                          partyType: 'today',
+                                        );
+                                      },
+                                    ),
+                                  ),
                             Padding(
                               padding: EdgeInsets.only(
                                 left: MediaQuery.of(context).size.width * 0.05,
@@ -751,64 +894,67 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                               ),
                             ),
                             individualDashboardController
-                                .jsonPartyOrganisationDataTomm.isEmpty
+                                    .jsonPartyOrganisationDataTomm.isEmpty
                                 ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      'No Party Available',
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                        // Deep purple color for the text
-                                        fontFamily: 'Poppins', // Custom font
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            'No Party Available',
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                              // Deep purple color for the text
+                                              fontFamily:
+                                                  'Poppins', // Custom font
+                                            ),
+                                          ),
+                                          Text(
+                                            'Check back later for updates.',
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey,
+                                              // Lighter purple color for the text
+                                              fontFamily:
+                                                  'Raleway', // Custom font
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text(
-                                      'Check back later for updates.',
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                        // Lighter purple color for the text
-                                        fontFamily: 'Raleway', // Custom font
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
+                                  )
                                 : Container(
-                              margin: EdgeInsets.only(
-                                top: Get.width * 0.05,
-                                left:
-                                MediaQuery.of(context).size.width * 0.05,
-                                bottom: Get.width * 0.05,
-                              ),
-                              height: Get.width * 0.65,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: individualDashboardController
-                                    .jsonPartyOrganisationDataTomm.length,
-                                itemBuilder: (context, index) {
-                                  return PartyCard(
-                                    party: individualDashboardController
-                                        .jsonPartyOrganisationDataTomm[index],
-
-                                    onBack: () =>(){},
-                                        /*individualDashboardController
+                                    margin: EdgeInsets.only(
+                                      top: Get.width * 0.05,
+                                      left: MediaQuery.of(context).size.width *
+                                          0.05,
+                                      bottom: Get.width * 0.05,
+                                    ),
+                                    height: Get.width * 0.65,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: individualDashboardController
+                                          .jsonPartyOrganisationDataTomm.length,
+                                      itemBuilder: (context, index) {
+                                        return PartyCard(
+                                          party: individualDashboardController
+                                                  .jsonPartyOrganisationDataTomm[
+                                              index],
+                                          onBack: () => () {},
+                                          /*individualDashboardController
                                             .getDataForDashboard(),*/
-                                    partyType: 'tommorow',
-                                  );
-                                },
-                              ),
-                            ),
+                                          partyType: 'tommorow',
+                                        );
+                                      },
+                                    ),
+                                  ),
                             Padding(
                               padding: EdgeInsets.only(
                                 left: MediaQuery.of(context).size.width * 0.05,
@@ -824,88 +970,94 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
                               ),
                             ),
                             individualDashboardController
-                                .jsonPartyOgranisationDataUpcomming.isEmpty
+                                    .jsonPartyOgranisationDataUpcomming.isEmpty
                                 ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      'No Party Available',
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                        // Deep purple color for the text
-                                        fontFamily: 'Poppins', // Custom font
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            'No Party Available',
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                              // Deep purple color for the text
+                                              fontFamily:
+                                                  'Poppins', // Custom font
+                                            ),
+                                          ),
+                                          Text(
+                                            'Check back later for updates.',
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey,
+                                              // Lighter purple color for the text
+                                              fontFamily:
+                                                  'Raleway', // Custom font
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text(
-                                      'Check back later for updates.',
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                        // Lighter purple color for the text
-                                        fontFamily: 'Raleway', // Custom font
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
+                                  )
                                 : Container(
-                              margin: EdgeInsets.only(
-                                top: Get.width * 0.05,
-                                left:
-                                MediaQuery.of(context).size.width * 0.05,
-                                bottom: Get.width * 0.05,
-                              ),
-                              height: Get.width * 0.65,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: individualDashboardController
-                                    .jsonPartyOgranisationDataUpcomming
-                                    .length,
-                                itemBuilder: (context, index) {
-                                  return PartyCard(
-                                    party: individualDashboardController
-                                        .jsonPartyOgranisationDataUpcomming[
-                                    index],
-                                    onBack: () =>(){},
-                                        /*individualDashboardController
+                                    margin: EdgeInsets.only(
+                                      top: Get.width * 0.05,
+                                      left: MediaQuery.of(context).size.width *
+                                          0.05,
+                                      bottom: Get.width * 0.05,
+                                    ),
+                                    height: Get.width * 0.65,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: individualDashboardController
+                                          .jsonPartyOgranisationDataUpcomming
+                                          .length,
+                                      itemBuilder: (context, index) {
+                                        return PartyCard(
+                                          party: individualDashboardController
+                                                  .jsonPartyOgranisationDataUpcomming[
+                                              index],
+                                          onBack: () => () {},
+                                          /*individualDashboardController
                                             .getDataForDashboard(),*/
-                                    partyType: 'upcoming',
-                                  );
-                                },
-                              ),
-                            ),
-                         /*   SizedBox(
+                                          partyType: 'upcoming',
+                                        );
+                                      },
+                                    ),
+                                  ),
+                            /*   SizedBox(
                               height: MediaQuery.of(context).size.height * 0.1,
                             ),*/
                           ],
                         ),
                       ),
                     ),
-              ),
-                    Obx(() {
-                      return
-                        Container(
+                  ),
+                  Obx(
+                    () {
+                      return Container(
                           height: Get.height,
                           width: Get.width,
-                          child:individualDashboardController.showAnimatedHeart.value? Align(
-                            alignment: Alignment.center,
-                            child: Lottie.network(
-                               // 'https://assets-v2.lottiefiles.com/a/3073e56e-1175-11ee-911b-eb7a8cb4524d/VyuILSK8xC.json'
-                              'https://assets-v2.lottiefiles.com/a/c543ac62-1150-11ee-953b-235b9373fc03/85XdRr7LQN.json'
-                            ),
-                          ):Container());
-                    },),
-                  ],
-                );
+                          child: individualDashboardController
+                                  .showAnimatedHeart.value
+                              ? Align(
+                                  alignment: Alignment.center,
+                                  child: Lottie.network(
+                                      // 'https://assets-v2.lottiefiles.com/a/3073e56e-1175-11ee-911b-eb7a8cb4524d/VyuILSK8xC.json'
+                                      'https://assets-v2.lottiefiles.com/a/c543ac62-1150-11ee-953b-235b9373fc03/85XdRr7LQN.json'),
+                                )
+                              : Container());
+                    },
+                  ),
+                ],
+              );
             }),
           );
         },
@@ -913,7 +1065,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
     );
   }
 
- /* showDialogBox() => showCupertinoDialog<String>(
+  /* showDialogBox() => showCupertinoDialog<String>(
     context: context,
     builder: (BuildContext context) => CupertinoAlertDialog(
 
@@ -940,30 +1092,41 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView> with 
   showNoInternetDialogBox() {
     {
       AwesomeDialog(
-        context: context,
-        dialogType: DialogType.noHeader,
-        animType: AnimType.BOTTOMSLIDE,
-        body: Column(crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment:MainAxisAlignment.center,
-          children: [Lottie.asset('assets/images/noInternet.json',),
-          Text('Please check your internet connectivity',textAlign: TextAlign.center,style:TextStyle(fontSize: 18, color: Colors.black) ,)],),
-        title: 'No Connection',
-        desc: 'Please check your internet connectivity',
-        titleTextStyle: TextStyle(fontSize: 22, color: Colors.black),
-        descTextStyle: TextStyle(fontSize: 18, color: Colors.black54),
-        btnOkText: "Ok",btnOkColor: Colors.red.shade900,
-        btnOkOnPress: () async {
-         // Navigator.pop(context, 'Cancel');
-          setState(() => isAlertSet = false);
-          isDeviceConnected =
-          await InternetConnectionChecker().hasConnection;
-          if (!isDeviceConnected && isAlertSet == false) {
-            showNoInternetDialogBox();
-            setState(() => isAlertSet = true);
-          }
-        },
-        dismissOnTouchOutside: false
-      ).show();
+              context: context,
+              dialogType: DialogType.noHeader,
+              animType: AnimType.BOTTOMSLIDE,
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Lottie.asset(
+                    'assets/images/noInternet.json',
+                  ),
+                  Text(
+                    'Please check your internet connectivity',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18, color: Colors.black),
+                  )
+                ],
+              ),
+              title: 'No Connection',
+              desc: 'Please check your internet connectivity',
+              titleTextStyle: TextStyle(fontSize: 22, color: Colors.black),
+              descTextStyle: TextStyle(fontSize: 18, color: Colors.black54),
+              btnOkText: "Ok",
+              btnOkColor: Colors.red.shade900,
+              btnOkOnPress: () async {
+                // Navigator.pop(context, 'Cancel');
+                setState(() => isAlertSet = false);
+                isDeviceConnected =
+                    await InternetConnectionChecker().hasConnection;
+                if (!isDeviceConnected && isAlertSet == false) {
+                  showNoInternetDialogBox();
+                  setState(() => isAlertSet = true);
+                }
+              },
+              dismissOnTouchOutside: false)
+          .show();
     }
   }
 }

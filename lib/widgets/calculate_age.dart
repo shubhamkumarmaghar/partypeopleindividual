@@ -7,7 +7,7 @@ class CalculateAge{
   static String calAge(String birthdate) {
     try {
       int age;
-      if (birthdate == '') {
+      if (birthdate == '' || birthdate.contains('0001')) {
         return "NA";
       }
       else {

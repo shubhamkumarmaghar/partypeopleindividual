@@ -18,6 +18,7 @@ class _QualificationWidgetState extends State<QualificationWidget> {
   IndividualProfileController individualProfileController =
       Get.put(IndividualProfileController());
   final List<String> _qualifications = [
+
     '10th Pass',
     '12th Pass',
     'Diploma',
@@ -38,15 +39,16 @@ class _QualificationWidgetState extends State<QualificationWidget> {
     'M.Com',
     'LLB',
     'LLM',
+    '',
     // Add more qualifications if required
   ];
 
   @override
   void initState() {
     super.initState();
-    _selectedQualification = individualProfileController.gender.value.isNotEmpty
+    _selectedQualification = individualProfileController.qualification.value.isNotEmpty
         ? individualProfileController.qualification.value
-        : null;
+        : "";
   }
 
   @override

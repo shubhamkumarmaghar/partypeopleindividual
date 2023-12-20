@@ -102,18 +102,4 @@ class API {
 
   static const String addImage = '$baseUrl/party/add_image';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

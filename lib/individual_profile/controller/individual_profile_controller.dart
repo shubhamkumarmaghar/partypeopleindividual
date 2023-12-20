@@ -75,7 +75,7 @@ class IndividualProfileController extends GetxController {
 
   // Add this function to your controller.
   void onContinueButtonPressed() {
-    if (coverImage.path.isEmpty) {
+   if (coverImage.path.isEmpty) {
       Get.snackbar('Photo Error', 'Cover Photo URL should not be empty');
       return;
     }
@@ -87,22 +87,25 @@ class IndividualProfileController extends GetxController {
       Get.snackbar('Name Error', 'First name should not be empty');
       return;
     }
+   if (lastname.value.isEmpty) {
+     Get.snackbar('Name Error', 'Last name should not be empty');
+     return;
+   }
+   if (description.value.isEmpty) {
+     Get.snackbar('Description Error', 'Description should not be empty');
+     return;
+   }
+   if (gender.value.isEmpty) {
+     Get.snackbar('Gender Error', 'Gender should not be empty');
+     return;
+   }
+   /*
     if (email.value.isEmpty || !email.value.contains('@')) {
       Get.snackbar('Email Error', 'Email  should not be empty');
       return;
     }
     if ( !email.value.contains('@')) {
       Get.snackbar('Email Error', 'Please enter valid email ');
-      return;
-    }
-
-    if (lastname.value.isEmpty) {
-      Get.snackbar('Name Error', 'Last name should not be empty');
-      return;
-    }
-
-    if (description.value.isEmpty) {
-      Get.snackbar('Description Error', 'Description should not be empty');
       return;
     }
 
@@ -148,7 +151,7 @@ class IndividualProfileController extends GetxController {
       Get.snackbar('Location Error', 'City should not be empty');
       return;
     }
-
+*/
     // Your API call goes here. Use Get.isSnackbarOpen to avoid triggering the API call if a snackbar is open.
     if (!Get.isSnackbarOpen && apiService.isLoading.value == false) {
       // individualAPI
@@ -156,22 +159,20 @@ class IndividualProfileController extends GetxController {
         if(coverPhotoURL.value.isNotEmpty && coverImage.path.isEmpty) 'cover_photo': coverPhotoURL.value.toString(),
         if(profilePhotoURL.value.isNotEmpty && profileImage.path.isEmpty) 'profile_photo': profilePhotoURL.value.toString(),
         'name': '${firstname.value.capitalize?.trim().toString()}' + ' ' + '${lastname.value.capitalizeFirst?.trim().toString()}',
-        'bio': description.value.toString(),
-        'description':description.value.toString(),
-        'dob': dob.value.toString(),
-        'email':email.value.toString(),
-        'pincode': pincode.value.toString(),
-        'occupation': occupation.value.toString(),
-        'qualification': qualification.value.toString(),
-        'country': country.value.toString(),
-        'gender': gender.value.toString(),
+        if(description.value.isNotEmpty)'bio': description.value.toString(),
+        if(description.value.isNotEmpty)'description':description.value.toString(),
+        if(dob.value.isNotEmpty)'dob':dob.value.toString(),
+        'email':GetStorage().read('email')??" ",
+        if(pincode.value.isNotEmpty)'pincode': pincode.value.toString(),
+        if(occupation.value.isNotEmpty)'occupation': occupation.value.toString(),
+        if(qualification.value.isNotEmpty)'qualification': qualification.value.toString(),
+        if(country.value.isNotEmpty)'country': country.value.toString(),
+        if(gender.value.isNotEmpty)'gender': gender.value.toString(),
         'type': '2',
-        'amenities_id': selectedAmenities.join(','),
-        'state': state.value.toString(),
-        'city': city.value.toString(),
+        if(selectedAmenities.isNotEmpty)'amenities_id': selectedAmenities.join(','),
+        if(state.value.isNotEmpty)'state': state.value.toString(),
+        if(city.value.isNotEmpty)'city': city.value.toString(),
       };
-
-
       print("ghhh${userData}");
       individualProfile();
     }
@@ -197,12 +198,12 @@ class IndividualProfileController extends GetxController {
       Get.snackbar('Name Error', 'Last name should not be empty');
       return;
     }
-
+/*
     if (description.value.isEmpty) {
       Get.snackbar('Bio Error', 'Bio should not be empty');
       return;
     }
-
+*/
     if (email.value.isEmpty || !email.value.contains('@')) {
       Get.snackbar('Email Error', 'Email  should not be empty');
       return;
@@ -213,21 +214,22 @@ class IndividualProfileController extends GetxController {
       return;
     }
 
-
+/*
     if (dob.value.isEmpty) {
       Get.snackbar('DOB Error', 'Date of birth should not be empty');
       return;
     }
-
+*/
     // Check pincode length and pattern
-    if (pincode.value.isEmpty ||
+/*    if (pincode.value.isEmpty ||
         pincode.value.length != 6 ||
         !isNumeric(pincode.value)) {
       Get.snackbar('Pincode Error',
           'Pincode should be exactly 6 digits and should not contain non-numeric characters');
       return;
     }
-
+*/
+    /*
     if (occupation.value.isEmpty) {
       Get.snackbar('Occupation Error', 'Occupation should not be empty');
       return;
@@ -247,15 +249,15 @@ class IndividualProfileController extends GetxController {
       Get.snackbar('Location Error', 'State should not be empty');
       return;
     }
-
+*/
    /* if (activeCity.value.isEmpty) {
       Get.snackbar('Location Error', 'Active City should not be empty');
       return;
-    }*/
+    }
     if (city.value.isEmpty) {
       Get.snackbar('Location Error', 'City should not be empty');
       return;
-    }
+    }*/
 
     // Your API call goes here. Use Get.isSnackbarOpen to avoid triggering the API call if a snackbar is open.
     if (!Get.isSnackbarOpen && apiService.isLoading.value == false) {
@@ -264,20 +266,20 @@ class IndividualProfileController extends GetxController {
         'cover_photo': coverPhotoURL.value.toString(),
         'profile_photo': profilePhotoURL.value.toString(),
         'name': '${firstname.value.capitalizeFirst?.trim().toString()}' + ' ' + '${lastname.value.capitalizeFirst?.trim().toString()}',
-        'email':email.value.toString(),
-        'bio': description.value.toString(),
-        'description': description.value.toString(),
-        'dob': dob.value.toString(),
-        'pincode': pincode.value.toString(),
-        'occupation': occupation.value.toString(),
-        'qualification': qualification.value.toString(),
-        'country': country.value.toString(),
-        'gender': gender.value.toString(),
-        'type': '2',
         'organization_id': organization_id.value.toString(),
-        'amenities_id': selectedAmenities.join(','),
-        'state': state.value.toString(),
-        'city': city.value.toString(),
+        if(description.value.isNotEmpty)'bio': description.value.toString(),
+        if(description.value.isNotEmpty)'description':description.value.toString(),
+        if(dob.value.isNotEmpty)'dob':dob.value.toString(),
+        if(email.value.isNotEmpty)'email':email.value.toString(),
+        if(pincode.value.isNotEmpty)'pincode': pincode.value.toString(),
+        if(occupation.value.isNotEmpty)'occupation': occupation.value.toString(),
+        if(qualification.value.isNotEmpty)'qualification': qualification.value.toString(),
+        if(country.value.isNotEmpty)'country': country.value.toString(),
+        if(gender.value.isNotEmpty)'gender': gender.value.toString(),
+        'type': '2',
+        if(selectedAmenities.isNotEmpty)'amenities_id': selectedAmenities.join(','),
+        if(state.value.isNotEmpty)'state': state.value.toString(),
+        if(city.value.isNotEmpty)'city': city.value.toString(),
       };
 
       individualProfileUpdate();
@@ -315,6 +317,8 @@ class IndividualProfileController extends GetxController {
       }
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
+
+    //  log('abcde ${json.decode(await response.stream.bytesToString())}' );
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(await response.stream.bytesToString());
         //isLoading.value = false;

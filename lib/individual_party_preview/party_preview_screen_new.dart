@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -16,6 +15,8 @@ import 'package:confetti/confetti.dart';
 import 'package:shimmer/shimmer.dart';
 import '../api_helper_service.dart';
 import '../centralize_api.dart';
+import '../firebase_custom_event.dart';
+import '../individualDashboard/controllers/individual_dashboard_controller.dart';
 import '../individualDashboard/models/party_model.dart';
 import '../individual_nearby_people_profile/view/individual_people_profile.dart';
 import '../join_party_details/view/join_party_details.dart';
@@ -41,6 +42,8 @@ class PartyPreviewScreen extends StatefulWidget {
 }
 
 class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
+  IndividualDashboardController dashboardController = Get.find();
+
   int noOfPeople = 2;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String join = 'Book Now';
@@ -1034,8 +1037,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                        */
                     String pj_id =   await APIService.onBookingParty(
                           widget.party.id, noOfPeople.toString());
-                    var data= APIService.ongoingParty(widget.party.id);
-                    if(data ==true){
+                  //  var data= APIService.ongoingParty(widget.party.id);
+                    if(pj_id.isNotEmpty){
                       join = 'Booked';
                     }
                     Navigator.of(context).pop();
@@ -1054,13 +1057,19 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
   {
     return GestureDetector(
       onTap: () async {
+        logCustomEvent(eventName: bookNow, parameters: {'name':'book Now'});
+      if(dashboardController.individualProfileController.coverPhotoURL.isNotEmpty && dashboardController.individualProfileController.bio.isNotEmpty) {
         widget.party.ongoingStatus != 1 ?
        await joinPartyFormDialouge(context: context):
         Fluttertoast.showToast( msg: 'You are already booked this offer',);
           setState(() {});
           join = 'Booked';
           _controllerBottomCenter.play();
-
+      }
+      else{
+        Get.snackbar('Sorry',
+            'Upload your profile photo & Bio to access all the features.');
+      }
       },
       child: Container(
         width: Get.width * 0.2,

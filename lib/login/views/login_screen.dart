@@ -18,6 +18,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
   APIService apiService = Get.put(APIService());
+
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -53,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen>
         child: Column(
           children: <Widget>[
             Container(
-              height: 400,
+              height: Get.height*0.4,
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/background.png'),
@@ -106,24 +107,36 @@ class _LoginScreenState extends State<LoginScreen>
                     child: FadeTransition(
                         opacity: _fadeAnimation,
                         child: Container(
-                          margin: const EdgeInsets.only(top: 50),
+                          margin: const EdgeInsets.only(top: 40),
                           child: const Center(
                             child: Text(
                               "Login",
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 40,
+                                  fontSize: 35,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
                     ),
-                  )
+                  ),
+                  Positioned(
+                    left: 30,
+                    bottom: -Get.width*0.3,
+                    width: Get.width,
+                    height: 150,
+                    child: FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: Container(
+                          child:   Text('Please Choose Country ',style: TextStyle(fontSize: 18,color: Colors.grey.shade900),),
+                        )
+                    ),
+                  ),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(30.0),
+              padding: const EdgeInsets.only(left: 30.0,right: 30,),
               child: Obx(
                 () => Column(
                   children: <Widget>[
@@ -131,6 +144,73 @@ class _LoginScreenState extends State<LoginScreen>
                       opacity: _fadeAnimation,
                       child: Column(
                         children: <Widget>[
+                          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              GestureDetector(
+                                onTap: (){
+                                  loginController.countryType ='1';
+                                  setState(() {
+                                  });
+                                  //Get.to(LoginView(countryType: '1',));
+                                },
+                                child:
+                                Container(
+                                    width: Get.width*0.4,
+                                    height: Get.width*0.2,
+                                   // margin: EdgeInsets.all(10),
+                                    padding: EdgeInsets.all(10),
+                                    child:Card(
+                                      shape:RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(20.0))
+                                      ),
+                                      color:  loginController.countryType =='1'? Colors.green.shade600:Colors.white,
+                                      child: Row( children: [
+                                        SizedBox(width: 10),
+                                        CircleAvatar(backgroundImage: AssetImage('assets/images/indian_flag.png',) ,radius: 20,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Container(width:Get.width*0.15,
+                                            child: Text('India',style: TextStyle(fontSize: 20,color: loginController.countryType =='1'? Colors.white:Colors.grey.shade900),)),
+                                      ]
+                                      ),
+                                    )
+                                ),
+                              ),
+                              SizedBox(height: Get.width*0.2,),
+                              GestureDetector(
+                                onTap: (){
+                                  loginController.countryType = '2';
+
+                                  setState(() {
+
+                                  });
+                                  // Get.to(LoginView(countryType: '1',));
+                                },
+                                child:
+                                Container(
+                                    width: Get.width*0.4,
+                                    height: Get.width*0.2,
+                                   // margin: EdgeInsets.all(10),
+                                    padding: EdgeInsets.all(10),
+                                    child:Card(color: loginController.countryType =='2'? Colors.green.shade600:Colors.white,
+                                      shape:RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(20.0))
+                                      ),
+                                      child: Row( children: [
+                                        SizedBox(width: 10),
+                                        //   CircleAvatar(backgroundImage: AssetImage('assets/other_world.png',) ,radius: 20,),
+                                        Icon(CupertinoIcons.globe,size: 38,color: loginController.countryType =='2'? Colors.white:Colors.grey.shade700,),
+                                        SizedBox(width: 10),
+                                        Container(width:Get.width*0.15,
+                                            child: Text('World ',style: TextStyle(fontSize: 20,color: loginController.countryType =='2'? Colors.white:Colors.grey.shade900),)),
+                                      ]
+                                      ),
+                                    )
+                                ),
+                              ),
+
+                            ],),
+                        //  SizedBox(height: Get.height*0.05,),
                           Container(margin:  const EdgeInsets.only(left: 12.0,bottom: 12.0),
                               alignment: Alignment.centerLeft,child: Text('LogIn or SignUp',
                                 style: TextStyle(color: Colors.grey.shade600,fontSize: 18),)),
@@ -147,7 +227,7 @@ class _LoginScreenState extends State<LoginScreen>
                               });
                             },
                           ),
-                          CustomTextField(
+                         loginController.countryType=='1' ?CustomTextField(
                             validate: true,
                             maxLength: 10,
                             hintText: 'Mobile Number',
@@ -159,6 +239,19 @@ class _LoginScreenState extends State<LoginScreen>
                                 loginController.mobileNumber.value = value;
                               });
                             },
+                          ):
+                          CustomTextField(
+                            validate: true,
+                            //maxLength: 10,
+                            hintText: 'Email',
+                            obscureText: false,
+                            icon: Icons.mail,
+                            textInput: TextInputType.emailAddress,
+                            onChanged: (value) {
+                              setState(() {
+                                loginController.email.value = value;
+                              });
+                            },
                           ),
                         ],
                       ),
@@ -166,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen>
                     //const SizedBox(height: 10),
                     Container(margin:  const EdgeInsets.only(left: 12.0),
                       alignment:Alignment.centerLeft,
-                      child: Text('*You will receive OTP on this Number',
+                      child: Text('*You will receive OTP on this ${loginController.countryType=='1' ? 'Number':'Email' } ',
                       style: TextStyle(
                       color: Colors.grey,
                         fontSize: 12

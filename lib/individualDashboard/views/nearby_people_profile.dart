@@ -9,6 +9,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:like_button/like_button.dart';
+import 'package:partypeopleindividual/firebase_custom_event.dart';
 import 'package:partypeopleindividual/individual_subscription/view/subscription_view.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
@@ -51,6 +52,7 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
   String plan = GetStorage().read('plan_plan_expiry')??'Yes';
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
+    logCustomEvent(eventName: personLike, parameters: {'name':'Person Like'});
     /// send your request here
     controller.animateHeart();
     print("$isLiked");
