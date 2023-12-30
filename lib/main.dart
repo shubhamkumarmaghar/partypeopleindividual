@@ -22,18 +22,21 @@ import 'myhttp_overrides.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   FlutterLocalNotificationsPlugin pluginInstance = FlutterLocalNotificationsPlugin();
+  await setUpForLocalNotification(pluginInstance);
+}
+
+Future<NotificationDetails> setUpForLocalNotification(
+     FlutterLocalNotificationsPlugin pluginInstance) async {
   var init = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/launcher_icon'),
       iOS: DarwinInitializationSettings(
         requestSoundPermission: true,
         requestBadgePermission: true,
         requestAlertPermission: true,
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification,
+       // onDidReceiveLocalNotification: onDidReceiveLocalNotification,
       ));
 
-  pluginInstance.initialize(init,onDidReceiveNotificationResponse: (NotificationResponse details) {
-
-  },);
+  pluginInstance.initialize(init);
 
   AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
     'ch_id',
@@ -52,32 +55,26 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(androidChannel);
 
-  pluginInstance
-      .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-      ?.requestPermissions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+  pluginInstance.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
 
   const DarwinNotificationDetails iosNotificationDetails = DarwinNotificationDetails(
     presentAlert: true,
     presentBadge: true,
     presentSound: true,
     categoryIdentifier: 'plainCategory',
-
   );
   NotificationDetails platformSpec = NotificationDetails(
     android: androidSpec,
     iOS: iosNotificationDetails,
   );
-
-  await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec);
-  log('A background msg just showed ${message.data}');
-  //return;
+  return platformSpec;
 }
-Future onDidReceiveLocalNotification(
-    int id, String? title, String? body, String? payload) async {
+
+Future onDidReceiveLocalNotification(int id, String? title, String? body, String? payload) async {
   log('notification ::: $title  $body   $payload');
   // display a dialog with the notification details, tap ok to go to another page
   showDialog(
@@ -91,15 +88,13 @@ Future onDidReceiveLocalNotification(
           child: Text('Ok'),
           onPressed: () async {
             Navigator.of(context, rootNavigator: true).pop();
-           Get.to(IndividualDashboardView());
+            Get.to(IndividualDashboardView());
           },
         )
       ],
     ),
   );
 }
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -108,57 +103,17 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   analytics = await FirebaseAnalytics.instance;
-  FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+  FirebaseAnalyticsObserver(analytics: analytics);
   await GetStorage.init();
   logCustomEvent(eventName: splash, parameters: {'name': 'splash'});
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  await messaging.requestPermission();
   FlutterLocalNotificationsPlugin pluginInstance = FlutterLocalNotificationsPlugin();
-
-
-  var init = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon'),
-      iOS: DarwinInitializationSettings(
-    requestAlertPermission: true,
-    requestBadgePermission: true,
-    requestSoundPermission: true,
-     onDidReceiveLocalNotification:onDidReceiveLocalNotification
-  ));
-  await pluginInstance.initialize(init);
-  const AndroidNotificationChannel androidChannel = AndroidNotificationChannel(
-      'high_importance_channel', // id
-      'High Importance Notifications', // title
-      importance: Importance.high,
-      playSound: true);
-
-  await pluginInstance
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(androidChannel);
-  pluginInstance
-      .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-      ?.requestPermissions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-  NotificationSettings settings = await messaging.requestPermission();
-  AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
-    'ch_id',
-    'ch_name',
-    importance: Importance.high,
-    priority: Priority.high,
-    playSound: true,
-  );
-  DarwinNotificationDetails iosSpec =
-      const DarwinNotificationDetails(presentAlert: true, presentSound: true, presentBadge: true,);
-
+  final platformSpec=await setUpForLocalNotification(pluginInstance);
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    print(message.messageType);
-    print(message.data);
-    NotificationDetails platformSpec = NotificationDetails(android: androidSpec, iOS: iosSpec,);
-
-    await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec,);
+    await pluginInstance.show(0, 'Hello', "World!", platformSpec,);
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
