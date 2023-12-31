@@ -113,7 +113,7 @@ void main() async {
   final platformSpec=await setUpForLocalNotification(pluginInstance);
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    await pluginInstance.show(0, 'Hello', "World!", platformSpec,);
+    await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec,);
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
