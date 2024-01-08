@@ -113,6 +113,7 @@ void main() async {
   final platformSpec=await setUpForLocalNotification(pluginInstance);
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    log('ddddd ${message.data['title']}');
     await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec,);
   });
 

@@ -55,7 +55,9 @@ class APIService extends GetxController {
     try {
       final response = await _post(API.otp, {
         'otp': otp,
-        'user_type':'Individual'
+        'user_type':'Individual',
+        if(Platform.isIOS)'device_type':'2',
+        if(Platform.isAndroid)'device_type':'1',
       }, headers: {
         'x-access-token': header
       });
