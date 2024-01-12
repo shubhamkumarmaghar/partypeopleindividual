@@ -29,7 +29,6 @@ class PeopleList extends StatefulWidget {
 class _PeopleListState extends State<PeopleList>
     with SingleTickerProviderStateMixin {
   PeopleListController _peopleListController = Get.put(PeopleListController());
-
   int choiceIndex = 0;
   Timer? _debounce;
   TextEditingController? _textEditingController;
@@ -419,7 +418,7 @@ class _PeopleListState extends State<PeopleList>
           } else {
             print('data not found');
             Get.snackbar(
-                'Opps!', 'No User Found with this username, try another');
+                'Oops!', 'No User Found with this username, try another');
           }
         } else {
           // If the server did not return a 200 OK response,

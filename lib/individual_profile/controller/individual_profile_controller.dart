@@ -60,6 +60,7 @@ class IndividualProfileController extends GetxController {
   RxString photoStatusApproval_b = ''.obs;
   RxString photoStatusApproval_c = ''.obs;
   RxString photoStatusApproval_d = ''.obs;
+  RxDouble profilePercentComplete = 0.0.obs;
 
 
 
@@ -449,6 +450,7 @@ log('hhhhhhhhhhhh $jsonResponse');
           log('date $date');
           dob.value = DateFormat('dd/MM/yyyy').format(date);
           dobController.text = dob.value;
+          profilePercentComplete.value = response['profile_completed_percentage']+0.0??0.0;
          // dobController.text = dob.value;
           privacyOnlineStatus.value = response['privacy_online']??'';
           notification.value = response['notification']??'';

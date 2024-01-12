@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
 import 'package:partypeopleindividual/individual_profile_screen/profilephotoview.dart';
@@ -17,6 +18,7 @@ import 'package:partypeopleindividual/individual_profile_screen/profilephotoview
 import 'package:partypeopleindividual/widgets/custom_loading_indicator.dart';
 
 import 'package:partypeopleindividual/widgets/individual_amenities.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../centralize_api.dart';
@@ -336,8 +338,44 @@ class _IndividualProfileScreenViewState
                             ),
 
                             ///Other Individual Widget
-                            const SizedBox(
-                              height: 10,
+                            Container(margin: EdgeInsets.only(left: 10),
+                              child: LinearPercentIndicator(
+                                barRadius: Radius.circular(10),
+                                width: Get.width*0.72,
+                                lineHeight: Get.height*0.035,
+                                leading:  Lottie.asset(
+                                    'assets/images/sad_emoji.json',
+                                    // controller: _animationController,
+                                    height: 40,
+                                    width: 40,
+                                    animate: true,
+                                    fit: BoxFit.cover
+                                  //fit: BoxFit.cover
+                                ),
+                                animationDuration: 2000,
+                                progressColor: individualProfileController
+                                    .profilePercentComplete.value >= 60.0 ? Colors.red.shade900 :individualProfileController
+                                    .profilePercentComplete.value >= 30.0 ? Colors.red.shade600 :Colors.red.shade200,
+                                animation: true,
+                                percent: individualProfileController
+                                    .profilePercentComplete.value/100,
+                                center: Text(
+                                  individualProfileController
+                                      .profilePercentComplete.value.toString(),
+                                  style: new TextStyle(fontSize: 12.0),
+                                ),
+                                trailing: Lottie.asset(
+                                    'assets/images/happy_emoji.json',
+                                    // controller: _animationController,
+                                    height: 45,
+                                    width: 45,
+                                    animate: true,
+                                    fit: BoxFit.cover
+                                  //fit: BoxFit.cover
+                                ),
+                                backgroundColor: Colors.grey,
+                                // progressColor: Colors.blue,
+                              ),
                             ),
                             Row(
                               children: [

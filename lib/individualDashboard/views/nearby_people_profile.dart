@@ -54,7 +54,7 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     logCustomEvent(eventName: personLike, parameters: {'name':'Person Like'});
     /// send your request here
-    controller.animateHeart();
+   // controller.animateHeart();
     print("$isLiked");
     if(approvalStatus =='1') {
           if (widget.likeStatus == '1') {
@@ -84,7 +84,7 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                 print('User like save successfully');
                // isLiked = false;
                 //widget.likeStatus = '1';
-                controller.animateHeart();
+              //  controller.animateHeart();
                 setState(() {
                   isLiked = false;
                   widget.likeStatus = '1';

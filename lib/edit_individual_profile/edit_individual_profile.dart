@@ -12,6 +12,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
 import 'package:partypeopleindividual/widgets/custom_button.dart';
@@ -22,6 +23,7 @@ import 'package:partypeopleindividual/widgets/individual_amenities.dart';
 import 'package:partypeopleindividual/widgets/occupation_dropdown_selector.dart';
 import 'package:partypeopleindividual/widgets/qualification_dropdown_widget.dart';
 import 'package:blur/blur.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../widgets/dob_dropdown.dart';
@@ -402,9 +404,46 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
                                     color: Colors.orange),
                                 child: Text('*Photos which will be automatically refused include: images of celebrities, cartoons or drawings, images of minors, as well as nude or obscene photos of yourself or of others.',textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 10),)),
-                            const SizedBox(
-                              height: 10,
+
+                             Container(margin: EdgeInsets.only(left: 10),
+                               child: LinearPercentIndicator(
+                                barRadius: Radius.circular(10),
+                                width: Get.width*0.72,
+                                lineHeight: Get.height*0.035,
+                                leading:  Lottie.asset(
+                                    'assets/images/sad_emoji.json',
+                                    // controller: _animationController,
+                                    height: 40,
+                                    width: 40,
+                                    animate: true,
+                                    fit: BoxFit.cover
+                                  //fit: BoxFit.cover
+                                ),
+                                animationDuration: 2000,
+                                progressColor: individualProfileController
+                                    .profilePercentComplete.value >= 60.0 ? Colors.red.shade900 :individualProfileController
+                                    .profilePercentComplete.value >= 30.0 ? Colors.red.shade600 :Colors.red.shade200,
+                                animation: true,
+                                percent: individualProfileController
+                                    .profilePercentComplete.value/100,
+                                center: Text(
+                                 '${individualProfileController
+                                      .profilePercentComplete.value.toString()} %',
+                                  style: new TextStyle(fontSize: 12.0),
+                                ),
+                                trailing: Lottie.asset(
+                                    'assets/images/happy_emoji.json',
+                                    // controller: _animationController,
+                                    height: 45,
+                                    width: 45,
+                                    animate: true,
+                                    fit: BoxFit.cover
+                                  //fit: BoxFit.cover
+                                ),
+                                backgroundColor: Colors.grey,
+                               // progressColor: Colors.blue,
                             ),
+                             ),
                             Row(
                               children: [
                                 Expanded(
@@ -485,6 +524,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                   },
                                   maxLines: 3),
                                   ),
+                            Text("*Please do not mention you contact related or Social Accounts Details in Bio .",style: TextStyle(color: Colors.grey.shade600,fontSize: 10,),textAlign: TextAlign.start),
                             Row(
                               children: [
                                 Expanded(

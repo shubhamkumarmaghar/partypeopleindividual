@@ -12,6 +12,7 @@ import '../api_helper_service.dart';
 import '../individualDashboard/controllers/individual_dashboard_controller.dart';
 import '../login/views/login_screen.dart';
 class Alertdialogs {
+
 static  void showBlockedAlertDialog(BuildContext context,String user_id, String status,
       ) {
     AwesomeDialog(
@@ -47,6 +48,8 @@ static  void showLogoutAlertDialog(BuildContext context
     descTextStyle: TextStyle(fontSize: 18, color: Colors.black54),
     btnOkText: "Log out",
     btnOkOnPress: () {
+      APIService api = APIService();
+      api.doLogoutPeople();
       GetStorage().remove('token');
       GetStorage().remove('loggedIn');
       GetStorage().remove('online_status');

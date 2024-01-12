@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
+import 'forgot_password.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -264,6 +265,19 @@ class _LoginScreenState extends State<LoginScreen>
                       color: Colors.grey,
                         fontSize: 12
                     ),),),
+                    GestureDetector(
+                      onTap: (){
+                        Get.to(ForgotPassword());
+                      },
+                      child: Container(margin:  const EdgeInsets.only(left: 12.0),
+                        alignment:Alignment.centerRight,
+                        child: Text('Forgot Username ? ',
+                          style: TextStyle(
+                              color: Colors.red.shade900,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14
+                          ),),),
+                    ),
                     FadeTransition(
                       opacity: _fadeAnimation,
                       child: Row(

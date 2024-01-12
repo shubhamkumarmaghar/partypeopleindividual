@@ -974,7 +974,9 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                         children: [
                           GestureDetector(
                             onTap: () {
+                              if(noOfPeople >1){
                               noOfPeople--;
+                              }
                               setState(
                                 () {},
                               );
@@ -988,7 +990,9 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                           ),
                           GestureDetector(
                               onTap: () {
+                                if(noOfPeople<6){
                                 noOfPeople++;
+                                }
                                 setState(
                                   () {},
                                 );

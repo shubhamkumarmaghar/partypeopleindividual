@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -282,13 +281,25 @@ class ProfileContainer extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(
                                         Get.width * 0.5,
                                       ),
-                                      child: CachedNetworkImage(
-                                        height: Get.width * 0.12,
-                                        width: Get.width * 0.12,
-                                        imageUrl: data.profilePicture,
-                                        errorWidget: (context, url, error) =>
-                                            const CircleAvatar(
-                                                child: Icon(Icons.person)),
+                                      child: Blur(
+                                        blur: 5.0,
+                                        overlay: data.profilePicApprovalStatus != '0'
+                                            ? CachedNetworkImage(
+                                          height: Get.width * 0.12,
+                                          width: Get.width * 0.12,
+                                          imageUrl: data.profilePicture,
+                                          errorWidget: (context, url, error) =>
+                                          const CircleAvatar(
+                                              child: Icon(Icons.person)),
+                                        ):Container(),
+                                        child: CachedNetworkImage(
+                                          height: Get.width * 0.12,
+                                          width: Get.width * 0.12,
+                                          imageUrl: data.profilePicture,
+                                          errorWidget: (context, url, error) =>
+                                              const CircleAvatar(
+                                                  child: Icon(Icons.person)),
+                                        ),
                                       ),
                                     ),
                                     Positioned(
@@ -361,7 +372,6 @@ class ProfileContainer extends StatelessWidget {
 
   int getCondition() {
     int value = 0;
-
       if (type == '1' || type == '3') {
         if(gender =='Male') {
         if (newUser == '0') {
@@ -381,9 +391,8 @@ class ProfileContainer extends StatelessWidget {
     else{
       value = 1;
     }
-
-
-    return value;
+   // return value;
+    return 1;
   }
 
 
