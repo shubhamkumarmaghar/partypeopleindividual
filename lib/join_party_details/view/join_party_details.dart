@@ -182,23 +182,26 @@ class _JoinPartyDetailsState extends State<JoinPartyDetails> {
                               SizedBox(
                                 height: Get.width*0.03,
                               ),
-                              FittedBox(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                customText(text1:'Venue Name :        ',text2:  '${data?.organizationName.toString().capitalizeFirst}',fontSize: 14 ),
-                                customText(text1:'Party Time :             ',text2: '${dateConvert(
-                                    '${data?.startDate}')}  ${data?.startTime.toString()}',fontSize: 14 ),
-                                customText(text1:'Party goes count :  ',text2: '${data?.noOfPeople} ',fontSize: 14 ),
-                                customText(text1:'Party Address :       ',text2: '${data?.latitude.toString().capitalizeFirst} ,${data?.longitude} '
-                                    ,fontSize: 14 ,maxLines: 3,),
-                                data?.offers.toString().toLowerCase() != "" || data?.discountType=='0' ? customText(text1:'Offer :     ',        text2: '${data?.offers}',fontSize: 14 ):
-                                data?.discountType=='1'? customText(text1:'Offer :                        ',        text2: 'Get ${data?.discountAmount}% off  ${data?.billAmount !='0' ? 'upto ₹${data?.billAmount}':""} .',fontSize: 14 ):
-                                customText(text1:'Offer :                        ',        text2: 'Get flat ₹${data?.discountAmount} Discount ${data?.billAmount !='0' ? 'on minimum ₹${data?.billAmount}':""} .',fontSize: 14 ),
-                                data?.discountType != '0' || data?.discountDescription !=null || data?.discountDescription !="" ? customText(text1:'                                  ',text2: '${data?.discountDescription.toString().capitalizeFirst }',fontSize: 14 ,maxLines: 2,):Container(),
-                                customText(text1:'Booked On :            ',text2: '${dateConvert('${data?.createdAt}')} ',fontSize: 14 ),
+                              Container(
+                                height: Get.height * 0.24,
+                                child: FittedBox(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                  customText(text1:'Venue Name :        ',text2:  '${data?.organizationName.toString().capitalizeFirst}',fontSize: 14 ),
+                                  customText(text1:'Party Time :             ',text2: '${dateConvert(
+                                      '${data?.startDate}')}  ${data?.startTime.toString()}',fontSize: 14 ),
+                                  customText(text1:'Party goes count :  ',text2: '${data?.noOfPeople} ',fontSize: 14 ),
+                                  customText(text1:'Party Address :       ',text2: '${data?.latitude.toString().capitalizeFirst} ,${data?.longitude}  '
+                                      ,fontSize: 14 ,maxLines: 3,),
+                                  data?.offers.toString().toLowerCase() != "" || data?.discountType=='0' ? customText(text1:'Offer :     ',        text2: '${data?.offers}',fontSize: 14 ):
+                                  data?.discountType=='1'? customText(text1:'Offer :                        ',        text2: 'Get ${data?.discountAmount}% off  ${data?.billAmount !='0' ? 'upto ₹${data?.billAmount}':""} .',fontSize: 14 ):
+                                  customText(text1:'Offer :                        ',        text2: 'Get flat ₹${data?.discountAmount} Discount ${data?.billAmount !='0' ? 'on minimum ₹${data?.billAmount}':""} .',fontSize: 14 ),
+                                  data?.discountType != '0' || data?.discountDescription !=null || data?.discountDescription !="" ? customText(text1:'                                  ',text2: '${data?.discountDescription.toString().capitalizeFirst }',fontSize: 14 ,maxLines: 2,):Container(),
+                                  customText(text1:'Booked On :            ',text2: '${dateConvert('${data?.createdAt}')} ',fontSize: 14 ),
             ],
+                                  ),
                                 ),
                               )
                             ]),
@@ -216,8 +219,8 @@ class _JoinPartyDetailsState extends State<JoinPartyDetails> {
                           "✔  Please carry your legal Identity card with you .\n"
                           "✔ All offers and discounts are posted by party hosts themself . \n"
                     //  "✔ Generated ticket will be shown in ticket history . \n"
-                      "✔ Be sure to arrive at the venue on time to secure your spot and enjoy a stress-free entry because these tickets are subject to availability.\n"
-                      "✔ Entry into pub is depends solely on pubs.",
+                      "✔ Be sure to arrive at the venue on time .\n"
+                      "✔ All sales final No refund or exchanges right of admission reserved . ",
                       style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'Poppins',

@@ -901,7 +901,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                 top: Get.height * 0.003,
                               ),
                               child: Text(
-                                'TOMORROW (${individualDashboardController.jsonPartyOrganisationDataTomm.length})',
+                                'TOMORROW (${individualDashboardController.lengthOfTommParties})',
                                 style: TextStyle(
                                     fontFamily: 'Poppins',
                                     color: Colors.white,
@@ -989,7 +989,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                 top: Get.height * 0.003,
                               ),
                               child: Text(
-                                'UPCOMING (${individualDashboardController.jsonPartyOgranisationDataUpcomming.length})',
+                                'UPCOMING (${individualDashboardController.lengthOfUpcomingParties})',
                                 style: TextStyle(
                                     fontFamily: 'Poppins',
                                     color: Colors.white,

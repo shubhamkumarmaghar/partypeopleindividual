@@ -65,40 +65,41 @@ class _ChatListState extends State<ChatList> {
                   ),
                 ),
               ),
-              body: SmartRefresher(
-               // onRefresh: _handleRefresh,
-                controller: controller.refreshController,
-                enablePullDown: true,
-                enablePullUp: true,
-                physics: const ScrollPhysics(),
-                onRefresh: () {
-                  controller.getChatList(isRefresh: true ,);
-                },
-                onLoading:  () {
-                  controller.getChatList(isRefresh: false ,);
-                },
-               // backgroundColor: Colors.transparent,
-               // color: Colors.red.shade900,
-                child: SingleChildScrollView(
-                  child: Container(
-                    decoration: BoxDecoration(color: Colors.white
-                        /*  gradient: LinearGradient(
-                      colors: [
-                        //   Colors.pink,
-                        // Colors.red.shade900
-                        Colors.red.shade800,
-                        Color(0xff7e160a),
-                        Color(0xff2e0303),
-                      ],
-                      // begin: Alignment.topCenter,
-                      //  end: Alignment.bottomCenter,
-                    ),*/
-                        ),
-                    height: Get.height,
-                    width: Get.width,
-                    child: controller.isApiLoading == false
-                        ? ListView.builder(physics:ScrollPhysics() ,
+              body: SingleChildScrollView(
+                child: Container(
+                  height: Get.height,
+                  decoration: BoxDecoration(
+                      color: Colors.white
+                      /*  gradient: LinearGradient(
+                    colors: [
+                      //   Colors.pink,
+                      // Colors.red.shade900
+                      Colors.red.shade800,
+                      Color(0xff7e160a),
+                      Color(0xff2e0303),
+                    ],
+                    // begin: Alignment.topCenter,
+                    //  end: Alignment.bottomCenter,
+                  ),*/
+                      ),
+                //  height: Get.height*0.9,
+                  width: Get.width,
+                  child: controller.isApiLoading == false
+                      ? SmartRefresher(
+                    controller: controller.refreshChatController,
+                    enablePullDown: true,
+                    enablePullUp: true,
+                    onRefresh: () {
+                      controller.getChatList(isRefresh: true ,);
+                    },
+                    onLoading:  () {
+                      controller.getChatList(isRefresh: false ,);
+                    },
+                    physics: const ScrollPhysics(),
+                        child: ListView.builder(
+                    //physics:ScrollPhysics() ,
                             itemCount: controller.chatList.length,
+                    scrollDirection: Axis.vertical,
                             itemBuilder: (context, index) {
                               var data = controller.chatList[index];
                               return GestureDetector(
@@ -376,17 +377,17 @@ class _ChatListState extends State<ChatList> {
                                       thickness: 1,
                                     ),
                                     /*   Container(
-                    color: const Color(0xFFc4c4c4),
-                    height: 0.4.sp,
-                    width: MediaQuery.of(context).size.width * 0.73,
-                  ),*/
+                  color: const Color(0xFFc4c4c4),
+                  height: 0.4.sp,
+                  width: MediaQuery.of(context).size.width * 0.73,
+                ),*/
                                   ],
                                 ) ,
                               );
                             },
-                          )
-                        : loder(),
-                  ),
+                          ),
+                      )
+                      : loder(),
                 ),
               ),
             );

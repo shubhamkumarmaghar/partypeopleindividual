@@ -92,6 +92,7 @@ class IndividualDashboardController extends GetxController {
   }
 
   void getDataForDashboard(bool isRefresh) async {
+    log('token :::${GetStorage().read('token')}');
     lengthOfTodayParties = 0.obs;
     lengthOfTommParties = 0.obs;
     lengthOfUpcomingParties = 0.obs;
@@ -418,6 +419,7 @@ class IndividualDashboardController extends GetxController {
 
   Future<void> getTodayParty({required bool isloading}) async {
     try {
+      var totalParties;
       // Fetch all parties
       /// status': '1' current date parties
       /// status': '2' tomarrow date parties
@@ -462,8 +464,8 @@ class IndividualDashboardController extends GetxController {
       // Loop through parties and sort them into appropriate lists
       if (decodedData['data'] != null) {
         if (pageTodayCount == 1) {
-
           pageTodayCountresponse = decodedData['total_pages'];
+          totalParties = decodedData['total_recrods'];
           log('page count ::: $pageTodayCountresponse');
           pageTodayCount++;
         } else {
@@ -486,7 +488,8 @@ class IndividualDashboardController extends GetxController {
           }
         }
         ///setting length
-        lengthOfTodayParties.value = todayParties.length;
+       // lengthOfTodayParties.value = todayParties.length;
+       lengthOfTodayParties.value = decodedData['total_recrods'];
 
         ///setting number of party
         jsonPartyOrganisationDataToday.addAll(todayParties);
@@ -558,7 +561,7 @@ class IndividualDashboardController extends GetxController {
         dynamic decodedData = jsonDecode(response.body);
 
         print("all tomarrow parties $decodedData");
-
+        var totalPartiesTomarrow;
         List<Party> tomarrowParties = [];
 
         // Loop through parties and sort them into appropriate lists
@@ -566,7 +569,9 @@ class IndividualDashboardController extends GetxController {
         if (decodedData['data'] != null) {
           if (pageTomarrowCount == 1) {
             pageTomarrowCountresponse = decodedData['total_pages'];
+            totalPartiesTomarrow = decodedData['total_recrods'];
             log('page count ::: $pageTomarrowCountresponse');
+
             pageTomarrowCount++;
           } else {
             pageTomarrowCount++;
@@ -577,10 +582,7 @@ class IndividualDashboardController extends GetxController {
               Party parsedParty = Party.fromJson(party);
               print(party);
               tomarrowParties.add(parsedParty);
-
-
             //  jsonPartyOrganisationDataTomm.value = tomarrowParties;
-
             } catch (e) {
               print('Error parsing tomorrow party: $e');
               if (!isloading) {
@@ -591,8 +593,9 @@ class IndividualDashboardController extends GetxController {
             }
           }
           ///setting length
-          lengthOfTommParties.value = tomarrowParties.length;
-
+       //   lengthOfTommParties.value = tomarrowParties.length;
+          lengthOfTommParties.value = decodedData['total_recrods'];
+          log("length of tomarrow $lengthOfTommParties");
           ///setting number of party
           jsonPartyOrganisationDataTomm.addAll(tomarrowParties);
           if (!isloading) {
@@ -622,6 +625,7 @@ class IndividualDashboardController extends GetxController {
 
   Future<void> getUpcomingParty({required bool isloading}) async {
     try {
+      var totalParties;
       // Fetch all parties
       /// status': '1' current date parties
       /// status': '2' tomarrow date parties
@@ -663,8 +667,11 @@ class IndividualDashboardController extends GetxController {
       // Loop through parties and sort them into appropriate lists
       if (decodedData['data'] != null) {
         if (pageUpcominmgCount == 1) {
+
           pageUpcomingCountresponse = decodedData['total_pages'];
+          totalParties = decodedData['total_recrods'];
           log('page count ::: $pageUpcomingCountresponse');
+
           pageUpcominmgCount++;
         } else {
           pageUpcominmgCount++;
@@ -685,8 +692,8 @@ class IndividualDashboardController extends GetxController {
           }
         }
         ///setting length
-        lengthOfUpcomingParties.value = upcomingParties.length;
-
+       // lengthOfUpcomingParties.value = upcomingParties.length;
+       lengthOfUpcomingParties.value = decodedData['total_recrods'];
         ///setting number of party
         jsonPartyOgranisationDataUpcomming.addAll(upcomingParties);
        // jsonPartyOgranisationDataUpcomming.value = upcomingParties;

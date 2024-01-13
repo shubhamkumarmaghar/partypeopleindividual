@@ -33,7 +33,7 @@ class ChatScreenController extends GetxController {
   List<ChatUserListModel> chatList = [];
   List<ChatUserListModel> paginatedChatList = [];
   AudioPlayer player = AudioPlayer();
-  final refreshController = RefreshController(initialRefresh: false);
+  final refreshChatController = RefreshController(initialRefresh: false);
 
   @override
   void onInit() {
@@ -140,36 +140,36 @@ class ChatScreenController extends GetxController {
               // end = end-15;
             }
             if (isRefresh) {
-              refreshController.refreshCompleted();
+              refreshChatController.refreshCompleted();
             } else {
-              refreshController.loadComplete();
+              refreshChatController.loadComplete();
             }
             isApiLoading = false;
             update();
           } else {
             log('No user data found');
             if (isRefresh) {
-              refreshController.refreshCompleted();
+              refreshChatController.refreshCompleted();
             } else {
-              refreshController.loadComplete();
+              refreshChatController.loadComplete();
             }
             isApiLoading = false;
             update();
           }
         } else {
           if (isRefresh) {
-            refreshController.refreshCompleted();
+            refreshChatController.refreshCompleted();
           } else {
-            refreshController.loadComplete();
+            refreshChatController.loadComplete();
           }
           update();
           log('user is not added to chat list , response is not 200 ');
         }
       } catch (e) {
         if (isRefresh) {
-          refreshController.refreshCompleted();
+          refreshChatController.refreshCompleted();
         } else {
-          refreshController.loadComplete();
+          refreshChatController.loadComplete();
         }
         log('found error $e');
       }
@@ -177,9 +177,9 @@ class ChatScreenController extends GetxController {
       // start = start-15;
       // end = end-15;
       if (isRefresh) {
-        refreshController.refreshCompleted();
+        refreshChatController.refreshCompleted();
       } else {
-        refreshController.loadComplete();
+        refreshChatController.loadComplete();
       }
       Get.snackbar('Oops!', 'No User found ');
     }
