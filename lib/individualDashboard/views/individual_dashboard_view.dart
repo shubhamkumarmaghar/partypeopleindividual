@@ -13,6 +13,7 @@ import 'package:partypeopleindividual/individualDashboard/controllers/individual
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
 import 'package:partypeopleindividual/notification/notification_screen.dart';
 import 'package:partypeopleindividual/wishlist_screen/wishlist_screen.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sizer/sizer.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -59,8 +60,10 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
       );
 
   Future _handleRefresh() async {
-    individualDashboardController.getDataForDashboard();
+    individualDashboardController.getDataForDashboard(true);
+    individualDashboardController.refreshController.refreshCompleted();
     return await Future.delayed(Duration(milliseconds: 200));
+
   }
 
   @override
@@ -104,7 +107,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                       duration: const Duration(milliseconds: 500),
                       transition: Transition.leftToRight,
                     )?.then((value) =>
-                        individualDashboardController.getDataForDashboard()),
+                        individualDashboardController.getDataForDashboard(true)),
                     child: const Icon(
                       Icons.menu,
                       color: Colors.white,
@@ -146,7 +149,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                           onTap: () {
                             Get.to(const WishlistScreen())?.then((value) =>
                                 individualDashboardController
-                                    .getDataForDashboard());
+                                    .getDataForDashboard(true));
                           },
                           child: Icon(Icons.favorite,
                               color:
@@ -166,7 +169,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                           duration: const Duration(milliseconds: 300),
                           transition: Transition.rightToLeft,
                         )?.then((value) => individualDashboardController
-                                .getDataForDashboard()),
+                                .getDataForDashboard(true)),
                         child: Obx(() {
                           return Stack(
                             children: [
@@ -333,11 +336,12 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                     ),
                   ),
                   // for liquid indicator LiquidPullToRefresh
-                  RefreshIndicator(
+                 SmartRefresher(
                     onRefresh: _handleRefresh,
-                    color: Colors.transparent,
+                    //color: Colors.transparent,
                     // animSpeedFactor: 5.0,
                     // showChildOpacityTransition: false,
+                    controller: individualDashboardController.refreshController,
                     child: Container(
                       margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.065),
@@ -369,7 +373,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                                     .usersList,
                                           ))?.then((value) =>
                                               individualDashboardController
-                                                  .getDataForDashboard());
+                                                  .getDataForDashboard(true));
                                         },
                                         readOnly: true,
                                         //  enabled: false,
@@ -589,7 +593,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                                 .usersList,
                                       ))?.then((value) =>
                                           individualDashboardController
-                                              .getDataForDashboard());
+                                              .getDataForDashboard(true));
                                     },
                                     child: Text(
                                       'See all ',
@@ -655,7 +659,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                                                     .id)
                                                         ?.then((value) =>
                                                             individualDashboardController
-                                                                .getDataForDashboard());
+                                                                .getDataForDashboard(true));
                                                   } else {
                                                     Get.snackbar('Sorry!',
                                                         'Your account is not approved , please wait until it got approved');
@@ -861,7 +865,18 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                       bottom: Get.width * 0.05,
                                     ),
                                     height: Get.width * 0.65,
-                                    child: ListView.builder(
+                                    child: SmartRefresher(
+                                      controller: individualDashboardController.refreshTodayController,
+                                      //enablePullDown: true,
+                                      enablePullUp: true,
+                                      scrollDirection:Axis.horizontal ,
+                                      onLoading: (){
+                                        individualDashboardController.getTodayParty(isloading: true ,);
+                                      },
+                                      onRefresh: (){
+                                        individualDashboardController.getTodayParty(isloading: false ,);
+                                      },
+                                      child: ListView.builder(
                                       scrollDirection: Axis.horizontal,
                                       itemCount: individualDashboardController
                                           .jsonPartyOrganisationDataToday
@@ -879,13 +894,14 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                       },
                                     ),
                                   ),
+              ),
                             Padding(
                               padding: EdgeInsets.only(
                                 left: MediaQuery.of(context).size.width * 0.05,
                                 top: Get.height * 0.003,
                               ),
                               child: Text(
-                                'TOMORROW (${individualDashboardController.jsonPartyOrganisationDataTomm.length})',
+                                'TOMORROW (${individualDashboardController.lengthOfTommParties})',
                                 style: TextStyle(
                                     fontFamily: 'Poppins',
                                     color: Colors.white,
@@ -938,21 +954,33 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                       bottom: Get.width * 0.05,
                                     ),
                                     height: Get.width * 0.65,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: individualDashboardController
-                                          .jsonPartyOrganisationDataTomm.length,
-                                      itemBuilder: (context, index) {
-                                        return PartyCard(
-                                          party: individualDashboardController
-                                                  .jsonPartyOrganisationDataTomm[
-                                              index],
-                                          onBack: () => () {},
-                                          /*individualDashboardController
-                                            .getDataForDashboard(),*/
-                                          partyType: 'tommorow',
-                                        );
+                                    child: SmartRefresher(
+                                      controller: individualDashboardController.refreshTomarrowController,
+                                      enablePullDown: true,
+                                      enablePullUp: true,
+                                      scrollDirection:Axis.horizontal ,
+                                      onLoading: (){
+                                        individualDashboardController.getTomarrowParty(isloading: true ,);
                                       },
+                                      onRefresh: (){
+                                        individualDashboardController.getTomarrowParty(isloading: false ,);
+                                      },
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: individualDashboardController
+                                            .jsonPartyOrganisationDataTomm.length,
+                                        itemBuilder: (context, index) {
+                                          return PartyCard(
+                                            party: individualDashboardController
+                                                    .jsonPartyOrganisationDataTomm[
+                                                index],
+                                            onBack: () => () {},
+                                            /*individualDashboardController
+                                              .getDataForDashboard(),*/
+                                            partyType: 'tommorow',
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
                             Padding(
@@ -961,7 +989,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                 top: Get.height * 0.003,
                               ),
                               child: Text(
-                                'UPCOMING (${individualDashboardController.jsonPartyOgranisationDataUpcomming.length})',
+                                'UPCOMING (${individualDashboardController.lengthOfUpcomingParties})',
                                 style: TextStyle(
                                     fontFamily: 'Poppins',
                                     color: Colors.white,
@@ -1014,7 +1042,19 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                       bottom: Get.width * 0.05,
                                     ),
                                     height: Get.width * 0.65,
-                                    child: ListView.builder(
+                                    child:
+                                    SmartRefresher(
+                                      controller: individualDashboardController.refreshUpcomingController,
+                                      //enablePullDown: true,
+                                      enablePullUp: true,
+                                      scrollDirection:Axis.horizontal ,
+                                      onLoading: (){
+                                        individualDashboardController.getUpcomingParty(isloading: true ,);
+                                      },
+                                      onRefresh: (){
+                                        individualDashboardController.getUpcomingParty(isloading: false ,);
+                                      },
+                                      child:ListView.builder(
                                       scrollDirection: Axis.horizontal,
                                       itemCount: individualDashboardController
                                           .jsonPartyOgranisationDataUpcomming
@@ -1031,6 +1071,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                         );
                                       },
                                     ),
+              ),
                                   ),
                             /*   SizedBox(
                               height: MediaQuery.of(context).size.height * 0.1,

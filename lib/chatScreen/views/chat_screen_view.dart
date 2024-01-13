@@ -412,11 +412,15 @@ void getChatUserData() async{
                                       );
                                     });
                               } else {
-                                return const Center(
-                                  child: Text(
-                                    'Say Hii! 👋',
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.grey),
+                                return GestureDetector(onTap: (){
+                                  _textController.text = 'Hii! 👋';
+                                },
+                                  child: const Center(
+                                    child: Text(
+                                      'Say Hii! 👋',
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.grey),
+                                    ),
                                   ),
                                 );
                               }
@@ -474,9 +478,8 @@ void getChatUserData() async{
                               {
                                 if (plan_expire == 'Yes') {
                                  // if (newUser == '1' || chatCount <= 2)
-                                    if (chatCount <= 2)
+                                    if (chatCount <= 0)
                                   {
-
                                     if (_textController.text.isNotEmpty) {
                                       chatCount++;
                                       log('chat count $chatCount');

@@ -67,7 +67,7 @@ class _ActiveCitySelectState extends State<ActiveCitySelect> {
                });
              }
              else{
-             Get.snackbar('Opps!', 'Failed to update Active City');
+             Get.snackbar('Oops!', 'Failed to update Active City');
              }
              }
               else{

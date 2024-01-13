@@ -84,6 +84,7 @@ dependencies:
   neumorphic_ui: ^1.0.1
   flutter_notification_channel: ^2.0.0
 
+  percent_indicator: ^4.2.3
 
 
 

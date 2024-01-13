@@ -11,6 +11,7 @@ import 'package:partypeopleindividual/otp/model/otp_model.dart';
 
 import 'centralize_api.dart';
 import 'constants.dart';
+import 'login/model/forgotUsername_model.dart';
 import 'login/model/user_model.dart';
 
 class APIService extends GetxController {
@@ -29,7 +30,8 @@ class APIService extends GetxController {
             'device_token': deviceToken,
             'type':type
 
-          });
+          }
+          );
 
       if (response['status'] == 1) {
         // Login successful, return user data
@@ -90,6 +92,76 @@ class APIService extends GetxController {
       rethrow;
     }
   }
+
+  /// forgot username to send otp
+  Future<ForgotUserNameModel> forgotUsername(String phone,) async {
+    String type = phone.contains('@') ?"2":"1";
+    try {
+      final response = await _post(API.forgotUsername,
+          {
+            if(type =='1')'phone':phone ,
+            if(type =='2')'email':phone,
+            'type': type
+          });
+
+      if (response['status'] == 1 && response['message'] == 'Found') {
+        // Login successful, return user data
+        final userData = response['data'] as Map<String, dynamic>;
+        return ForgotUserNameModel.fromJson(userData);
+      } else {
+        // Handle failure
+        throw Exception(response['message']);
+      }
+    } catch (e) {
+      // Using Get.snackbar
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      rethrow;
+    }
+  }
+
+  ///This method is used to verify otp
+  Future<OTPVerificationResponse?> verifyForgotOTP(String otp,String username, String header) async {
+    try {
+      final response = await _post(API.changeUsername, {
+        'otp': otp,
+        'username':username
+
+      }, headers: {
+        'x-access-token': header
+      });
+      if (response['status'] == 1  ) {
+        // Login successful, return user data
+        if(response['message'] != 'Sorry ! you can not login here') {
+          final otpVerificationResponse = response;
+          return OTPVerificationResponse.fromJson(otpVerificationResponse);
+        }
+        else{
+          Get.snackbar(loginFailedTitle, organizationUser);
+          Get.offAll(LoginScreen());
+          return null;
+        }
+      }
+
+
+      else {
+        // Handle failure
+        throw Exception(response['message']);
+      }
+    } catch (e) {
+      // Using Get.snackbar
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      rethrow;
+    }
+  }
+
 
   ///Update User Type
   updateUserType(String userType, String header) async {
@@ -202,7 +274,36 @@ class APIService extends GetxController {
     return response;
   }
 
-/// do block/unblock people
+  /// Logout process
+
+  Future<void> doLogoutPeople() async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse(API.logOut),
+          headers: {
+            'x-access-token': '${GetStorage().read('token')}',
+          },
+          );
+
+      print("response of logout data ${response.body}");
+
+      if (jsonDecode(response.body)['status'] == 1 && jsonDecode(response.body)['message'] == 'Device token delete successfully') {
+        print("Device token delete successfully");
+        Get.snackbar('Logout' , 'You have successfully Logout ',);
+      }
+      else{
+        print("Device token message ${jsonDecode(response.body)['message']}");
+      }
+
+    } on Exception catch (e) {
+      print('Exception in logout ${e}');
+    }
+    update();
+  }
+
+
+
+  /// do block/unblock people
   Future<void> doBlockUnblockPeople(String id,String status) async {
     try {
       http.Response response = await http.post(
@@ -231,7 +332,7 @@ class APIService extends GetxController {
       }
       else {
         print("User Unblocked failed ${response.body}");
-        Get.snackbar('Opps!!!' , 'Process failed ',);
+        Get.snackbar('Oops!!!' , 'Process failed ',);
       }
     } on Exception catch (e) {
       print('Exception in blocked data ${e}');
@@ -260,7 +361,7 @@ class APIService extends GetxController {
       }
       else {
         print("people from chatList delete failed ${response.body}");
-        Get.snackbar('Opps!!!' , 'Process failed ',);
+        Get.snackbar('Oops!!!' , 'Process failed ',);
       }
     } on Exception catch (e) {
       print('Exception in chatList  delete data ${e}');

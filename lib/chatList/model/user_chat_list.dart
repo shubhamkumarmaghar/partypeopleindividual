@@ -23,7 +23,7 @@ class ChatUserListModel {
   late final dynamic lastMessage;
   late final dynamic lastMessageTime;
   late final String blockStatus;
-  late final String profilePicApprovalStatus;
+  late final dynamic profilePicApprovalStatus;
 
 
   ChatUserListModel.fromJson(Map<String, dynamic> json){

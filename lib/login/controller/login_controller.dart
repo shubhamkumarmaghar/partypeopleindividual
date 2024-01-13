@@ -6,8 +6,9 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/otp/controller/otp_controller.dart';
-
+import '../../otp/views/forgot_username_otp.dart';
 import '../../otp/views/otp_view.dart';
+import '../model/forgotUsername_model.dart';
 import '../model/user_model.dart';
 
 class LoginController extends GetxController {
@@ -15,6 +16,7 @@ class LoginController extends GetxController {
   String countryType = '1';
   RxString username = ''.obs;
   RxString mobileNumber = ''.obs;
+  RxString forgotMobileNumber = ''.obs;
   RxString email = ''.obs;
   RxString deviceToken = ''.obs;
   APIService apiService = Get.put(APIService());
@@ -92,5 +94,27 @@ class LoginController extends GetxController {
     } catch (e) {
       Get.snackbar(loginFailedTitle, checkCredentialsMessage);
     } finally {}
+  }
+
+  Future<void> forgotPassword() async {
+
+   if(forgotMobileNumber.value.isEmpty){
+      Get.snackbar(loginFailedTitle, 'Please enter valid mobile Number / Email ');
+      return;
+    }
+    try {
+      ForgotUserNameModel? response = await apiService.forgotUsername(
+           forgotMobileNumber.value,);
+        otpController.forgotHeader.value = response.token!;
+        countryType =='1'? GetStorage().write('mobile', mobileNumber.value):GetStorage().write('email', email.value);
+        Get.to(ForgotOTPScreen(
+          enteredNumberOrEmail: forgotMobileNumber.value,
+        ));
+
+    } catch (e) {
+      Get.snackbar(loginFailedTitle, checkCredentialsMessage);
+    }
+   finally {
+    }
   }
 }

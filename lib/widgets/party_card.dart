@@ -52,7 +52,7 @@ class _PartyCardState extends State<PartyCard>
 
   @override
   void initState() {
-    logCustomEvent(eventName: partyPreview, parameters: {'name':'Party preview'});
+    //logCustomEvent(eventName: partyPreview, parameters: {'name':'Party preview'});
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _colorAnimation =

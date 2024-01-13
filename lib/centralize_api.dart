@@ -10,17 +10,19 @@ class API {
 
   static const String otp = '$baseUrl/account/otp_verify';
 
+  static const String forgotUsername = '$baseUrl/account/forgot_username';
+
+  static const String changeUsername = '$baseUrl/account/change_username';
+
   static const String updateType = '$baseUrl/account/update_user_type';
 
   static const String deleteMyAccount = '$baseUrl/account/delete_my_account';
 
-  static const String individualProfileCreation =
-      '$baseUrl/party/create_individual_organization';
+  static const String individualProfileCreation = '$baseUrl/party/create_individual_organization';
 
   static const String organizationInfo = '$baseUrl/party/organization_info';
 
-  static const String individualProfileUpdate =
-      '$baseUrl/party/update_individual_organization';
+  static const String individualProfileUpdate = '$baseUrl/party/update_individual_organization';
 
   static const String individualProfileData = '$baseUrl/party/organization_details';
 
@@ -61,6 +63,8 @@ class API {
   static const String updateActiveCity = '$baseUrl/account/update_city';
 
   static const String blockUnblockApi = '$baseUrl/account/individual_user_block';
+
+  static const String logOut = '$baseUrl/comman/delete_device_token';
 
   static const String getBlockList = '$baseUrl/account/get_individual_block_list';
 
