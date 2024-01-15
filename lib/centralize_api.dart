@@ -106,4 +106,7 @@ class API {
 
   static const String addImage = '$baseUrl/party/add_image';
 
+  static const String getVersion = '$baseUrl/comman/app_version';
+
+
 }

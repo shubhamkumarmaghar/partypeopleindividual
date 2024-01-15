@@ -1,12 +1,18 @@
+import 'dart:convert';
 import 'dart:developer';
-
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:partypeopleindividual/login/views/login_screen.dart';
-
+import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import '../../centralize_api.dart';
 import '../../individualDashboard/views/individual_dashboard_view.dart';
+import '../get_version_model.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -16,17 +22,30 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  GetVersion? getVersionData;
   @override
   void initState() {
-
-    updaterApp();
+  /*  Future( () => iosUpdater());
+    //updaterApp();
     Future.delayed(const Duration(seconds: 3)).then((value) {
       //Get.offAll(const LoginScreen());
       Get.offAll( GetStorage().read('loggedIn') == '1'
           ? const IndividualDashboardView()
           : const LoginScreen());
-    });
+    });*/
+    runApp();
     super.initState();
+  }
+
+  runApp() async {
+    await _initPackageInfo();
+    await Future( () => updaterApp());
+   await Future.delayed(const Duration(seconds: 3)).then((value) {
+      //Get.offAll(const LoginScreen());
+      Get.offAll( GetStorage().read('loggedIn') == '1'
+          ? const IndividualDashboardView()
+          : const LoginScreen());
+    });
   }
 
   @override
@@ -43,12 +62,29 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
+  }
 
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+    buildSignature: 'Unknown',
+  );
   void updaterApp() async
   {
-    await appUpdater();
+    if(Platform.isIOS){
+     await iosUpdater();
+    }
+    if(Platform.isAndroid){
+    await androidUpdater();}
   }
-  Future<void> appUpdater()async {
+  Future<void> androidUpdater()async {
     InAppUpdate.checkForUpdate().then((updateInfo) {
       if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
         log('updateInfo.updateAvailability ${updateInfo.updateAvailability}');
@@ -78,5 +114,62 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
+  iosUpdater()async{
+    String res = await getVersion();
+    if(res =='true' && double.parse('${getVersionData?.data?.version}')>double.parse('${_packageInfo.version}'))
+    {
+      // flutter defined function
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: new Text("Update app ?"),
+            content: new Text('${getVersionData?.data?.ffUpdateMsg}'),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                  //isDefaultAction: true,
+                  onPressed: () async {
+          Get.back();
+          },
+                  child: const Text('Ignore'),),
+              CupertinoDialogAction(
+                //isDefaultAction: true,
+                onPressed: () async {
+
+                  final Uri _url =
+                  await Uri.parse("https://apps.apple.com/app/party-peoples/id6471072076");
+                  if (!await launchUrl(_url)) {
+                    throw Exception('Could not launch $_url');
+                  }
+                  Get.back();
+                },
+                child: const Text('Update'),),
+              // usually buttons at the bottom of the dialog
+
+            ],
+          );
+        },
+      );}
+    else{
+      print('No Version data found');
+    }
+  }
+  Future<String> getVersion() async {
+    String url =API.getVersion+'?os_type=ios';
+    final response = await http.get(
+      Uri.parse(url),
+    );
+    Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+    log('${jsonResponse}');
+    if(jsonResponse['status']==1){
+      var versionResponse = GetVersion.fromJson(jsonResponse);
+      getVersionData = versionResponse;
+      return 'true';
+    }
+    else{
+      return 'false';
+    }
+  }
 }
 

@@ -82,6 +82,7 @@ dependencies:
   in_app_update: ^4.2.2
   fluttertoast: ^8.2.2
   percent_indicator: ^4.2.3
+  package_info_plus: ^3.0.3
 
 
 
