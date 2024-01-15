@@ -600,7 +600,7 @@ log('#   $chatCount');
       });
 
       final data = await http.MultipartFile.fromPath(imageKey,imgFile?.path??File('').path,);
-      log('ddddd ${data.contentType} - ${data.field} - ${data.filename}');
+      log('image part ${data.contentType} - ${data.field} - ${data.filename}');
       request.files.addAll([data]);
 
       request.headers.addAll(headers);

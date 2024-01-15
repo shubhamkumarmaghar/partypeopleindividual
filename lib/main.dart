@@ -22,7 +22,10 @@ import 'myhttp_overrides.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   FlutterLocalNotificationsPlugin pluginInstance = FlutterLocalNotificationsPlugin();
-  await setUpForLocalNotification(pluginInstance);
+  final platformSpec=await setUpForLocalNotification(pluginInstance);
+  log('notification backend  ${message.data['title']} ${ message.data['body']} ');
+    await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec,);
+
 }
 
 Future<NotificationDetails> setUpForLocalNotification(
@@ -113,7 +116,7 @@ void main() async {
   final platformSpec=await setUpForLocalNotification(pluginInstance);
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    log('ddddd ${message.data['title']}');
+    log('notification  ${message.data['title']} ${ message.data['body']} ');
     await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec,);
   });
 
