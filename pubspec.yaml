@@ -85,6 +85,7 @@ dependencies:
   flutter_notification_channel: ^2.0.0
 
   percent_indicator: ^4.2.3
+  package_info_plus: ^3.0.3
 
 
 
