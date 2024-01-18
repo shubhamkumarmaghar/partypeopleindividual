@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ import 'package:partypeopleindividual/firebase_custom_event.dart';
 import 'package:partypeopleindividual/individualDashboard/bindings/individual_dashboard_binding.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:partypeopleindividual/splash_screen/splash_controller/spalash_controller.dart';
 import 'package:partypeopleindividual/splash_screen/view/splash_screen.dart';
 import 'package:sizer/sizer.dart';
 import 'constants.dart';
@@ -18,12 +20,10 @@ import 'myhttp_overrides.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-
   FlutterLocalNotificationsPlugin pluginInstance =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
   var init = const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon')
-  );
+      android: AndroidInitializationSettings('@mipmap/launcher_icon'));
   pluginInstance.initialize(init);
   AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
     'ch_id',
@@ -32,9 +32,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     priority: Priority.high,
     playSound: true,
   );
-  NotificationDetails platformSpec =
-
-  NotificationDetails(android: androidSpec);
+  NotificationDetails platformSpec = NotificationDetails(android: androidSpec);
 
   await pluginInstance.show(
       0, message.data['title'], message.data['body'], platformSpec);
@@ -44,20 +42,22 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  HttpOverrides.global =  MyHttpOverrides();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]);
+  HttpOverrides.global = MyHttpOverrides();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await Firebase.initializeApp();
+
   analytics = await FirebaseAnalytics.instance;
-  FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+  FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
   await GetStorage.init();
-  logCustomEvent(eventName: splash, parameters: {'name':'splash'});
+  logCustomEvent(eventName: splash, parameters: {'name': 'splash'});
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   FlutterLocalNotificationsPlugin pluginInstance =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
   var init = const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon')
-  );
+      android: AndroidInitializationSettings('@mipmap/launcher_icon'));
   pluginInstance.initialize(init);
   NotificationSettings settings = await messaging.requestPermission();
   AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
@@ -80,20 +80,60 @@ void main() async {
     print(message.messageType);
     print(message.data);
     NotificationDetails platformSpec =
-    NotificationDetails(android: androidSpec);
+        NotificationDetails(android: androidSpec);
     await pluginInstance.show(
         0, message.data['title'], message.data['body'], platformSpec);
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  SplashController splashController = Get.put(SplashController());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initLink();
+    handleDynamicLinks();
+  }
+
+  void initLink() async {
+    final PendingDynamicLinkData? initialLink =
+        await FirebaseDynamicLinks.instance.getInitialLink();
+
+    print("main link  ${initialLink?.link.path}");
+
+    await FirebaseDynamicLinks.instance.onLink.listen((event) {
+      log('link ::::::: ${event.link.path}');
+    });
+  }
+
+  Future<void> handleDynamicLinks() async {
+    final PendingDynamicLinkData? data =
+    await FirebaseDynamicLinks.instance.getInitialLink();
+    _handleDeepLink(data!);
+
+    FirebaseDynamicLinks.instance.onLink;
+
+  }
+
+  void _handleDeepLink(PendingDynamicLinkData data) {
+    if (data == null) return;
+    final Uri deepLink = data.link;
+    // Handle the deep link as needed, e.g., navigate to a specific screen.
+    print('Received dynamic link: $deepLink');
+  }
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
@@ -101,8 +141,10 @@ class MyApp extends StatelessWidget {
         initialBinding: IndividualDashboardBinding(),
         debugShowCheckedModeBanner: false,
         title: 'Party People',
-        builder: (context,child){
-          return MediaQuery(data: MediaQuery.of(context).copyWith(textScaleFactor: 0.9), child: child ?? Text(''));
+        builder: (context, child) {
+          return MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 0.9),
+              child: child ?? Text(''));
         },
         theme: ThemeData.light(useMaterial3: false).copyWith(
           scaffoldBackgroundColor: Colors.red.shade900,
@@ -120,9 +162,8 @@ class MyApp extends StatelessWidget {
             ),
             // Add more text styles as needed
           ),
-
         ),
-        home:SplashScreen(),
+        home: SplashScreen(),
         //IndividualDashboardView(),
       );
     });

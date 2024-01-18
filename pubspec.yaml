@@ -83,8 +83,7 @@ dependencies:
   fluttertoast: ^8.2.2
   percent_indicator: ^4.2.3
   package_info_plus: ^3.0.3
-
-
+  firebase_dynamic_links: ^5.4.8
 
 
 dev_dependencies:

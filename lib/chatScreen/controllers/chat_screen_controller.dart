@@ -96,21 +96,19 @@ class ChatScreenController extends GetxController {
 
   Future<void> getChatList({required bool isRefresh}) async {
     if (isRefresh) {
-      log('abcede  $pageCount');
       pageCount = 1;
       pageCountresponse = 1;
       start = pageCount;
       paginatedChatList.clear();
       chatList.clear();
     } else {
-      log('fghijk $pageCount');
+
       start = pageCount;
       // start =  ++end;
       // end = end + 15;
     }
     if (pageCount <= pageCountresponse) {
       try {
-        log('jcbsjdhbfsd  $pageCount');
         //chatList.clear();
         isApiLoading = true;
         http.Response response = await http.post(
@@ -121,14 +119,13 @@ class ChatScreenController extends GetxController {
         if (response.statusCode == 200) {
           var decode = jsonDecode(response.body);
           if (decode['message'] == 'user data found') {
-            log('chat list $decode');
+
             if (pageCount == 1) {
               pageCountresponse = decode['total_pages'];
-              log('page count ::: $pageCountresponse');
+
               pageCount++;
             } else {
               pageCount++;
-              log('page increment::: $pageCount');
             }
             final List<dynamic> chatuserlist = decode['data'] as List;
             paginatedChatList =
@@ -181,7 +178,7 @@ class ChatScreenController extends GetxController {
       } else {
         refreshChatController.loadComplete();
       }
-      Get.snackbar('Oops!', 'No User found ');
+      print('No User found ');
     }
   }
 

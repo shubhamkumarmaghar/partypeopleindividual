@@ -51,6 +51,18 @@
             <meta-data android:name="com.facebook.sdk.AutoInitEnabled"
                 android:value="true"/>
 
+            <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="https"
+                    android:pathPrefix="/dashboard"
+                    android:host="partypeopleindividual.page.link" />
+            </intent-filter>
+
+
             <meta-data android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
                 android:value="true"/>
             <intent-filter>
@@ -71,7 +83,9 @@
                <category android:name="android.intent.category.BROWSABLE" />
                <data android:scheme="@string/fb_login_protocol_scheme" />
            </intent-filter>
+
        </activity>
+
        <activity
            android:name="com.yalantis.ucrop.UCropActivity"
            android:screenOrientation="portrait"

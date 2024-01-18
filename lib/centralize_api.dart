@@ -38,6 +38,8 @@ class API {
 
   static const String getAllIndividualParty = '$baseUrl/party/get_all_individual_party';
 
+  static const String getSinglePartyData = '$baseUrl/party/get_single_party';
+
   static const String onlineStatus = '$baseUrl/account/update_online_time_expiry';
 
   static const String individualPeoplesNearby = '$baseUrl/home/near_by_users';
