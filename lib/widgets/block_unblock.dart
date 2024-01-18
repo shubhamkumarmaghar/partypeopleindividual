@@ -18,7 +18,7 @@ static  void showBlockedAlertDialog(BuildContext context,String user_id, String 
     AwesomeDialog(
       context: context,
       dialogType: DialogType.info,
-      animType: AnimType.BOTTOMSLIDE,
+      animType: AnimType.bottomSlide,
       title: '$status this user?',
       desc: 'Are you sure you want to $status this user ?',
       titleTextStyle: TextStyle(fontSize: 22, color: Colors.black),
@@ -41,7 +41,7 @@ static  void showLogoutAlertDialog(BuildContext context
   AwesomeDialog(
     context: context,
     dialogType: DialogType.question,
-    animType: AnimType.BOTTOMSLIDE,
+    animType: AnimType.bottomSlide,
     title: 'Logout ? ',
     desc: 'Are you sure you want to Logout ',
     titleTextStyle: TextStyle(fontSize: 22, color: Colors.black),
@@ -102,7 +102,7 @@ showDialogBox() {
     AwesomeDialog(
       context: context,
       dialogType: DialogType.info,
-      animType: AnimType.BOTTOMSLIDE,
+      animType: AnimType.bottomSlide,
       title: '$status this user?',
       desc: 'Are you sure you want to $status this user ?',
       titleTextStyle: TextStyle(fontSize: 22, color: Colors.black),
@@ -130,7 +130,7 @@ showDialogBox() {
     AwesomeDialog(
       context: context,
       dialogType: DialogType.info,
-      animType: AnimType.BOTTOMSLIDE,
+      animType: AnimType.bottomSlide,
       title: 'Delete All Chat?',
       desc: 'Are you sure you want to Delete All chat ?',
       titleTextStyle: TextStyle(fontSize: 22, color: Colors.black),

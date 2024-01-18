@@ -1135,7 +1135,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
       AwesomeDialog(
               context: context,
               dialogType: DialogType.noHeader,
-              animType: AnimType.BOTTOMSLIDE,
+              animType: AnimType.bottomSlide,
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
