@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -11,35 +11,20 @@ import 'package:partypeopleindividual/firebase_custom_event.dart';
 import 'package:partypeopleindividual/individualDashboard/bindings/individual_dashboard_binding.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:partypeopleindividual/splash_screen/splash_controller/spalash_controller.dart';
 import 'package:partypeopleindividual/splash_screen/view/splash_screen.dart';
 import 'package:sizer/sizer.dart';
 import 'constants.dart';
-import 'individualDashboard/views/individual_dashboard_view.dart';
 import 'myhttp_overrides.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  FlutterLocalNotificationsPlugin pluginInstance = FlutterLocalNotificationsPlugin();
-  final platformSpec=await setUpForLocalNotification(pluginInstance);
-  log('notification backend  ${message.data['title']} ${ message.data['body']} ');
-    await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec,);
-
-}
-
-Future<NotificationDetails> setUpForLocalNotification(
-     FlutterLocalNotificationsPlugin pluginInstance) async {
-  var init = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon'),
-      iOS: DarwinInitializationSettings(
-        requestSoundPermission: true,
-        requestBadgePermission: true,
-        requestAlertPermission: true,
-       // onDidReceiveLocalNotification: onDidReceiveLocalNotification,
-      ));
-
+  FlutterLocalNotificationsPlugin pluginInstance =
+      FlutterLocalNotificationsPlugin();
+  var init = const InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/launcher_icon'));
   pluginInstance.initialize(init);
-
   AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
     'ch_id',
     'ch_name',
@@ -47,86 +32,108 @@ Future<NotificationDetails> setUpForLocalNotification(
     priority: Priority.high,
     playSound: true,
   );
-  const AndroidNotificationChannel androidChannel = AndroidNotificationChannel(
-      'high_importance_channel', // id
-      'High Importance Notifications', // title
-      importance: Importance.high,
-      playSound: true);
+  NotificationDetails platformSpec = NotificationDetails(android: androidSpec);
 
-  await pluginInstance
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(androidChannel);
-
-  pluginInstance.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
-
-  const DarwinNotificationDetails iosNotificationDetails = DarwinNotificationDetails(
-    presentAlert: true,
-    presentBadge: true,
-    presentSound: true,
-    categoryIdentifier: 'plainCategory',
-  );
-  NotificationDetails platformSpec = NotificationDetails(
-    android: androidSpec,
-    iOS: iosNotificationDetails,
-  );
-  return platformSpec;
-}
-
-Future onDidReceiveLocalNotification(int id, String? title, String? body, String? payload) async {
-  log('notification ::: $title  $body   $payload');
-  // display a dialog with the notification details, tap ok to go to another page
-  showDialog(
-    context: Get.context!,
-    builder: (BuildContext context) => CupertinoAlertDialog(
-      title: Text(title!),
-      content: Text(body!),
-      actions: [
-        CupertinoDialogAction(
-          isDefaultAction: true,
-          child: Text('Ok'),
-          onPressed: () async {
-            Navigator.of(context, rootNavigator: true).pop();
-            Get.to(IndividualDashboardView());
-          },
-        )
-      ],
-    ),
-  );
+  await pluginInstance.show(
+      0, message.data['title'], message.data['body'], platformSpec);
+  log('A background msg just showed ${message.data}');
+  //return;
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   HttpOverrides.global = MyHttpOverrides();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  await Firebase.initializeApp();
 
   analytics = await FirebaseAnalytics.instance;
-  FirebaseAnalyticsObserver(analytics: analytics);
+  FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
   await GetStorage.init();
   logCustomEvent(eventName: splash, parameters: {'name': 'splash'});
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  await messaging.requestPermission();
-  FlutterLocalNotificationsPlugin pluginInstance = FlutterLocalNotificationsPlugin();
-  final platformSpec=await setUpForLocalNotification(pluginInstance);
+  FlutterLocalNotificationsPlugin pluginInstance =
+      FlutterLocalNotificationsPlugin();
+  var init = const InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/launcher_icon'));
+  pluginInstance.initialize(init);
+  NotificationSettings settings = await messaging.requestPermission();
+  AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
+    'ch_id',
+    'ch_name',
+    importance: Importance.high,
+    priority: Priority.high,
+    playSound: true,
+  );
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print('User granted permission');
+  } else {
+    print('User declined permission');
+  }
+  messaging.getToken().then((value) {
+    print('Firebase Messaging Token : ${value}');
+  });
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    log('notification  ${message.data['title']} ${ message.data['body']} ');
-    await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec,);
+    print(message.messageType);
+    print(message.data);
+    NotificationDetails platformSpec =
+        NotificationDetails(android: androidSpec);
+    await pluginInstance.show(
+        0, message.data['title'], message.data['body'], platformSpec);
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  SplashController splashController = Get.put(SplashController());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initLink();
+    handleDynamicLinks();
+  }
+
+  void initLink() async {
+    final PendingDynamicLinkData? initialLink =
+        await FirebaseDynamicLinks.instance.getInitialLink();
+
+    print("main link  ${initialLink?.link.path}");
+
+    await FirebaseDynamicLinks.instance.onLink.listen((event) {
+      log('link ::::::: ${event.link.path}');
+    });
+  }
+
+  Future<void> handleDynamicLinks() async {
+    final PendingDynamicLinkData? data =
+    await FirebaseDynamicLinks.instance.getInitialLink();
+    _handleDeepLink(data!);
+
+    FirebaseDynamicLinks.instance.onLink;
+
+  }
+
+  void _handleDeepLink(PendingDynamicLinkData data) {
+    if (data == null) return;
+    final Uri deepLink = data.link;
+    // Handle the deep link as needed, e.g., navigate to a specific screen.
+    print('Received dynamic link: $deepLink');
+  }
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
@@ -135,7 +142,9 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Party People',
         builder: (context, child) {
-          return MediaQuery(data: MediaQuery.of(context).copyWith(textScaleFactor: 0.9), child: child ?? Text(''));
+          return MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 0.9),
+              child: child ?? Text(''));
         },
         theme: ThemeData.light(useMaterial3: false).copyWith(
           scaffoldBackgroundColor: Colors.red.shade900,

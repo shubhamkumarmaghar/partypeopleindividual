@@ -1,20 +1,18 @@
 import 'dart:developer';
+
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:neumorphic_ui/neumorphic_ui.dart';
-import 'package:partypeopleindividual/widgets/pop_up_dialogs.dart';
 import 'package:shimmer/shimmer.dart';
-
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import '../../api_helper_service.dart';
 import '../../chatScreen/views/chat_screen_view.dart';
 import '../../firebase_custom_event.dart';
 import '../../individual_profile_screen/profilephotoview.dart';
-import '../../individual_subscription/view/subscription_view.dart';
 import '../../widgets/block_unblock.dart';
 import '../../widgets/calculate_age.dart';
 import '../../widgets/custom_images_slider.dart';
@@ -187,10 +185,6 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                   ),
                             ),
                           ),
-                          Positioned(
-                            top: getScreenHeight*0.055,
-                              left: getScreenWidth*0.03,
-                              child: getBackBarButton(context: context)),
                         ],
                       ),
 
@@ -210,6 +204,25 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                GestureDetector(
+                                  onTap: () async {
+                                    final dynamicLinkParams = DynamicLinkParameters(
+                                      link: Uri.parse("https://65.2.59.129/app/v1/party/get_single_party?pid=NTY="),
+                                      uriPrefix: "https://partypeopleindividual.page.link/",
+                                      androidParameters: const AndroidParameters(packageName: "com.partypeopleindividual"),
+                                      iosParameters: const IOSParameters(bundleId: "com.partypeople.individual"),
+                                    );
+                                    final dynamicLink = await FirebaseDynamicLinks.instance.buildLink(dynamicLinkParams);
+                                    log('$dynamicLink');
+                                    final dynamicLinkk =
+                                    await FirebaseDynamicLinks.instance.buildShortLink(dynamicLinkParams,
+                                      shortLinkType: ShortDynamicLinkType.unguessable,);
+                                    log('$dynamicLinkk');
+                                  },
+                                  child: iconButtonNeumorphic(
+                                      icon: Icons.block,
+                                      color: Colors.red.shade900),
+                                ),
                                 GestureDetector(
                                   onTap: () {
                                     //  peopleProfileController.apiService.DoBlockUnblockPeople('${data?.userId}', 'Block');

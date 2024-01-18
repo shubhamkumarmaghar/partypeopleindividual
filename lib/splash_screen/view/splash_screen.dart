@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:partypeopleindividual/login/views/login_screen.dart';
+import 'package:partypeopleindividual/splash_screen/splash_controller/spalash_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../centralize_api.dart';
@@ -22,6 +23,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  SplashController splashController = Get.find();
   GetVersion? getVersionData;
   @override
   void initState() {
