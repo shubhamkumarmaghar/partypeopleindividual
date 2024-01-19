@@ -27,6 +27,7 @@ class NearByPeopleProfile extends StatefulWidget {
   final String onlineStatus;
   final String privacyStatus;
   final String profile_pic_approval_status;
+  final String lastSeen;
 
   NearByPeopleProfile({
     super.key,
@@ -38,6 +39,7 @@ class NearByPeopleProfile extends StatefulWidget {
     required this.onlineStatus,
     required this.privacyStatus,
     required this.profile_pic_approval_status,
+    required this.lastSeen
   });
 
   @override
@@ -145,12 +147,12 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
+                /*      SizedBox(
                         height: MediaQuery.of(context).size.height * 0.005,
-                      ),
+                      ),*/
                       Container(
-                        width: Get.width * 0.151,
-                        height: Get.width * 0.151,
+                        width: Get.width * 0.17,
+                        height: Get.width * 0.17,
                         decoration: BoxDecoration(
                           border: Border.all(
                             width: Get.width * 0.005,
@@ -214,7 +216,7 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          GestureDetector(
+                         /* GestureDetector(
                             onTap: () {
                               Get.to(()=>ChatScreenView);
                             },
@@ -227,10 +229,13 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.height * 0.005,
-                          ),
-                          SizedBox(
-                            width: Get.width * 0.15,
-                            height: Get.height * 0.04,
+                          ),*/
+                          Container(
+                            constraints: BoxConstraints(
+                              maxHeight: Get.height * 0.04,
+                            ),
+                            width: Get.width * 0.24,
+                           // height: Get.height * 0.04,
                             child: Text(
                               widget.name,
                               textAlign: TextAlign.center,
@@ -238,6 +243,25 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                                 color: Colors.white,
                                 fontFamily: 'Poppins',
                                 fontSize: 10.sp,
+                              ),
+                              maxLines: 2,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(constraints: BoxConstraints(maxHeight:Get.height * 0.04,),
+                            width: Get.width * 0.15,
+                            child: Text(
+                              widget.lastSeen,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontFamily: 'Poppins',
+                                fontSize: 8.sp,
                               ),
                               maxLines: 2,
                             ),
@@ -297,7 +321,6 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                   size: Get.height * 0.022,),
 
                 ) */
-
                     LikeButton(
                   onTap: onLikeButtonTapped,
                   circleColor: const CircleColor(
@@ -320,8 +343,8 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
               ),
             ),
             Positioned(
-              bottom: Get.height * 0.05,
-              right: Get.height * 0.015,
+              bottom: Get.height * 0.07,
+              right: Get.height * 0.016,
               child: widget.onlineStatus == 'on'&& widget.privacyStatus == 'Yes'
                   ? Container(
                       width: Get.height * 0.019,

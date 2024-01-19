@@ -193,6 +193,7 @@ class _PeopleListState extends State<PeopleList>
                                     onlineStatus: controllerPeople.showList[index].onlineStatus,
                                     privacyStatus: controllerPeople.showList[index].privacyOnline,
                                     profile_pic_approval_status: controllerPeople.showList[index].profilePicApproval,
+                                    lastSeen:controllerPeople.showList[index].lastSeen,
                                   ),
                                   // personGrid(index: index),
                                 );

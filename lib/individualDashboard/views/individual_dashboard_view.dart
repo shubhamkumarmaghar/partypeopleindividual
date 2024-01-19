@@ -702,6 +702,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                                     individualDashboardController
                                                         .usersList[index]
                                                         .profilePicApproval,
+                                                lastSeen: individualDashboardController
+                                                    .usersList[index]
+                                                    .lastSeen ,
                                               ),
                                             )),
                                       ),
@@ -806,19 +809,24 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                               ),*/
                                   ),
 
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.05,
-                                top: Get.height * 0.003,
-                              ),
-                              child: Text(
-                                'TODAY (${individualDashboardController.lengthOfTodayParties})',
-                                style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500),
-                              ),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    left: MediaQuery.of(context).size.width * 0.05,
+                                    top: Get.height * 0.003,
+                                  ),
+                                  child: Text(
+                                    'TODAY ',
+                                    style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        color: Colors.white,
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                                CustomTextIcon(IconText:'${individualDashboardController.lengthOfTodayParties}' )
+                              ],
                             ),
                             individualDashboardController
                                     .jsonPartyOrganisationDataToday.isEmpty
@@ -895,20 +903,26 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                     ),
                                   ),
               ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.05,
-                                top: Get.height * 0.003,
-                              ),
-                              child: Text(
-                                'TOMORROW (${individualDashboardController.lengthOfTommParties})',
-                                style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500),
-                              ),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    left: MediaQuery.of(context).size.width * 0.05,
+                                    top: Get.height * 0.003,
+                                  ),
+                                  child: Text(
+                                    'TOMORROW ',
+                                    style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        color: Colors.white,
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                                CustomTextIcon(IconText:'${individualDashboardController.lengthOfTommParties}' )
+                              ],
                             ),
+
                             individualDashboardController
                                     .jsonPartyOrganisationDataTomm.isEmpty
                                 ? Center(
@@ -983,20 +997,26 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                       ),
                                     ),
                                   ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.05,
-                                top: Get.height * 0.003,
-                              ),
-                              child: Text(
-                                'UPCOMING (${individualDashboardController.lengthOfUpcomingParties})',
-                                style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500),
-                              ),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    left: MediaQuery.of(context).size.width * 0.05,
+                                    top: Get.height * 0.003,
+                                  ),
+                                  child: Text(
+                                    'UPCOMING ',
+                                    style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        color: Colors.white,
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                                CustomTextIcon(IconText:'${individualDashboardController.lengthOfUpcomingParties}' )
+                              ],
                             ),
+
                             individualDashboardController
                                     .jsonPartyOgranisationDataUpcomming.isEmpty
                                 ? Center(
@@ -1104,6 +1124,26 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
         },
       ),
     );
+  }
+  Widget CustomTextIcon({ required String IconText}) {
+    return
+      CircleAvatar(
+            radius: Get.width*0.04,
+            backgroundColor: Colors.white,
+            child: FittedBox(
+              child: Container(
+                margin: EdgeInsets.all(10),
+                child: Text(
+                  IconText,
+                  style: TextStyle(
+                      fontSize: 24,
+                      color: Colors.red.shade900,
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+            )
+    );
+
   }
 
   /* showDialogBox() => showCupertinoDialog<String>(
@@ -1219,6 +1259,8 @@ class CityCard extends StatelessWidget {
       ),
     );
   }
+
+
 }
 
 class ChoiceSelectionButton extends StatelessWidget {

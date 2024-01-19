@@ -18,10 +18,8 @@ import '../centralize_api.dart';
 import '../firebase_custom_event.dart';
 import '../individualDashboard/controllers/individual_dashboard_controller.dart';
 import '../individualDashboard/models/party_model.dart';
-import '../individual_nearby_people_profile/view/individual_people_profile.dart';
 import '../join_party_details/view/join_party_details.dart';
 import '../party_organization_details_view/view/organization_detalis_view.dart';
-import '../widgets/custom_button.dart';
 import '../widgets/individual_amenities.dart';
 
 class Amenities {
