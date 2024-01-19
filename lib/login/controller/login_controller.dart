@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -62,10 +65,18 @@ class LoginController extends GetxController {
       return;
     }
 
-    await FirebaseMessaging.instance.getToken().then((token) {
-      print("token is $token");
-      deviceToken.value = token!;
-    });
+    if(Platform.isIOS) {
+      await FirebaseMessaging.instance.getAPNSToken().then((token) {
+        log("IOS APNS TOKEN ::  $token");
+        deviceToken.value = token!;
+      });
+    }
+    else{
+      await FirebaseMessaging.instance.getToken().then((token) {
+        print("token is $token");
+        deviceToken.value = token!;
+      });
+    }
 
     try {
       User? response = await apiService.login(

@@ -46,6 +46,11 @@ void main() async {
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await Firebase.initializeApp();
+  final PendingDynamicLinkData? initialLink =
+  await FirebaseDynamicLinks.instance.getInitialLink();
+
+  log('deeplink from initialLink :: ${initialLink?.link}');
+  Get.put(SplashController());
 
   analytics = await FirebaseAnalytics.instance;
   FirebaseAnalyticsObserver observer =
@@ -104,36 +109,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    initLink();
-    handleDynamicLinks();
   }
 
-  void initLink() async {
-    final PendingDynamicLinkData? initialLink =
-        await FirebaseDynamicLinks.instance.getInitialLink();
-
-    print("main link  ${initialLink?.link.path}");
-
-    await FirebaseDynamicLinks.instance.onLink.listen((event) {
-      log('link ::::::: ${event.link.path}');
-    });
-  }
-
-  Future<void> handleDynamicLinks() async {
-    final PendingDynamicLinkData? data =
-    await FirebaseDynamicLinks.instance.getInitialLink();
-    _handleDeepLink(data!);
-
-    FirebaseDynamicLinks.instance.onLink;
-
-  }
-
-  void _handleDeepLink(PendingDynamicLinkData data) {
-    if (data == null) return;
-    final Uri deepLink = data.link;
-    // Handle the deep link as needed, e.g., navigate to a specific screen.
-    print('Received dynamic link: $deepLink');
-  }
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {

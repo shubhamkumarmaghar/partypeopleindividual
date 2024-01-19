@@ -5,12 +5,13 @@ import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:neumorphic_ui/neumorphic_ui.dart';
 import 'package:partypeopleindividual/api_helper_service.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
 import 'package:partypeopleindividual/individual_profile_screen/profilephotoview.dart';
@@ -19,6 +20,7 @@ import 'package:partypeopleindividual/widgets/custom_loading_indicator.dart';
 
 import 'package:partypeopleindividual/widgets/individual_amenities.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:partypeopleindividual/widgets/pop_up_dialogs.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../centralize_api.dart';
@@ -304,6 +306,12 @@ class _IndividualProfileScreenViewState
                                       //       ),
                                     ),
                                   ),
+                                ),
+                                Positioned(
+                                  top: Get.height*0.05,
+                                  left: Get.width*0.03,
+                                  child:
+                                  getBackBarButton(context: context),
                                 ),
                                 // Edit Button for Profile Photo
                                 /*   Positioned(

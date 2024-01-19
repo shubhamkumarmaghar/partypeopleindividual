@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/animation.dart';
@@ -107,17 +108,15 @@ class SplashController extends GetxController {
 
   Future<void> initDynamicLinks() async {
     FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-      debugPrint("link received ");
+      log('deeplink from listen::::::: ${dynamicLinkData.link}');
       FirebaseDynamicLinkUtils.handleDynamicLink(dynamicLinkData.link.path.toString());
-      update();
     }).onError((error) {
-      debugPrint("error is ${error?.message?.toString()}");
+      log("error is ${error?.message?.toString()}");
     });
-    update();
   }
 
   _navigateToNextScreen() => Timer(Duration(seconds: 5), () async {
-    String data = await GetStorage().read("loggedIn");
+    String data = await GetStorage().read("loggedIn") ??'';
     if (data != null) {
       await hitCheckApi();
     } else {

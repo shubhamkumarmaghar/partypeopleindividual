@@ -1,8 +1,8 @@
 import 'dart:developer';
-
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:neumorphic_ui/neumorphic_ui.dart';
 import 'package:partypeopleindividual/individual_profile/controller/individual_profile_controller.dart';
 
 class CustomDateField extends StatefulWidget {
@@ -45,11 +45,11 @@ class _CustomDateFieldState extends State<CustomDateField> {
                 subtitle1: TextStyle(color: Colors.black),
                 button: TextStyle(color: Colors.black),
               ),
-              accentColor: Colors.black,
+              //accentColor: Colors.black,
               colorScheme: ColorScheme.light(
                   primary: Colors.red.shade900,
-                  primaryVariant: Colors.black,
-                  secondaryVariant: Colors.black,
+                 // primaryVariant: Colors.black,
+                  //secondaryVariant: Colors.black,
                   onSecondary: Colors.black,
                   onPrimary: Colors.white,
                   surface: Colors.black,

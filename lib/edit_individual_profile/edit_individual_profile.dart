@@ -5,8 +5,8 @@ import 'dart:ui';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +21,7 @@ import 'package:partypeopleindividual/widgets/custom_loading_indicator.dart';
 import 'package:partypeopleindividual/widgets/custom_textfield.dart';
 import 'package:partypeopleindividual/widgets/individual_amenities.dart';
 import 'package:partypeopleindividual/widgets/occupation_dropdown_selector.dart';
+import 'package:partypeopleindividual/widgets/pop_up_dialogs.dart';
 import 'package:partypeopleindividual/widgets/qualification_dropdown_widget.dart';
 import 'package:blur/blur.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -352,22 +353,8 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
 
                                 Positioned(
                                 top: Get.height*0.05,
-                                  left: Get.height*0.02,
-                                  child:
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Container(
-                                        alignment: Alignment.bottomLeft,
-                                        child: CircleAvatar(
-                                          child: Icon(
-                                            Icons.arrow_back,
-                                            color: Colors.red.shade900,
-                                          ),
-                                          backgroundColor: Colors.grey.shade200,
-                                        )),
-                                  ),
+                                  left: Get.height*0.03,
+                                  child:getBackBarButton(context: context),
                                 ),
                               ],
                             ),

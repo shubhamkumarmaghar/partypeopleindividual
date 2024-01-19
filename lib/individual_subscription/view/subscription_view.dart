@@ -4,10 +4,11 @@ import 'dart:developer';
 import 'package:adobe_xd/gradient_xd_transform.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:neumorphic_ui/neumorphic_ui.dart';
 import 'package:partypeopleindividual/individual_subscription/controller/subscription_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:html/parser.dart';
@@ -63,10 +64,10 @@ class _SubscriptionViewState extends State<SubscriptionView> {
   @override
   void initState() {
     super.initState();
+  //  _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+  //  _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+  //  _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
 
-    //  _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    //  _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    //  _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
   @override

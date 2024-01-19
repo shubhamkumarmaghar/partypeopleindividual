@@ -60,7 +60,7 @@ dependencies:
   like_button: ^2.0.5
   intl: ^0.17.0
   firebase_core: ^2.13.1
-  flutter_neumorphic: ^3.2.0
+  #flutter_neumorphic: ^3.2.0
   cached_network_image: any
   lottie: ^1.3.0
   flutter_slidable: ^3.0.0
@@ -81,8 +81,11 @@ dependencies:
   pull_to_refresh:
   in_app_update: ^4.2.2
   fluttertoast: ^8.2.2
+  neumorphic_ui: ^1.0.1
+  flutter_notification_channel: ^2.0.0
+  chewie: ^1.7.4
   percent_indicator: ^4.2.3
-  package_info_plus: ^3.0.3
+  package_info_plus: ^4.2.0
   firebase_dynamic_links: ^5.4.8
 
 

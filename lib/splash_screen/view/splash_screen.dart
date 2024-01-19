@@ -115,18 +115,36 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     });
   }
-
-  iosUpdater()async{
-    String res = await getVersion();
-    if(res =='true' && double.parse('${getVersionData?.data?.version}')>double.parse('${_packageInfo.version}'))
+  int getExtendedVersionNumber(String version) {
+    try {
+      List versionCells = version.split('.');
+      versionCells = versionCells.map((i) => int.parse(i)).toList();
+      return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
+    }
+    catch(e)
     {
+      print('error :: $e');
+      return 101;
+    }
+  }
+
+  iosUpdater() async{
+
+     String res = await getVersion();
+
+  // var currentVersion = getExtendedVersionNumber('${_packageInfo.version}');
+    //var getVersion = getExtendedVersionNumber('${getVersionData?.data?.version}');
+    log('data $res  ${getVersionData?.data?.version}   ${_packageInfo.version}  ${getExtendedVersionNumber('${getVersionData?.data?.version}')}  ${getExtendedVersionNumber('${_packageInfo.version}')} ');
+    if(res == 'true' && getExtendedVersionNumber('${getVersionData?.data?.version}') > getExtendedVersionNumber('${_packageInfo.version}'))
+    {
+      log('data $res');
       // flutter defined function
       await showDialog(
         context: context,
         builder: (BuildContext context) {
           // return object of type Dialog
           return CupertinoAlertDialog(
-            title: new Text("Update app ?"),
+            title: new Text("Update app!"),
             content: new Text('${getVersionData?.data?.ffUpdateMsg}'),
             actions: <Widget>[
               CupertinoDialogAction(
@@ -138,7 +156,6 @@ class _SplashScreenState extends State<SplashScreen> {
               CupertinoDialogAction(
                 //isDefaultAction: true,
                 onPressed: () async {
-
                   final Uri _url =
                   await Uri.parse("https://apps.apple.com/app/party-peoples/id6471072076");
                   if (!await launchUrl(_url)) {
@@ -152,11 +169,14 @@ class _SplashScreenState extends State<SplashScreen> {
             ],
           );
         },
-      );}
+      );
+    }
     else{
       print('No Version data found');
     }
+    log('data  loda le le$res  ${getVersionData?.data?.version}   ${_packageInfo.version}');
   }
+
   Future<String> getVersion() async {
     String url =API.getVersion+'?os_type=ios';
     final response = await http.get(
@@ -167,9 +187,11 @@ class _SplashScreenState extends State<SplashScreen> {
     if(jsonResponse['status']==1){
       var versionResponse = GetVersion.fromJson(jsonResponse);
       getVersionData = versionResponse;
+      log('cheking ${getVersionData?.data?.ffUpdateMsg}');
       return 'true';
     }
     else{
+      log('checking false');
       return 'false';
     }
   }
