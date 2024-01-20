@@ -41,11 +41,13 @@ class FirebaseDynamicLinkUtils {
         print("image post opened ");
         String? id = link.replaceAll("/${FirebaseDynamicLinkPostType.IMAGE_POST}", "").replaceAll("/", "");
       //  Get.to(ImagePostDetailScreen(postId: int.parse(id)), arguments: int.parse(id));
-      } else if (link.endsWith(FirebaseDynamicLinkPostType.VIDEO_POST)) {
+      }
+      else if (link.endsWith(FirebaseDynamicLinkPostType.VIDEO_POST)) {
         print("video post opened ");
         String? id = link.replaceAll("/${FirebaseDynamicLinkPostType.VIDEO_POST}", "").replaceAll("/", "");
       //  Get.to(PostVideoPlayerViewPage(postId: int.parse(id)), arguments: int.parse(id));
-      } else if (link.endsWith(FirebaseDynamicLinkPostType.PROFILE)) {
+      }
+      else if (link.endsWith(FirebaseDynamicLinkPostType.PROFILE)) {
         try {
           String? id = link.replaceAll("/${FirebaseDynamicLinkPostType.PROFILE}", "").replaceAll("/", "");
         //  Get.to(() => UserProfileView(id: int.parse(id),), arguments: int.parse(id));

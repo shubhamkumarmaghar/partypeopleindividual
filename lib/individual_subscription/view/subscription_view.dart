@@ -1,6 +1,4 @@
 import 'dart:core';
-import 'dart:developer';
-
 import 'package:adobe_xd/gradient_xd_transform.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';

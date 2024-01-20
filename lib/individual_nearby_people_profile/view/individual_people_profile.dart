@@ -206,25 +206,6 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 GestureDetector(
-                                  onTap: () async {
-                                    final dynamicLinkParams = DynamicLinkParameters(
-                                      link: Uri.parse("https://65.2.59.129/app/v1/party/get_single_party?pid=NTY="),
-                                      uriPrefix: "https://partypeopleindividual.page.link/",
-                                      androidParameters: const AndroidParameters(packageName: "com.partypeopleindividual"),
-                                      iosParameters: const IOSParameters(bundleId: "com.partypeople.individual"),
-                                    );
-                                    final dynamicLink = await FirebaseDynamicLinks.instance.buildLink(dynamicLinkParams);
-                                    log('$dynamicLink');
-                                    final dynamicLinkk =
-                                    await FirebaseDynamicLinks.instance.buildShortLink(dynamicLinkParams,
-                                      shortLinkType: ShortDynamicLinkType.unguessable,);
-                                    log('$dynamicLinkk');
-                                  },
-                                  child: iconButtonNeumorphic(
-                                      icon: Icons.block,
-                                      color: Colors.red.shade900),
-                                ),
-                                GestureDetector(
                                   onTap: () {
                                     //  peopleProfileController.apiService.DoBlockUnblockPeople('${data?.userId}', 'Block');
                                     Alertdialogs.showBlockedAlertDialog(

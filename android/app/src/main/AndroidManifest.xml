@@ -58,7 +58,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
                     android:scheme="https"
-                    android:pathPrefix="/dashboard"
+                    android:pathPrefix="/party"
                     android:host="partypeopleindividual.page.link" />
             </intent-filter>
 

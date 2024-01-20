@@ -10,6 +10,8 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../firebase_dynamic_link.dart';
+import '../../individualDashboard/views/individual_dashboard_view.dart';
+import '../../login/views/login_screen.dart';
 import '../view/splash_screen.dart';
 
 
@@ -108,7 +110,15 @@ class SplashController extends GetxController {
 
   Future<void> initDynamicLinks() async {
     FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-      log('deeplink from listen::::::: ${dynamicLinkData.link}');
+      log('deeplink from listen::::::: ${dynamicLinkData.link} ,'
+          'user info:: ${dynamicLinkData.link.userInfo}'
+          '${dynamicLinkData.link.path} , '
+          '${dynamicLinkData.link.authority}    ,'
+          ' ${dynamicLinkData.link.data} '
+          '${dynamicLinkData.link.origin},'
+          '${dynamicLinkData.link.query}  '
+          '${dynamicLinkData.link.queryParametersAll}  ');
+
       FirebaseDynamicLinkUtils.handleDynamicLink(dynamicLinkData.link.path.toString());
     }).onError((error) {
       log("error is ${error?.message?.toString()}");
@@ -118,9 +128,15 @@ class SplashController extends GetxController {
   _navigateToNextScreen() => Timer(Duration(seconds: 5), () async {
     String data = await GetStorage().read("loggedIn") ??'';
     if (data != null) {
+
       await hitCheckApi();
     } else {
-      Get.offAll(() => SplashScreen());
+      await Future.delayed(const Duration(seconds: 3)).then((value) {
+        //Get.offAll(const LoginScreen());
+        Get.offAll( GetStorage().read('loggedIn') == '1'
+            ? const IndividualDashboardView()
+            : const LoginScreen());
+      });
     }
   });
 
@@ -130,7 +146,12 @@ class SplashController extends GetxController {
     if (link != null) {
       FirebaseDynamicLinkUtils.handleDynamicLink(link.link.path.toString());
     } else {
-      Get.offAll(() => SplashScreen());
+      await Future.delayed(const Duration(seconds: 3)).then((value) {
+        //Get.offAll(const LoginScreen());
+        Get.offAll( GetStorage().read('loggedIn') == '1'
+            ? const IndividualDashboardView()
+            : const LoginScreen());
+      });
     }
     update();
   }

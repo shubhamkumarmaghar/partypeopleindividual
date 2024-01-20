@@ -211,7 +211,10 @@ class _PartyCardState extends State<PartyCard>
             onTap: () {
               viewParty(widget.party.id);
               if (approvalStatus == '1') {
-                Get.to(PartyPreviewScreen(party: widget.party))
+                String mydata = widget.party.id;
+                String bs64 = base64.encode(mydata.codeUnits);
+             print('bs64  $mydata $bs64');
+                Get.to(PartyPreviewScreen(party: widget.party),arguments:bs64 )
                     ?.then((value) => widget.onBack());
               } else {
                 Get.snackbar('Sorry!',
@@ -534,7 +537,10 @@ class _PartyCardState extends State<PartyCard>
               viewParty(widget.party.id);
               if (approvalStatus == '1') {
                 //  Get.to(PartyPreview(party: widget.party))?.then((value) => widget.onBack());
-                Get.to(PartyPreviewScreen(party: widget.party))
+                String mydata = widget.party.id;
+                String bs64 = base64.encode(mydata.codeUnits);
+                print('bs64  $mydata $bs64');
+                Get.to(PartyPreviewScreen(party: widget.party),arguments:bs64 )
                     ?.then((value) => widget.onBack());
               } else {
                 Get.snackbar('Sorry!',

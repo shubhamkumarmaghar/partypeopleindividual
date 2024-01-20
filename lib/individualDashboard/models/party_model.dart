@@ -48,6 +48,7 @@ class Party {
   final int ongoingStatus;
   final int likeStatus;
   final String pincode;
+  final dynamic sharePartyUrl;
   String? imageB;
   String? imageC;
   String? discountType;
@@ -107,6 +108,7 @@ class Party {
     required this.ongoingStatus,
     required this.likeStatus,
     required this.pincode,
+    required this.sharePartyUrl,
     this.imageB,
     this.imageC,
     this.discountDescription,
@@ -166,6 +168,7 @@ class Party {
     data['pincode'] =this.pincode;
     data['image_b'] = this.imageB;
     data['image_c'] = this.imageC;
+    data['share_party_url']=this.sharePartyUrl;
     data['discount_type'] = this.discountType;
     data['discount_amount'] = this.discountAmount;
     data['bill_amount'] = this.billMaxAmount;
@@ -235,13 +238,12 @@ class Party {
       pincode: json['pincode'],
       imageB : json['image_b'],
       imageC : json['image_c'],
+      sharePartyUrl: json['share_party_url'],
       discountAmount: json['discount_amount'],
       discountDescription: json['discount_description'],
       discountType: json['discount_type'],
       billMaxAmount: json['bill_amount'],
-
       partyAmenities: partyAmenitieList,
-
     );
   }
 }

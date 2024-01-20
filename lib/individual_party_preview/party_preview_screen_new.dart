@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:partypeopleindividual/individual_party_preview/single_party_previewController/single_party_controller.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:sizer/sizer.dart';
 import 'package:confetti/confetti.dart';
@@ -20,14 +24,7 @@ import '../individualDashboard/controllers/individual_dashboard_controller.dart'
 import '../individualDashboard/models/party_model.dart';
 import '../join_party_details/view/join_party_details.dart';
 import '../party_organization_details_view/view/organization_detalis_view.dart';
-import '../widgets/individual_amenities.dart';
 
-class Amenities {
-  final String id;
-  final String name;
-
-  Amenities({required this.id, required this.name});
-}
 
 class PartyPreviewScreen extends StatefulWidget {
   // ignore: prefer_typing_uninitialized_variables
@@ -45,72 +42,12 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
   int noOfPeople = 2;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String join = 'Book Now';
-  final List partyImages = [];
-  List<Category> _categories = [];
-  final List<CategoryList> _categoryLists = [];
-  List selectedAmenities = [];
+  Party? getSingleParty;
   late ConfettiController _controllerBottomCenter;
 
-  Future<void> _fetchData() async {
-    http.Response response = await http.get(
-      Uri.parse(API.partyAmenities),
-      headers: {'x-access-token': '${GetStorage().read('token')}'},
-    );
-    final data = jsonDecode(response.body);
-    setState(() {
-      if (data['status'] == 1) {
-        _categories = (data['data'] as List)
-            .map((category) => Category.fromJson(category))
-            .toList();
-
-        _categories.forEach((category) {
-          _categoryLists.add(CategoryList(
-              title: category.name, amenities: category.amenities));
-        });
-        getSelectedID();
-      }
-    });
-  }
-
-  void getSelectedID() {
-    for (var i = 0; i < widget.party.partyAmenities.length; i++) {
-      var amenityName = widget.party.partyAmenities[i].name;
-      print("amenity name" + amenityName);
-      setState(() {
-        _categories.forEach((category) {
-          category.amenities.forEach((amenity) {
-            if (amenity.name == amenityName) {
-              if (selectedAmenities.contains(amenity.id)) {
-              } else {
-                selectedAmenities.add(amenity.id);
-              }
-              amenity.selected = true;
-            }
-          });
-        });
-      });
-    }
-  }
-
-  void getpartyImages() {
-    partyImages.add(widget.party.coverPhoto);
-    if (widget.party.imageB != null) {
-      partyImages.add(widget.party.imageB);
-    }
-    if (widget.party.imageC != null) {
-      partyImages.add(widget.party.imageC);
-    }
-    partyImages.forEach((element) {
-      print(element.toString());
-    });
-  }
 
   @override
   void initState() {
-    getpartyImages();
-    _fetchData();
-
-    print(" ${widget.party.toJson()}");
     _controllerBottomCenter =
         ConfettiController(duration: const Duration(seconds: 10));
     super.initState();
@@ -120,106 +57,369 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18.0),
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                  alignment: Alignment.bottomLeft,
-                  child: CircleAvatar(
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: Colors.red.shade900,
-                    ),
-                    backgroundColor: Colors.grey.shade200,
-                  )),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Stack(
+      body: GetBuilder<PartyPreviewScreenController>(
+        init:PartyPreviewScreenController() ,
+        builder: (controller) {
+          getSingleParty = controller.party;
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: ListView(
+              shrinkWrap: true,
               children: [
-                if (widget.party.imageStatus == '1')
-                  Card(
-                    elevation: 5,
-                    clipBehavior: Clip.hardEdge,
-                    margin: EdgeInsets.only(bottom: 25),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: CarouselSlider(
-                      items: partyImages
-                          .map((element) => customImageSlider(
-                              partyPhotos: element,
-                              imageStatus: '${widget.party.imageStatus}'))
-                          .toList(),
-                      options: CarouselOptions(
-                        height: Get.height * 0.295,
-                        // enlargeCenterPage: true,
-                        autoPlay: true,
-                        //aspectRatio: 16 / 9,
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                        enableInfiniteScroll: true,
-                        autoPlayAnimationDuration: Duration(milliseconds: 800),
-                        viewportFraction: 1
-                      ),
-                    ),
-                  )
-                else
-                  Card(
-                    elevation: 5,
-                    margin: EdgeInsets.only(bottom: 25),
-                    clipBehavior: Clip.hardEdge,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: CarouselSlider(
-                      items: partyImages
-                          .map((element) => customImageSlider(
-                              partyPhotos: element,
-                              imageStatus: '${widget.party.imageStatus}'))
-                          .toList(),
-                      options: CarouselOptions(
-                          height: Get.height * 0.295,
-                          // enlargeCenterPage: true,
-                          autoPlay: true,
-                          //aspectRatio: 16 / 9,
-                          autoPlayCurve: Curves.fastOutSlowIn,
-                          enableInfiniteScroll: true,
-                          autoPlayAnimationDuration:
-                              Duration(milliseconds: 800),
-                          viewportFraction: 1),
-                    ),
-                  ),
-                Positioned(
-                    top: Get.height * 0.27,
-                    right: Get.width * 0.06,
-                    child:bookNowButton(),
-                  /*  GestureDetector(
-                      onTap: () async {
-                        var data =
-                            await APIService.ongoingParty(widget.party.id);
-                        if (data == true) {
-                          setState(() {});
-                          join = 'Booked';
-                          _controllerBottomCenter.play();
-                        }
-                        print('ongoing status ${widget.party.ongoingStatus}');
-                        widget.party.ongoingStatus != 1 ?
-                        joinPartyFormDialouge(context: context):
-                        Fluttertoast.showToast( msg: 'You are already booked this offer',);
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Get.back();
                       },
                       child: Container(
-                        width: Get.width * 0.2,
-                        height: Get.height * 0.04,
+                          alignment: Alignment.bottomLeft,
+                          child: CircleAvatar(
+                            child: Icon(
+                              Icons.arrow_back,
+                              color: Colors.red.shade900,
+                            ),
+                            backgroundColor: Colors.grey.shade200,
+                          )),
+                    ),
+                    GestureDetector(
+                      onTap: () async{
+                        String mydata = '${controller.party?.id}';
+                        String bs64 = base64.encode(mydata.codeUnits);
+                       // print('bs64  $mydata $bs64 ${controller.party?.sharePartyUrl}}');
+                        FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
+                        final dynamicLinkParams = await DynamicLinkParameters(
+                          link: Uri.parse("${controller.party?.sharePartyUrl}"),
+                          uriPrefix: "https://partypeopleindividual.page.link/party",
+                          androidParameters: const AndroidParameters(packageName: "com.partypeopleindividual"),
+                          iosParameters: const IOSParameters(bundleId: "com.partypeople.individual"),
+                        );
+                        final dynamicLink = await dynamicLinks.buildLink(dynamicLinkParams);
+                      dev.log('dynamic link :: $dynamicLink   -- ${controller.party?.sharePartyUrl}');
+                     /*  final dynamicLinkk =
+                            await FirebaseDynamicLinks.instance.buildShortLink(dynamicLinkParams,
+                          shortLinkType: ShortDynamicLinkType.unguessable,);
+                       print('short :::$dynamicLinkk  ');*/
+                        Share.share('$dynamicLink/$bs64');
+                        //Get.back();
+                      },
+                      child: Container(
+                          alignment: Alignment.bottomLeft,
+                          child: CircleAvatar(
+                            child: Icon(
+                              Icons.share,
+                              color: Colors.red.shade900,
+                            ),
+                            backgroundColor: Colors.grey.shade200,
+                          )),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Stack(
+                  children: [
+                    if (controller.party?.imageStatus == '1')
+                      Card(
+                        elevation: 5,
+                        clipBehavior: Clip.hardEdge,
+                        margin: EdgeInsets.only(bottom: 25),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: CarouselSlider(
+                          items: controller.partyImages
+                              .map((element) => customImageSlider(
+                                  partyPhotos: element,
+                                  imageStatus: '${controller.party?.imageStatus}'))
+                              .toList(),
+                          options: CarouselOptions(
+                            height: Get.height * 0.295,
+                            // enlargeCenterPage: true,
+                            autoPlay: true,
+                            //aspectRatio: 16 / 9,
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            enableInfiniteScroll: true,
+                            autoPlayAnimationDuration: Duration(milliseconds: 800),
+                            viewportFraction: 1
+                          ),
+                        ),
+                      )
+                    else
+                      Card(
+                        elevation: 5,
+                        margin: EdgeInsets.only(bottom: 25),
+                        clipBehavior: Clip.hardEdge,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: CarouselSlider(
+                          items: controller.partyImages
+                              .map((element) => customImageSlider(
+                                  partyPhotos: element,
+                                  imageStatus: '${controller.party?.imageStatus}'))
+                              .toList(),
+                          options: CarouselOptions(
+                              height: Get.height * 0.295,
+                              // enlargeCenterPage: true,
+                              autoPlay: true,
+                              //aspectRatio: 16 / 9,
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              enableInfiniteScroll: true,
+                              autoPlayAnimationDuration:
+                                  Duration(milliseconds: 800),
+                              viewportFraction: 1),
+                        ),
+                      ),
+                    Positioned(
+                        top: Get.height * 0.27,
+                        right: Get.width * 0.06,
+                        child:bookNowButton(),
+                      /*  GestureDetector(
+                          onTap: () async {
+                            var data =
+                                await APIService.ongoingParty(controller.party?.id);
+                            if (data == true) {
+                              setState(() {});
+                              join = 'Booked';
+                              _controllerBottomCenter.play();
+                            }
+                            print('ongoing status ${controller.party?.ongoingStatus}');
+                            controller.party?.ongoingStatus != 1 ?
+                            joinPartyFormDialouge(context: context):
+                            Fluttertoast.showToast( msg: 'You are already booked this offer',);
+                          },
+                          child: Container(
+                            width: Get.width * 0.2,
+                            height: Get.height * 0.04,
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.orange,
+                            ),
+                            child: FittedBox(
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(CupertinoIcons.add_circled,
+                                        color: Colors.white),
+                                    SizedBox(
+                                      width: Get.width * 0.003,
+                                    ),
+                                    controller.party?.ongoingStatus == 0
+                                        ? Text(
+                                            join,
+                                            style: TextStyle(
+                                                color: Colors.white, fontSize: 16),
+                                          )
+                                        : Text(
+                                            "Booked",
+                                            style: TextStyle(
+                                                color: Colors.white, fontSize: 16),
+                                          )
+                                  ]),
+                            ),
+                          ),
+                        )*/
+                    ),
+                  ],
+                ),
+
+                /* Stack(children: [
+                      if (controller.party?.imageStatus == '1')
+                        Card(elevation: 5,
+                        margin: EdgeInsets.only(bottom: 25),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(15.0),),
+                        child:  Container(
+                        //backgroundColor: Colors.grey.shade100,
+                        height: Get.height*0.295,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          image:DecorationImage( image: NetworkImage(controller.party?.coverPhoto),fit: BoxFit.cover ),
+                        ),
+                        width: Get.width,
+                        /* child: Image.network(
+                          controller.party?.coverPhoto,
+                          width: Get.width,
+                          height: 250,
+                          fit: BoxFit.cover,
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace? stackTrace) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.black,
+                              ),
+                            );
+                          },
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            }
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.black,
+                              ),
+                            );
+                          },
+                        ), */
+                        ),
+                    ) else Card(elevation: 5,
+                          margin: EdgeInsets.only(bottom: 25),
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(15.0),),
+                      child: Container(
+                        padding: EdgeInsets.zero,
+                        height: Get.height*0.295,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          image:DecorationImage( image: NetworkImage(controller.party?.coverPhoto),fit: BoxFit.cover ),
+                        ),
+                        width: Get.width,
+                        /* child: Image.network(
+                        controller.party?.coverPhoto,
+                        width: Get.width,
+                        height: 250,
+                        fit: BoxFit.fill,
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                    ),
+                          */
+                      ),
+                        ),
+
+                      Positioned(
+                          top: Get.height*0.27,
+                          right: Get.width*0.06,
+                          child: GestureDetector(onTap: () async {
+
+                            var data = await APIService.ongoingParty(controller.party?.id);
+                            if(data ==true)
+                              {
+                                setState(() {
+
+                                });
+                                join='Joined';
+                                _controllerBottomCenter.play();
+                              }
+                            //ongoingParty(controller.party?.id);
+
+                          },
+                            child: Container(
+                              width: Get.width*0.2,
+                              height: Get.height*0.04,
+                              padding: EdgeInsets.all(5),
+                              decoration:
+                              BoxDecoration(borderRadius: BorderRadius.circular(12),
+                                color: Colors.orange,),
+                              child:  FittedBox(
+                                child: Row(mainAxisAlignment: MainAxisAlignment.center
+                                    ,children: [
+                                      Icon(CupertinoIcons.add_circled,color: Colors.white),
+                                      SizedBox(width: Get.width*0.003,),
+                                      controller.party?.ongoingStatus == 0 ?
+                                      Text(join,style: TextStyle(color: Colors.white,
+                                          fontSize: 16),) : Text("Joined",style: TextStyle(color: Colors.white,
+                                          fontSize: 16),)
+                                    ]
+                                ),
+                              ),
+                            ),
+                          )),
+
+
+                    ],),*/
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                  CustomTextIcon(
+                      icon: CupertinoIcons.heart,
+                      IconText: "${controller.party?.like} Likes"),
+                  CustomTextIcon(
+                      icon: CupertinoIcons.eye,
+                      IconText: "${controller.party?.view} Views"),
+                  CustomTextIcon(
+                      icon: CupertinoIcons.person_3,
+                      IconText: "${controller.party?.ongoing} Going"),
+                ]),
+                const SizedBox(
+                  height: 25,
+                ),
+                Text(
+                  '${controller.party?.title.capitalizeFirst}',
+                  textAlign: TextAlign.start,
+                  maxLines: 2,
+                  style: TextStyle(
+                      fontFamily: 'malgun',
+                      fontSize: 28,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  '${controller.party?.description.capitalizeFirst}',
+                  maxLines: 4,
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontFamily: 'malgun',
+                    fontSize: 12.sp,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(
+                        () => OrganizationDetaisView(
+                              organizationData: '${controller.party?.userId}',
+                              mobileno: '${controller.party?.phoneNumber}',
+                            ),
+                        arguments: controller.party?.userId);
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        'Organized By : ',
+                        textAlign: TextAlign.start,
+                        maxLines: 2,
+                        style: TextStyle(
+                            fontFamily: 'malgun',
+                            fontSize: 14.sp,
+                            color: Colors.red.shade900,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.6),
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
@@ -229,580 +429,358 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(CupertinoIcons.add_circled,
-                                    color: Colors.white),
                                 SizedBox(
                                   width: Get.width * 0.003,
                                 ),
-                                widget.party.ongoingStatus == 0
-                                    ? Text(
-                                        join,
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 16),
-                                      )
-                                    : Text(
-                                        "Booked",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 16),
-                                      )
+                                Text(
+                                  ' ${controller.party?.organization.capitalizeFirst!} ',
+                                  style:
+                                      TextStyle(color: Colors.white, fontSize: 16),
+                                )
                               ]),
                         ),
                       ),
-                    )*/
+                    ],
+                  ),
                 ),
-              ],
-            ),
+                const Divider(),
 
-            /* Stack(children: [
-                  if (widget.party.imageStatus == '1')
-                    Card(elevation: 5,
-                    margin: EdgeInsets.only(bottom: 25),
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                      BorderRadius.circular(15.0),),
-                    child:  Container(
-                    //backgroundColor: Colors.grey.shade100,
-                    height: Get.height*0.295,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      image:DecorationImage( image: NetworkImage(widget.party.coverPhoto),fit: BoxFit.cover ),
-                    ),
-                    width: Get.width,
-                    /* child: Image.network(
-                      widget.party.coverPhoto,
-                      width: Get.width,
-                      height: 250,
-                      fit: BoxFit.cover,
-                      errorBuilder: (BuildContext context, Object exception,
-                          StackTrace? stackTrace) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.black,
-                          ),
-                        );
-                      },
-                      loadingBuilder: (BuildContext context, Widget child,
-                          ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        }
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.black,
-                          ),
-                        );
-                      },
-                    ), */
-                    ),
-                ) else Card(elevation: 5,
-                      margin: EdgeInsets.only(bottom: 25),
-                  shape: RoundedRectangleBorder(
-                      borderRadius:
-                      BorderRadius.circular(15.0),),
-                  child: Container(
-                    padding: EdgeInsets.zero,
-                    height: Get.height*0.295,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      image:DecorationImage( image: NetworkImage(widget.party.coverPhoto),fit: BoxFit.cover ),
-                    ),
-                    width: Get.width,
-                    /* child: Image.network(
-                    widget.party.coverPhoto,
-                    width: Get.width,
-                    height: 250,
-                    fit: BoxFit.fill,
-                    errorBuilder: (BuildContext context, Object exception,
-                        StackTrace? stackTrace) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.black,
-                        ),
-                      );
-                    },
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent? loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      }
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.black,
-                        ),
-                      );
-                    },
-                ),
-                      */
-                  ),
-                    ),
-
-                  Positioned(
-                      top: Get.height*0.27,
-                      right: Get.width*0.06,
-                      child: GestureDetector(onTap: () async {
-
-                        var data = await APIService.ongoingParty(widget.party.id);
-                        if(data ==true)
-                          {
-                            setState(() {
-
-                            });
-                            join='Joined';
-                            _controllerBottomCenter.play();
-                          }
-                        //ongoingParty(widget.party.id);
-
-                      },
-                        child: Container(
-                          width: Get.width*0.2,
-                          height: Get.height*0.04,
-                          padding: EdgeInsets.all(5),
-                          decoration:
-                          BoxDecoration(borderRadius: BorderRadius.circular(12),
-                            color: Colors.orange,),
-                          child:  FittedBox(
-                            child: Row(mainAxisAlignment: MainAxisAlignment.center
-                                ,children: [
-                                  Icon(CupertinoIcons.add_circled,color: Colors.white),
-                                  SizedBox(width: Get.width*0.003,),
-                                  widget.party.ongoingStatus == 0 ?
-                                  Text(join,style: TextStyle(color: Colors.white,
-                                      fontSize: 16),) : Text("Joined",style: TextStyle(color: Colors.white,
-                                      fontSize: 16),)
-                                ]
-                            ),
-                          ),
-                        ),
-                      )),
-
-
-                ],),*/
-            const SizedBox(
-              height: 10,
-            ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-              CustomTextIcon(
-                  icon: CupertinoIcons.heart,
-                  IconText: "${widget.party.like} Likes"),
-              CustomTextIcon(
-                  icon: CupertinoIcons.eye,
-                  IconText: "${widget.party.view} Views"),
-              CustomTextIcon(
-                  icon: CupertinoIcons.person_3,
-                  IconText: "${widget.party.ongoing} Going"),
-            ]),
-            const SizedBox(
-              height: 25,
-            ),
-            Text(
-              widget.party.title.capitalizeFirst!,
-              textAlign: TextAlign.start,
-              maxLines: 2,
-              style: TextStyle(
-                  fontFamily: 'malgun',
-                  fontSize: 28,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Text(
-              widget.party.description.capitalizeFirst!,
-              maxLines: 4,
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontFamily: 'malgun',
-                fontSize: 12.sp,
-                color: Colors.black,
-              ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            GestureDetector(
-              onTap: () {
-                Get.to(
-                    () => OrganizationDetaisView(
-                          organizationData: widget.party.userId,
-                          mobileno: widget.party.phoneNumber,
-                        ),
-                    arguments: widget.party.userId);
-              },
-              child: Row(
-                children: [
-                  Text(
-                    'Organized By : ',
-                    textAlign: TextAlign.start,
-                    maxLines: 2,
-                    style: TextStyle(
-                        fontFamily: 'malgun',
-                        fontSize: 14.sp,
-                        color: Colors.red.shade900,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.orange,
-                    ),
-                    child: FittedBox(
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: Get.width * 0.003,
-                            ),
-                            Text(
-                              ' ${widget.party.organization.capitalizeFirst!} ',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            )
-                          ]),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Divider(),
-
-            /* widget.party.papularStatus == '1'
-                    ? CustomListTile(
-                  icon: Icons.calendar_month_outlined,
-                  title: "Popular Party Dates",
-                  subtitle:
-                  "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(widget.party.prStartDate))} to ${widget.party.endDate != null ? DateFormat('EEEE, d MMMM y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.endDate) * 1000)) : ''}",
-                  sub: true,
-                )
-                    : Container(),
-                */
-            /* widget.party.papularStatus == '1'
-                    ? CustomListTile(
-                  icon: Icons.calendar_month_outlined,
-                  title: "Popular Party Dates",
-                  subtitle:
-                  "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(widget.party.prStartDate))}",
-                  sub: true,)
-                    :
-                */
-            CustomListTile(
-              icon: Icons.calendar_month,
-              title:
-                  "${widget.party.prStartDate != null ? DateFormat('d MMMM, y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.startDate) * 1000)) : ''} ",
-              subtitle:
-                  "${widget.party.startTime}  to  ${widget.party.endTime}",
-              sub: true,
-            ),
-            CustomListTile(
-              icon: Icons.location_on,
-              title: "${widget.party.latitude} ",
-              subtitle: "${widget.party.longitude} , ${widget.party.pincode}",
-              sub: true,
-            ),
-            /*   CustomListTile(
-                icon: Icons.favorite,
-                title: "${widget.party.like} Likes",
-                subtitle: "${widget.party.like} Likes",
-                sub: false,
-              ),
-
-              CustomListTile(
-                icon: Icons.remove_red_eye_sharp,
-                title: "${widget.party.view} Views",
-                subtitle: "${widget.party.view} Views",
-                sub: false,
-              ),
-              CustomListTile(
-                icon: Icons.group_add,
-                title: "${widget.party.ongoing} Goings",
-                subtitle: "${widget.party.ongoing} Goings",
-                sub: false,
-              ),
-
-              */
-            CustomListTile(
-              icon: Icons.supervised_user_circle_outlined,
-              title:
-                  widget.party.gender.replaceAll('[', '').replaceAll(']', ''),
-              subtitle: widget.party.gender
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .capitalizeFirst!,
-              sub: false,
-            ),
-            GestureDetector(
-              onTap: () {
-                UrlLauncher.launch("tel://${widget.party.phoneNumber}");
-              },
-              child: CustomListTile(
-                icon: Icons.phone,
-                title: "Call Us",
-                subtitle: widget.party.phoneNumber,
-                sub: true,
-              ),
-            ),
-            CustomListTile(
-              icon: Icons.group,
-              title: "${widget.party.startAge} to ${widget.party.endAge}  age",
-              subtitle: "${widget.party.startAge} - ${widget.party.endAge} ",
-              sub: false,
-            ),
-            CustomListTile(
-              icon: Icons.warning,
-              title: "Maximum Guests",
-              subtitle: widget.party.personLimit,
-              sub: true,
-            ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                widget.party.discountType =='0' || widget.party.discountAmount == '0'?CustomListTile(
-                  icon: Icons.local_offer,
-                  title: "Offers",
-                  subtitle: widget.party.offers,
-                  sub: true,
-                ):
-
+                /* controller.party?.papularStatus == '1'
+                        ? CustomListTile(
+                      icon: Icons.calendar_month_outlined,
+                      title: "Popular Party Dates",
+                      subtitle:
+                      "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(controller.party?.prStartDate))} to ${controller.party?.endDate != null ? DateFormat('EEEE, d MMMM y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(controller.party?.endDate) * 1000)) : ''}",
+                      sub: true,
+                    )
+                        : Container(),
+                    */
+                /* controller.party?.papularStatus == '1'
+                        ? CustomListTile(
+                      icon: Icons.calendar_month_outlined,
+                      title: "Popular Party Dates",
+                      subtitle:
+                      "${DateFormat('EEEE, d MMMM y').format(DateTime.parse(controller.party?.prStartDate))}",
+                      sub: true,)
+                        :
+                    */
                 CustomListTile(
-                  icon: Icons.local_offer,
-                  title: "Discount ",
-                  subtitle:widget.party.discountType == '1' ? 'Get ${widget.party.discountAmount}% off ${widget.party.billMaxAmount !='0' ? 'upto ₹${widget.party.billMaxAmount}':""} .' : 'Get flat ₹${widget.party.discountAmount} off ${widget.party.billMaxAmount !='0' ? 'on minimum ₹${widget.party.billMaxAmount}':""} .',
+                  icon: Icons.calendar_month,
+                  title:
+                      "${controller.party?.prStartDate != null ? DateFormat('d MMMM, y').format(DateTime.fromMillisecondsSinceEpoch(int.parse('${controller.party?.startDate}') * 1000)) : ''} ",
+                  subtitle:
+                      "${controller.party?.startTime}  to  ${controller.party?.endTime}",
                   sub: true,
                 ),
-               bookNowButton()
-              ],
-            ),
-           widget.party.discountDescription != ""?
-          Text('                  ${widget.party.discountDescription.toString().capitalizeFirst}',
-    style: const TextStyle(
-              fontFamily: 'malgun',
-              fontSize: 14,
-              color: Colors.black87,
-            ) ):Container(),
+                CustomListTile(
+                  icon: Icons.location_on,
+                  title: "${controller.party?.latitude} ",
+                  subtitle: "${controller.party?.longitude} , ${controller.party?.pincode}",
+                  sub: true,
+                ),
+                /*   CustomListTile(
+                    icon: Icons.favorite,
+                    title: "${controller.party?.like} Likes",
+                    subtitle: "${controller.party?.like} Likes",
+                    sub: false,
+                  ),
 
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 16),
-              decoration: BoxDecoration(
-                // color: Colors.red.shade900,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  /*  BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),*/
-                ],
-              ),
-              //  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey.shade200.withOpacity(0.5)),
-                    child: Icon(
-                      Icons.currency_rupee,
-                      color: Colors.red.shade900,
+                  CustomListTile(
+                    icon: Icons.remove_red_eye_sharp,
+                    title: "${controller.party?.view} Views",
+                    subtitle: "${controller.party?.view} Views",
+                    sub: false,
+                  ),
+                  CustomListTile(
+                    icon: Icons.group_add,
+                    title: "${controller.party?.ongoing} Goings",
+                    subtitle: "${controller.party?.ongoing} Goings",
+                    sub: false,
+                  ),
+
+                  */
+                CustomListTile(
+                  icon: Icons.supervised_user_circle_outlined,
+                  title:
+                      '${controller.party?.gender.replaceAll('[', '').replaceAll(']', '')}',
+                  subtitle: '${controller.party?.gender
+                      .replaceAll('[', '')
+                      .replaceAll(']', '')
+                      .capitalizeFirst!}',
+                  sub: false,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    UrlLauncher.launch("tel://${controller.party?.phoneNumber}");
+                  },
+                  child: CustomListTile(
+                    icon: Icons.phone,
+                    title: "Call Us",
+                    subtitle: '${controller.party?.phoneNumber}',
+                    sub: true,
+                  ),
+                ),
+                CustomListTile(
+                  icon: Icons.group,
+                  title: "${controller.party?.startAge} to ${controller.party?.endAge}  age",
+                  subtitle: "${controller.party?.startAge} - ${controller.party?.endAge} ",
+                  sub: false,
+                ),
+                CustomListTile(
+                  icon: Icons.warning,
+                  title: "Maximum Guests",
+                  subtitle: '${controller.party?.personLimit}',
+                  sub: true,
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    controller.party?.discountType =='0' || controller.party?.discountAmount == '0'?CustomListTile(
+                      icon: Icons.local_offer,
+                      title: "Offers",
+                      subtitle: '${controller.party?.offers}',
+                      sub: true,
+                    ):
+
+                    CustomListTile(
+                      icon: Icons.local_offer,
+                      title: "Discount ",
+                      subtitle:controller.party?.discountType == '1' ? 'Get ${controller.party?.discountAmount}% off ${controller.party?.billMaxAmount !='0' ? 'upto ₹${controller.party?.billMaxAmount}':""} .' : 'Get flat ₹${controller.party?.discountAmount} off ${controller.party?.billMaxAmount !='0' ? 'on minimum ₹${controller.party?.billMaxAmount}':""} .',
+                      sub: true,
                     ),
+                   bookNowButton()
+                  ],
+                ),
+               controller.party?.discountDescription != ""?
+              Text('                  ${controller.party?.discountDescription.toString().capitalizeFirst}',
+    style: const TextStyle(
+                  fontFamily: 'malgun',
+                  fontSize: 14,
+                  color: Colors.black87,
+                ) ):Container(),
+
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    // color: Colors.red.shade900,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      /*  BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
+              ),*/
+                    ],
                   ),
-                  SizedBox(
-                    width: Get.width * 0.05,
-                  ),
-                  Column(
+                  //  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Entry Fees',
-                        style: TextStyle(
-                            fontFamily: 'malgun',
-                            fontSize: 17,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600),
-                      ),
                       Container(
-                        padding: const EdgeInsets.only(top: 4, bottom: 5),
-                        child: Row(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  'Ladies',
-                                  style: TextStyle(
-                                      fontFamily: 'malgun',
-                                      fontSize: 15,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  'Couples',
-                                  style: TextStyle(
-                                      fontFamily: 'malgun',
-                                      fontSize: 15,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  'Stag',
-                                  style: TextStyle(
-                                      fontFamily: 'malgun',
-                                      fontSize: 15,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  'Others',
-                                  style: TextStyle(
-                                      fontFamily: 'malgun',
-                                      fontSize: 15,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                widget.party.ladies == '0'
-                                    ? const Text(
-                                        "  - NA",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600),
-                                      )
-                                    : Text(
-                                        "  - ₹ ${widget.party.ladies}",
-                                        style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                widget.party.couples == '0'
-                                    ? const Text(
-                                        "  - NA",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600),
-                                      )
-                                    : Text(
-                                        "  - ₹ ${widget.party.couples}",
-                                        style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                widget.party.stag == '0'
-                                    ? const Text(
-                                        "  - NA",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600),
-                                      )
-                                    : Text(
-                                        "  - ₹ ${widget.party.stag}",
-                                        style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                widget.party.others == '0'
-                                    ? const Text("  - NA",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600))
-                                    : Text(
-                                        "  - ₹ ${widget.party.others}",
-                                        style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                              ],
-                            ),
-                          ],
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.grey.shade200.withOpacity(0.5)),
+                        child: Icon(
+                          Icons.currency_rupee,
+                          color: Colors.red.shade900,
                         ),
                       ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 28.0, vertical: 0),
-              child: Container(
-                alignment: Alignment.topCenter,
-                child: const Text(
-                  "Selected Amenities",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Colors.black, fontFamily: 'malgun', fontSize: 18),
-                ),
-              ),
-            ),
-            Visibility(
-              visible: _categoryLists.isNotEmpty,
-              child: ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                itemCount: _categoryLists.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 4),
-                itemBuilder: (context, index) {
-                  final categoryList = _categoryLists[index];
-                  return categoryList.amenities.isNotEmpty
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (categoryList.amenities.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  categoryList.title.toUpperCase(),
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    letterSpacing: 1.1,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black,
-                                  ),
+                      SizedBox(
+                        width: Get.width * 0.05,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Entry Fees',
+                            style: TextStyle(
+                                fontFamily: 'malgun',
+                                fontSize: 17,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(top: 4, bottom: 5),
+                            child: Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: const [
+                                    Text(
+                                      'Ladies',
+                                      style: TextStyle(
+                                          fontFamily: 'malgun',
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Text(
+                                      'Couples',
+                                      style: TextStyle(
+                                          fontFamily: 'malgun',
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Text(
+                                      'Stag',
+                                      style: TextStyle(
+                                          fontFamily: 'malgun',
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Text(
+                                      'Others',
+                                      style: TextStyle(
+                                          fontFamily: 'malgun',
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Wrap(
-                                spacing: 5.0,
-                                children: categoryList.amenities.map((amenity) {
-                                  return GestureDetector(
-                                    onTap: () {},
-                                    child: amenity.selected
-                                        ? Chip(
-                                            label: Text(
-                                              amenity.name,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10.sp,
-                                                fontFamily: 'malgun',
-                                              ),
-                                            ),
-                                            backgroundColor: amenity.selected
-                                                ? Colors.red.shade900
-                                                : Colors.grey[400],
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    controller.party?.ladies == '0'
+                                        ? const Text(
+                                            "  - NA",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600),
                                           )
-                                        : Container(),
-                                  );
-                                }).toList(),
-                              ),
+                                        : Text(
+                                            "  - ₹ ${controller.party?.ladies}",
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                    controller.party?.couples == '0'
+                                        ? const Text(
+                                            "  - NA",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600),
+                                          )
+                                        : Text(
+                                            "  - ₹ ${controller.party?.couples}",
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                    controller.party?.stag == '0'
+                                        ? const Text(
+                                            "  - NA",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600),
+                                          )
+                                        : Text(
+                                            "  - ₹ ${controller.party?.stag}",
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                    controller.party?.others == '0'
+                                        ? const Text("  - NA",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600))
+                                        : Text(
+                                            "  - ₹ ${controller.party?.others}",
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 28.0, vertical: 0),
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    child: const Text(
+                      "Selected Amenities",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Colors.black, fontFamily: 'malgun', fontSize: 18),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: controller.categoryLists.isNotEmpty,
+                  child: ListView.separated(
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemCount: controller.categoryLists.length,
+                    separatorBuilder: (context, index) => const SizedBox(height: 4),
+                    itemBuilder: (context, index) {
+                      final categoryList = controller.categoryLists[index];
+                      return categoryList.amenities.isNotEmpty
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (categoryList.amenities.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      categoryList.title.toUpperCase(),
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        letterSpacing: 1.1,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Wrap(
+                                    spacing: 5.0,
+                                    children: categoryList.amenities.map((amenity) {
+                                      return GestureDetector(
+                                        onTap: () {},
+                                        child: amenity.selected
+                                            ? Chip(
+                                                label: Text(
+                                                  amenity.name,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 10.sp,
+                                                    fontFamily: 'malgun',
+                                                  ),
+                                                ),
+                                                backgroundColor: amenity.selected
+                                                    ? Colors.red.shade900
+                                                    : Colors.grey[400],
+                                              )
+                                            : Container(),
+                                      );
+                                    }).toList(),
+                                  ),
+                                )
+                              ],
                             )
-                          ],
-                        )
-                      : Container();
-                },
-              ),
+                          : Container();
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        }
       ),
       bottomSheet: Container(
         height: 1,
@@ -864,7 +842,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
       ),
       width: Get.width,
       /* child: Image.network(
-                        widget.party.coverPhoto,
+                        controller.party?.coverPhoto,
                         width: Get.width,
                         height: 250,
                         fit: BoxFit.cover,
@@ -934,7 +912,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                       )*/
                   Center(
                     child: Text(
-                      '${widget.party.title.capitalizeFirst}',
+                      '${getSingleParty?.title.capitalizeFirst}',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.red.shade400,
@@ -946,7 +924,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                     height: Get.width * 0.05,
                   ),
                   Text(
-                    'Date : ${widget.party.prStartDate != null ? DateFormat('d MMMM, y').format(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.party.startDate) * 1000)) : ''} ',
+                    'Date : ${getSingleParty?.prStartDate != null ? DateFormat('d MMMM, y').format(DateTime.fromMillisecondsSinceEpoch(int.parse('${getSingleParty?.startDate}') * 1000)) : ''} ',
                     textAlign: TextAlign.left,
                     style: TextStyle(color: Colors.black87, fontSize: 13.sp),
                   ),
@@ -954,7 +932,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                     height: Get.width * 0.05,
                   ),
                   Text(
-                    "Time: ${widget.party.startTime}  to  ${widget.party.endTime}",
+                    "Time: ${getSingleParty?.startTime}  to  ${getSingleParty?.endTime}",
                     textAlign: TextAlign.left,
                     style: TextStyle(color: Colors.black87, fontSize: 13.sp),
                   ),
@@ -1038,8 +1016,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
 
                        */
                     String pj_id =   await APIService.onBookingParty(
-                          widget.party.id, noOfPeople.toString());
-                  //  var data= APIService.ongoingParty(widget.party.id);
+                          '${getSingleParty?.id}', noOfPeople.toString());
+                  //  var data= APIService.ongoingParty(controller.party?.id);
                     if(pj_id.isNotEmpty){
                       join = 'Booked';
                     }
@@ -1061,7 +1039,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
       onTap: () async {
         logCustomEvent(eventName: bookNow, parameters: {'name':'book Now'});
       if(dashboardController.individualProfileController.coverPhotoURL.isNotEmpty && dashboardController.individualProfileController.bio.isNotEmpty) {
-        widget.party.ongoingStatus != 1 ?
+        getSingleParty?.ongoingStatus != 1 ?
        await joinPartyFormDialouge(context: context):
         Fluttertoast.showToast( msg: 'You are already booked this offer',);
           setState(() {});
@@ -1090,7 +1068,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                 SizedBox(
                   width: Get.width * 0.003,
                 ),
-                widget.party.ongoingStatus == 0
+                getSingleParty?.ongoingStatus == 0
                     ? Text(
                   join,
                   style: TextStyle(
