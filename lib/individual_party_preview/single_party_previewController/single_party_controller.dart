@@ -11,7 +11,7 @@ import '../../widgets/individual_amenities.dart';
 class PartyPreviewScreenController extends GetxController{
   Party? party;
   String? partyId;
-  RxBool isLoading = false.obs;
+  RxBool isLoading = true.obs;
   final List partyImages = [];
   List<Category> categories = [];
   final List<CategoryList> categoryLists = [];
@@ -26,7 +26,6 @@ class PartyPreviewScreenController extends GetxController{
 
   void getdata()async{
       partyId = await Get.arguments ?? '0';
-
     await getSingledata(partyID: '$partyId');
       getpartyImages();
       _fetchData();
@@ -98,7 +97,6 @@ class PartyPreviewScreenController extends GetxController{
           headers: {'x-access-token': GetStorage().read('token')
           });
       dynamic decodedData = jsonDecode(response.body);
-
       print("single party data $decodedData");
       if(decodedData['status']==1 && decodedData['message']=='Party Data Found.' ){
       party = Party.fromJson(decodedData['data'][0]);

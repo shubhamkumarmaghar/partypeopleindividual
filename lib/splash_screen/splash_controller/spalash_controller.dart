@@ -119,7 +119,7 @@ class SplashController extends GetxController {
           '${dynamicLinkData.link.query}  '
           '${dynamicLinkData.link.queryParametersAll}  ');
 
-      FirebaseDynamicLinkUtils.handleDynamicLink(dynamicLinkData.link.path.toString());
+      FirebaseDynamicLinkUtils.handleDynamicLink(dynamicLinkData.link.toString());
     }).onError((error) {
       log("error is ${error?.message?.toString()}");
     });
@@ -128,7 +128,6 @@ class SplashController extends GetxController {
   _navigateToNextScreen() => Timer(Duration(seconds: 5), () async {
     String data = await GetStorage().read("loggedIn") ??'';
     if (data != null) {
-
       await hitCheckApi();
     } else {
       await Future.delayed(const Duration(seconds: 3)).then((value) {

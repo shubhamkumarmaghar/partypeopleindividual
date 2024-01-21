@@ -1,12 +1,19 @@
+import 'dart:developer';
+
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/splash_screen/view/splash_screen.dart';
+
+import 'individual_party_preview/party_preview_screen_new.dart';
 
 
 class FirebaseDynamicLinkPostType {
   static final String VIDEO_POST = 'video_post';
   static final String IMAGE_POST = 'image_post';
   static final String PROFILE = 'profile';
+  static final String PARTY = 'party';
 }
 
 class FirebaseDynamicLinkUtils {
@@ -36,7 +43,19 @@ class FirebaseDynamicLinkUtils {
 
   static handleDynamicLink(String link) {
     GetStorage storage = GetStorage();
-    if (storage.read('loggedIn') != null) {
+    log("party post open  $link");
+    if (storage.read('loggedIn') != null && GetStorage().read('loggedIn') == '1' ) {
+      if (link.endsWith(FirebaseDynamicLinkPostType.PARTY)) {
+        log("party post open ");
+        var data = link.split("/");
+        String? id = data[3];
+
+        log('id::::  $id  $data');
+        Get.to(PartyPreviewScreen(
+          //  party: widget.party
+        ),arguments:id );
+        //  Get.to(ImagePostDetailScreen(postId: int.parse(id)), arguments: int.parse(id));
+      }
       if (link.endsWith(FirebaseDynamicLinkPostType.IMAGE_POST)) {
         print("image post opened ");
         String? id = link.replaceAll("/${FirebaseDynamicLinkPostType.IMAGE_POST}", "").replaceAll("/", "");

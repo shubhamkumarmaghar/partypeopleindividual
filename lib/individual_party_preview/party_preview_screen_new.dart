@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
 import 'dart:developer' as dev;
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/individual_party_preview/single_party_previewController/single_party_controller.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
@@ -28,9 +28,11 @@ import '../party_organization_details_view/view/organization_detalis_view.dart';
 
 class PartyPreviewScreen extends StatefulWidget {
   // ignore: prefer_typing_uninitialized_variables
-  final Party party;
+ // final Party party;
 
-  const PartyPreviewScreen({super.key, required this.party});
+  const PartyPreviewScreen({super.key,
+  //  required this.party
+  });
 
   @override
   State<PartyPreviewScreen> createState() => _PartyPreviewScreenState();
@@ -61,7 +63,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
         init:PartyPreviewScreenController() ,
         builder: (controller) {
           getSingleParty = controller.party;
-          return Padding(
+          return controller.isLoading.value == false ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: ListView(
               shrinkWrap: true,
@@ -92,10 +94,14 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                        // print('bs64  $mydata $bs64 ${controller.party?.sharePartyUrl}}');
                         FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
                         final dynamicLinkParams = await DynamicLinkParameters(
-                          link: Uri.parse("${controller.party?.sharePartyUrl}"),
-                          uriPrefix: "https://partypeopleindividual.page.link/party",
-                          androidParameters: const AndroidParameters(packageName: "com.partypeopleindividual"),
-                          iosParameters: const IOSParameters(bundleId: "com.partypeople.individual"),
+                          link: Uri.parse("https://partypeopleindividual.page.link"),
+                          uriPrefix: "https://partypeopleindividual.page.link",
+
+                          androidParameters: const AndroidParameters(
+                              packageName: "com.partypeopleindividual",
+                          minimumVersion: 0),
+                          iosParameters: const IOSParameters(bundleId: "com.partypeople.individual",
+                          minimumVersion: '0'),
                         );
                         final dynamicLink = await dynamicLinks.buildLink(dynamicLinkParams);
                       dev.log('dynamic link :: $dynamicLink   -- ${controller.party?.sharePartyUrl}');
@@ -103,7 +109,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                             await FirebaseDynamicLinks.instance.buildShortLink(dynamicLinkParams,
                           shortLinkType: ShortDynamicLinkType.unguessable,);
                        print('short :::$dynamicLinkk  ');*/
-                        Share.share('$dynamicLink/$bs64');
+                        String sharedLink = '${dynamicLink.toString()}/$bs64/party';
+                        Share.share(sharedLink);
                         //Get.back();
                       },
                       child: Container(
@@ -779,7 +786,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                 ),
               ],
             ),
-          );
+          ):loder();
         }
       ),
       bottomSheet: Container(
@@ -801,6 +808,14 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
     );
   }
 
+  Widget loder()
+  {return Center(
+      child: Container(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,children: [
+          Lottie.network(
+              'https://assets-v2.lottiefiles.com/a/ebf552bc-1177-11ee-8524-57b09b2cd38d/PaP7jkQFk9.json')
+        ]),
+      )); }
   Widget CustomTextIcon({required IconData icon, required String IconText}) {
     return Container(
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [

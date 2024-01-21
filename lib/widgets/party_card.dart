@@ -214,7 +214,7 @@ class _PartyCardState extends State<PartyCard>
                 String mydata = widget.party.id;
                 String bs64 = base64.encode(mydata.codeUnits);
              print('bs64  $mydata $bs64');
-                Get.to(PartyPreviewScreen(party: widget.party),arguments:bs64 )
+                Get.to(PartyPreviewScreen(),arguments:bs64 )
                     ?.then((value) => widget.onBack());
               } else {
                 Get.snackbar('Sorry!',
@@ -540,7 +540,9 @@ class _PartyCardState extends State<PartyCard>
                 String mydata = widget.party.id;
                 String bs64 = base64.encode(mydata.codeUnits);
                 print('bs64  $mydata $bs64');
-                Get.to(PartyPreviewScreen(party: widget.party),arguments:bs64 )
+                Get.to(PartyPreviewScreen(
+                  //  party: widget.party
+                ),arguments:bs64 )
                     ?.then((value) => widget.onBack());
               } else {
                 Get.snackbar('Sorry!',
