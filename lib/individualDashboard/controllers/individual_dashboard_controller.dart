@@ -40,6 +40,8 @@ class IndividualDashboardController extends GetxController {
   RxList<Party> jsonPartyOrganisationDataTomm = <Party>[].obs;
   RxList<Party> jsonPartyOgranisationDataUpcomming = <Party>[].obs;
   RxList<Party> jsonPartyPopularData = <Party>[].obs;
+  RxList<UserModel> usersList = <UserModel>[].obs;
+  RxList<Party> wishlistedParties = <Party>[].obs;
   RxBool showAnimatedHeart = false.obs;
   final refreshController = RefreshController(initialRefresh: false);
   final refreshTomarrowController = RefreshController(initialRefresh: false);
@@ -56,7 +58,7 @@ class IndividualDashboardController extends GetxController {
 
 // an observable isLoading state
 
-  RxList<Party> wishlistedParties = RxList<Party>([]);
+
 
   RxInt lengthOfTodayParties = 0.obs;
   RxInt lengthOfTommParties = 0.obs;
@@ -67,7 +69,7 @@ class IndividualDashboardController extends GetxController {
   RxString notificationCount = ''.obs;
   RxString partyCity = ''.obs;
 
-  RxList<UserModel> usersList = RxList<UserModel>();
+
 
   void switchButtonState() {
     if (buttonState == true) {
@@ -98,8 +100,8 @@ class IndividualDashboardController extends GetxController {
     lengthOfUpcomingParties = 0.obs;
     lengthOfPopularParties = 0.obs;
     onlineStatus = 0.obs;
-    usersList = RxList<UserModel>();
-    wishlistedParties = RxList<Party>([]);
+    usersList = <UserModel>[].obs;
+    wishlistedParties = <Party>[].obs;
     jsonPartyOrganisationDataToday = <Party>[].obs;
     jsonPartyOrganisationDataTomm = <Party>[].obs;
     jsonPartyOgranisationDataUpcomming = <Party>[].obs;
@@ -125,7 +127,7 @@ class IndividualDashboardController extends GetxController {
     //getPartyByDate();
   }
 
-  RxString noUserFoundController = "null".obs;
+  RxString noUserFoundController = "".obs;
 
   Future<void> getAllCities() async {
     try {
@@ -160,7 +162,7 @@ class IndividualDashboardController extends GetxController {
   }
 
   Future<void> getAllNearbyPeoples({String type = '0'}) async {
-    String state = GetStorage().read('state') ?? 'delhi';
+   // String state = GetStorage().read('state') ?? 'delhi';
     String city = '';
     if (individualProfileController.activeCity.value.toString().isNotEmpty) {
       city = individualProfileController.activeCity.value.toString();
@@ -168,11 +170,11 @@ class IndividualDashboardController extends GetxController {
       city = 'delhi';
     }
     try {
-      apiService.isLoading.value = true;
+    //  apiService.isLoading.value = true;
       var response = await apiService.individualNearbyPeoples(
         {
           'city_id': city.toLowerCase(),
-          'state': state.toLowerCase(),
+          //'state': state.toLowerCase(),
           'start': '1',
           'end': '15',
           if (type == '1') 'gender': 'male',
@@ -185,21 +187,23 @@ class IndividualDashboardController extends GetxController {
         var usersData = response['data'] as List;
         usersData.forEach((element) => log('Data :: $element'));
         usersList.addAll(usersData.map((user) => UserModel.fromJson(user)));
-        apiService.isLoading.value = false;
+
+     //   apiService.isLoading.value = false;
         update();
       } else if (response['status'] == 0 &&
           response['message'].contains('Not')) {
-        noUserFoundController.value = response['message'];
+        noUserFoundController.value = '';
         update();
         Get.snackbar('Oops!', 'No User found ');
       } else {
         Get.snackbar('Oops!', 'No User found ');
       }
     } catch (e) {
-      noUserFoundController.value = 'No User';
-      apiService.isLoading.value = false;
+      noUserFoundController.value = '';
+   //   apiService.isLoading.value = false;
       update();
     }
+    update();
   }
 
 /*

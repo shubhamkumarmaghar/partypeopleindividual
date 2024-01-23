@@ -9,11 +9,9 @@ import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
-import 'package:http/http.dart' as http;
 import '../../widgets/cached_image_placeholder.dart';
 import '../../widgets/custom_images_slider.dart';
 import '../controller/organization_controller.dart';
-import '../model/organization_details_model.dart';
 
 class OrganizationDetaisView extends StatefulWidget {
   final String organizationData;

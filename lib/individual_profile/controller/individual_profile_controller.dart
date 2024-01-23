@@ -100,6 +100,10 @@ class IndividualProfileController extends GetxController {
      Get.snackbar('Gender Error', 'Gender should not be empty');
      return;
    }
+   if (activeCity.value.isEmpty) {
+     Get.snackbar('Gender Error', 'Gender should not be empty');
+     return;
+   }
    /*
     if (email.value.isEmpty || !email.value.contains('@')) {
       Get.snackbar('Email Error', 'Email  should not be empty');
@@ -323,14 +327,14 @@ class IndividualProfileController extends GetxController {
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(await response.stream.bytesToString());
         //isLoading.value = false;
-log('hhhhhhhhhhhh $jsonResponse');
+
         if (jsonResponse['status'] == 1 && jsonResponse['message'].contains('Successfully')) {
           GetStorage().write('loggedIn', '1');
           individualProfileController.apiService.updateActiveCity(
               individualProfileController.organization_id.value,
               activeCity.value.isNotEmpty
                   ? activeCity.value.toString()
-                  : "Delhi");
+                  : "");
           Get.offAll(const ShowSubmitMessage());
         }
         else if (jsonResponse['status'] == 2 && jsonResponse['message'].contains('Organization Already Created.'))
@@ -438,7 +442,7 @@ log('hhhhhhhhhhhh $jsonResponse');
           profileD.value = user['profile_pic_d'] ?? '';
           profileE.value = user['profile_pic_e'] ?? '';
           organization_id.value = user['id'] ?? "";
-          activeCity.value = user['active_city']??'Delhi';
+          activeCity.value = user['active_city']??'';
           descStatusApproval.value = user['approval_desciption_status']??'';
           photoStatusApproval.value = user['profile_pic_approval_status']??'';
           photoStatusApproval_b.value = user['profile_pic_b_status']??'';

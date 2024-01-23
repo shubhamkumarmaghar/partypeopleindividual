@@ -394,7 +394,6 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                 ],
                               ),
                             ),
-
                             // get all cities
                             Container(
                               height: MediaQuery.of(context).size.width * 0.27,
@@ -410,7 +409,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                 scrollDirection: Axis.horizontal,
                                 itemBuilder: ((context, index) =>
                                     GestureDetector(
-                                      onTap: () {
+                                      onTap: () async {
                                         if (individualDashboardController
                                                 .individualProfileController
                                                 .coverPhotoURL
@@ -450,8 +449,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                           Get.snackbar('Sorry!', 'Coming Soon');
                                         }
                                       } */
-
-                                            if (index == 0) {
+                                            if (individualDashboardController
+                                                .allCityList[index].name == 'Delhi' || individualDashboardController
+                                                .allCityList[index].name == 'Bengaluru'  ) {
                                               individualDashboardController
                                                       .individualProfileController
                                                       .activeCity
@@ -468,8 +468,11 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                                           .individualProfileController
                                                           .activeCity
                                                           .value);
-                                              Get.snackbar('Delhi',
-                                                  'You selected delhi');
+                                              await _handleRefresh();
+                                              Get.snackbar('${individualDashboardController
+                                                  .allCityList[index].name}',
+                                                  'You selected ${individualDashboardController
+                                                      .allCityList[index].name}');
                                             } else {
                                               Get.snackbar(
                                                   'Sorry!', 'Coming Soon');
@@ -607,9 +610,9 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                               ),
                             ),
                             individualDashboardController
-                                        .noUserFoundController.value ==
-                                    'null'
-                                ? Obx(() => Container(
+                                        .usersList.isNotEmpty
+                                ?
+                                Container(
                                       /*    decoration: const BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
@@ -708,7 +711,7 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                               ),
                                             )),
                                       ),
-                                    ))
+                                    )
                                 : const Center(
                                     child: Text("No Peoples Around You"),
                                   ),
