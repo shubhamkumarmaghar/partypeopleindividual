@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -80,8 +79,6 @@ class _WebViewContainerState extends State<WebViewContainer> {
              var splitOrder = param[2].split('&');
              orderId = splitOrder[0];
 
-
-             log('my name is lakhan ${param[1]}   ${param[2]}');
                await subController.updateSubsPaymentStatus(subsId: orderId, paymentStatus: paymentStatus,);
                Get.to(  PaymentResponseView(isSuccess: paymentStatus,orderId: orderId,amount: param[3] ,));
            }

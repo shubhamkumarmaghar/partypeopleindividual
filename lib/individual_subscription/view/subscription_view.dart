@@ -12,6 +12,7 @@ import 'package:sizer/sizer.dart';
 import 'package:html/parser.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/webView.dart';
+import '../controller/stripe_payment_handle.dart';
 import '../model/SubscriptionModel.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
@@ -174,8 +175,8 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                         items: [
                           GestureDetector(
                             onTap: () async {
-                               String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData[0].id);
-                              if (value == '1')
+                              // String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData[0].id);
+                              if ('1' == '1')
                                 selectPlanBottom(
                                     context: context,
                                     name: controller
@@ -283,10 +284,11 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                           height: Get.height * 0.5,
                           enlargeCenterPage: true,
                           enlargeFactor: 0.3,
-                          autoPlay: true,
+                          autoPlay: false,
+                          
                           //aspectRatio: 16 / 9,
                           autoPlayCurve: Curves.fastOutSlowIn,
-                          enableInfiniteScroll: true,
+                          //enableInfiniteScroll: true,
                           autoPlayAnimationDuration:
                               Duration(milliseconds: 800),
                           viewportFraction: 0.75,
@@ -353,22 +355,6 @@ class _SubscriptionViewState extends State<SubscriptionView> {
     var document =
         parse(subscriptionData?.description ?? "", generateSpans: true);
     String doc = subscriptionData?.description ?? "";
-    final String htmlcode = """
-     <h1>H1 Title</h1>
-     <h2>H2 Title</h2>
-        <p>A paragraph with <strong>bold</strong> and <u>underline</u> text.</p>
-        <ol>
-          <li>List 1</li>
-          <li>List 2<ul>
-              <li>List 2.1 (nested)</li>
-              <li>List 2.2</li>
-             </ul>
-          </li>
-          <li>Three</li>
-        </ol>
-     <a href="https://www.hellohpc.cdom">Link to HelloHPC.com</a>
-     <img src='https://www.hellohpc.com/wp-content/uploads/2020/05/flutter.png'/>
-    """;
     return Stack(children: [
       FittedBox(
         child: Container(
@@ -454,13 +440,13 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                         ),
                       )),
                 ),
-                FittedBox(
-                  child: Container(
-                    // color: Colors.red.shade900,
-                    margin: EdgeInsets.all(5),
-                    alignment: Alignment.centerLeft,
-                    width: Get.width * 0.65,
-                    height: Get.width * 0.45,
+                Container(
+                  // color: Colors.red.shade900,
+                  margin: EdgeInsets.all(5),
+                  alignment: Alignment.centerLeft,
+                  width: Get.width * 0.65,
+                  height: Get.width * 0.45,
+                  child: FittedBox(
                     child: HtmlWidget(
                       doc,
                       textStyle: TextStyle(color: Colors.black),
@@ -504,7 +490,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
       required String name}) {
     showModalBottomSheet(
         context: context,
-        backgroundColor: Colors.red.shade100,
+      //  backgroundColor: Colors.red.shade100,
 
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
@@ -533,9 +519,8 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                         color: Colors.black),
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 25,
                   ),
-
                       Container(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -600,96 +585,245 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                           style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w600,
-                              color: Colors.blue),
+                              color: Colors.green),
                         ),
                       ]),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
-                  GestureDetector(
-                    onTap: () async {
-                      {
-                        if (subController.mobileNumber.value.isNotEmpty &&
-                            subController.email.value.isNotEmpty) {
-                          Navigator.pop(context);
-                          Get.to(WebViewContainer(
-                              url:
-                                  'https://app.partypeople.in/easebuzz/easebuzz.php?api_name=initiate_payment'
-                                  '&amount=${double.parse(amount)}'
-                                  // '&amount=${double.parse('10')}'
-                                  '&phone=${subController.mobileNumber.value}'
-                                  '&email=${subController.email.value}'
-                                  '&firstname=${subController.individualProfileController.username.value}'
-                                  '&country=${subController.individualProfileController.country.value}'
-                                  '&state=${subController.individualProfileController.state.value}'
-                                  '&city=${subController.individualProfileController.city.value}'
-                                  '&order_id=${subController.subsOrderId}'
-                                  '&zipcode=${subController.individualProfileController.pincode.value}'
-                                  '&usertype=Individual'));
-                        } else {
-                          Fluttertoast.showToast(
-                              msg: 'Please fill Required Fields');
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          {
+                            if (subController.mobileNumber.value.isNotEmpty &&
+                                subController.email.value.isNotEmpty) {
+                              Navigator.pop(context);
+                           /*   subController.stripeMakePayment(
+                                amount: '1',
+                                //amount: '$amount',
+                                city: '${subController.individualProfileController.city.value}',
+                                country: '${subController.individualProfileController.country.value}',
+                                email: '${subController.email.value}',
+                                name: '${subController.individualProfileController.username.value}',
+                                phone: '${subController.mobileNumber.value}',
+                                postalCode: '${subController.individualProfileController.pincode.value}',
+                                state: '${subController.individualProfileController.state.value}',
+                                type: 'Individual',
+                                orderId: '${subController.subsOrderId}'
+                              );*/
+                            Get.to(WebViewContainer(
+                                  url:
+                                      'https://app.partypeople.in/easebuzz/easebuzz.php?api_name=initiate_payment'
+                                      '&amount=${double.parse(amount)}'
+                                      // '&amount=${double.parse('10')}'
+                                      '&phone=${subController.mobileNumber.value}'
+                                      '&email=${subController.email.value}'
+                                      '&firstname=${subController.individualProfileController.username.value}'
+                                      '&country=${subController.individualProfileController.country.value}'
+                                      '&state=${subController.individualProfileController.state.value}'
+                                      '&city=${subController.individualProfileController.city.value}'
+                                      '&order_id=${subController.subsOrderId}'
+                                      '&zipcode=${subController.individualProfileController.pincode.value}'
+                                      '&usertype=Individual')
+                             );
+                            } else {
+                              Fluttertoast.showToast(
+                                  msg: 'Please fill Required Fields');
+                            }
+                            /* var options = {
+                          'key': 'rzp_test_qiTDenaoeqV1Zr',
+                          // Replace with your Razorpay API key
+                          'amount': (int.parse(amount)) * 100,
+                          // Amount in paise (e.g., for INR 500.00, use 50000)
+                          'name': 'PARTY PEOPLE ',
+                          'description': 'RAMBER ENTERTAINMENT PVT LTD',
+                          'prefill': {
+                            'contact': 'CUSTOMER_CONTACT_NUMBER',
+                            'email': 'CUSTOMER_EMAIL'
+                          },
+                          'external': {
+                            'wallets': ['paytm'] // Supported wallets
+                          }
+                        };
+
+                        try {
+                          _razorpay.open(options);
+                        } catch (e) {
+                          print(e.toString());
                         }
-                        /* var options = {
-                      'key': 'rzp_test_qiTDenaoeqV1Zr',
-                      // Replace with your Razorpay API key
-                      'amount': (int.parse(amount)) * 100,
-                      // Amount in paise (e.g., for INR 500.00, use 50000)
-                      'name': 'PARTY PEOPLE ',
-                      'description': 'RAMBER ENTERTAINMENT PVT LTD',
-                      'prefill': {
-                        'contact': 'CUSTOMER_CONTACT_NUMBER',
-                        'email': 'CUSTOMER_EMAIL'
-                      },
-                      'external': {
-                        'wallets': ['paytm'] // Supported wallets
-                      }
-                    };
-
-                    try {
-                      _razorpay.open(options);
-                    } catch (e) {
-                      print(e.toString());
-                    }
-                    */
+                        */
 /*
-                      String access_key = "555a2b009214573bd833feca997244f1721ac69d7f2b09685911bc943dcf5201";
-                      String pay_mode = "test";
-                      Object parameters =
-                      {
-                        "access_key":access_key,
-                        "pay_mode":pay_mode,
-                      //  "amount": (double.parse(amount)),
-                      };
-                      final payment_response = await _channel.invokeMethod("payWithEasebuzz", parameters);
-                    String result = payment_response['result'];
+                          String access_key = "555a2b009214573bd833feca997244f1721ac69d7f2b09685911bc943dcf5201";
+                          String pay_mode = "test";
+                          Object parameters =
+                          {
+                            "access_key":access_key,
+                            "pay_mode":pay_mode,
+                          //  "amount": (double.parse(amount)),
+                          };
+                          final payment_response = await _channel.invokeMethod("payWithEasebuzz", parameters);
+                        String result = payment_response['result'];
 
-                      /* payment_response is the HashMap containing the response of the payment.
+                          /* payment_response is the HashMap containing the response of the payment.
 You can parse it accordingly to handle response */
 */
-                      }
-                      ;
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(right: Get.width * 0.028),
-                      height: MediaQuery.of(context).size.width * 0.12,
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          //color: Colors.amber,
-                          border: Border.all(color: Colors.red.shade900)
-                          //const Color(0xFFffa914),
+                          }
+                          ;
+                        },
+                        child:
+                        Container(
+                          padding: EdgeInsets.only(right: Get.width * 0.028,
+                              left: Get.width * 0.028,),
+                          margin: EdgeInsets.only(right: Get.width * 0.028, bottom: Get.width * 0.028,),
+                          height: MediaQuery.of(context).size.width * 0.12,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          alignment: Alignment.centerLeft,
+                         decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.red.shade900,
+                              border: Border.all(color: Colors.red.shade900)
+                              //const Color(0xFFffa914),
+                              ),
+                          child: FittedBox(
+                            child: Row(
+                              children: [
+
+                                Text(
+                                  'Continue with UPI/Wallet/Card  ',
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Poppins',
+                                      fontSize: 20),
+                                ),
+                                Image.asset(
+                                  'assets/images/easebuzz.png',
+                                  width: 80,
+                                  height: 55,
+                                ),
+                              ],
+                            ),
                           ),
-                      child: Text(
-                        'CONTINUE',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'Poppins',
-                            fontSize: 20),
+                        ),
                       ),
-                    ),
+                      GestureDetector(
+                        onTap: () async {
+                          {
+                            if (subController.mobileNumber.value.isNotEmpty &&
+                                subController.email.value.isNotEmpty) {
+                              Navigator.pop(context);
+                              subController.stripeMakePayment(
+                                  amount: '$amount',
+                                  city: '${subController.individualProfileController.city.value}',
+                                  country: '${subController.individualProfileController.country.value}',
+                                  email: '${subController.email.value}',
+                                  name: '${subController.individualProfileController.username.value}',
+                                  phone: '${subController.mobileNumber.value}',
+                                  postalCode: '${subController.individualProfileController.pincode.value}',
+                                  state: '${subController.individualProfileController.state.value}',
+                                  type: 'Individual',
+                                  orderId: '${subController.subsOrderId}'
+                              );
+                              /*    Get.to(WebViewContainer(
+                                  url:
+                                      'https://app.partypeople.in/easebuzz/easebuzz.php?api_name=initiate_payment'
+                                      '&amount=${double.parse(amount)}'
+                                      // '&amount=${double.parse('10')}'
+                                      '&phone=${subController.mobileNumber.value}'
+                                      '&email=${subController.email.value}'
+                                      '&firstname=${subController.individualProfileController.username.value}'
+                                      '&country=${subController.individualProfileController.country.value}'
+                                      '&state=${subController.individualProfileController.state.value}'
+                                      '&city=${subController.individualProfileController.city.value}'
+                                      '&order_id=${subController.subsOrderId}'
+                                      '&zipcode=${subController.individualProfileController.pincode.value}'
+                                      '&usertype=Individual')
+                             );*/
+                            } else {
+                              Fluttertoast.showToast(
+                                  msg: 'Please fill Required Fields');
+                            }
+                            /* var options = {
+                          'key': 'rzp_test_qiTDenaoeqV1Zr',
+                          // Replace with your Razorpay API key
+                          'amount': (int.parse(amount)) * 100,
+                          // Amount in paise (e.g., for INR 500.00, use 50000)
+                          'name': 'PARTY PEOPLE ',
+                          'description': 'RAMBER ENTERTAINMENT PVT LTD',
+                          'prefill': {
+                            'contact': 'CUSTOMER_CONTACT_NUMBER',
+                            'email': 'CUSTOMER_EMAIL'
+                          },
+                          'external': {
+                            'wallets': ['paytm'] // Supported wallets
+                          }
+                        };
+
+                        try {
+                          _razorpay.open(options);
+                        } catch (e) {
+                          print(e.toString());
+                        }
+                        */
+/*
+                          String access_key = "555a2b009214573bd833feca997244f1721ac69d7f2b09685911bc943dcf5201";
+                          String pay_mode = "test";
+                          Object parameters =
+                          {
+                            "access_key":access_key,
+                            "pay_mode":pay_mode,
+                          //  "amount": (double.parse(amount)),
+                          };
+                          final payment_response = await _channel.invokeMethod("payWithEasebuzz", parameters);
+                        String result = payment_response['result'];
+
+                          /* payment_response is the HashMap containing the response of the payment.
+You can parse it accordingly to handle response */
+*/
+                          }
+                          ;
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(right: Get.width * 0.028),
+                          padding: EdgeInsets.only(right: Get.width * 0.028,left: Get.width * 0.028),
+                          height: MediaQuery.of(context).size.width * 0.12,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          alignment: Alignment.centerLeft,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              //color: Colors.amber,
+                              color: Colors.red.shade900,
+                              border: Border.all(color: Colors.red.shade900)
+                            //const Color(0xFFffa914),
+                          ),
+                          child: FittedBox(
+                            child: Row(
+                              children: [
+
+                                Text(
+                                  'Continue with Credit/Debit Card ',
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Poppins',
+                                      fontSize: 20),
+                                ),
+                                Image.asset(
+                                  'assets/images/stripe.png',
+                                  width: 25,
+                                  height: 25,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

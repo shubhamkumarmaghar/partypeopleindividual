@@ -345,7 +345,7 @@ void getChatUserData() async{
                                       if (listmessage[index].fromId ==
                                           controller.myUsername+controller.myUserId) {
                                         me = true;
-                                        log('me ::::::::::: $me');
+                                       // log('me ::::::::::: $me');
                                       }
                                       var data = listmessage[index];
                                       //data.toId == controller.myUsername+controller.myUserId;

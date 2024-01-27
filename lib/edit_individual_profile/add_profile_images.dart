@@ -25,12 +25,11 @@ class _AddImageProfileState extends State<AddImageProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(backgroundColor:  Colors.red.shade50,
+    return  Scaffold(backgroundColor: Colors.white,
       body:
     Container(margin: EdgeInsets.all(10),child:
     Column(
       children: [
-
         SizedBox(
           height: Get.height*0.05,
         ),
@@ -39,7 +38,7 @@ class _AddImageProfileState extends State<AddImageProfile> {
             GestureDetector(onTap: (){Navigator.pop(context);},
               child: Container(alignment: Alignment.bottomLeft,
                   child: CircleAvatar(child: Icon(Icons.arrow_back,color: Colors.red.shade900,),
-                    backgroundColor: Colors.grey.shade300,)),
+                    backgroundColor: Colors.red.shade50,)),
             ),
             const SizedBox(
               width: 20,
@@ -96,7 +95,7 @@ class _AddImageProfileState extends State<AddImageProfile> {
             ),),
         ],),
         SizedBox(height: 20,),
-        GestureDetector(
+      /*  GestureDetector(
           onTap: (){
             Fluttertoast.showToast(msg: 'Your images have successfully uploaded ');
           },
@@ -118,7 +117,7 @@ class _AddImageProfileState extends State<AddImageProfile> {
               ),
             ),
           ),
-        ),
+        ),*/
     ],
     ),
     ),
@@ -131,7 +130,6 @@ class _AddImageProfileState extends State<AddImageProfile> {
        // controller.isLoading.value == false
             //?
     Container(
-
           height: Get.height*0.25,
           width: Get.height*0.21,
           child: imageUrl.isNotEmpty && imageFile.path.isEmpty
@@ -177,11 +175,13 @@ class _AddImageProfileState extends State<AddImageProfile> {
             ),
           ):Card(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(15.0),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(15.0),
+                  topLeft: Radius.circular(15.0),
+                  bottomLeft: Radius.circular(15.0),
                 ),
               ),clipBehavior: Clip.hardEdge,
-              child: Image.file(imageFile)
+              child: Image.file(imageFile,fit: BoxFit.fill,)
           ),
         )
       /*  Positioned(

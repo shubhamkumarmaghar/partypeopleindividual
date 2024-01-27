@@ -259,7 +259,7 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
                               widget.lastSeen,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Colors.green,
+                                color: Colors.amber,
                                 fontFamily: 'Poppins',
                                 fontSize: 8.sp,
                               ),
@@ -343,7 +343,7 @@ class _NearByPeopleProfileState extends State<NearByPeopleProfile> {
               ),
             ),
             Positioned(
-              bottom: Get.height * 0.07,
+              bottom: Get.height * 0.055,
               right: Get.height * 0.016,
               child: widget.onlineStatus == 'on'&& widget.privacyStatus == 'Yes'
                   ? Container(

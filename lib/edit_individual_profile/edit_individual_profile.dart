@@ -353,7 +353,7 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
 
                                 Positioned(
                                 top: Get.height*0.05,
-                                  left: Get.height*0.03,
+                                  left: Get.height*0.02,
                                   child:getBackBarButton(context: context),
                                 ),
                               ],

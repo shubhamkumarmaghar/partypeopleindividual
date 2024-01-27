@@ -1,16 +1,10 @@
 package com.partypeopleindividual
 
-import android.content.Intent
-import android.os.Bundle
-import com.easebuzz.flutter_kt_androidx_accesskey.JsonConverter
-import com.easebuzz.payment.kit.PWECouponsActivity
-import com.google.gson.Gson
-import datamodels.PWEStaticDataModel
 import io.flutter.embedding.android.FlutterActivity
-import io.flutter.plugin.common.MethodChannel
-import org.json.JSONObject
+import io.flutter.embedding.android.FlutterFragmentActivity
 
-class MainActivity: FlutterActivity() {
+
+class MainActivity: FlutterFragmentActivity() {
 /*
     private val CHANNEL = "easebuzz"
    var channel_result: MethodChannel.Result? = null

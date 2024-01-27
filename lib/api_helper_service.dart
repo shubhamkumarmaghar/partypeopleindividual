@@ -542,7 +542,8 @@ log('#   $chatCount');
       },
 
       body: <String, String>{
-        'active_city': activeCity,
+       // 'active_city': activeCity,
+        'active_city': 'Delhi',
         'organization_id': orgId
       },
     );

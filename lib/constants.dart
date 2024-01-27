@@ -13,4 +13,4 @@ const String organizationUser =
     'Sorry ! you can not login here ';
 
 // for analytics
-late FirebaseAnalytics analytics;
+FirebaseAnalytics analytics = FirebaseAnalytics.instance;

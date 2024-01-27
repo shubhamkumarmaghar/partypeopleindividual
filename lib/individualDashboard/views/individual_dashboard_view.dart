@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/individualDashboard/controllers/individual_dashboard_controller.dart';
@@ -23,7 +22,6 @@ import '../../individualDrawer/views/individual_drawer_view.dart';
 import '../../individual_nearby_people_profile/view/individual_people_list.dart';
 import '../../individual_nearby_people_profile/view/individual_people_profile.dart';
 import '../../individual_profile_screen/individual_profile_screen_view.dart';
-import '../../join_party_details/view/join_party_details.dart';
 import '../../widgets/party_card.dart';
 import 'nearby_people_profile.dart';
 
@@ -450,15 +448,17 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                         }
                                       } */
                                             if (individualDashboardController
-                                                .allCityList[index].name == 'Delhi' || individualDashboardController
-                                                .allCityList[index].name == 'Bengaluru'  ) {
+                                                .allCityList[index].name == 'Delhi'
+                                              //  || individualDashboardController.allCityList[index].name == 'Bengaluru'
+                                            )
+                                            {
                                               individualDashboardController
                                                       .individualProfileController
                                                       .activeCity
                                                       .value =
-                                                  individualDashboardController
+                                                await  individualDashboardController
                                                       .allCityList[index].name;
-                                              individualDashboardController
+                                             await individualDashboardController
                                                   .apiService
                                                   .updateActiveCity(
                                                       individualProfileController
@@ -469,11 +469,10 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                                           .activeCity
                                                           .value);
                                               await _handleRefresh();
-                                              Get.snackbar('${individualDashboardController
-                                                  .allCityList[index].name}',
-                                                  'You selected ${individualDashboardController
-                                                      .allCityList[index].name}');
-                                            } else {
+                                              Fluttertoast.showToast(msg: 'You selected ${individualDashboardController
+                                                  .allCityList[index].name}');
+                                            }
+                                            else {
                                               Get.snackbar(
                                                   'Sorry!', 'Coming Soon');
                                             }

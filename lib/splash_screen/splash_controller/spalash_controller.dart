@@ -48,17 +48,17 @@ class SplashController extends GetxController {
   @override
   void onInit() async {
 
-    initDynamicLinks();
-    receiveUrl();
-    receiveUrlWhenAppClosed();
-    debugPrint('Splash init Link value is: $link');
-    staticBottomIndex = 0;
+init();
+    //receiveUrl();
+    //receiveUrlWhenAppClosed();
+
+   // staticBottomIndex = 0;
  //   var controller = Get.put(MainController());
    // if (controller.comingFromNotification != true && link == null) {
-      if (link == null) {
+
       // callMethod();
-      _navigateToNextScreen();
-    }
+
+
 
     // await getPermission([
     //   Permission.microphone,
@@ -71,7 +71,11 @@ class SplashController extends GetxController {
     super.onInit();
   }
 
-  init() {}
+  init() async {
+    await initDynamicLinks();
+    debugPrint('Splash init Link value is: $link');
+   await _navigateToNextScreen();
+  }
 
   receiveUrl() {
     staticBottomIndex = 0;
@@ -119,13 +123,15 @@ class SplashController extends GetxController {
           '${dynamicLinkData.link.query}  '
           '${dynamicLinkData.link.queryParametersAll}  ');
 
+     updateLink(dynamicLinkData.link.toString());
+
       FirebaseDynamicLinkUtils.handleDynamicLink(dynamicLinkData.link.toString());
     }).onError((error) {
       log("error is ${error?.message?.toString()}");
     });
   }
 
-  _navigateToNextScreen() => Timer(Duration(seconds: 5), () async {
+  _navigateToNextScreen() async {
     String data = await GetStorage().read("loggedIn") ??'';
     if (data != null) {
       await hitCheckApi();
@@ -137,7 +143,7 @@ class SplashController extends GetxController {
             : const LoginScreen());
       });
     }
-  });
+  }
 
   hitCheckApi() async {
     print("Splash hitCheckApi");

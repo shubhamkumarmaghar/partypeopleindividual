@@ -16,6 +16,8 @@ import 'package:partypeopleindividual/splash_screen/view/splash_screen.dart';
 import 'package:sizer/sizer.dart';
 import 'constants.dart';
 import 'myhttp_overrides.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -50,7 +52,7 @@ void main() async {
   await FirebaseDynamicLinks.instance.getInitialLink();
 
   log('deeplink from initialLink :: ${initialLink?.link}');
-  Get.put(SplashController());
+//  Get.put(SplashController()).initDynamicLinks();
 
   analytics = await FirebaseAnalytics.instance;
   FirebaseAnalyticsObserver observer =
@@ -91,7 +93,21 @@ void main() async {
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  //Assign publishable key to flutter_stripe
 
+  // for test mode
+ // Stripe.publishableKey = "pk_test_51M4TemSDWijp4rP3J0fs5nPBtDxnWq5CE6uPOriDJmEraO9DoRXludYdyqZFFiTth3pIGO5GQdW4819FCtaZ3T0300xgGghZOz";
+
+  // for production
+  Stripe.publishableKey = "pk_live_51M4TemSDWijp4rP3mtTpPwsdZTwZdfDlqd4qFUtyOQRbHKNdPfy1UdNksgTjkpBazL1dOkIM5d4m09CaHPrmoXSY00i87UkW20";
+  //Load our .env file that contains our Stripe Secret key
+
+  // for test mode we have to paste this key in .env file
+  //sk_test_51M4TemSDWijp4rP3FGIbVrzLJ0O3jjwDbyPUbVuEyttYqSGDVLwAVPzzUYn0NmnX0AN4VdWjiAWgulTnYlK9uACQ00CB0ugEeU
+
+  // for live secret key
+  //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
+  await dotenv.load(fileName: "assets/.env");
   runApp(MyApp());
 }
 

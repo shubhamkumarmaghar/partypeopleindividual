@@ -106,6 +106,13 @@ class _IndividualDrawerViewState extends State<IndividualDrawerView> {
                       }
                     },
                   ),
+              /*    CustomOptionWidget(
+                    title: 'Subscription Plan',
+                    icon: CupertinoIcons.list_bullet_below_rectangle,
+                    onTap: () {
+                      Get.to(SubscriptionView(subText: 'Get complete access of Application',iconText: 'https://assets-v2.lottiefiles.com/a/dade640a-118b-11ee-bbfd-2b667fe34e14/wdWPPO8OuG.json',));
+                    },
+                  ),*/
                   CustomOptionWidget(
                     title: 'Blocked/Reported',
                     icon: Icons.block,
