@@ -62,7 +62,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
       body: GetBuilder<PartyPreviewScreenController>(
         init:PartyPreviewScreenController() ,
         builder: (controller) {
-          getSingleParty = controller.party;
+           var getSingleParty = controller.party;
           return controller.isLoading.value == false ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: ListView(

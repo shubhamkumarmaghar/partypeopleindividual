@@ -175,8 +175,8 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                         items: [
                           GestureDetector(
                             onTap: () async {
-                              // String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData[0].id);
-                              if ('1' == '1')
+                               String value = await controller.subscriptionPurchase(subsId: controller.subscriptionModel.subsData[0].id);
+                              if (value == '1')
                                 selectPlanBottom(
                                     context: context,
                                     name: controller
@@ -702,7 +702,7 @@ You can parse it accordingly to handle response */
                                 ),
                                 Image.asset(
                                   'assets/images/easebuzz.png',
-                                  width: 80,
+                                  width: 90,
                                   height: 55,
                                 ),
                               ],
@@ -805,7 +805,7 @@ You can parse it accordingly to handle response */
                               children: [
 
                                 Text(
-                                  'Continue with Credit/Debit Card ',
+                                  'Continue with Credit/Debit Card  ',
                                   maxLines: 2,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -814,9 +814,9 @@ You can parse it accordingly to handle response */
                                       fontSize: 20),
                                 ),
                                 Image.asset(
-                                  'assets/images/stripe.png',
-                                  width: 25,
-                                  height: 25,
+                                  'assets/images/stripe_new.png',
+                                  width: 90,
+                                  height: 55,
                                 ),
                               ],
                             ),
