@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,8 @@ import 'package:partypeopleindividual/splash_screen/splash_controller/spalash_co
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../centralize_api.dart';
+import '../../individualDashboard/views/individual_dashboard_view.dart';
+import '../../login/views/login_screen.dart';
 import '../get_version_model.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,7 +23,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  SplashController splashController = Get.find();
+  SplashController splashController = Get.put(SplashController());
   GetVersion? getVersionData;
   @override
   void initState() {
@@ -39,12 +42,13 @@ class _SplashScreenState extends State<SplashScreen> {
   runApp() async {
     await _initPackageInfo();
     await Future( () => updaterApp());
-  /* await Future.delayed(const Duration(seconds: 3)).then((value) {
+
+   await Future.delayed(const Duration(seconds: 3)).then((value) {
       //Get.offAll(const LoginScreen());
       Get.offAll( GetStorage().read('loggedIn') == '1'
           ? const IndividualDashboardView()
           : const LoginScreen());
-    });*/
+    });
   }
 
   @override

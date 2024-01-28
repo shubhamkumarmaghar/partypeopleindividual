@@ -1,12 +1,16 @@
 import 'dart:developer';
 
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/splash_screen/view/splash_screen.dart';
+import 'package:partypeopleindividual/widgets/payment_response_view.dart';
 
+import 'individualDashboard/views/individual_dashboard_view.dart';
 import 'individual_party_preview/party_preview_screen_new.dart';
+import 'login/views/login_screen.dart';
 
 
 class FirebaseDynamicLinkPostType {
@@ -43,23 +47,18 @@ class FirebaseDynamicLinkUtils {
 
   static handleDynamicLink(String link) {
     GetStorage storage = GetStorage();
-    log("party post open  $link");
+    log("handle party post open : $link");
     if (storage.read('loggedIn') != null && GetStorage().read('loggedIn') == '1' ) {
       if (link.endsWith(FirebaseDynamicLinkPostType.PARTY)) {
-        log("party post open ");
+        log("handle party post open ");
         var data = link.split("/");
         String? id = data[3];
 
         log('id::::  $id  $data');
-        Get.to(PartyPreviewScreen(
+        Get.to(PartyPreviewScreen(id: id,
           //  party: widget.party
         ),arguments:id );
         //  Get.to(ImagePostDetailScreen(postId: int.parse(id)), arguments: int.parse(id));
-      }
-      if (link.endsWith(FirebaseDynamicLinkPostType.IMAGE_POST)) {
-        print("image post opened ");
-        String? id = link.replaceAll("/${FirebaseDynamicLinkPostType.IMAGE_POST}", "").replaceAll("/", "");
-      //  Get.to(ImagePostDetailScreen(postId: int.parse(id)), arguments: int.parse(id));
       }
       else if (link.endsWith(FirebaseDynamicLinkPostType.VIDEO_POST)) {
         print("video post opened ");
@@ -75,6 +74,7 @@ class FirebaseDynamicLinkUtils {
           print(("${e.toString()}"));
         }
       } else {
+        Get.offAll(const SplashScreen());
      //   Get.to(() => BottomNavigationScreen());
       }
     } else {
@@ -84,12 +84,19 @@ class FirebaseDynamicLinkUtils {
 
   static getDynamicLinkPage(String link) {
     GetStorage storage = GetStorage();
-    if (storage.read("loggedIn") != null) {
-      if (link.endsWith(FirebaseDynamicLinkPostType.IMAGE_POST)) {
-        print("image post opened ");
-        String? id = link.replaceAll("/${FirebaseDynamicLinkPostType.IMAGE_POST}", "").replaceAll("/", "");
-       // return ImagePostDetailScreen(postId: int.parse(id));
-        return SplashScreen();
+    log("get party post open : $link");
+    if (storage.read('loggedIn') != null && GetStorage().read('loggedIn') == '1' ) {
+      if (link.endsWith(FirebaseDynamicLinkPostType.PARTY)) {
+        log("get party post open ");
+        var data = link.split("/");
+        String? id = data[3];
+
+        log('id:::: from kill  $id  $data');
+       /* Get.to(PartyPreviewScreen(id: id,
+          //  party: widget.party
+        ),arguments:id );*/
+       return PartyPreviewScreen(id: id);
+        //  Get.to(ImagePostDetailScreen(postId: int.parse(id)), arguments: int.parse(id));
       } else if (link.endsWith(FirebaseDynamicLinkPostType.VIDEO_POST)) {
         print("video post opened ");
         String? id = link.replaceAll("/${FirebaseDynamicLinkPostType.VIDEO_POST}", "").replaceAll("/", "");

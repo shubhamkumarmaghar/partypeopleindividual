@@ -5,14 +5,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/firebase_custom_event.dart';
 import 'package:partypeopleindividual/individualDashboard/bindings/individual_dashboard_binding.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:partypeopleindividual/splash_screen/splash_controller/spalash_controller.dart';
-import 'package:partypeopleindividual/splash_screen/view/splash_screen.dart';
+import 'package:partypeopleindividual/setting_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'constants.dart';
 import 'myhttp_overrides.dart';
@@ -50,9 +50,16 @@ void main() async {
   await Firebase.initializeApp();
   final PendingDynamicLinkData? initialLink =
   await FirebaseDynamicLinks.instance.getInitialLink();
+//await FirebaseDynamicLinkUtils.handleDynamicLink('${initialLink?.link}');
+  //Fluttertoast.showToast(msg:'deeplink from initialLink :: ${initialLink?.link}' );
 
   log('deeplink from initialLink :: ${initialLink?.link}');
-//  Get.put(SplashController()).initDynamicLinks();
+  /*if(initialLink?.link != null){
+  FirebaseDynamicLinkPostType.link ='${initialLink?.link}';
+  Fluttertoast.showToast(msg:'deeplink from firebase:: ${initialLink?.link}' );
+  }*/
+  //FirebaseDynamicLinkUtils.handleDynamicLink(initialLink?.link.toString() ??'');
+// Get.put(SplashController()).initDynamicLinks();
 
   analytics = await FirebaseAnalytics.instance;
   FirebaseAnalyticsObserver observer =
@@ -108,21 +115,25 @@ void main() async {
   // for live secret key
   //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
   await dotenv.load(fileName: "assets/.env");
-  runApp(MyApp());
+  runApp(MyApp(initialLink: initialLink,));
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({super.key});
+  MyApp({super.key,this.initialLink});
 
+  PendingDynamicLinkData? initialLink;
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  SplashController splashController = Get.put(SplashController());
+  SettingController settingController = Get.put(SettingController());
 
   @override
   void initState() {
+    log('linkkk in klill : ${widget.initialLink?.link}');
+    settingController.link ='${widget.initialLink?.link}';
+   // FirebaseDynamicLinkPostType.link ='${widget.initialLink?.link}';
     // TODO: implement initState
     super.initState();
   }
@@ -153,10 +164,10 @@ class _MyAppState extends State<MyApp> {
             bodyMedium: TextStyle(
               fontFamily: 'Poppins',
             ),
-            // Add more text styles as needed
           ),
         ),
-        home: SplashScreen(),
+       // home: SplashScreen(),
+        home: settingController.getPage(),
         //IndividualDashboardView(),
       );
     });

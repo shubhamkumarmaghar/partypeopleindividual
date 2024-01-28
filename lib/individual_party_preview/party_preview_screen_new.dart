@@ -29,9 +29,10 @@ import '../party_organization_details_view/view/organization_detalis_view.dart';
 class PartyPreviewScreen extends StatefulWidget {
   // ignore: prefer_typing_uninitialized_variables
  // final Party party;
+  String id;
 
-  const PartyPreviewScreen({super.key,
-  //  required this.party
+   PartyPreviewScreen({super.key,required this.id
+  // required this.party
   });
 
   @override
@@ -40,7 +41,6 @@ class PartyPreviewScreen extends StatefulWidget {
 
 class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
   IndividualDashboardController dashboardController = Get.find();
-
   int noOfPeople = 2;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String join = 'Book Now';
@@ -52,6 +52,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
   void initState() {
     _controllerBottomCenter =
         ConfettiController(duration: const Duration(seconds: 10));
+    //controller.getdata();
     super.initState();
   }
 
@@ -59,11 +60,13 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: GetBuilder<PartyPreviewScreenController>(
-        init:PartyPreviewScreenController() ,
-        builder: (controller) {
-           var getSingleParty = controller.party;
-          return controller.isLoading.value == false ? Padding(
+      body:
+      GetBuilder<PartyPreviewScreenController>(
+        init:PartyPreviewScreenController(widget.id) ,
+       builder: (controller) {
+          var getSingleParty = controller.party;
+          return
+        controller.isLoading.value == false ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: ListView(
               shrinkWrap: true,
@@ -787,8 +790,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
               ],
             ),
           ):loder();
-        }
-      ),
+      }
+     ),
       bottomSheet: Container(
         height: 1,
         width: Get.width,

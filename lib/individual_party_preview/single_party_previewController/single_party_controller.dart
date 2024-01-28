@@ -11,11 +11,16 @@ import '../../widgets/individual_amenities.dart';
 class PartyPreviewScreenController extends GetxController{
   Party? party;
   String? partyId;
+  String? partyIdDynamic;
   RxBool isLoading = true.obs;
   final List partyImages = [];
   List<Category> categories = [];
   final List<CategoryList> categoryLists = [];
   List selectedAmenities = [];
+
+
+  PartyPreviewScreenController(this.partyIdDynamic);
+
   @override
   void onInit(){
     getdata();
@@ -26,9 +31,16 @@ class PartyPreviewScreenController extends GetxController{
 
   void getdata()async{
       partyId = await Get.arguments ?? '0';
-    await getSingledata(partyID: '$partyId');
-      getpartyImages();
-      _fetchData();
+      if(partyId != '0' ) {
+        await getSingledata(partyID: '$partyId');
+        getpartyImages();
+        _fetchData();
+      }
+      if(partyIdDynamic != null){
+        await getSingledata(partyID: '$partyIdDynamic');
+        getpartyImages();
+        _fetchData();
+      }
    }
 
   Future<void> _fetchData() async {

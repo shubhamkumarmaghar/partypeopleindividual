@@ -12,6 +12,7 @@ import 'package:get_storage/get_storage.dart';
 import '../../firebase_dynamic_link.dart';
 import '../../individualDashboard/views/individual_dashboard_view.dart';
 import '../../login/views/login_screen.dart';
+import '../../setting_controller.dart';
 import '../view/splash_screen.dart';
 
 
@@ -19,8 +20,7 @@ var staticBottomIndex = 0;
 String dataLink = "";
 
 class SplashController extends GetxController {
-  var link;
-
+  SettingController settingController = Get.find();
   SplashController();
 
   AnimationController? animationController;
@@ -37,18 +37,13 @@ class SplashController extends GetxController {
     // debugPrint('Splash update Global variable page is: ${GlobalVariable().pageTo}');
   }
 
-  updateLink(var linkIS) {
-    link = linkIS;
-    debugPrint('Splash update Func Link value is: $link ( $linkIS )');
-    update();
-  }
 
   bool isdarkMode = false;
 
   @override
   void onInit() async {
 
-init();
+//init();
     //receiveUrl();
     //receiveUrlWhenAppClosed();
 
@@ -72,9 +67,9 @@ init();
   }
 
   init() async {
-    await initDynamicLinks();
-    debugPrint('Splash init Link value is: $link');
-   await _navigateToNextScreen();
+
+    await settingController.initDynamicLinks();
+     await settingController.navigateToNextScreen();
   }
 
   receiveUrl() {
@@ -112,54 +107,9 @@ init();
     // });
   }
 
-  Future<void> initDynamicLinks() async {
-    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-      log('deeplink from listen::::::: ${dynamicLinkData.link} ,'
-          'user info:: ${dynamicLinkData.link.userInfo}'
-          '${dynamicLinkData.link.path} , '
-          '${dynamicLinkData.link.authority}    ,'
-          ' ${dynamicLinkData.link.data} '
-          '${dynamicLinkData.link.origin},'
-          '${dynamicLinkData.link.query}  '
-          '${dynamicLinkData.link.queryParametersAll}  ');
 
-     updateLink(dynamicLinkData.link.toString());
 
-      FirebaseDynamicLinkUtils.handleDynamicLink(dynamicLinkData.link.toString());
-    }).onError((error) {
-      log("error is ${error?.message?.toString()}");
-    });
-  }
 
-  _navigateToNextScreen() async {
-    String data = await GetStorage().read("loggedIn") ??'';
-    if (data != null) {
-      await hitCheckApi();
-    } else {
-      await Future.delayed(const Duration(seconds: 3)).then((value) {
-        //Get.offAll(const LoginScreen());
-        Get.offAll( GetStorage().read('loggedIn') == '1'
-            ? const IndividualDashboardView()
-            : const LoginScreen());
-      });
-    }
-  }
-
-  hitCheckApi() async {
-    print("Splash hitCheckApi");
-    debugPrint('Splash Navigate Link value is: $link');
-    if (link != null) {
-      FirebaseDynamicLinkUtils.handleDynamicLink(link.link.path.toString());
-    } else {
-      await Future.delayed(const Duration(seconds: 3)).then((value) {
-        //Get.offAll(const LoginScreen());
-        Get.offAll( GetStorage().read('loggedIn') == '1'
-            ? const IndividualDashboardView()
-            : const LoginScreen());
-      });
-    }
-    update();
-  }
 /*
   Future<void> getPermission(List<Permission> permissionType) async {
     if (await Permission.camera.request().isDenied) {
