@@ -4,7 +4,7 @@ class API {
 
   static const String developmentUrl = 'https://65.2.59.129/app/v1';
 
-  static const String baseUrl = productionUrlString;
+  static const String baseUrl = developmentUrl;
 
   static const String login = '$baseUrl/account/login';
 

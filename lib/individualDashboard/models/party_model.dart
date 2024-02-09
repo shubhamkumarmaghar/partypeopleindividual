@@ -48,6 +48,7 @@ class Party {
   final int ongoingStatus;
   final int likeStatus;
   final String pincode;
+  final String address;
   final dynamic sharePartyUrl;
   String? imageB;
   String? imageC;
@@ -114,7 +115,8 @@ class Party {
     this.discountDescription,
     this.discountAmount,
     this.billMaxAmount,
-    this.discountType
+    this.discountType,
+    required this.address,
   });
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -173,6 +175,7 @@ class Party {
     data['discount_amount'] = this.discountAmount;
     data['bill_amount'] = this.billMaxAmount;
     data['discount_description'] = this.discountDescription;
+    data['address'] = this.address;
 
     if (this.partyAmenities != null) {
       data['party_amenitie'] =
@@ -188,6 +191,7 @@ class Party {
         partyAmenitieFromJson.map((i) => PartyAmenitie.fromJson(i)).toList();
 
     return Party(
+      address: json['address']??'',
       id: json['id'] ?? '',
       userId: json['user_id'] ?? '',
       userType: json['user_type'] ?? '',

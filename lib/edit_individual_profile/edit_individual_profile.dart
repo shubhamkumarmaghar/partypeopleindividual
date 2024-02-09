@@ -32,6 +32,7 @@ import '../../widgets/gender_dropdown_selecter.dart';
 import '../centralize_api.dart';
 import '../widgets/active_city_select.dart';
 import '../widgets/custom_textview_profile.dart';
+import '../widgets/marital_status_dropdown_selecter.dart';
 import 'add_profile_images.dart';
 
 class EditIndividualProfile extends StatefulWidget {
@@ -539,6 +540,8 @@ class _EditIndividualProfileState extends State<EditIndividualProfile> {
                                 ),
                               ],
                             ),
+                           MatrialStatus(),
+
                             Row(
                               children: const [
                                 Expanded(

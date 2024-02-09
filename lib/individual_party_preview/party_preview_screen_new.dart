@@ -7,24 +7,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:partypeopleindividual/individual_party_preview/single_party_previewController/single_party_controller.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:sizer/sizer.dart';
 import 'package:confetti/confetti.dart';
-import 'package:shimmer/shimmer.dart';
 import '../api_helper_service.dart';
-import '../centralize_api.dart';
 import '../firebase_custom_event.dart';
 import '../individualDashboard/controllers/individual_dashboard_controller.dart';
 import '../individualDashboard/models/party_model.dart';
 import '../join_party_details/view/join_party_details.dart';
 import '../party_organization_details_view/view/organization_detalis_view.dart';
-
+import '../widgets/open_map.dart';
 
 class PartyPreviewScreen extends StatefulWidget {
   // ignore: prefer_typing_uninitialized_variables
@@ -239,130 +236,6 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                   ],
                 ),
 
-                /* Stack(children: [
-                      if (controller.party?.imageStatus == '1')
-                        Card(elevation: 5,
-                        margin: EdgeInsets.only(bottom: 25),
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.circular(15.0),),
-                        child:  Container(
-                        //backgroundColor: Colors.grey.shade100,
-                        height: Get.height*0.295,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          image:DecorationImage( image: NetworkImage(controller.party?.coverPhoto),fit: BoxFit.cover ),
-                        ),
-                        width: Get.width,
-                        /* child: Image.network(
-                          controller.party?.coverPhoto,
-                          width: Get.width,
-                          height: 250,
-                          fit: BoxFit.cover,
-                          errorBuilder: (BuildContext context, Object exception,
-                              StackTrace? stackTrace) {
-                            return const Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.black,
-                              ),
-                            );
-                          },
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            }
-                            return const Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.black,
-                              ),
-                            );
-                          },
-                        ), */
-                        ),
-                    ) else Card(elevation: 5,
-                          margin: EdgeInsets.only(bottom: 25),
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.circular(15.0),),
-                      child: Container(
-                        padding: EdgeInsets.zero,
-                        height: Get.height*0.295,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          image:DecorationImage( image: NetworkImage(controller.party?.coverPhoto),fit: BoxFit.cover ),
-                        ),
-                        width: Get.width,
-                        /* child: Image.network(
-                        controller.party?.coverPhoto,
-                        width: Get.width,
-                        height: 250,
-                        fit: BoxFit.fill,
-                        errorBuilder: (BuildContext context, Object exception,
-                            StackTrace? stackTrace) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.black,
-                            ),
-                          );
-                        },
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.black,
-                            ),
-                          );
-                        },
-                    ),
-                          */
-                      ),
-                        ),
-
-                      Positioned(
-                          top: Get.height*0.27,
-                          right: Get.width*0.06,
-                          child: GestureDetector(onTap: () async {
-
-                            var data = await APIService.ongoingParty(controller.party?.id);
-                            if(data ==true)
-                              {
-                                setState(() {
-
-                                });
-                                join='Joined';
-                                _controllerBottomCenter.play();
-                              }
-                            //ongoingParty(controller.party?.id);
-
-                          },
-                            child: Container(
-                              width: Get.width*0.2,
-                              height: Get.height*0.04,
-                              padding: EdgeInsets.all(5),
-                              decoration:
-                              BoxDecoration(borderRadius: BorderRadius.circular(12),
-                                color: Colors.orange,),
-                              child:  FittedBox(
-                                child: Row(mainAxisAlignment: MainAxisAlignment.center
-                                    ,children: [
-                                      Icon(CupertinoIcons.add_circled,color: Colors.white),
-                                      SizedBox(width: Get.width*0.003,),
-                                      controller.party?.ongoingStatus == 0 ?
-                                      Text(join,style: TextStyle(color: Colors.white,
-                                          fontSize: 16),) : Text("Joined",style: TextStyle(color: Colors.white,
-                                          fontSize: 16),)
-                                    ]
-                                ),
-                              ),
-                            ),
-                          )),
-
-
-                    ],),*/
                 const SizedBox(
                   height: 10,
                 ),
@@ -377,6 +250,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                       icon: CupertinoIcons.person_3,
                       IconText: "${controller.party?.ongoing} Going"),
                 ]),
+
                 const SizedBox(
                   height: 25,
                 ),
@@ -482,11 +356,21 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                       "${controller.party?.startTime}  to  ${controller.party?.endTime}",
                   sub: true,
                 ),
-                CustomListTile(
-                  icon: Icons.location_on,
-                  title: "${controller.party?.latitude} ",
-                  subtitle: "${controller.party?.longitude} , ${controller.party?.pincode}",
-                  sub: true,
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomListTile(
+                      icon: Icons.location_on,
+                      title: "Address ",
+                      subtitle: "${controller.party?.address} , ${controller.party?.pincode}",
+                      sub: true,
+                    ),
+                    GestureDetector(onTap: (){
+                      UrlLauncher.launchUrl(MapLauncher.createCoordinatesUri(double.parse('${controller.party?.latitude}'), double.parse('${controller.party?.longitude}')));
+                      //
+                    }
+                    ,child: Icon(Icons.location_on,color: Colors.red.shade900,)),
+                   // UrlLauncher.launch(),
+                  ],
                 ),
                 /*   CustomListTile(
                     icon: Icons.favorite,
@@ -519,29 +403,48 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                       .capitalizeFirst!}',
                   sub: false,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    UrlLauncher.launch("tel://${controller.party?.phoneNumber}");
-                  },
-                  child: CustomListTile(
-                    icon: Icons.phone,
-                    title: "Call Us",
-                    subtitle: '${controller.party?.phoneNumber}',
-                    sub: true,
+                Row(children: [
+                  Column(children: [GestureDetector(
+                    onTap: () {
+                      UrlLauncher.launchUrl(Uri.parse("tel://${controller.party?.phoneNumber}"));
+                    },
+                    child: CustomListTile(
+                      icon: Icons.phone,
+                      title: "Call Us",
+                      subtitle: '${controller.party?.phoneNumber}',
+                      sub: true,
+                    ),
                   ),
-                ),
-                CustomListTile(
-                  icon: Icons.group,
-                  title: "${controller.party?.startAge} to ${controller.party?.endAge}  age",
-                  subtitle: "${controller.party?.startAge} - ${controller.party?.endAge} ",
-                  sub: false,
-                ),
-                CustomListTile(
-                  icon: Icons.warning,
-                  title: "Maximum Guests",
-                  subtitle: '${controller.party?.personLimit}',
-                  sub: true,
-                ),
+                    CustomListTile(
+                      icon: Icons.group,
+                      title: "${controller.party?.startAge} to ${controller.party?.endAge}  age",
+                      subtitle: "${controller.party?.startAge} - ${controller.party?.endAge} ",
+                      sub: false,
+                    ),
+                    CustomListTile(
+                      icon: Icons.warning,
+                      title: "Maximum Guests",
+                      subtitle: '${controller.party?.personLimit}',
+                      sub: true,
+                    ),])
+                  ,CircularPercentIndicator(
+                    animation: true,
+                    animationDuration: 1000,
+                    radius: 50,
+                    lineWidth: 10,
+                    percent: 0.5,
+                    progressColor: Colors.red.shade900,
+                    backgroundColor: Colors.red.shade200,
+                    circularStrokeCap: CircularStrokeCap.round,
+                    center: Text('50 %',style: TextStyle(color: Colors.red.shade900,fontSize: 16.sp),),
+                    footer: Container(
+                      padding: EdgeInsets.only(top: 20),
+                        child: Text('Occupancy',style: TextStyle(color: Colors.black,fontSize: 14.sp),)),
+                    header: Container(
+                        padding: EdgeInsets.only(bottom: 20),
+                        child: Text('Seat',style: TextStyle(color: Colors.black,fontSize: 14.sp),)),
+                  ),
+                ]),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     controller.party?.discountType =='0' || controller.party?.discountAmount == '0'?CustomListTile(
@@ -709,6 +612,9 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                                 ),
                               ],
                             ),
+                          ),
+                          SizedBox(
+                            width: Get.width * 0.05,
                           ),
                         ],
                       )

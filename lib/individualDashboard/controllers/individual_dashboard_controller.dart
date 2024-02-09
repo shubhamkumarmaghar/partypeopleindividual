@@ -66,6 +66,7 @@ class IndividualDashboardController extends GetxController {
   RxInt lengthOfPopularParties = 0.obs;
   RxInt onlineStatus = 0.obs;
   RxString chatCount = ''.obs;
+  RxString messageCount = ''.obs;
   RxString notificationCount = ''.obs;
   RxString partyCity = ''.obs;
 
@@ -836,12 +837,14 @@ class IndividualDashboardController extends GetxController {
       );
       if (response.statusCode == 200) {
         var decode = jsonDecode(response.body);
+        log(' $decode');
         if (decode['status'] == 1) {
           try {
             onlineStatus.value = decode['status'];
             GetStorage().write('plan_plan_expiry', decode['plan_plan_expiry']);
             String approval_date = decode['approval_date'];
             chatCount.value = decode['chat_count'];
+            messageCount.value = decode['message_count'];
             notificationCount.value = decode['notification_count'] ?? '0';
             if (approval_date != '') {
               GetStorage()

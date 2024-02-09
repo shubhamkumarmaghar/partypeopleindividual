@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../../centralize_api.dart';
 import '../../login/views/login_screen.dart';
 
-class SettingController extends GetxController{
+class SettingDataController extends GetxController{
 
 void onInit(){
   super.onInit();

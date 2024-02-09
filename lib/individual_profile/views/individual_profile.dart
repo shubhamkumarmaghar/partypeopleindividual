@@ -25,6 +25,7 @@ import '../../centralize_api.dart';
 import '../../widgets/active_city_select.dart';
 import '../../widgets/dob_dropdown.dart';
 import '../../widgets/gender_dropdown_selecter.dart';
+import '../../widgets/marital_status_dropdown_selecter.dart';
 
 class IndividualProfile extends StatefulWidget {
   const IndividualProfile({Key? key}) : super(key: key);
@@ -318,6 +319,19 @@ class _IndividualProfileState extends State<IndividualProfile> {
                           ),
                         ],
                       ),
+                          /*  Expanded(
+                            child: CustomDateField(
+                              validate: true,
+                              hintText: 'Date of Birth',
+                              icon: Icons.calendar_today,
+                              controller:
+                                  individualProfileController.dobController,
+                            ),
+                          ),*/
+
+                             MatrialStatus(),
+
+
                   /*    Row(
                         children: const [
                           Expanded(

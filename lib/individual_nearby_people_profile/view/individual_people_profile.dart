@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,14 +5,18 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:neumorphic_ui/neumorphic_ui.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+
 import '../../api_helper_service.dart';
 import '../../chatScreen/views/chat_screen_view.dart';
 import '../../firebase_custom_event.dart';
+import '../../individualDashboard/controllers/individual_dashboard_controller.dart';
 import '../../individual_profile_screen/profilephotoview.dart';
+import '../../individual_subscription/view/subscription_view.dart';
 import '../../widgets/block_unblock.dart';
 import '../../widgets/calculate_age.dart';
 import '../../widgets/custom_images_slider.dart';
@@ -30,6 +33,7 @@ class IndividualPeopleProfile extends StatefulWidget {
 }
 
 class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
+  IndividualDashboardController individualDashboardController = Get.find();
   // PeopleProfileController peopleProfileController = Get.put(PeopleProfileController());
 
   @override
@@ -53,9 +57,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
       body: GetBuilder<PeopleProfileController>(
         init: PeopleProfileController(),
         builder: (controller) {
-
           var data = controller.peopleProfileData.data;
-
           final List<OrganizationAmenities>? amenties = data?.organizationAmenities;
           return data != null
               ? SingleChildScrollView(
@@ -217,9 +219,23 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    logCustomEvent(eventName: chatInitiateEvent, parameters: {'toUser':data.name ,});
-                                    Get.to(ChatScreenView(id: controller.userId.toString()),
-                                        arguments: controller.userId);
+                                    if(int.parse(individualDashboardController.messageCount.value) <= 2) {
+                                      logCustomEvent(
+                                          eventName: chatInitiateEvent,
+                                          parameters: {'toUser': data.name,});
+                                      Get.to(ChatScreenView(
+                                          id: controller.userId.toString()),
+                                          arguments: controller.userId);
+                                    }
+                                    else{
+                                      Fluttertoast.showToast(msg: 'You have reached maximum limit ');
+                                      Get.to(SubscriptionView(
+                                        subText: 'Get Subscription & get Unlimited chats and explore party mates . ',
+                                        iconText:
+                                        'https://assets-v2.lottiefiles.com/a/5e232bde-1182-11ee-b778-8f3af2eeaa9d/4xBFTBXlHa.json',
+                                      ));
+
+                                    }
                                     //?.then((value) => APIService.lastMessage(controller.userId, GetStorage().read('last_message')));
                                     // Get.to(peopleList());
                                   },
@@ -361,6 +377,12 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                     icon: Icons.people),
                               ),
                             ],
+                          ),
+                          Visibility(
+                            visible:data.maritalStatus?.isNotEmpty ?? false  ,
+                            child: CustomProfileTextView(
+                                text: data.maritalStatus ?? "NA",
+                                icon: Icons.people),
                           ),
                           Row(
                             children: [
@@ -584,11 +606,20 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                     ],
                   ),
                 ))
-              : Center(child: CircularProgressIndicator());
+              : loder();
         },
       ),
     );
   }
+
+  Widget loder()
+  {
+    return Center(
+        child: Container(
+          child: Lottie.network(
+              'https://assets-v2.lottiefiles.com/a/ebf552bc-1177-11ee-8524-57b09b2cd38d/PaP7jkQFk9.json'),
+        )); }
+
 
   Widget customImageSlider({required String partyPhotos, required String imageStatus})
   {
