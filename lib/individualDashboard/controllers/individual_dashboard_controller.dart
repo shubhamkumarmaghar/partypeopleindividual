@@ -497,6 +497,7 @@ class IndividualDashboardController extends GetxController {
        lengthOfTodayParties.value = decodedData['total_recrods'];
 
         ///setting number of party
+        ///
         jsonPartyOrganisationDataToday.addAll(todayParties);
         if (!isloading) {
           refreshTodayController.refreshCompleted();
