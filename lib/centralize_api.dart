@@ -4,7 +4,7 @@ class API {
 
   static const String developmentUrl = 'https://65.2.59.129/app/v1';
 
-  static const String baseUrl = developmentUrl;
+  static const String baseUrl = productionUrlString;
 
   static const String login = '$baseUrl/account/login';
 
@@ -89,6 +89,8 @@ class API {
   static const String userSubscriptionPurchase = '$baseUrl/subscription/user_subscriptions_purchase';
 
   static const String updateSubscriptionStatus = '$baseUrl/subscription/user_subscription_plan_status_update';
+
+  static const String updateSubscriptionStatusWithStripe = '$baseUrl/subscription/user_subscription_plan_status_update_strip';
 
   static const String getAllNotification = '$baseUrl/notification/get_all_notification';
 

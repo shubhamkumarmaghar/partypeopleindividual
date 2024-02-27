@@ -61,7 +61,8 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
       GetBuilder<PartyPreviewScreenController>(
         init:PartyPreviewScreenController(widget.id) ,
        builder: (controller) {
-          var getSingleParty = controller.party;
+          var getSinglePartydata = controller.party;
+          getSingleParty = getSinglePartydata;
           return
         controller.isLoading.value == false ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
@@ -361,7 +362,7 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                     CustomListTile(
                       icon: Icons.location_on,
                       title: "Address ",
-                      subtitle: "${controller.party?.address} , ${controller.party?.pincode}",
+                      subtitle: "${controller.party?.address} ,${controller.party?.city}-${controller.party?.state}-${controller.party?.country} ${controller.party?.pincode}",
                       sub: true,
                     ),
                     GestureDetector(onTap: (){
@@ -403,8 +404,10 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                       .capitalizeFirst!}',
                   sub: false,
                 ),
-                Row(children: [
-                  Column(children: [GestureDetector(
+                Row(mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                  Column(children: [
+                    GestureDetector(
                     onTap: () {
                       UrlLauncher.launchUrl(Uri.parse("tel://${controller.party?.phoneNumber}"));
                     },
@@ -427,23 +430,29 @@ class _PartyPreviewScreenState extends State<PartyPreviewScreen> {
                       subtitle: '${controller.party?.personLimit}',
                       sub: true,
                     ),])
-                  ,CircularPercentIndicator(
+                  ,
+
+                  controller.party?.seat_occupancy != null && controller.party?.seat_occupancy != '0' ?
+                  Container(
+                        width: Get.width*0.25,
+                    child: FittedBox(
+                      child:CircularPercentIndicator(
                     animation: true,
                     animationDuration: 1000,
                     radius: 50,
                     lineWidth: 10,
-                    percent: 0.5,
+                    percent: double.parse('${controller.party?.seat_occupancy}')/100,
                     progressColor: Colors.red.shade900,
                     backgroundColor: Colors.red.shade200,
                     circularStrokeCap: CircularStrokeCap.round,
-                    center: Text('50 %',style: TextStyle(color: Colors.red.shade900,fontSize: 16.sp),),
+                    center: Text('${controller.party?.seat_occupancy} %',style: TextStyle(color: Colors.red.shade900,fontSize: 16.sp),),
                     footer: Container(
-                      padding: EdgeInsets.only(top: 20),
+                      padding: EdgeInsets.only(top: 10),
                         child: Text('Occupancy',style: TextStyle(color: Colors.black,fontSize: 14.sp),)),
                     header: Container(
-                        padding: EdgeInsets.only(bottom: 20),
+                        padding: EdgeInsets.only(bottom: 10),
                         child: Text('Seat',style: TextStyle(color: Colors.black,fontSize: 14.sp),)),
-                  ),
+                  ),),):Container(),
                 ]),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

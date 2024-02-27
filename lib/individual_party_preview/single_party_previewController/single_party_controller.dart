@@ -109,7 +109,7 @@ class PartyPreviewScreenController extends GetxController{
           headers: {'x-access-token': GetStorage().read('token')
           });
       dynamic decodedData = jsonDecode(response.body);
-      print("single party data $decodedData");
+      log("single party data $decodedData");
       if(decodedData['status']==1 && decodedData['message']=='Party Data Found.' ){
       party = Party.fromJson(decodedData['data'][0]);
       isLoading.value=false;

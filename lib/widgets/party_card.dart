@@ -280,7 +280,8 @@ class _PartyCardState extends State<PartyCard>
                                             child: Text(
                                               widget
                                                   .party.title.capitalizeFirst!,
-                                              maxLines: 2,
+                                              maxLines: 1,
+
                                               style: TextStyle(
                                                 overflow: TextOverflow.ellipsis,
                                                 fontFamily: 'Poppins',

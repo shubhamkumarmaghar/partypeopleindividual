@@ -733,7 +733,7 @@ class IndividualDashboardController extends GetxController {
       // Fetch all parties
       /// status': '1' current date parties
       /// status': '2' tomarrow date parties
-      /// status': '3' tomarrow date parties
+      /// status': '3' upcoming date parties
       ///
       /// 'filter_type': '2' == regular parties
       /// 'filter_type': '1' == popular parties
@@ -838,7 +838,7 @@ class IndividualDashboardController extends GetxController {
       );
       if (response.statusCode == 200) {
         var decode = jsonDecode(response.body);
-        log(' $decode');
+        //log(' $decode');
         if (decode['status'] == 1) {
           try {
             onlineStatus.value = decode['status'];

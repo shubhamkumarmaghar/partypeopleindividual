@@ -32,7 +32,7 @@ class _ChatScreenViewState extends State<ChatScreenView> {
   String approvalStatus = GetStorage().read('approval_status') ?? '0';
   String newUser = GetStorage().read('newUser') ?? '0';
   String plan_expire = GetStorage().read('plan_plan_expiry') ?? 'Yes';
-  String gender = GetStorage().read('myGender')??'Male';
+  String gender = GetStorage().read('myGender') ?? 'Male';
 
   //for handling message text changes
   final _textController = TextEditingController();
@@ -42,11 +42,14 @@ class _ChatScreenViewState extends State<ChatScreenView> {
   bool _showEmoji = false, _isUploading = false;
   bool me = false;
   String indiUsername = '';
-void getChatUserData() async{
-  await chatScreenController.getChatUserData(id: widget.id.toString());
-  chatCount = int.parse(chatScreenController.getUserModel?.data?.messageCount ??'0');
-  log('conuttt ${chatScreenController.getUserModel?.data?.messageCount}');
-}
+
+  void getChatUserData() async {
+    await chatScreenController.getChatUserData(id: widget.id.toString());
+    chatCount =
+        int.parse(chatScreenController.getUserModel?.data?.messageCount ?? '0');
+    log('conuttt ${chatScreenController.getUserModel?.data?.messageCount}');
+  }
+
   @override
   void initState() {
     getChatUserData();
@@ -110,8 +113,11 @@ void getChatUserData() async{
                             onTap: () {
                               Get.to(ProfilePhotoView(
                                 profileUrl: controller
-                                        .getUserModel?.data?.profilePicture ??''
-                                    , approvalStatus:controller.getUserModel?.data?.profilePicApprovalStatus??'' ,
+                                        .getUserModel?.data?.profilePicture ??
+                                    '',
+                                approvalStatus: controller.getUserModel?.data
+                                        ?.profilePicApprovalStatus ??
+                                    '',
                               ));
                             },
                             child: Container(
@@ -127,44 +133,53 @@ void getChatUserData() async{
                               ),
                               child: Padding(
                                 padding: EdgeInsets.all(Get.width * 0.006),
-                                child:
-                                ClipRRect(
-                                  borderRadius: BorderRadius.all(Radius.circular(50)),
-                                  child: controller.getUserModel?.data?.profilePicApprovalStatus != '1' ?
-                                  Blur(blur: 2.5,
-                                    child:
-                                    CachedNetworkImage(
-                                      placeholder: (context, url) => Shimmer.fromColors(
-                                        baseColor: Colors.grey.shade200,
-                                        highlightColor: Colors.grey.shade400,
-                                        period: const Duration(milliseconds: 1500),
-                                        child: Container(
-                                          height: Get.height * 0.35,
-                                          color: Color(0xff7AB02A),
+                                child: ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(50)),
+                                  child: controller.getUserModel?.data
+                                              ?.profilePicApprovalStatus !=
+                                          '1'
+                                      ? Blur(
+                                          blur: 2.5,
+                                          child: CachedNetworkImage(
+                                            placeholder: (context, url) =>
+                                                Shimmer.fromColors(
+                                              baseColor: Colors.grey.shade200,
+                                              highlightColor:
+                                                  Colors.grey.shade400,
+                                              period: const Duration(
+                                                  milliseconds: 1500),
+                                              child: Container(
+                                                height: Get.height * 0.35,
+                                                color: Color(0xff7AB02A),
+                                              ),
+                                            ),
+                                            imageUrl: controller.getUserModel
+                                                    ?.data?.profilePicture ??
+                                                '',
+                                            width: Get.width,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )
+                                      : CachedNetworkImage(
+                                          placeholder: (context, url) =>
+                                              Shimmer.fromColors(
+                                            baseColor: Colors.grey.shade200,
+                                            highlightColor:
+                                                Colors.grey.shade400,
+                                            period: const Duration(
+                                                milliseconds: 1500),
+                                            child: Container(
+                                              height: Get.height * 0.35,
+                                              color: Color(0xff7AB02A),
+                                            ),
+                                          ),
+                                          imageUrl: controller.getUserModel
+                                                  ?.data?.profilePicture ??
+                                              '',
+                                          width: Get.width,
+                                          fit: BoxFit.cover,
                                         ),
-                                      ),
-                                      imageUrl: controller
-                                          .getUserModel?.data?.profilePicture ??
-                                          '',
-                                      width: Get.width,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ): CachedNetworkImage(
-                                    placeholder: (context, url) => Shimmer.fromColors(
-                                      baseColor: Colors.grey.shade200,
-                                      highlightColor: Colors.grey.shade400,
-                                      period: const Duration(milliseconds: 1500),
-                                      child: Container(
-                                        height: Get.height * 0.35,
-                                        color: Color(0xff7AB02A),
-                                      ),
-                                    ),
-                                    imageUrl: controller
-                                        .getUserModel?.data?.profilePicture ??
-                                        '',
-                                    width: Get.width,
-                                    fit: BoxFit.cover,
-                                  ),
                                 ),
                               ),
                             ),
@@ -197,12 +212,15 @@ void getChatUserData() async{
                     SizedBox(
                       width: 13.sp,
                     ),
-                    GestureDetector(onTap: (){
-                      if(controller.getUserModel?.data?.fromBlockStatus !='1'){
-                      Get.to(IndividualPeopleProfile(),arguments:controller.getUserModel?.data?.id );}
-                      else{
-                        Get.snackbar('Sorry', 'You can not visit profile ');
-                      }
+                    GestureDetector(
+                      onTap: () {
+                        if (controller.getUserModel?.data?.fromBlockStatus !=
+                            '1') {
+                          Get.to(IndividualPeopleProfile(),
+                              arguments: controller.getUserModel?.data?.id);
+                        } else {
+                          Get.snackbar('Sorry', 'You can not visit profile ');
+                        }
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,18 +260,26 @@ void getChatUserData() async{
                         value: 1,
                         // row has two child icon and text.
                         child: GestureDetector(
-                          onTap: (){ Navigator.pop(context);
-                            Alertdialogs.showBlockedAlertDialog(context, '${controller.getUserModel?.data?.id}', 'Block');
+                          onTap: () {
+                            Navigator.pop(context);
+                            Alertdialogs.showBlockedAlertDialog(
+                                context,
+                                '${controller.getUserModel?.data?.id}',
+                                'Block');
                           },
-                          child: Container(color: Colors.white,
+                          child: Container(
+                            color: Colors.white,
                             child: Row(
                               children: [
-                                Icon(Icons.block,color: Colors.black),
+                                Icon(Icons.block, color: Colors.black),
                                 SizedBox(
                                   // sized box with width 10
                                   width: 10,
                                 ),
-                                Text("   Block   ",style: TextStyle(color: Colors.black),)
+                                Text(
+                                  "   Block   ",
+                                  style: TextStyle(color: Colors.black),
+                                )
                               ],
                             ),
                           ),
@@ -264,22 +290,31 @@ void getChatUserData() async{
                         value: 2,
                         // row has two child icon and text
                         child: GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             Navigator.pop(context);
-                            Alertdialogs.DeleteAllChatAlertDialog(context,(){  controller.deleteAllMessage('${controller.getUserModel?.data?.username}${controller.getUserModel?.data?.id}');
+                            Alertdialogs.DeleteAllChatAlertDialog(context, () {
+                              controller.deleteAllMessage(
+                                  '${controller.getUserModel?.data?.username}${controller.getUserModel?.data?.id}');
                             });
-                         // controller.deleteAllMessage('${controller.getUserModel?.data?.username}${controller.getUserModel?.data?.id}');
+                            // controller.deleteAllMessage('${controller.getUserModel?.data?.username}${controller.getUserModel?.data?.id}');
                           },
-                          child: Container(color:Colors.white,child:Row(
-                            children: [
-                              Icon(Icons.chrome_reader_mode,color: Colors.black,),
-                              SizedBox(
-                                // sized box with width 10
-                                width: 10,
-                              ),
-                              Text("   Delete All chat",style: TextStyle(color: Colors.black))
-                            ],
-                          ),),
+                          child: Container(
+                            color: Colors.white,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.chrome_reader_mode,
+                                  color: Colors.black,
+                                ),
+                                SizedBox(
+                                  // sized box with width 10
+                                  width: 10,
+                                ),
+                                Text("   Delete All chat",
+                                    style: TextStyle(color: Colors.black))
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -295,7 +330,7 @@ void getChatUserData() async{
                     color: Colors.white,
                     elevation: 5,
                   ),
-                /*  IconButton(
+                  /*  IconButton(
                     onPressed: () {
 
                     },
@@ -309,207 +344,245 @@ void getChatUserData() async{
                   ),
                 ),
               ),
-              body: Stack(children: [
-
-                Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+              body: Stack(
                 children: [
-                  Expanded(
-                    child: StreamBuilder(
-                        stream:
-                        controller.getAllMessages(controller.getUserModel),
-                        builder: (context, snapshot) {
-                          switch (snapshot.connectionState) {
-                          //if data is loading
-                            case ConnectionState.waiting:
-                            case ConnectionState.none:
-                              return const SizedBox();
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: StreamBuilder(
+                            stream: controller
+                                .getAllMessages(controller.getUserModel),
+                            builder: (context, snapshot) {
+                              switch (snapshot.connectionState) {
+                                //if data is loading
+                                case ConnectionState.waiting:
+                                case ConnectionState.none:
+                                  return const SizedBox();
 
-                          //if some or all data is loaded then show it
-                            case ConnectionState.active:
-                            case ConnectionState.done:
-                              final data = snapshot.data?.docs;
-                              listmessage = data
-                                  ?.map((e) => Message.fromJson(e.data()))
-                                  .toList() ??
-                                  [];
-                              if (listmessage.isNotEmpty) {
-                                return ListView.builder(
-                                    reverse: true,
-                                    itemCount: listmessage.length,
-                                    padding:
-                                    EdgeInsets.only(top: Get.height * .01),
-                                    physics: const BouncingScrollPhysics(),
-                                    itemBuilder: (context, index) {
-                                      if (listmessage[index].fromId ==
-                                          controller.myUsername+controller.myUserId) {
-                                        me = true;
-                                       // log('me ::::::::::: $me');
-                                      }
-                                      var data = listmessage[index];
-                                      //data.toId == controller.myUsername+controller.myUserId;
-                                      var time =
-                                          '${DateFormat('d MMMM y ,hh:mm').format(DateTime.fromMillisecondsSinceEpoch(int.parse(data.sent)))}';
-                                      return GestureDetector(
-                                        onLongPress:(){
-                                          FocusScope.of(context).requestFocus(FocusNode());
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return SimpleDialog(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.only(
-                                                    bottomLeft: Radius.circular(16.0),
-                                                    bottomRight: Radius.circular(16.0),
-                                                    topLeft: Radius.circular(16.0),
-                                                    topRight: Radius.circular(16.0),
-                                                  ),
-                                                ),
-                                                backgroundColor: Color(0xff7e160a),
-                                                elevation: 5,
-                                                // title:Center(child: const Text('Delete Message',style: TextStyle(color: Colors.black),)),
-                                                children: <Widget>[
-                                                  SimpleDialogOption(
-                                                    onPressed: () async{
-                                                      await controller.deleteMessage(listmessage[index]);
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child:Center(child: const Text('Delete',style: TextStyle(fontSize: 18))),
-                                                  ),
-                                                  /*  SimpleDialogOption(
+                                //if some or all data is loaded then show it
+                                case ConnectionState.active:
+                                case ConnectionState.done:
+                                  final data = snapshot.data?.docs;
+                                  listmessage = data
+                                          ?.map(
+                                              (e) => Message.fromJson(e.data()))
+                                          .toList() ??
+                                      [];
+                                  if (listmessage.isNotEmpty) {
+                                    return ListView.builder(
+                                        reverse: true,
+                                        itemCount: listmessage.length,
+                                        padding: EdgeInsets.only(
+                                            top: Get.height * .01),
+                                        physics: const BouncingScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          if (listmessage[index].fromId ==
+                                              controller.myUsername +
+                                                  controller.myUserId) {
+                                            me = true;
+                                            // log('me ::::::::::: $me');
+                                          }
+                                          var data = listmessage[index];
+                                          //data.toId == controller.myUsername+controller.myUserId;
+                                          var time =
+                                              '${DateFormat('d MMMM y ,hh:mm').format(DateTime.fromMillisecondsSinceEpoch(int.parse(data.sent)))}';
+                                          return GestureDetector(
+                                            onLongPress: () {
+                                              FocusScope.of(context)
+                                                  .requestFocus(FocusNode());
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return SimpleDialog(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                        bottomLeft:
+                                                            Radius.circular(
+                                                                16.0),
+                                                        bottomRight:
+                                                            Radius.circular(
+                                                                16.0),
+                                                        topLeft:
+                                                            Radius.circular(
+                                                                16.0),
+                                                        topRight:
+                                                            Radius.circular(
+                                                                16.0),
+                                                      ),
+                                                    ),
+                                                    backgroundColor:
+                                                        Color(0xff7e160a),
+                                                    elevation: 5,
+                                                    // title:Center(child: const Text('Delete Message',style: TextStyle(color: Colors.black),)),
+                                                    children: <Widget>[
+                                                      SimpleDialogOption(
+                                                        onPressed: () async {
+                                                          await controller
+                                                              .deleteMessage(
+                                                                  listmessage[
+                                                                      index]);
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Center(
+                                                            child: const Text(
+                                                                'Delete',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        18))),
+                                                      ),
+                                                      /*  SimpleDialogOption(
                 onPressed: () { },
                 child: const Text('Option 2'),
             ),*/
-                                                ],
+                                                    ],
+                                                  );
+                                                },
                                               );
                                             },
+                                            child: listmessage[index]
+                                                        .fromDeleteStatus !=
+                                                    controller.myUsername +
+                                                        controller.myUserId
+                                                ? MessageContainer(
+                                                    message: listmessage[index],
+                                                    text:
+                                                        listmessage[index].msg,
+                                                    isMe: data.fromId ==
+                                                            controller
+                                                                    .myUsername +
+                                                                controller
+                                                                    .myUserId
+                                                        ? true
+                                                        : false,
+                                                    time: data.sent,
+                                                    pic: controller
+                                                            .getUserModel
+                                                            ?.data
+                                                            ?.profilePicture ??
+                                                        'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fman.png?alt=media&token=53575bc0-dd6c-404e-b8f3-52eaf8fe0fe4',
+                                                    profilePicApprovalStatus:
+                                                        controller
+                                                                .getUserModel
+                                                                ?.data
+                                                                ?.profilePicApprovalStatus ??
+                                                            '1',
+                                                    updateReadMessage: () =>
+                                                        controller
+                                                            .updateMessageReadStatus(
+                                                                listmessage[
+                                                                    index]),
+
+                                                    // myChatId: controller.myUsername+controller.myUserId,
+                                                    // deletemsg:()=> controller.deleteMessage(listmessage[index]),
+                                                  )
+                                                : Container(),
                                           );
-
-
-
-                                        } ,
-                                        child:  listmessage[index].fromDeleteStatus != controller.myUsername+controller.myUserId ?
-                                        MessageContainer(
-                                          message: listmessage[index],
-                                          text: listmessage[index].msg,
-                                          isMe:
-                                          data.fromId == controller.myUsername+controller.myUserId
-                                              ? true
-                                              : false,
-                                          time: data.sent,
-                                          pic: controller.getUserModel?.data
-                                              ?.profilePicture ??
-                                              'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fman.png?alt=media&token=53575bc0-dd6c-404e-b8f3-52eaf8fe0fe4',
-                                          profilePicApprovalStatus: controller.getUserModel?.data?.profilePicApprovalStatus??'1',
-                                          updateReadMessage: () =>
-                                              controller.updateMessageReadStatus(
-                                                  listmessage[index]),
-
-                                          // myChatId: controller.myUsername+controller.myUserId,
-                                          // deletemsg:()=> controller.deleteMessage(listmessage[index]),
-                                        ):Container(),
-                                      );
-                                    });
-                              } else {
-                                return GestureDetector(onTap: (){
-                                  _textController.text = 'Hii! 👋';
-                                },
-                                  child: const Center(
-                                    child: Text(
-                                      'Say Hii! 👋',
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.grey),
-                                    ),
-                                  ),
-                                );
+                                        });
+                                  } else {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        _textController.text = 'Hii! 👋';
+                                      },
+                                      child: const Center(
+                                        child: Text(
+                                          'Say Hii! 👋',
+                                          style: TextStyle(
+                                              fontSize: 20, color: Colors.grey),
+                                        ),
+                                      ),
+                                    );
+                                  }
                               }
-                          }
-                        }),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(
-                      18.sp,
-                    ),
-                    padding: EdgeInsets.only(left: 15.0.sp, right: 7.sp),
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            //   Colors.pink,
-                            // Colors.red.shade900
-                            Colors.red.shade800,
-                            Color(0xff7e160a),
-                            Color(0xff2e0303),
-                          ],
+                            }),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(
+                          18.sp,
                         ),
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(100),
-                            bottomLeft: Radius.circular(100),
-                            bottomRight: Radius.circular(100),
-                            topRight: Radius.circular(100))),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        /*  IconButton(
+                        padding: EdgeInsets.only(left: 15.0.sp, right: 7.sp),
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                //   Colors.pink,
+                                // Colors.red.shade900
+                                Colors.red.shade800,
+                                Color(0xff7e160a),
+                                Color(0xff2e0303),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(100),
+                                bottomLeft: Radius.circular(100),
+                                bottomRight: Radius.circular(100),
+                                topRight: Radius.circular(100))),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            /*  IconButton(
                           onPressed: () {},
                           icon: Icon(Icons.add),
                           color: Color(0xFFf7aa07),
                         ),*/
-                        Expanded(
-                          child: TextField(
-                            onChanged: (value) {},
-                            controller: _textController,
-                            textAlign: TextAlign.start,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 8.sp, horizontal: 16.sp),
-                              hintText: 'Type your message here',
-                              hintStyle: TextStyle(
-                                  color: Color(0xffd4d3d5), fontSize: 12.sp),
-                              border: InputBorder.none,
+                            Expanded(
+                              child: TextField(
+                                onChanged: (value) {},
+                                controller: _textController,
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(color: Colors.white),
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 8.sp, horizontal: 16.sp),
+                                  hintText: 'Type your message here',
+                                  hintStyle: TextStyle(
+                                      color: Color(0xffd4d3d5),
+                                      fontSize: 12.sp),
+                                  border: InputBorder.none,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () async{
-                            if(controller.getUserModel?.data?.fromBlockStatus=='0') {
-                              if(gender =='Male')
-                              {
-                                if (plan_expire == 'Yes') {
-                                 // if (newUser == '1' || chatCount <= 2)
-                                    if (chatCount <= 0)
-                                  {
-                                    if (_textController.text.isNotEmpty) {
-                                      chatCount++;
-                                      log('chat count $chatCount');
-                                      if (controller.getUserModel?.data
-                                          ?.chatUserAvailableStatus == '0') {
-                                        if (controller.userId != '0') {
-                                          controller.addChatUserToList();
-                                        }
-                                      } //FocusScope.of(context).requestFocus(FocusNode());
-                                      String msg = _textController.text;
-                                      _textController.text = '';
-                                      await controller.sendMessage(
-                                          controller.getUserModel,
-                                          msg,
-                                          Type.text);
+                            GestureDetector(
+                              onTap: () async {
+                                if (controller
+                                        .getUserModel?.data?.fromBlockStatus ==
+                                    '0') {
+                                  if (gender == 'Male') {
+                                    if (plan_expire == 'Yes') {
+                                      // if (newUser == '1' || chatCount <= 2)
+                                      if (chatCount <= 0) {
+                                        if (_textController.text.isNotEmpty) {
+                                          chatCount++;
+                                          log('chat count $chatCount');
+                                          if (controller.getUserModel?.data
+                                                  ?.chatUserAvailableStatus ==
+                                              '0') {
+                                            if (controller.userId != '0') {
+                                              controller.addChatUserToList();
+                                            }
+                                          } //FocusScope.of(context).requestFocus(FocusNode());
+                                          String msg = _textController.text;
+                                          _textController.text = '';
+                                          await controller.sendMessage(
+                                              controller.getUserModel,
+                                              msg,
+                                              Type.text);
 
-                                      await chatScreenController
-                                          .getLastMessageString(
-                                          usernameID: indiUsername +
-                                              widget.id.toString(),
-                                          id: widget.id.toString(), chatCount: chatCount
-                                      );
-                                    }
-                                    else {
-                                      Get.snackbar(
-                                          'Message', 'Please type here first');
-                                    }
-                                  }
-                                  else {
-                                    /*  if (me == true) {
+                                          await chatScreenController
+                                              .getLastMessageString(
+                                                  usernameID: indiUsername +
+                                                      widget.id.toString(),
+                                                  id: widget.id.toString(),
+                                                  chatCount: chatCount);
+                                        } else {
+                                          Get.snackbar('Message',
+                                              'Please type here first');
+                                        }
+                                      } else {
+                                        /*  if (me == true) {
                                    if (_textController.text.isNotEmpty) {
                                      if (controller.getUserModel?.data
                                          ?.chatUserAvailableStatus == '0') {
@@ -534,79 +607,82 @@ void getChatUserData() async{
                                          'Message', 'Please type here first');
                                    }
                                  } else {*/
-                                    Fluttertoast.showToast(
-                                      msg: "You have used your free messages. Please subscribe to get unlimited messages.",toastLength: Toast.LENGTH_LONG
-                                    );
-                                    Get.to(SubscriptionView(
-                                      subText: 'Get Subscription & get Unlimited chats and explore party mates . ',
-                                      iconText:
-                                      'https://assets-v2.lottiefiles.com/a/5e232bde-1182-11ee-b778-8f3af2eeaa9d/4xBFTBXlHa.json',
-                                    ))?.then((value) =>
-                                        chatScreenController.getChatUserData(id: widget.id.toString()));
-                                    //  }
-                                  }
-                                }
-                                else {
-                                  if (_textController.text.isNotEmpty) {
-                                    if (controller.getUserModel?.data
-                                        ?.chatUserAvailableStatus == '0') {
-                                      if (controller.userId != '0') {
-                                        controller.addChatUserToList();
+                                        Fluttertoast.showToast(
+                                            msg:
+                                                "You have used your free messages. Please subscribe to get unlimited messages.",
+                                            toastLength: Toast.LENGTH_LONG);
+                                        Get.to(SubscriptionView(
+                                          subText:
+                                              'Get Subscription & get Unlimited chats and explore party mates . ',
+                                          iconText:
+                                              'https://assets-v2.lottiefiles.com/a/5e232bde-1182-11ee-b778-8f3af2eeaa9d/4xBFTBXlHa.json',
+                                        ))?.then((value) => chatScreenController
+                                            .getChatUserData(
+                                                id: widget.id.toString()));
+                                        //  }
+                                      }
+                                    } else {
+                                      if (_textController.text.isNotEmpty) {
+                                        if (controller.getUserModel?.data
+                                                ?.chatUserAvailableStatus ==
+                                            '0') {
+                                          if (controller.userId != '0') {
+                                            controller.addChatUserToList();
+                                          }
+                                        }
+                                        String msg = _textController.text;
+                                        _textController.text = '';
+                                        // FocusScope.of(context).requestFocus(FocusNode());
+                                        await controller.sendMessage(
+                                            controller.getUserModel,
+                                            msg,
+                                            Type.text);
+
+                                        await chatScreenController
+                                            .getLastMessageString(
+                                                usernameID: indiUsername +
+                                                    widget.id.toString(),
+                                                id: widget.id.toString());
+                                      } else {
+                                        Get.snackbar('Message',
+                                            'Please type here first');
                                       }
                                     }
-                                    String msg = _textController.text;
-                                    _textController.text = '';
-                                    // FocusScope.of(context).requestFocus(FocusNode());
-                                    await controller.sendMessage(
-                                        controller.getUserModel,
-                                        msg, Type.text);
-
-                                    await chatScreenController
-                                        .getLastMessageString(
-                                        usernameID: indiUsername +
-                                            widget.id.toString(),
-                                        id: widget.id.toString());
-                                  }
-                                  else {
-                                    Get.snackbar(
-                                        'Message', 'Please type here first');
-                                  }
-                                }
-                              }
-                              else{
-                                if (_textController.text.isNotEmpty) {
-                                  if (controller.getUserModel?.data
-                                      ?.chatUserAvailableStatus == '0') {
-                                    if (controller.userId != '0') {
-                                      controller.addChatUserToList();
+                                  } else {
+                                    if (_textController.text.isNotEmpty) {
+                                      if (controller.getUserModel?.data
+                                              ?.chatUserAvailableStatus ==
+                                          '0') {
+                                        if (controller.userId != '0') {
+                                          controller.addChatUserToList();
+                                        }
+                                      }
+                                      String msg = _textController.text;
+                                      _textController.text = '';
+                                      // FocusScope.of(context).requestFocus(FocusNode());
+                                      await controller.sendMessage(
+                                          controller.getUserModel,
+                                          msg,
+                                          Type.text);
+                                      await chatScreenController
+                                          .getLastMessageString(
+                                              usernameID: indiUsername +
+                                                  widget.id.toString(),
+                                              id: widget.id.toString());
+                                    } else {
+                                      Get.snackbar(
+                                          'Message', 'Please type here first');
                                     }
                                   }
-                                  String msg = _textController.text;
-                                  _textController.text = '';
-                                  // FocusScope.of(context).requestFocus(FocusNode());
-                                  await controller.sendMessage(
-                                      controller.getUserModel,
-                                      msg, Type.text);
-                                  await chatScreenController
-                                      .getLastMessageString(
-                                      usernameID: indiUsername +
-                                          widget.id.toString(),
-                                      id: widget.id.toString());
+                                } else {
+                                  Get.snackbar('Sorry!!!',
+                                      ' You can not send message to this person');
                                 }
-                                else {
-                                  Get.snackbar(
-                                      'Message', 'Please type here first');
-                                }
-                              }
-                            }
-                            else{
-                              Get.snackbar('Sorry!!!', ' You can not send message to this person');
-                            }
-                          },
-                          child: Container(
-                            width: Get.width * 0.2,
-                            color: Colors.transparent,
-                            /*  decoration:
+                              },
+                              child: Container(
+                                width: Get.width * 0.2,
+                                color: Colors.transparent,
+                                /*  decoration:
                             BoxDecoration(
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(16.sp),
@@ -615,29 +691,36 @@ void getChatUserData() async{
                               ),
                               color: Color(0xFF3f02ca),
                             ),*/
-                            child: Icon(
-                              Icons.send,
-                              color: Colors.white,
+                                child: Icon(
+                                  Icons.send,
+                                  color: Colors.white,
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8.sp, vertical: 5.sp),
+                              ),
                             ),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8.sp, vertical: 5.sp),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                  Positioned(
+                      child: Container(
+                          margin: EdgeInsets.all(
+                            10,
+                          ),
+                          padding: EdgeInsets.all(
+                            10,
+                          ),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.orange),
+                          child: Text(
+                            '*Please do not share any personal and banking information. Meet anyone at your own risk.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white, fontSize: 10),
+                          ))),
                 ],
-              ),
-                Positioned(child:
-                Container(margin: EdgeInsets.all(10,),
-                    padding: EdgeInsets.all(10,),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
-                        color: Colors.orange),
-                    child: Text('*Please do not share any personal and banking information. Meet anyone at your own risk.',textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 10),))
-                ),
-               ],
-             
-                
               ),
             );
           }),
@@ -646,17 +729,17 @@ void getChatUserData() async{
 }
 
 class MessageContainer extends StatelessWidget {
-  MessageContainer(
-      {required this.text,
-      required this.isMe,
-      required this.time,
-      required this.message,
-      required this.pic,
-      required this.updateReadMessage,
-        required this.profilePicApprovalStatus,
-      //required this.myChatId,
+  MessageContainer({
+    required this.text,
+    required this.isMe,
+    required this.time,
+    required this.message,
+    required this.pic,
+    required this.updateReadMessage,
+    required this.profilePicApprovalStatus,
+    //required this.myChatId,
     //  required this.deletemsg
-   });
+  });
 
   Message? message;
   String text;
@@ -665,7 +748,8 @@ class MessageContainer extends StatelessWidget {
   String pic;
   String profilePicApprovalStatus;
   Function updateReadMessage;
- // String myChatId;
+
+  // String myChatId;
 //  Function deletemsg;
 
   @override
@@ -675,7 +759,7 @@ class MessageContainer extends StatelessWidget {
       updateReadMessage();
     }
     //return message?.fromDeleteStatus != myChatId ?
-   return Padding(
+    return Padding(
         padding: EdgeInsets.only(left: 10.sp, top: 8, bottom: 8, right: 10),
         child: isMe == true
             ?
@@ -708,7 +792,7 @@ class MessageContainer extends StatelessWidget {
                           child: Text(
                             text,
                             style: TextStyle(
-                                fontSize: 12 .sp,
+                                fontSize: 12.sp,
                                 height: 1.sp,
                                 color: isMe ? Color(0xFF85828a) : Colors.white),
                           ),
@@ -718,26 +802,24 @@ class MessageContainer extends StatelessWidget {
                         Text(
                           MyDateUtil.getLastMessageTime(
                               context: context, time: '${time}'),
-                          style:
-                          TextStyle(color: Color(0xffd4d3d5), fontSize: 9.sp),
+                          style: TextStyle(
+                              color: Color(0xffd4d3d5), fontSize: 9.sp),
                         ),
                         SizedBox(
                           width: 2.sp,
                         ),
                         readStatus == true
                             ? Icon(
-                          Icons.done_all,
-                          color: Colors.grey,
-                          size: 13.sp,
-                        )
+                                Icons.done_all,
+                                color: Colors.grey,
+                                size: 13.sp,
+                              )
                             : Icon(
-                          Icons.done_all,
-                          color: Color(0xFF49d298),
-                          size: 13.sp,
-                        ),
-
+                                Icons.done_all,
+                                color: Color(0xFF49d298),
+                                size: 13.sp,
+                              ),
                       ]),
-
                     ],
                   ),
                 ],
@@ -765,41 +847,49 @@ class MessageContainer extends StatelessWidget {
                                     ),*/
                                 child: Padding(
                                   padding: EdgeInsets.all(Get.width * 0.006),
-                                  child:ClipRRect(
-                                    borderRadius: BorderRadius.all(Radius.circular(50)),
-                                    child: profilePicApprovalStatus != '1' ?
-                                    Blur(blur: 2.5,
-                                      child:
-                                      CachedNetworkImage(
-                                        placeholder: (context, url) => Shimmer.fromColors(
-                                          baseColor: Colors.grey.shade200,
-                                          highlightColor: Colors.grey.shade400,
-                                          period: const Duration(milliseconds: 1500),
-                                          child: Container(
-                                            height: Get.height * 0.35,
-                                            color: Color(0xff7AB02A),
+                                  child: ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(50)),
+                                    child: profilePicApprovalStatus != '1'
+                                        ? Blur(
+                                            blur: 2.5,
+                                            child: CachedNetworkImage(
+                                              placeholder: (context, url) =>
+                                                  Shimmer.fromColors(
+                                                baseColor: Colors.grey.shade200,
+                                                highlightColor:
+                                                    Colors.grey.shade400,
+                                                period: const Duration(
+                                                    milliseconds: 1500),
+                                                child: Container(
+                                                  height: Get.height * 0.35,
+                                                  color: Color(0xff7AB02A),
+                                                ),
+                                              ),
+                                              imageUrl: pic,
+                                              width: Get.width,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                        : CachedNetworkImage(
+                                            placeholder: (context, url) =>
+                                                Shimmer.fromColors(
+                                              baseColor: Colors.grey.shade200,
+                                              highlightColor:
+                                                  Colors.grey.shade400,
+                                              period: const Duration(
+                                                  milliseconds: 1500),
+                                              child: Container(
+                                                height: Get.height * 0.35,
+                                                color: Color(0xff7AB02A),
+                                              ),
+                                            ),
+                                            imageUrl: pic,
+                                            width: Get.width,
+                                            fit: BoxFit.cover,
                                           ),
-                                        ),
-                                        imageUrl: pic,
-                                        width: Get.width,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ): CachedNetworkImage(
-                                      placeholder: (context, url) => Shimmer.fromColors(
-                                        baseColor: Colors.grey.shade200,
-                                        highlightColor: Colors.grey.shade400,
-                                        period: const Duration(milliseconds: 1500),
-                                        child: Container(
-                                          height: Get.height * 0.35,
-                                          color: Color(0xff7AB02A),
-                                        ),
-                                      ),
-                                      imageUrl: pic,
-                                      width: Get.width,
-                                      fit: BoxFit.cover,
-                                    ),
                                   ),
-                                 /* CircleAvatar(
+                                  /* CircleAvatar(
                                     // backgroundImage: NetworkImage(imageURL),
                                     backgroundImage: NetworkImage(pic),
                                   ),*/
@@ -855,6 +945,6 @@ class MessageContainer extends StatelessWidget {
                         ),
                       ]),
                 ],
-              )) ;
+              ));
   }
 }

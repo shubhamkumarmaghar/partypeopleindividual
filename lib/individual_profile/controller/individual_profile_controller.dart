@@ -102,7 +102,7 @@ class IndividualProfileController extends GetxController {
      return;
    }
    if (activeCity.value.isEmpty) {
-     Get.snackbar('Gender Error', 'Gender should not be empty');
+     Get.snackbar('Active City', 'Active city should not be empty');
      return;
    }
    /*

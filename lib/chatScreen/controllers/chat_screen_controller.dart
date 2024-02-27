@@ -382,7 +382,7 @@ class ChatScreenController extends GetxController {
   */
 
   // for adding an user to my user when first message is send
-  Future<void> sendFirstMessage(
+ /* Future<void> sendFirstMessage(
       GetUserModel chatUser, String msg, Type type) async {
     await firestore
         .collection('users')
@@ -390,7 +390,7 @@ class ChatScreenController extends GetxController {
         .collection('my_users')
         .doc(chatUser.data?.id)
         .set({}).then((value) => sendMessage(chatUser, msg, type));
-  }
+  }*/
 
   // for updating user information
   /* static Future<void> updateUserInfo() async {
