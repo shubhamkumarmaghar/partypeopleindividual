@@ -90,6 +90,8 @@ class API {
 
   static const String updateSubscriptionStatus = '$baseUrl/subscription/user_subscription_plan_status_update';
 
+  static const String updateSubscriptionStatusWithStripe = '$baseUrl/subscription/user_subscription_plan_status_update_strip';
+
   static const String getAllNotification = '$baseUrl/notification/get_all_notification';
 
   static const String updateNotificationStatus = '$baseUrl/account/update_notification_status';

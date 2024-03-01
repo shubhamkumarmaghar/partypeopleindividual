@@ -65,7 +65,7 @@ class SubscriptionController extends GetxController{
      }
      else
        {
-         log('subscription_plans api response is not 200');
+         log('subscription_plans api response is not 200 ${json}');
        }
    }
    catch(e){
@@ -90,6 +90,7 @@ class SubscriptionController extends GetxController{
        if (jsonResponse['status'] == 1 && jsonResponse['message'].contains(
            'Subscription plan puarchase successfully.')) {
          subsOrderId = jsonResponse['subscription_purchase_id'];
+         log('${jsonResponse} ${jsonResponse['message']} $subsOrderId');
          update();
          value = '1';
        }
@@ -177,8 +178,8 @@ class SubscriptionController extends GetxController{
       }
       ) async {
     try {
+      log('$name $email $phone $city $country $postalCode $state $amount $orderId $type');
       paymentIntent = await createPaymentIntent(amount, 'INR');
-
       await Stripe.instance
           .initPaymentSheet(
           paymentSheetParameters: SetupPaymentSheetParameters(
@@ -198,20 +199,73 @@ class SubscriptionController extends GetxController{
               style: ThemeMode.light,
               merchantDisplayName: 'Ikay'))
           .then((value) {
-
       });
 
 
       //STEP 3: Display Payment sheet
       displayPaymentSheet(paymentIntent: paymentIntent![
-      'client_secret'],amount: amount);
+      'id'],amount: amount, createdOn: paymentIntent![
+      'created'].toString(),email: email,fullName: name);
     } catch (e) {
       print(e.toString());
       Fluttertoast.showToast(msg: e.toString());
     }
   }
 
-  displayPaymentSheet({required String paymentIntent ,required String amount}) async {
+  Future<void> updateSubsPaymentStatusWithStripe({required String subsId,
+    required String paymentStatus,
+  required String addedOn ,
+  required String fullName,
+  required String email}) async{
+    try {
+      log('$subsId  $paymentStatus ');
+      final response = await http.post(Uri.parse(
+          API.updateSubscriptionStatusWithStripe),
+          headers: <String, String>{
+            'x-access-token': '${GetStorage().read('token')}',
+          },
+          body: { 'subscription_purchase_id':subsOrderId.toString(),
+            'payment_status':paymentStatus.toString(),
+            'addedon':addedOn,
+            'currency':"inr",
+            'fullname':fullName,
+            'email':email,
+            //  'payment_response':paymentResponse?.toString(),
+            'payment_id' :subsId.toString()
+          }
+      );
+      log('STATUS CODE :: ${response.statusCode}');
+      if (response.statusCode == 200) {
+
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        print(jsonResponse);
+
+        if (jsonResponse['status'] == 1 && jsonResponse['message'].contains(
+            'Your transaction successfully.')) {
+          log('${jsonResponse['message']}');
+          update();
+          Get.snackbar("",'${jsonResponse['message']}' );
+        }
+        else {
+          update();
+          log('${jsonResponse['message']}');
+        }
+      }
+      else{
+        log('update subscription api response is not 200');
+      }
+    }
+    catch(e)
+    {
+      log("dfgmhmgmgh $e");
+    }
+  }
+
+  displayPaymentSheet({required String paymentIntent ,
+    required String amount,
+    required String createdOn,
+    required String email ,
+    required String fullName}) async {
     try {
 
       //  var confirmpay =  await Stripe.instance.confirmPayment(paymentIntentClientSecret:  paymentIntent);
@@ -222,7 +276,8 @@ class SubscriptionController extends GetxController{
       // 3. display the payment sheet.
       PaymentSheetPaymentOption? res = await Stripe.instance.presentPaymentSheet();
       log('response ::: ${res.toString()}');
-      await updateSubsPaymentStatus(subsId: paymentIntent, paymentStatus: '1',);
+      await updateSubsPaymentStatusWithStripe(subsId: paymentIntent, paymentStatus: '1',
+      fullName: fullName,email: email,addedOn: createdOn);
       Get.to(  PaymentResponseView(isSuccess: '1',orderId: paymentIntent,amount: amount ,));
       Fluttertoast.showToast(msg: 'Payment succesfully completed');
     } on Exception catch (e) {
@@ -233,13 +288,15 @@ class SubscriptionController extends GetxController{
               msg: ' ${e.error.localizedMessage}');
         }
         else{
-        await updateSubsPaymentStatus(subsId: paymentIntent, paymentStatus: '0',);
+          await updateSubsPaymentStatusWithStripe(subsId: paymentIntent, paymentStatus: '0',
+              fullName: fullName,email: email,addedOn: createdOn);
         Get.to(  PaymentResponseView(isSuccess: '0',orderId: paymentIntent,amount: amount ,));
         Fluttertoast.showToast(
             msg: 'Error from Stripe: ${e.error.localizedMessage}');
         }
       } else {
-        await updateSubsPaymentStatus(subsId: paymentIntent, paymentStatus: '0',);
+        await updateSubsPaymentStatusWithStripe(subsId: paymentIntent, paymentStatus: '0',
+            fullName: fullName,email: email,addedOn: createdOn);
         Get.to(  PaymentResponseView(isSuccess: '0',orderId: paymentIntent,amount: amount ,));
         log('Unforeseen error: ${e}');
         Fluttertoast.showToast(msg: 'Unforeseen error: ${e}');

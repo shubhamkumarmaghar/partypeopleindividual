@@ -1,19 +1,22 @@
-import 'dart:developer';
-
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:lottie/lottie.dart';
 import 'package:neumorphic_ui/neumorphic_ui.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+
 import '../../api_helper_service.dart';
 import '../../chatScreen/views/chat_screen_view.dart';
 import '../../firebase_custom_event.dart';
+import '../../individualDashboard/controllers/individual_dashboard_controller.dart';
 import '../../individual_profile_screen/profilephotoview.dart';
+import '../../individual_subscription/view/subscription_view.dart';
 import '../../widgets/block_unblock.dart';
 import '../../widgets/calculate_age.dart';
 import '../../widgets/custom_images_slider.dart';
@@ -30,6 +33,9 @@ class IndividualPeopleProfile extends StatefulWidget {
 }
 
 class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
+  String plan_expire = GetStorage().read('plan_plan_expiry') ?? 'Yes';
+  IndividualDashboardController individualDashboardController = Get.find();
+
   // PeopleProfileController peopleProfileController = Get.put(PeopleProfileController());
 
   @override
@@ -53,10 +59,9 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
       body: GetBuilder<PeopleProfileController>(
         init: PeopleProfileController(),
         builder: (controller) {
-
           var data = controller.peopleProfileData.data;
-
-          final List<OrganizationAmenities>? amenties = data?.organizationAmenities;
+          final List<OrganizationAmenities>? amenties =
+              data?.organizationAmenities;
           return data != null
               ? SingleChildScrollView(
                   child: Container(
@@ -87,25 +92,31 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                         ),
                       ),
                     ),*/
-                          Card(elevation: 5,
+                          Card(
+                            elevation: 5,
                             //color: Colors.orange,
-                            clipBehavior:Clip.hardEdge ,
+                            clipBehavior: Clip.hardEdge,
                             margin: EdgeInsets.only(bottom: 25),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),),
-                            child:
-                            CarouselSlider(items: controller.profileImages.map((ProfileImageWithStatus element) =>
-                                CustomImageSlider(partyPhotos: element.image, imageStatus: element.status) ).toList(),
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: CarouselSlider(
+                              items: controller.profileImages
+                                  .map((ProfileImageWithStatus element) =>
+                                      CustomImageSlider(
+                                          partyPhotos: element.image,
+                                          imageStatus: element.status))
+                                  .toList(),
                               options: CarouselOptions(
-                                  height: Get.height*0.4,
+                                  height: Get.height * 0.4,
                                   // enlargeCenterPage: true,
                                   autoPlay: true,
                                   //aspectRatio: 16 / 9,
                                   autoPlayCurve: Curves.fastOutSlowIn,
                                   enableInfiniteScroll: true,
-                                  autoPlayAnimationDuration: Duration(milliseconds: 800),
-                                  viewportFraction: 1
-                              ),
+                                  autoPlayAnimationDuration:
+                                      Duration(milliseconds: 800),
+                                  viewportFraction: 1),
                             ),
                           ),
                           // Profile Photo
@@ -115,7 +126,8 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                               onTap: () {
                                 Get.to(() => ProfilePhotoView(
                                       profileUrl: data.profilePic ?? "",
-                                  approvalStatus: data.profilePicApprovalStatus ?? '',
+                                      approvalStatus:
+                                          data.profilePicApprovalStatus ?? '',
                                     ));
                               },
                               child: Container(
@@ -134,45 +146,48 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                   child: ClipRRect(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(50)),
-                                    child: data.profilePicApprovalStatus != '1' ?
-                                    Blur(blur:2.5 ,
-                                      child:
-                                      CachedNetworkImage(
-                                        placeholder: (context, url) =>
-                                            Shimmer.fromColors(
-                                          baseColor: Colors.grey.shade200,
-                                          highlightColor: Colors.grey.shade400,
-                                          period: const Duration(
-                                              milliseconds: 1500),
-                                          child: Container(
-                                            height: Get.height * 0.35,
-                                            color: Color(0xff7AB02A),
-                                          ),
-                                        ),
-                                        imageUrl: data.profilePic == null
-                                            ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
-                                            : data.profilePic ?? '',
-                                        width: Get.width,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ) :  CachedNetworkImage(
-                                      placeholder: (context, url) =>
-                                          Shimmer.fromColors(
-                                            baseColor: Colors.grey.shade200,
-                                            highlightColor: Colors.grey.shade400,
-                                            period: const Duration(
-                                                milliseconds: 1500),
-                                            child: Container(
-                                              height: Get.height * 0.35,
-                                              color: Color(0xff7AB02A),
+                                    child: data.profilePicApprovalStatus != '1'
+                                        ? Blur(
+                                            blur: 2.5,
+                                            child: CachedNetworkImage(
+                                              placeholder: (context, url) =>
+                                                  Shimmer.fromColors(
+                                                baseColor: Colors.grey.shade200,
+                                                highlightColor:
+                                                    Colors.grey.shade400,
+                                                period: const Duration(
+                                                    milliseconds: 1500),
+                                                child: Container(
+                                                  height: Get.height * 0.35,
+                                                  color: Color(0xff7AB02A),
+                                                ),
+                                              ),
+                                              imageUrl: data.profilePic == null
+                                                  ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
+                                                  : data.profilePic ?? '',
+                                              width: Get.width,
+                                              fit: BoxFit.cover,
                                             ),
+                                          )
+                                        : CachedNetworkImage(
+                                            placeholder: (context, url) =>
+                                                Shimmer.fromColors(
+                                              baseColor: Colors.grey.shade200,
+                                              highlightColor:
+                                                  Colors.grey.shade400,
+                                              period: const Duration(
+                                                  milliseconds: 1500),
+                                              child: Container(
+                                                height: Get.height * 0.35,
+                                                color: Color(0xff7AB02A),
+                                              ),
+                                            ),
+                                            imageUrl: data.profilePic == null
+                                                ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
+                                                : data.profilePic ?? '',
+                                            width: Get.width,
+                                            fit: BoxFit.cover,
                                           ),
-                                      imageUrl: data.profilePic == null
-                                          ? 'https://firebasestorage.googleapis.com/v0/b/party-people-52b16.appspot.com/o/default_images%2Fdefault-cover-4.jpg?alt=media&token=adba2f48-131a-40d3-b9a2-e6c04176154f'
-                                          : data.profilePic ?? '',
-                                      width: Get.width,
-                                      fit: BoxFit.cover,
-                                    ),
                                   )
 
                                   //   CircleAvatar(
@@ -217,9 +232,53 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    logCustomEvent(eventName: chatInitiateEvent, parameters: {'toUser':data.name ,});
-                                    Get.to(ChatScreenView(id: controller.userId.toString()),
-                                        arguments: controller.userId);
+                                    String gender =
+                                        GetStorage().read('myGender') ?? 'Male';
+                                    if (gender == 'Male') {
+                                      if (int.parse(
+                                              individualDashboardController
+                                                  .messageCount.value) <=
+                                          2) {
+                                        logCustomEvent(
+                                            eventName: chatInitiateEvent,
+                                            parameters: {
+                                              'toUser': data.name,
+                                            });
+                                        Get.to(
+                                            ChatScreenView(
+                                                id: controller.userId
+                                                    .toString()),
+                                            arguments: controller.userId);
+                                      } else {
+                                        if (plan_expire != 'Yes') {
+                                          Get.to(
+                                              ChatScreenView(
+                                                  id: controller.userId
+                                                      .toString()),
+                                              arguments: controller.userId);
+                                        } else {
+                                          Fluttertoast.showToast(
+                                              msg:
+                                                  'You have reached maximum limit ');
+                                          Get.to(SubscriptionView(
+                                            subText:
+                                                'Get Subscription & get Unlimited chats and explore party mates . ',
+                                            iconText:
+                                                'https://assets-v2.lottiefiles.com/a/5e232bde-1182-11ee-b778-8f3af2eeaa9d/4xBFTBXlHa.json',
+                                          ));
+                                        }
+                                      }
+                                    } else {
+                                      logCustomEvent(
+                                          eventName: chatInitiateEvent,
+                                          parameters: {
+                                            'toUser': data.name,
+                                          });
+                                      Get.to(
+                                          ChatScreenView(
+                                              id: controller.userId.toString()),
+                                          arguments: controller.userId);
+                                    }
                                     //?.then((value) => APIService.lastMessage(controller.userId, GetStorage().read('last_message')));
                                     // Get.to(peopleList());
                                   },
@@ -267,11 +326,11 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                               ),
                             ],
                           ),
-
-                          Blur(blur: 2.5,
+                          Blur(
+                            blur: 2.5,
                             child: Container(
                               constraints: BoxConstraints(),
-                             // height: Get.height * 0.15,
+                              // height: Get.height * 0.15,
                               child: Neumorphic(
                                   margin: const EdgeInsets.all(12.0),
                                   padding: EdgeInsets.all(12.0),
@@ -285,7 +344,8 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                         .shade100, // Very light grey for a softer look
                                   ),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Icon(Icons.description_outlined,
                                           color: Colors.red.shade900),
@@ -297,58 +357,66 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                         child: Text(
                                           data.bio.toString().capitalizeFirst ??
                                               "",
-                                        //  maxLines: 5,
+                                          //  maxLines: 5,
                                           style: TextStyle(
-                                              color: Colors.black, fontSize: 16),
+                                              color: Colors.black,
+                                              fontSize: 16),
                                         ),
                                       ),
                                     ],
                                   )),
                             ),
-                            overlay: controller
-                                .peopleProfileData.data?.descriptionApprovalStatus!='1' ? Container():
-                            Container(
-                              constraints: BoxConstraints(),
-                             // height: Get.height * 0.15,
-                              child: Neumorphic(
-                                  margin: const EdgeInsets.all(12.0),
-                                  padding: EdgeInsets.all(12.0),
-                                  style: NeumorphicStyle(
-                                    intensity: 0.8,
-                                    surfaceIntensity: 0.25,
-                                    depth: 8,
-                                    shape: NeumorphicShape.flat,
-                                    lightSource: LightSource.topLeft,
-                                    color: Colors.grey
-                                        .shade100, // Very light grey for a softer look
+                            overlay: controller.peopleProfileData.data
+                                        ?.descriptionApprovalStatus !=
+                                    '1'
+                                ? Container()
+                                : Container(
+                                    constraints: BoxConstraints(),
+                                    // height: Get.height * 0.15,
+                                    child: Neumorphic(
+                                        margin: const EdgeInsets.all(12.0),
+                                        padding: EdgeInsets.all(12.0),
+                                        style: NeumorphicStyle(
+                                          intensity: 0.8,
+                                          surfaceIntensity: 0.25,
+                                          depth: 8,
+                                          shape: NeumorphicShape.flat,
+                                          lightSource: LightSource.topLeft,
+                                          color: Colors.grey
+                                              .shade100, // Very light grey for a softer look
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Icon(Icons.description_outlined,
+                                                color: Colors.red.shade900),
+                                            SizedBox(
+                                              width: Get.width * 0.03,
+                                            ),
+                                            Container(
+                                              width: Get.width * 0.75,
+                                              child: Text(
+                                                data.bio
+                                                        .toString()
+                                                        .capitalizeFirst ??
+                                                    "",
+                                                // maxLines: 5,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16),
+                                              ),
+                                            ),
+                                          ],
+                                        )),
                                   ),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Icon(Icons.description_outlined,
-                                          color: Colors.red.shade900),
-                                      SizedBox(
-                                        width: Get.width * 0.03,
-                                      ),
-                                      Container(
-
-                                        width: Get.width * 0.75,
-                                        child: Text(
-                                          data.bio.toString().capitalizeFirst ??
-                                              "",
-                                         // maxLines: 5,
-                                          style: TextStyle(
-                                              color: Colors.black, fontSize: 16),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                            ),
                           ),
                           Row(
                             children: [
                               Visibility(
-                                visible:  ( data.dob?.toString() != null ? data.dob.toString() != '0000-00-00' :false)  ,
+                                visible: (data.dob?.toString() != null
+                                    ? data.dob.toString() != '0000-00-00'
+                                    : false),
                                 child: Expanded(
                                   child: CustomProfileTextView(
                                       text: CalculateAge.calAge(data.dob ?? ""),
@@ -362,10 +430,17 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                               ),
                             ],
                           ),
+                          Visibility(
+                            visible: data.maritalStatus?.isNotEmpty ?? false,
+                            child: CustomProfileTextView(
+                                text: data.maritalStatus ?? "NA",
+                                icon: Icons.people),
+                          ),
                           Row(
                             children: [
                               Visibility(
-                                visible:data.qualification?.isNotEmpty ?? false ,
+                                visible:
+                                    data.qualification?.isNotEmpty ?? false,
                                 child: Expanded(
                                   child: CustomProfileTextView(
                                       text: data.qualification ?? "NA",
@@ -373,7 +448,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                 ),
                               ),
                               Visibility(
-                                visible:data.occupation?.isNotEmpty ?? false ,
+                                visible: data.occupation?.isNotEmpty ?? false,
                                 child: Expanded(
                                   child: CustomProfileTextView(
                                       text: data.occupation ?? "NA",
@@ -385,7 +460,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                           Row(
                             children: [
                               Visibility(
-                                visible:data.country?.isNotEmpty ?? false ,
+                                visible: data.country?.isNotEmpty ?? false,
                                 child: Expanded(
                                   child: CustomProfileTextView(
                                       text: data.country ?? "NA",
@@ -394,7 +469,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                 ),
                               ),
                               Visibility(
-                                visible:data.state?.isNotEmpty ?? false ,
+                                visible: data.state?.isNotEmpty ?? false,
                                 child: Expanded(
                                   child: CustomProfileTextView(
                                       text: data.state ?? "NA",
@@ -408,7 +483,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                           Row(
                             children: [
                               Visibility(
-                                visible:data.city?.isNotEmpty ?? false ,
+                                visible: data.city?.isNotEmpty ?? false,
                                 child: Expanded(
                                   child: CustomProfileTextView(
                                       text: data.city ?? "NA",
@@ -417,7 +492,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                 ),
                               ),
                               Visibility(
-                                visible:data.pincode?.isNotEmpty ?? false ,
+                                visible: data.pincode?.isNotEmpty ?? false,
                                 child: Expanded(
                                   child: CustomProfileTextView(
                                       text: data.pincode ?? "NA",
@@ -436,70 +511,74 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                               color: Colors.black,
                               fontSize: 22,
                             ),
-                          ),Obx(() =>
-                          controller.categoryLists.isEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    child: const Center(
-                                      child: CupertinoActivityIndicator(
-                                        radius: 15,
-                                        color: Colors.black,
+                          ),
+                          Obx(
+                            () => controller.categoryLists.isEmpty
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      child: const Center(
+                                        child: CupertinoActivityIndicator(
+                                          radius: 15,
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                )
-                              : ListView(
-                                  padding: EdgeInsets.zero,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  children: [
-                                    ListView.builder(
-                                      padding: const EdgeInsets.all(10.0),
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount:
-                                          controller.categoryLists.length,
-                                      itemBuilder: (context, index) {
-                                        final categoryList =
-                                            controller.categoryLists[index];
-                                        return Card(
-                                          elevation: 3,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15.0),
-                                          ),
-                                          margin: const EdgeInsets.all(10.0),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  categoryList.title,
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
+                                  )
+                                : ListView(
+                                    padding: EdgeInsets.zero,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    children: [
+                                      ListView.builder(
+                                        padding: const EdgeInsets.all(10.0),
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount:
+                                            controller.categoryLists.length,
+                                        itemBuilder: (context, index) {
+                                          final categoryList =
+                                              controller.categoryLists[index];
+                                          return Card(
+                                            elevation: 3,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            margin: const EdgeInsets.all(10.0),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    categoryList.title,
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black,
+                                                    ),
                                                   ),
-                                                ),
-                                                const SizedBox(height: 10.0),
-                                                Wrap(
-                                                  spacing: 6.0,
-                                                  runSpacing: 6.0,
-                                                  children: categoryList
-                                                      .amenities
-                                                      .map((amenity) {
-                                                    return GestureDetector(
-                                                      /*  onTap: () =>
+                                                  const SizedBox(height: 10.0),
+                                                  Wrap(
+                                                    spacing: 6.0,
+                                                    runSpacing: 6.0,
+                                                    children: categoryList
+                                                        .amenities
+                                                        .map((amenity) {
+                                                      return GestureDetector(
+                                                        /*  onTap: () =>
                                           _selectAmenity(
                                               amenity),
                                       */
-                                                      child: amenity.selected
-                                                          ? Chip(
-                                                              /*avatar: CircleAvatar(
+                                                        child: amenity.selected
+                                                            ? Chip(
+                                                                /*avatar: CircleAvatar(
                                           backgroundColor:
                                           amenity.selected
                                               ? Colors.red[
@@ -507,38 +586,39 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                               : Colors.grey[
                                           700],
                                         ), */
-                                                              label: Text(
-                                                                amenity.name,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 14,
+                                                                label: Text(
+                                                                  amenity.name,
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        14,
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              backgroundColor:
-                                                                  Colors.red
-                                                                      .shade900,
-                                                            )
-                                                          : Visibility(
-                                                              visible: false,
-                                                              child:
-                                                                  Container()),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                              ],
+                                                                backgroundColor:
+                                                                    Colors.red
+                                                                        .shade900,
+                                                              )
+                                                            : Visibility(
+                                                                visible: false,
+                                                                child:
+                                                                    Container()),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    const SizedBox(
-                                      height: 25,
-                                    ),
-                                  ],
-                                ),
-                                    ),
+                                          );
+                                        },
+                                      ),
+                                      const SizedBox(
+                                        height: 25,
+                                      ),
+                                    ],
+                                  ),
+                          ),
                           /*  Container(
                       width: Get.width,
                       height: Get.height * 0.2,
@@ -584,23 +664,31 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                     ],
                   ),
                 ))
-              : Center(child: CircularProgressIndicator());
+              : loder();
         },
       ),
     );
   }
 
-  Widget customImageSlider({required String partyPhotos, required String imageStatus})
-  {
-    return
-      Container(
-        height: Get.height*0.45,
-        decoration: BoxDecoration(
-          // borderRadius: BorderRadius.circular(15),
-          image:DecorationImage( image: NetworkImage(partyPhotos),fit: BoxFit.cover),
-        ),
-        width: Get.width,
-        /* child: Image.network(
+  Widget loder() {
+    return Center(
+        child: Container(
+      child: Lottie.network(
+          'https://assets-v2.lottiefiles.com/a/ebf552bc-1177-11ee-8524-57b09b2cd38d/PaP7jkQFk9.json'),
+    ));
+  }
+
+  Widget customImageSlider(
+      {required String partyPhotos, required String imageStatus}) {
+    return Container(
+      height: Get.height * 0.45,
+      decoration: BoxDecoration(
+        // borderRadius: BorderRadius.circular(15),
+        image: DecorationImage(
+            image: NetworkImage(partyPhotos), fit: BoxFit.cover),
+      ),
+      width: Get.width,
+      /* child: Image.network(
                         widget.party.coverPhoto,
                         width: Get.width,
                         height: 250,
@@ -625,7 +713,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                           );
                         },
                       ), */
-      );
+    );
   }
 
   Widget iconButtonNeumorphic({required IconData icon, required Color color}) {
@@ -677,7 +765,7 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
     ); */
   }
 
-  /* Widget CustomProfileTextView(String text, IconData icon) {
+/* Widget CustomProfileTextView(String text, IconData icon) {
     return Neumorphic(
         margin: const EdgeInsets.all(12.0),
         padding: EdgeInsets.all(12.0),
@@ -713,5 +801,4 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
         ));
   }
 */
-
 }

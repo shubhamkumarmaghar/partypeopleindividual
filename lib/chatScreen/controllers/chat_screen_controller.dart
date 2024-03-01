@@ -17,6 +17,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../api_helper_service.dart';
 import '../../centralize_api.dart';
 import '../../chatList/model/user_chat_list.dart';
+import '../../individualDashboard/controllers/individual_dashboard_controller.dart';
 import '../model/chat_model.dart';
 import '../model/user_model.dart';
 
@@ -34,7 +35,6 @@ class ChatScreenController extends GetxController {
   List<ChatUserListModel> paginatedChatList = [];
   AudioPlayer player = AudioPlayer();
   final refreshChatController = RefreshController(initialRefresh: false);
-
   @override
   void onInit() {
     super.onInit();
@@ -382,7 +382,7 @@ class ChatScreenController extends GetxController {
   */
 
   // for adding an user to my user when first message is send
-  Future<void> sendFirstMessage(
+ /* Future<void> sendFirstMessage(
       GetUserModel chatUser, String msg, Type type) async {
     await firestore
         .collection('users')
@@ -390,7 +390,7 @@ class ChatScreenController extends GetxController {
         .collection('my_users')
         .doc(chatUser.data?.id)
         .set({}).then((value) => sendMessage(chatUser, msg, type));
-  }
+  }*/
 
   // for updating user information
   /* static Future<void> updateUserInfo() async {

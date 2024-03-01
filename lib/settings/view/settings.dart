@@ -4,7 +4,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:partypeopleindividual/settings/controllers/settings_controller.dart';
+import 'package:partypeopleindividual/settings/controllers/settings_data_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,7 +19,7 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
 
-  SettingController settingController = Get.put(SettingController());
+  SettingDataController settingController = Get.put(SettingDataController());
   bool isprivacySwitched =  false;
   bool isnotificationSwitched = false;
 

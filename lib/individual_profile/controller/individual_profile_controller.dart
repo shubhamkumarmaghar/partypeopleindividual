@@ -50,6 +50,7 @@ class IndividualProfileController extends GetxController {
   RxString country = ''.obs;
   RxString state = ''.obs;
   RxString gender = ''.obs;
+  RxString maritalStatus = ''.obs;
   RxString activeCity = ''.obs;
   RxString city = ''.obs;
   RxString privacyOnlineStatus = ''.obs;
@@ -101,7 +102,7 @@ class IndividualProfileController extends GetxController {
      return;
    }
    if (activeCity.value.isEmpty) {
-     Get.snackbar('Gender Error', 'Gender should not be empty');
+     Get.snackbar('Active City', 'Active city should not be empty');
      return;
    }
    /*
@@ -173,6 +174,7 @@ class IndividualProfileController extends GetxController {
         if(qualification.value.isNotEmpty)'qualification': qualification.value.toString(),
         if(country.value.isNotEmpty)'country': country.value.toString(),
         if(gender.value.isNotEmpty)'gender': gender.value.toString(),
+        if(maritalStatus.value.isNotEmpty)'marital_status':maritalStatus.value.toString(),
         'type': '2',
         if(selectedAmenities.isNotEmpty)'amenities_id': selectedAmenities.join(','),
         if(state.value.isNotEmpty)'state': state.value.toString(),
@@ -281,6 +283,7 @@ class IndividualProfileController extends GetxController {
         if(qualification.value.isNotEmpty)'qualification': qualification.value.toString(),
         if(country.value.isNotEmpty)'country': country.value.toString(),
         if(gender.value.isNotEmpty)'gender': gender.value.toString(),
+        if(maritalStatus.value.isNotEmpty)'marital_status':maritalStatus.value.toString(),
         'type': '2',
         if(selectedAmenities.isNotEmpty)'amenities_id': selectedAmenities.join(','),
         if(state.value.isNotEmpty)'state': state.value.toString(),
@@ -431,6 +434,7 @@ class IndividualProfileController extends GetxController {
           userMobile.value = response['user_phone_number'];
           userId.value = user['user_id'];
           gender.value = user['gender'] ?? '';
+          maritalStatus.value = user['marital_status']??'';
           GetStorage().write("myGender", gender.value.toString());
           getPrefiledData = user['org_amenitie_id']?.split(',');
           print("indi amen :=> $getPrefiledData");

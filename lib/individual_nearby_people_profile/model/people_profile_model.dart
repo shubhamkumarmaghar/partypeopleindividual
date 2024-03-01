@@ -53,6 +53,7 @@ class Data {
   String? bluetickStatus;
   String? isDeleted;
   String? gender;
+  String? maritalStatus;
   String? bio;
   String? dob;
   String? pincode;
@@ -106,6 +107,7 @@ class Data {
         this.bluetickStatus,
         this.isDeleted,
         this.gender,
+        this.maritalStatus,
         this.bio,
         this.dob,
         this.pincode,
@@ -153,6 +155,7 @@ class Data {
     bluetickStatus = json['bluetick_status'];
     isDeleted = json['is_deleted'];
     gender = json['gender'];
+    maritalStatus = json['marital_status'];
     bio = json['bio'];
     dob = json['dob'];
     pincode = json['pincode'];
@@ -215,6 +218,7 @@ class Data {
     data['bluetick_status'] = this.bluetickStatus;
     data['is_deleted'] = this.isDeleted;
     data['gender'] = this.gender;
+    data['marital_status'] = this.maritalStatus;
     data['bio'] = this.bio;
     data['dob'] = this.dob;
     data['pincode'] = this.pincode;

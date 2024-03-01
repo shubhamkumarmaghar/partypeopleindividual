@@ -100,12 +100,15 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                   padding: const EdgeInsets.only(left: 14),
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
-                    onTap: () => Get.to(
-                      IndividualDrawerView(),
-                      duration: const Duration(milliseconds: 500),
-                      transition: Transition.leftToRight,
-                    )?.then((value) =>
-                        individualDashboardController.getDataForDashboard(true)),
+                    onTap: () {
+                      Get.to(
+                        IndividualDrawerView(),
+                        duration: const Duration(milliseconds: 500),
+                        transition: Transition.leftToRight,
+                      );
+                    },
+                    /*?.then((value) =>
+                        individualDashboardController.getDataForDashboard(true)),*/
                     child: const Icon(
                       Icons.menu,
                       color: Colors.white,
@@ -145,9 +148,10 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                             Get.find();
                         return GestureDetector(
                           onTap: () {
-                            Get.to(const WishlistScreen())?.then((value) =>
+                            Get.to(const WishlistScreen());
+                           /* ?.then((value) =>
                                 individualDashboardController
-                                    .getDataForDashboard(true));
+                                    .getDataForDashboard(true));*/
                           },
                           child: Icon(Icons.favorite,
                               color:
@@ -160,14 +164,16 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                         width: 10,
                       ),
                       GestureDetector(
-                        onTap: () =>
+                        onTap: () {
                             // _animationController.stop();
                             Get.to(
                           const NotificationScreen(),
                           duration: const Duration(milliseconds: 300),
                           transition: Transition.rightToLeft,
-                        )?.then((value) => individualDashboardController
-                                .getDataForDashboard(true)),
+                        );
+        },
+                        /*?.then((value) => individualDashboardController
+                                .getDataForDashboard(true))*/
                         child: Obx(() {
                           return Stack(
                             children: [
@@ -369,9 +375,12 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                             peopleList:
                                                 individualDashboardController
                                                     .usersList,
-                                          ))?.then((value) =>
-                                              individualDashboardController
-                                                  .getDataForDashboard(true));
+                                          ))?.then((value) {
+                                           String type = individualProfileController.gender.value.toString() == 'Male'
+                                                ? '2'
+                                                : '1';
+                                           individualDashboardController.getAllNearbyPeoples(type: type);
+                                          });
                                         },
                                         readOnly: true,
                                         //  enabled: false,
@@ -593,9 +602,14 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                         peopleList:
                                             individualDashboardController
                                                 .usersList,
-                                      ))?.then((value) =>
-                                          individualDashboardController
-                                              .getDataForDashboard(true));
+                                      ))?.then((value)
+                                      {
+                                        String type = individualProfileController.gender.value.toString() == 'Male'
+                                            ? '2'
+                                            : '1';
+                                        individualDashboardController.getAllNearbyPeoples(type: type);
+              }
+                                      );
                                     },
                                     child: Text(
                                       'See all ',
@@ -651,17 +665,22 @@ class _IndividualDashboardViewState extends State<IndividualDashboardView>
                                                           .value ==
                                                       '1') {
                                                     logCustomEvent(eventName: peopleProfileView, parameters: {'name':'peopleProfileView'});
-                                                    Get.to(
-                                                            () =>
-                                                                IndividualPeopleProfile(),
+                                                    Get.to(IndividualPeopleProfile(),
                                                             arguments:
                                                                 individualDashboardController
                                                                     .usersList[
                                                                         index]
-                                                                    .id)
-                                                        ?.then((value) =>
-                                                            individualDashboardController
-                                                                .getDataForDashboard(true));
+                                                                    .id);
+
+                                                      /*  ?.then((value) {
+                                                      String type = individualProfileController.gender.value.toString() == 'Male'
+                                                          ? '2'
+                                                          : '1';
+                                                      individualDashboardController.getAllNearbyPeoples(type: type);
+                                                    }
+                                                  */
+                                                           /* individualDashboardController
+                                                                .getDataForDashboard(true)*/
                                                   } else {
                                                     Get.snackbar('Sorry!',
                                                         'Your account is not approved , please wait until it got approved');

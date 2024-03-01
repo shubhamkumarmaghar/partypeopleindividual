@@ -450,7 +450,10 @@ class _IndividualProfileScreenViewState
                                 ),
                               ],
                             ),
-
+                            CustomProfileTextView(
+                                text: individualProfileController
+                                    .maritalStatus.value,
+                                icon: Icons.man),
                             Row(
                               children: [
                                 Visibility(
