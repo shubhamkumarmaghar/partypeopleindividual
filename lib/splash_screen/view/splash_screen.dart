@@ -175,7 +175,7 @@ class _SplashScreenState extends State<SplashScreen> {
     else{
       print('No Version data found');
     }
-    log('data  loda le le$res  ${getVersionData?.data?.version}   ${_packageInfo.version}');
+
   }
 
   Future<String> getVersion() async {
