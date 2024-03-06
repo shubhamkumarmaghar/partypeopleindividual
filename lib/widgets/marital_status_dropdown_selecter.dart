@@ -59,7 +59,7 @@ class _MatrialStatusState extends State<MatrialStatus> {
                 individualProfileController.maritalStatus.value = dropdownValue!;
               });
             },
-            items: <String>['Single', 'Married', 'Divorced','Others']
+            items: <String>['Single', 'Married', 'Couple', 'Separated ,''Divorced','Others']
                 .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,

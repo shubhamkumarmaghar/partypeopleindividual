@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:partypeopleindividual/firebase_custom_event.dart';
@@ -105,8 +104,12 @@ void main() async {
   // for test mode
  // Stripe.publishableKey = "pk_test_51M4TemSDWijp4rP3J0fs5nPBtDxnWq5CE6uPOriDJmEraO9DoRXludYdyqZFFiTth3pIGO5GQdW4819FCtaZ3T0300xgGghZOz";
 
+
   // for production
   Stripe.publishableKey = "pk_live_51M4TemSDWijp4rP3mtTpPwsdZTwZdfDlqd4qFUtyOQRbHKNdPfy1UdNksgTjkpBazL1dOkIM5d4m09CaHPrmoXSY00i87UkW20";
+
+
+
   //Load our .env file that contains our Stripe Secret key
 
   // for test mode we have to paste this key in .env file
@@ -114,6 +117,7 @@ void main() async {
 
   // for live secret key
   //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
+
   await dotenv.load(fileName: "assets/.env");
   runApp(MyApp(initialLink: initialLink,));
 }

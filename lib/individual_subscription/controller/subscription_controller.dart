@@ -7,8 +7,6 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:partypeopleindividual/individual_subscription/controller/stripe_payment_handle.dart';
-
 import '../../centralize_api.dart';
 import '../../individual_profile/controller/individual_profile_controller.dart';
 import '../../widgets/payment_response_view.dart';
@@ -279,7 +277,7 @@ class SubscriptionController extends GetxController{
       await updateSubsPaymentStatusWithStripe(subsId: paymentIntent, paymentStatus: '1',
       fullName: fullName,email: email,addedOn: createdOn);
       Get.to(  PaymentResponseView(isSuccess: '1',orderId: paymentIntent,amount: amount ,));
-      Fluttertoast.showToast(msg: 'Payment succesfully completed');
+      Fluttertoast.showToast(msg: 'Payment successfully completed');
     } on Exception catch (e) {
       if (e is StripeException) {
         log('Error from Stripe: ${e.error.localizedMessage}');
