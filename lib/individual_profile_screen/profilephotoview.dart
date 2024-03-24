@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../widgets/pop_up_dialogs.dart';
+
 class ProfilePhotoView extends StatelessWidget {
    final String profileUrl;
    final String approvalStatus;
@@ -37,44 +39,54 @@ class ProfilePhotoView extends StatelessWidget {
           ),
         ),
       ),
-      child: Center(
-        child: Blur(blur:9 ,
-          child:
-          Container(width: Get.width,
-          child: CachedNetworkImage(
-            placeholder: (context, url) => Shimmer.fromColors(
-              baseColor: Colors.grey.shade200,
-              highlightColor: Colors.grey.shade400,
-              period: const Duration(milliseconds: 1500),
-              child: Container(
-                height: Get.height * 0.35,
-                color: Color(0xff7AB02A),
-              ),
-            ),
-            imageUrl: profileUrl,
-            width: Get.width,
-            fit: BoxFit.cover,
-          ),
-          ),
-          overlay: approvalStatus != '1'
-          ? Container():
-          Container(width: Get.width,
-          child: CachedNetworkImage(
-            placeholder: (context, url) => Shimmer.fromColors(
-              baseColor: Colors.grey.shade200,
-              highlightColor: Colors.grey.shade400,
-              period: const Duration(milliseconds: 1500),
-              child: Container(
-                height: Get.height * 0.35,
-                color: Color(0xff7AB02A),
-              ),
-            ),
-            imageUrl: profileUrl,
-            width: Get.width,
-            fit: BoxFit.cover,
-          ),
-        ),
-      ) ,
-    ));
+      child: Stack(
+     children: [   Center
+       (
+       child: Blur(blur:9 ,
+         child:
+         Container(width: Get.width,
+           child: CachedNetworkImage(
+             placeholder: (context, url) => Shimmer.fromColors(
+               baseColor: Colors.grey.shade200,
+               highlightColor: Colors.grey.shade400,
+               period: const Duration(milliseconds: 1500),
+               child: Container(
+                 height: Get.height * 0.35,
+                 color: Color(0xff7AB02A),
+               ),
+             ),
+             imageUrl: profileUrl,
+             width: Get.width,
+             fit: BoxFit.cover,
+           ),
+         ),
+         overlay: approvalStatus != '1'
+             ? Container():
+         Container(width: Get.width,
+           child: CachedNetworkImage(
+             placeholder: (context, url) => Shimmer.fromColors(
+               baseColor: Colors.grey.shade200,
+               highlightColor: Colors.grey.shade400,
+               period: const Duration(milliseconds: 1500),
+               child: Container(
+                 height: Get.height * 0.35,
+                 color: Color(0xff7AB02A),
+               ),
+             ),
+             imageUrl: profileUrl,
+             width: Get.width,
+             fit: BoxFit.cover,
+           ),
+         ),
+       ) ,
+     ),
+       Positioned(
+       top: Get.height*0.05,
+       left: Get.width*0.03,
+       child:
+       getBackBarButton(context: context),
+     ),]
+
+      ));
   }
 }

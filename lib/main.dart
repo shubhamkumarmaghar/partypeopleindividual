@@ -22,11 +22,28 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  FlutterLocalNotificationsPlugin pluginInstance =
-      FlutterLocalNotificationsPlugin();
-  var init = const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon'));
+  FlutterLocalNotificationsPlugin pluginInstance = FlutterLocalNotificationsPlugin();
+  final platformSpec = await setUpForLocalNotification(pluginInstance);
+
+
+  await pluginInstance.show(
+    0,
+    message.data['title'],
+    message.data['body'],
+    platformSpec,
+  );
+}
+
+Future<NotificationDetails> setUpForLocalNotification(FlutterLocalNotificationsPlugin pluginInstance) async {
+  var init = InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/launcher_icon'),
+      iOS: DarwinInitializationSettings(
+        requestSoundPermission: true,
+        requestBadgePermission: true,
+        requestAlertPermission: true,
+      ));
   pluginInstance.initialize(init);
+
   AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
     'ch_id',
     'ch_name',
@@ -34,79 +51,68 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     priority: Priority.high,
     playSound: true,
   );
-  NotificationDetails platformSpec = NotificationDetails(android: androidSpec);
+  const AndroidNotificationChannel androidChannel = AndroidNotificationChannel(
+      'high_importance_channel', // id
+      'High Importance Notifications', // title
+      importance: Importance.high,
+      playSound: true);
+  await pluginInstance
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(androidChannel);
 
-  await pluginInstance.show(
-      0, message.data['title'], message.data['body'], platformSpec);
-  log('A background msg just showed ${message.data}');
-  //return;
+  pluginInstance.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+  const DarwinNotificationDetails iosNotificationDetails = DarwinNotificationDetails(
+    presentAlert: true,
+    presentBadge: true,
+    presentSound: true,
+    categoryIdentifier: 'plainCategory',
+  );
+  NotificationDetails platformSpec = NotificationDetails(
+    android: androidSpec,
+    iOS: iosNotificationDetails,
+  );
+  return platformSpec;
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  await Firebase.initializeApp();
-  final PendingDynamicLinkData? initialLink =
-  await FirebaseDynamicLinks.instance.getInitialLink();
-//await FirebaseDynamicLinkUtils.handleDynamicLink('${initialLink?.link}');
-  //Fluttertoast.showToast(msg:'deeplink from initialLink :: ${initialLink?.link}' );
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-  log('deeplink from initialLink :: ${initialLink?.link}');
-  /*if(initialLink?.link != null){
-  FirebaseDynamicLinkPostType.link ='${initialLink?.link}';
-  Fluttertoast.showToast(msg:'deeplink from firebase:: ${initialLink?.link}' );
-  }*/
-  //FirebaseDynamicLinkUtils.handleDynamicLink(initialLink?.link.toString() ??'');
-// Get.put(SplashController()).initDynamicLinks();
+  await Firebase.initializeApp();
+
+  final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
 
   analytics = await FirebaseAnalytics.instance;
-  FirebaseAnalyticsObserver observer =
-      FirebaseAnalyticsObserver(analytics: analytics);
+
+  FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
   await GetStorage.init();
   logCustomEvent(eventName: splash, parameters: {'name': 'splash'});
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  FlutterLocalNotificationsPlugin pluginInstance =
-      FlutterLocalNotificationsPlugin();
-  var init = const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon'));
-  pluginInstance.initialize(init);
-  NotificationSettings settings = await messaging.requestPermission();
-  AndroidNotificationDetails androidSpec = const AndroidNotificationDetails(
-    'ch_id',
-    'ch_name',
-    importance: Importance.high,
-    priority: Priority.high,
-    playSound: true,
-  );
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    print('User granted permission');
-  } else {
-    print('User declined permission');
-  }
-  messaging.getToken().then((value) {
-    print('Firebase Messaging Token : ${value}');
-  });
+  await messaging.requestPermission();
+
+  FlutterLocalNotificationsPlugin pluginInstance = FlutterLocalNotificationsPlugin();
+  final platformSpec = await setUpForLocalNotification(pluginInstance);
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    print(message.messageType);
-    print(message.data);
-    NotificationDetails platformSpec =
-        NotificationDetails(android: androidSpec);
-    await pluginInstance.show(
-        0, message.data['title'], message.data['body'], platformSpec);
+    log('on message :: ${message.toMap()}');
+    await pluginInstance.show(0, message.data['title'], message.data['body'], platformSpec);
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   //Assign publishable key to flutter_stripe
 
   // for test mode
- // Stripe.publishableKey = "pk_test_51M4TemSDWijp4rP3J0fs5nPBtDxnWq5CE6uPOriDJmEraO9DoRXludYdyqZFFiTth3pIGO5GQdW4819FCtaZ3T0300xgGghZOz";
+  // Stripe.publishableKey = "pk_test_51M4TemSDWijp4rP3J0fs5nPBtDxnWq5CE6uPOriDJmEraO9DoRXludYdyqZFFiTth3pIGO5GQdW4819FCtaZ3T0300xgGghZOz";
 
   // for production
-  Stripe.publishableKey = "pk_live_51M4TemSDWijp4rP3mtTpPwsdZTwZdfDlqd4qFUtyOQRbHKNdPfy1UdNksgTjkpBazL1dOkIM5d4m09CaHPrmoXSY00i87UkW20";
+  Stripe.publishableKey =
+      "pk_live_51M4TemSDWijp4rP3mtTpPwsdZTwZdfDlqd4qFUtyOQRbHKNdPfy1UdNksgTjkpBazL1dOkIM5d4m09CaHPrmoXSY00i87UkW20";
   //Load our .env file that contains our Stripe Secret key
 
   // for test mode we have to paste this key in .env file
@@ -115,13 +121,16 @@ void main() async {
   // for live secret key
   //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
   await dotenv.load(fileName: "assets/.env");
-  runApp(MyApp(initialLink: initialLink,));
+  runApp(MyApp(
+    initialLink: initialLink,
+  ));
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({super.key,this.initialLink});
+  MyApp({super.key, this.initialLink});
 
   PendingDynamicLinkData? initialLink;
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -132,8 +141,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     log('linkkk in klill : ${widget.initialLink?.link}');
-    settingController.link ='${widget.initialLink?.link}';
-   // FirebaseDynamicLinkPostType.link ='${widget.initialLink?.link}';
+    settingController.link = '${widget.initialLink?.link}';
+    // FirebaseDynamicLinkPostType.link ='${widget.initialLink?.link}';
     // TODO: implement initState
     super.initState();
   }
@@ -146,9 +155,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: 'Party People',
         builder: (context, child) {
-          return MediaQuery(
-              data: MediaQuery.of(context).copyWith(textScaleFactor: 0.9),
-              child: child ?? Text(''));
+          return MediaQuery(data: MediaQuery.of(context).copyWith(textScaleFactor: 0.9), child: child ?? Text(''));
         },
         theme: ThemeData.light(useMaterial3: false).copyWith(
           scaffoldBackgroundColor: Colors.red.shade900,
@@ -166,7 +173,7 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
         ),
-       // home: SplashScreen(),
+        // home: SplashScreen(),
         home: settingController.getPage(),
         //IndividualDashboardView(),
       );

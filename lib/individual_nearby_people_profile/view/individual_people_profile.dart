@@ -21,6 +21,7 @@ import '../../widgets/block_unblock.dart';
 import '../../widgets/calculate_age.dart';
 import '../../widgets/custom_images_slider.dart';
 import '../../widgets/custom_textview_profile.dart';
+import '../../widgets/pop_up_dialogs.dart';
 import '../controller/people_profile_controller.dart';
 import '../model/people_profile_model.dart';
 
@@ -200,6 +201,12 @@ class _IndividualPeopleProfileState extends State<IndividualPeopleProfile> {
                                   // ),
                                   ),
                             ),
+                          ),
+                          Positioned(
+                            top: Get.height*0.05,
+                            left: Get.width*0.03,
+                            child:
+                            getBackBarButton(context: context),
                           ),
                         ],
                       ),
